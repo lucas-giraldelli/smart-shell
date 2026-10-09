@@ -8,7 +8,7 @@ export const capabilities = {
   bluetooth: true,    // bluetoothd + an adapter
   ddcutil: true,      // external monitor brightness over DDC/CI
   docker: true,
-  hyprsunset: false,  // night light
+  hyprsunset: true,   // night light
 };
 
 // Workspace icons mirror waybar's `format-icons`; window lists come from `hyprctl clients`.
