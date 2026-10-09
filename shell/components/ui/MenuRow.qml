@@ -19,7 +19,8 @@ Rectangle {
     signal clicked
 
     implicitWidth: parent?.width ?? 200
-    implicitHeight: Math.max(layout.implicitHeight, 0) + 16
+    // from the parts, not the layout: Qt Layouts round to whole pixels
+    implicitHeight: Math.max(texts.implicitHeight, trail.implicitHeight, 16) + 16
     radius: 9
     color: area.containsMouse && enabled ? Theme.menuHover : "transparent"
     opacity: enabled ? 1 : 0.45
@@ -47,23 +48,22 @@ Rectangle {
         }
 
         Column {
+            id: texts
             Layout.fillWidth: true
-            Text {
+            Label {
                 width: parent.width
                 text: root.title
                 elide: Text.ElideRight
                 color: Theme.menuText
-                font { family: Theme.font; pointSize: Theme.px(12.5); weight: Font.Medium }
-                lineHeight: 15; lineHeightMode: Text.FixedHeight
+                size: 12.5
             }
-            Text {
+            Label {
                 visible: root.meta !== ""
                 width: parent.width
                 text: root.meta
                 elide: Text.ElideRight
                 color: root.metaColor
-                font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
-                lineHeight: 13; lineHeightMode: Text.FixedHeight
+                size: 11
             }
         }
 

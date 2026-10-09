@@ -24,7 +24,7 @@ Item {
     readonly property real contentWidth: label.contentWidth * k
 
     implicitWidth: label.implicitWidth * k
-    implicitHeight: label.implicitHeight * k
+    implicitHeight: lineHeight
 
     Text {
         id: label
