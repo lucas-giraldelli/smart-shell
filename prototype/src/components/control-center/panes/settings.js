@@ -13,7 +13,11 @@ import { t, locale, locales } from '../../../i18n/index.js';
 // would hide this very tab.
 const TOGGLEABLE = Object.keys(widgets).filter(id => id !== 'quick');
 const check = on => `<span class="chk${on ? ' on' : ''}">${icon('check')}</span>`;
-const radio = on => `<span class="radio-dot${on ? ' on' : ''}"></span>`;
+// a pet's sprite at rest, for the pet picker (none = an empty slot)
+const sprite = k => (species[k]
+  ? `<span class="pet-mini"><svg viewBox="0 0 46 36">${species[k].svg}</svg></span>`
+  : '<span class="pet-mini empty"></span>');
+const petName = k => t(k && species[k] ? `pets.names.${k}` : 'settings.noPet');
 
 export default {
   id: 'settings',
@@ -36,7 +40,14 @@ export default {
       <div class="checks">${TOGGLEABLE.map(id => `<label class="check-row" data-widget="${id}"><span data-box></span>${t(`widgets.${id}`)}</label>`).join('')}</div>
 
       <div class="sec">${t('settings.pets')}</div>
-      <div class="checks">${[...Object.keys(species), 'none'].map(k => `<label class="check-row" data-pet="${k}"><span data-box></span>${t(k === 'none' ? 'settings.noPet' : `pets.names.${k}`)}</label>`).join('')}</div>
+      <div class="pet-select" data-pet-select>
+        <button class="ps-trigger" data-ps-toggle aria-haspopup="listbox">
+          <span data-ps-current></span>${icon('chevron-down', 'ps-chev')}
+        </button>
+        <div class="ps-list" role="listbox">${[...Object.keys(species), 'none'].map(k => `
+          <button class="ps-opt" role="option" data-pet="${k}">${sprite(k)}<span class="grow">${petName(k)}</span><span class="ps-check">${icon('check')}</span></button>`).join('')}
+        </div>
+      </div>
 
       <div class="sec">${t('settings.language')}</div>
       <div class="langs">${locales().map(l => `<button data-locale="${l}">${t(`settings.locales.${l}`)}</button>`).join('')}</div>
@@ -48,7 +59,8 @@ export default {
     setSlider(root, 'magnify', Math.round(ui.magnify * 100), `${ui.magnify.toFixed(2)}×`);
     setHTML(root.querySelector('[data-ws-icons]'), row({ title: t('settings.wsIcons'), trailing: toggle(ui.wsIcons), attrs: 'data-toggle="wsIcons"' }));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
-    root.querySelectorAll('[data-pet]').forEach(el => setHTML(el.querySelector('[data-box]'), radio((ui.pet ?? 'none') === el.dataset.pet)));
+    setHTML(root.querySelector('[data-ps-current]'), `${sprite(ui.pet)}<span class="grow">${petName(ui.pet)}</span>`);
+    root.querySelectorAll('.ps-opt').forEach(el => el.classList.toggle('on', (ui.pet ?? 'none') === el.dataset.pet));
     root.querySelectorAll('[data-locale]').forEach(b => b.classList.toggle('on', b.dataset.locale === locale()));
   },
 
@@ -62,8 +74,15 @@ export default {
       const id = widget.dataset.widget;
       return update('ui', { hidden: ui.hidden.includes(id) ? ui.hidden.filter(h => h !== id) : [...ui.hidden, id] });
     }
+    const select = target.closest('[data-pet-select]');
+    if (target.closest('[data-ps-toggle]')) {
+      select.classList.toggle('open');
+      if (select.classList.contains('open')) select.querySelector('.ps-list').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      return;
+    }
     const pet = target.closest('[data-pet]');
     if (pet) {
+      select.classList.remove('open');
       // one pet per dock: picking one replaces the current
       return update('ui', { pet: pet.dataset.pet === 'none' ? null : pet.dataset.pet });
     }
