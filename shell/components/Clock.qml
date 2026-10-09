@@ -4,14 +4,16 @@ import ".."
 
 // Time and date (prototype: components/clock). The calendar popover and the
 // event reminder come later.
-Rectangle {
+Tile {
     id: root
 
     implicitWidth: 168
-    implicitHeight: Theme.size
-    radius: Theme.radius * 0.55 + 4
-    color: Theme.tileBg
-    border.color: Theme.tileBorder
+
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: Ui.closePopover()
+    }
 
     SystemClock {
         id: clock

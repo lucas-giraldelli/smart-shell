@@ -26,7 +26,7 @@ Row {
             readonly property bool active: modelData.id === root.activeId
             readonly property bool occupied: modelData.toplevels.values.length > 0
             readonly property string iconName: Config.workspaceIcons[String(modelData.id)] ?? ""
-            readonly property bool showIcon: occupied && !active && iconName !== ""
+            readonly property bool showIcon: Ui.wsIcons && occupied && !active && iconName !== ""
 
             width: dot.width
             height: Theme.size
@@ -60,7 +60,10 @@ Row {
                 anchors.fill: dot
                 anchors.margins: -4
                 cursorShape: Qt.PointingHandCursor
-                onClicked: slot.modelData.activate()
+                onClicked: {
+                    Ui.closePopover();
+                    slot.modelData.activate();
+                }
             }
         }
     }
