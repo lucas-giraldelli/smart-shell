@@ -63,7 +63,8 @@ class Clock extends Component {
 
   update({ ui, agenda }) {
     this.format = ui.clockFormat;
-    this.measure(ui.clockFormat, this.$('[data-date]').textContent);
+    const shown = this.$('[data-date]').textContent;
+    this.measure(ui.clockFormat, shown[0]?.toUpperCase() + shown.slice(1));  // ::first-letter capitalizes it
     this.toggleAttribute('data-open', ui.popover === 'calendar');
 
     // what's next matters more than what's running: warn first
@@ -83,10 +84,13 @@ class Clock extends Component {
   tick() {
     const d = new Date();
     this.$('[data-time]').textContent = formatTime(d);
-    const date = dateFormat({ weekday: 'short', day: '2-digit', month: 'short' }).format(d).replace(/\./g, '');
+    // "Sexta 09/10/26" / "Friday 10/09/26": the full weekday without "-feira"
+    const weekday = dateFormat({ weekday: 'long' }).format(d).replace('-feira', '');
+    const date = `${weekday} ${dateFormat({ day: '2-digit', month: '2-digit', year: '2-digit' }).format(d)}`;
     this.$('[data-date]').textContent = date;
     this.measure(this.format ?? '24h', date[0].toUpperCase() + date.slice(1));
-    this.$('[data-mini]').textContent = dateFormat({ weekday: 'short', day: '2-digit' }).format(d).replace(/\./g, '');
+    // the reminder's mini date: "Sex 09/10" / "Fri 10/09"
+    this.$('[data-mini]').textContent = `${dateFormat({ weekday: 'short' }).format(d).replace(/\./g, '')} ${dateFormat({ day: '2-digit', month: '2-digit' }).format(d)}`;
   }
 }
 

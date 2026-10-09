@@ -44,16 +44,21 @@ Singleton {
     }
 
     // Dates the way the prototype's Intl formats print them, per language
-    // (Qt has no Intl, so the patterns are spelled out): date "sex, 09 de out",
-    // mini "sex, 09", month "outubro de 2026", long "sexta-feira, 9 de
-    // outubro", short "12 out". Times don't depend on the language.
+    // (Qt has no Intl, so the patterns are spelled out): date "sexta 09/10/26"
+    // (en "Friday 10/09/26"), mini "sex 09/10", month "outubro de 2026", long
+    // "sexta-feira, 9 de outubro", short "12 out". Times don't depend on the
+    // language.
     readonly property var patterns: ({
-        "pt-BR": { date: "ddd, dd 'de' MMM", mini: "ddd, dd", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
-        "en": { date: "ddd, MMM dd", mini: "ddd dd", month: "MMMM yyyy", long: "dddd, MMMM d", short: "MMM d" }
+        "pt-BR": { date: "dddd dd/MM/yy", mini: "ddd dd/MM", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
+        "en": { date: "dddd MM/dd/yy", mini: "ddd MM/dd", month: "MMMM yyyy", long: "dddd, MMMM d", short: "MMM d" }
     })
     function formatDate(date, kind) {
         const pattern = (patterns[current] ?? patterns[fallback])[kind];
-        return qtLocale.toString(date, pattern).replace(/\./g, "");
+        let text = qtLocale.toString(date, pattern).replace(/\./g, "");
+        // the clock's date: "Sexta 09/10/26", the weekday without "-feira"
+        if (kind === "date")
+            text = text.replace("-feira", "");
+        return text;
     }
     // times follow config.clock.format: "14:05" or "2:05 PM"
     function formatTime(date) {
