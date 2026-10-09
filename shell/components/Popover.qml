@@ -39,7 +39,7 @@ PopupWindow {
         const win = owner.QsWindow.window;
         if (!win)
             return;
-        const tileLeft = owner.mapToItem(null, 0, 0).x;
+        const tileLeft = owner.mapToItem(null, 0, 0).x + 1;
         let l = 0;
         l = Math.min(l, win.width - screenEdge - tileLeft - bubble.width);
         l = Math.max(l, screenEdge - tileLeft);
@@ -50,14 +50,16 @@ PopupWindow {
     onOpenChanged: if (open) place()
 
     anchor.item: owner
-    anchor.rect.x: left - shadowX
-    anchor.rect.y: -gap + shadowBottom
+    // the CSS positions the bubble from the tile's padding box, 1px inside its border
+    anchor.rect.x: 1 + left - shadowX
+    anchor.rect.y: 1 - gap + shadowBottom
     anchor.edges: Edges.Top | Edges.Left
     anchor.gravity: Edges.Top | Edges.Right
     anchor.adjustment: PopupAdjustment.None
 
     implicitWidth: bubble.width + shadowX * 2
-    implicitHeight: bubble.height + shadowTop + shadowBottom
+    // whole pixels for the window; the bubble keeps its bottom (and tail) exact
+    implicitHeight: Math.ceil(bubble.height + shadowTop + shadowBottom)
     color: "transparent"
     visible: open || frame.opacity > 0
     mask: Region { item: open ? bubble : null }
@@ -72,7 +74,7 @@ PopupWindow {
     Item {
         id: frame
         x: root.shadowX
-        y: root.shadowTop
+        y: root.implicitHeight - root.shadowBottom - bubble.height
         width: bubble.width
         height: bubble.height
         focus: root.open
