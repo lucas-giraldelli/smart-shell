@@ -6,6 +6,11 @@ import { update } from '../../../state.js';
 // Status follows waybar's docker-status.sh: service down = crit, any container
 // paused / restarting / exited with an error = warn, otherwise ok.
 const counts = cs => ({ up: cs.filter(c => c.state === 'running').length, total: cs.length });
+
+// memory of running containers, e.g. "910 MiB" / "1,4 GiB"
+const memOf = c => (c.state === 'running' ? c.memMiB : 0);
+export const fmtMem = mib => (mib < 1024 ? `${Math.round(mib)} MiB` : `${(mib / 1024).toFixed(1).replace('.', ',')} GiB`);
+const totalMem = docker => (docker.running ? docker.containers.reduce((sum, c) => sum + memOf(c), 0) : 0);
 const isBad = c => c.state === 'paused' || c.state === 'restarting' || (c.state === 'exited' && c.exitCode !== 0);
 
 export function dockerStatus(docker) {
@@ -27,10 +32,10 @@ export default {
   icon: 'container',
   requires: 'docker',
 
-  quick: ({ docker }) => {
-    const { up, total } = counts(docker.containers);
-    return { icon: 'container', text: docker.running ? `${up}/${total}` : 'Parado', status: dockerStatus(docker) };
-  },
+  // the quick item shows what Docker costs right now: its memory
+  quick: ({ docker }) => ({
+    icon: 'container', text: docker.running ? fmtMem(totalMem(docker)) : 'Parado', status: dockerStatus(docker),
+  }),
 
   render: () => `
     <div class="dk-head"><span data-summary></span><button class="btn-s" data-lazy>${icon('external-link')}lazydocker</button></div>
@@ -43,13 +48,14 @@ export default {
     const summary = root.querySelector('[data-summary]');
     summary.dataset.status = dockerStatus(docker);
     summary.innerHTML = docker.running
-      ? `<span class="led"></span>${total} containers · ${up} rodando`
+      ? `<span class="led"></span>${up} de ${total} rodando · ${fmtMem(totalMem(docker))}`
       : '<span class="led"></span>Serviço do Docker parado';
     root.querySelector('.dk-list').innerHTML = docker.containers.map((c, i) => {
       const running = c.state === 'running';
       return `
       <div class="ct" data-status="${docker.running ? containerStatus(c) : 'off'}"><span class="led"></span>
         <span class="grow">${c.name}<div class="meta">${docker.running ? describe(c) : '—'}</div></span>
+        ${docker.running && running ? `<span class="mem">${fmtMem(c.memMiB)}</span>` : ''}
         ${running && c.healthy ? '<span class="tag">healthy</span>' : ''}
         <button class="ib" data-ct="${i}" title="${running ? 'Parar' : 'Iniciar'}">${icon(running ? 'square' : 'play')}</button>
       </div>`;

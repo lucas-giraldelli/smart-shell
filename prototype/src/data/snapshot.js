@@ -74,14 +74,18 @@ export const network = {
   vpn: 'OpenVPN Connect',
 };
 
-// `systemctl is-active docker` + `docker ps -a`. A container `state` is
-// running | paused | restarting | exited; `exitCode` matters only when exited.
+// `systemctl is-active docker` + `docker ps -a` + `docker stats` (memory in MiB).
+// A container `state` is running | paused | restarting | exited; `exitCode`
+// matters only when exited.
+const containerMemMiB = {
+  'atlas-db': 63.6, atlas: 2.4, jellyseerr: 58.4, bazarr: 171.1, radarr: 131.3, sonarr: 189.1, prowlarr: 36.5,
+  jellyfin: 147.4, qbittorrent: 28.6, gluetun: 49, flaresolverr: 6.4, redis: 2.4, cloudflared: 21.8, 'torrent-indexer': 2.6,
+};
 export const docker = {
   running: true,
-  containers: [
-    'atlas-db', 'atlas', 'jellyseerr', 'bazarr', 'radarr', 'sonarr', 'prowlarr', 'jellyfin',
-    'qbittorrent', 'gluetun', 'flaresolverr', 'redis', 'cloudflared', 'torrent-indexer',
-  ].map(name => ({ name, state: 'running', exitCode: 0, healthy: name === 'jellyfin' || name === 'gluetun' })),
+  containers: Object.entries(containerMemMiB).map(([name, memMiB]) => ({
+    name, memMiB, state: 'running', exitCode: 0, healthy: name === 'jellyfin' || name === 'gluetun',
+  })),
 };
 
 export const weather = { temp: 32, feels: 34, humidity: 53, wind: 9, summary: 'Céu limpo' };

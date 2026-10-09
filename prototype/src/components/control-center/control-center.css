@@ -70,6 +70,7 @@
 .cc .ct[data-status="off"] .grow { color: #a1a1aa; }
 .cc .ct[data-status="warn"] .meta { color: var(--warn); }
 .cc .ct[data-status="crit"] .meta { color: var(--crit); }
+.cc .ct .mem { font-size: 11px; color: #a1a1aa; font-variant-numeric: tabular-nums; }
 .cc .ct .tag { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: rgba(74, 222, 128, .14); color: var(--ok); }
 .cc .ct .ib { width: 26px; height: 26px; border-radius: 8px; }
 .cc .ct .ib svg.i { width: 13px; height: 13px; }
