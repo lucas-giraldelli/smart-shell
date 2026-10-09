@@ -6,6 +6,7 @@ import { row, toggle, setHTML } from '../ui/ui.js';
 import { missingText } from '../../data/capabilities.js';
 
 // Click toggles the adapter; right-click opens the device menu (like blueman).
+// Off (or unavailable) shows just the crossed-out icon; the tooltip says why.
 class Bluetooth extends Component {
   static slices = ['bluetooth', 'ui'];
 
@@ -13,7 +14,7 @@ class Bluetooth extends Component {
     return `
       <span data-icon></span>
       <div class="bt-body"><div class="bt-name" data-name></div><div class="t-sub" data-sub></div></div>
-      <span class="label">Clique: liga/desliga · botão direito: dispositivos</span>
+      <span class="label"></span>
       <div class="menu"></div>`;
   }
 
@@ -47,7 +48,7 @@ class Bluetooth extends Component {
     if (this.hasAttribute('data-unavailable')) {
       this.$('[data-icon]').innerHTML = icon('bluetooth-off', 'bt-ic');
       this.$('[data-name]').textContent = 'Bluetooth';
-      this.$('[data-sub]').textContent = 'Indisponível';
+      this.classList.add('off');
       this.$('.label').textContent = missingText('bluetooth');
       return;
     }
@@ -57,7 +58,8 @@ class Bluetooth extends Component {
     this.classList.toggle('off', !bt.on);
     setHTML(this.$('[data-icon]'), icon(!bt.on ? 'bluetooth-off' : conn ? 'bluetooth-connected' : 'bluetooth', 'bt-ic'));
     this.$('[data-name]').textContent = conn ? conn.name : 'Bluetooth';
-    this.$('[data-sub]').textContent = busy ? 'Conectando…' : !bt.on ? 'Desligado' : conn ? `Fone · ${conn.battery}%` : 'Ligado';
+    this.$('[data-sub]').textContent = busy ? 'Conectando…' : conn ? `Fone · ${conn.battery}%` : 'Ligado';
+    this.$('.label').textContent = `${bt.on ? 'Bluetooth ligado' : 'Bluetooth desligado'} · clique liga/desliga · botão direito: dispositivos`;
 
     setHTML(this.menu, [
       row({ icon: 'bluetooth', title: 'Bluetooth', trailing: toggle(bt.on), attrs: 'data-act="power"' }),

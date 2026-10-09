@@ -1,6 +1,9 @@
 .bt { width: 132px; gap: 9px; cursor: pointer; }
 .bt .bt-ic { width: 20px; height: 20px; color: var(--accent); transition: color .3s; }
-.bt.off .bt-ic, .bt.off .bt-name { color: var(--sub); }
+.bt.off .bt-ic { color: var(--sub); }
+/* off: the crossed-out icon says it all, so the tile shrinks to just the icon */
+.bt.off { width: auto; padding: 0 15px; }
+.bt.off .bt-body { display: none; }
 .bt-body { min-width: 0; }
 .bt-name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bt .menu .sec { margin-top: 6px; }
