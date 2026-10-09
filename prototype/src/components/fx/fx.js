@@ -18,23 +18,28 @@ class Fx extends Component {
     this.canvas = this.$('canvas');
     this.ctx = this.canvas.getContext('2d');
     this.t = 0;
-    this.resize = () => {
-      this.canvas.width = innerWidth * devicePixelRatio;
-      this.canvas.height = innerHeight * devicePixelRatio;
-      this.start(this.effectId);
-    };
-    addEventListener('resize', this.resize);
     this.stopLoop = onFrame(dt => this.frame(dt));
   }
 
   teardown() {
-    removeEventListener('resize', this.resize);
     this.stopLoop();
+  }
+
+  // Keep the backing store at the canvas' real on-screen size. Sizing it from
+  // innerWidth once is not enough: Firefox/Zen can report a different size,
+  // and a stretched canvas blurs the flakes and misplaces the dock floor.
+  fit() {
+    const w = Math.round(this.canvas.clientWidth * devicePixelRatio);
+    const h = Math.round(this.canvas.clientHeight * devicePixelRatio);
+    if (w === this.canvas.width && h === this.canvas.height) return false;
+    this.canvas.width = w;
+    this.canvas.height = h;
+    return true;
   }
 
   start(id) {
     this.effectId = id;
-    if (!this.canvas.width) this.resize();
+    this.fit();
     this.draw = id ? EFFECTS[id](this.canvas) : null;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
@@ -46,9 +51,13 @@ class Fx extends Component {
 
   frame(dt) {
     if (!this.draw) return;
+    if (this.fit()) this.start(this.effectId);
     this.t += dt * 60;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    const dock = document.querySelector('ss-dock')?.getBoundingClientRect() ?? { left: 0, right: 0, top: innerHeight };
+    // dock edges in CSS px relative to the canvas; effects multiply by devicePixelRatio
+    const c = this.canvas.getBoundingClientRect();
+    const d = document.querySelector('ss-dock')?.getBoundingClientRect();
+    const dock = d ? { left: d.left - c.left, right: d.right - c.left, top: d.top - c.top } : { left: 0, right: 0, top: c.height };
     this.draw(this.ctx, dt, this.t, dock);
   }
 }
