@@ -4,7 +4,9 @@ import { themes } from '../../data/themes.js';
 import { snow } from './effects/snow.js';
 import { bats } from './effects/bats.js';
 
-// Full-screen particle layer; the active theme picks the effect (themes.js `fx`).
+// Particle layer inside the dock (it lives in <ss-dock>, see fx.css); the
+// active theme picks the effect (themes.js `fx`). Nothing is drawn outside
+// the dock, and nothing lands: flakes drift through and start over.
 const EFFECTS = { snow, bats };
 
 class Fx extends Component {
@@ -41,7 +43,9 @@ class Fx extends Component {
     this.effectId = id;
     this.canvas.dataset.effect = id ?? 'none';
     this.fit();
-    this.draw = id ? EFFECTS[id](this.canvas) : null;
+    // the full-screen effect's density, over the dock's area
+    const count = Math.max(12, Math.round(this.canvas.clientWidth * this.canvas.clientHeight / 4000));
+    this.draw = id ? EFFECTS[id](this.canvas, count) : null;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -55,15 +59,7 @@ class Fx extends Component {
     if (this.fit()) this.start(this.effectId);
     this.t += dt * 60;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // dock edges in CSS px relative to the canvas; effects multiply by devicePixelRatio.
-    // `top` is where things land: the theme's snow cap when it is shown, else the dock
-    const c = this.canvas.getBoundingClientRect();
-    const d = document.querySelector('ss-dock')?.getBoundingClientRect();
-    const cap = document.querySelector('ss-dock > .snow-cap');
-    const capTop = cap && cap.offsetParent ? cap.getBoundingClientRect().top : null;
-    const dock = d
-      ? { left: d.left - c.left, right: d.right - c.left, top: (capTop ?? d.top) - c.top }
-      : { left: 0, right: 0, top: c.height };
+    const dock = { left: 0, right: 0, top: this.canvas.clientHeight };
     const stats = this.draw(this.ctx, dt, this.t, dock);
     // debug: what the effect is doing right now, readable in the inspector
     if (stats) for (const [key, value] of Object.entries(stats)) {

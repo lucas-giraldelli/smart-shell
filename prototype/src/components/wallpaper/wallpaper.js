@@ -15,7 +15,6 @@ class Wallpaper extends Component {
         <img src="${STATIC}" alt="">
         <video muted loop playsinline preload="none" hidden></video>
       </div>
-      <div class="tint"></div>
       <div class="night"></div>`;
   }
 

@@ -60,6 +60,13 @@ Rectangle {
         color: Theme.dockInset
     }
 
+    // the theme's tint and particles, inside the dock and behind its content
+    DockEffects {
+        anchors.fill: parent
+        anchors.margins: 1
+        radius: root.radius - 1
+    }
+
     DockDecor {
         anchors.fill: parent
     }

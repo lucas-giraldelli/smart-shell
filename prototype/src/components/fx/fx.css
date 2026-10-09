@@ -1,1 +1,7 @@
-ss-fx canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+/* the theme's tint and particles, confined to the dock: clipped to its
+   rounded rectangle and behind its content (never over the screen) */
+.dock > ss-fx {
+  position: absolute; inset: 0; z-index: 0; border-radius: inherit; overflow: hidden; pointer-events: none;
+  background: var(--tint); transition: background .8s;
+}
+.dock > ss-fx canvas { display: block; width: 100%; height: 100%; }

@@ -18,11 +18,12 @@ Singleton {
 
     // The themes (prototype/src/styles/themes/*.css): "glass" is the base and
     // every other theme overrides some tokens. Colours are [r, g, b, a] or
-    // "#rrggbb". Picked in the dock settings, saved as config.theme. Not
-    // ported: --tint (the shell doesn't draw the wallpaper) and per-theme
-    // --blur (Hyprland's layer rule blurs every theme).
+    // "#rrggbb". Picked in the dock settings, saved as config.theme. `tint`
+    // darkens the dock's glass and `fx` is the theme's particle effect
+    // (lib/fx.mjs) - both confined to the dock (DockEffects). Not ported: per-theme --blur (Hyprland's
+    // layer rule blurs every theme).
     readonly property var base: ({
-        radius: 24, padBottom: 12, reflection: 0.18,
+        radius: 24, padBottom: 12, reflection: 0.18, tint: [0, 0, 0, 0], fx: "",
         dockBg: [28, 28, 32, 0.56], dockGradient: null, dockBorder: [255, 255, 255, 0.28],
         // --shadow: 0 18px 50px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .25)
         dockShadow: [0, 0, 0, 0.35], dockShadowY: 18, dockShadowBlur: 50, dockInset: [255, 255, 255, 0.25],
@@ -46,7 +47,7 @@ Singleton {
         glass: {},
         midnight: {
             dockBg: [10, 12, 30, 0.70], dockBorder: [140, 150, 255, 0.28], dockShadow: [0, 0, 20, 0.55], dockShadowY: 20, dockShadowBlur: 60,
-            dockInset: [160, 170, 255, 0.18],
+            dockInset: [160, 170, 255, 0.18], tint: [8, 10, 40, 0.38],
             tileBg: [120, 130, 255, 0.10], tileBorder: [140, 150, 255, 0.18], accent: "#a5b4fc", dot: "#a5b4fc", reflection: 0.32,
             menuBg: [12, 14, 36, 0.95], menuLine: [140, 150, 255, 0.25],
             menuSurface: [120, 130, 255, 0.07], menuHover: [140, 150, 255, 0.12], menuStrong: [140, 150, 255, 0.2], menuAccent: "#a5b4fc"
@@ -60,7 +61,7 @@ Singleton {
         },
         neon: {
             dockBg: [8, 4, 22, 0.78], dockBorder: [0, 255, 240, 0.65], dockShadow: [0, 255, 240, 0.45], dockShadowY: 0, dockShadowBlur: 14,
-            dockInset: [255, 0, 200, 0.12],
+            dockInset: [255, 0, 200, 0.12], tint: [20, 0, 40, 0.35],
             tileBg: [0, 255, 240, 0.06], tileBorder: [255, 0, 200, 0.35], accent: "#00fff0", dot: "#ff3bd4", sep: [0, 255, 240, 0.35], reflection: 0.25,
             iconShadow: [0, 255, 240, 0.45], iconShadowY: 0,
             menuBg: [10, 4, 26, 0.96], menuLine: [0, 255, 240, 0.5],
@@ -84,14 +85,14 @@ Singleton {
         },
         snowy: {
             dockBg: [200, 225, 255, 0.20], dockBorder: [230, 245, 255, 0.55], dockShadow: [0, 10, 40, 0.55], dockShadowY: 20, dockShadowBlur: 60,
-            dockInset: [255, 255, 255, 0.5],
+            dockInset: [255, 255, 255, 0.5], tint: [6, 16, 52, 0.68], fx: "snow",
             tileBg: [220, 238, 255, 0.14], tileBorder: [230, 245, 255, 0.3], accent: "#bae6fd", dot: "#e0f2fe", reflection: 0.3,
             menuBg: [14, 30, 66, 0.94], menuLine: [230, 245, 255, 0.45],
             menuSurface: [220, 238, 255, 0.07], menuHover: [220, 238, 255, 0.12], menuStrong: [220, 238, 255, 0.2], menuAccent: "#bae6fd"
         },
         halloween: {
             dockBg: [26, 8, 32, 0.78], dockBorder: [255, 140, 0, 0.55], dockShadow: [255, 110, 0, 0.35], dockShadowY: 0, dockShadowBlur: 30,
-            dockInset: [255, 170, 60, 0.25],
+            dockInset: [255, 170, 60, 0.25], tint: [35, 5, 40, 0.55], fx: "bats",
             tileBg: [255, 120, 0, 0.09], tileBorder: [255, 140, 0, 0.28], accent: "#ff8c1a", dot: "#ff8c1a", sep: [255, 140, 0, 0.35], reflection: 0.25,
             menuBg: [26, 8, 32, 0.96], menuLine: [255, 140, 0, 0.5],
             menuSurface: [255, 120, 0, 0.07], menuHover: [255, 140, 0, 0.12], menuStrong: [255, 140, 0, 0.22], menuAccent: "#ff8c1a"
@@ -113,6 +114,8 @@ Singleton {
     readonly property bool cobweb: theme === "halloween"
     readonly property bool snowCap: theme === "snowy"
 
+    readonly property color tint: c("tint")
+    readonly property string fx: v("fx")
     readonly property color dockBg: c("dockBg")
     readonly property var dockGradient: v("dockGradient")?.map(rgba) ?? null
     readonly property color dockBorder: c("dockBorder")

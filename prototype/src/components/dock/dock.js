@@ -22,7 +22,8 @@ class Dock extends Component {
     const groups = config.dock
       .map(g => ({ ...g, widgets: g.widgets.filter(id => widgets[id] && !ui.hidden.includes(id)) }))
       .filter(g => g.widgets.length);
-    this.innerHTML = groups.map(g => {
+    // the theme's tint and particles live inside the dock, behind its content
+    this.innerHTML = '<ss-fx></ss-fx>' + groups.map(g => {
       const items = g.widgets.map(id => {
         const w = widgets[id];
         const off = available(w, caps) ? '' : ` data-unavailable="${missingText(w.requires)}"`;

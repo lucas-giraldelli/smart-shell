@@ -6,13 +6,13 @@
 const rnd = (a, b) => a + Math.random() * (b - a);
 const MELT = 1.8; // seconds a landed flake takes to disappear
 
-export function snow(canvas) {
+export function snow(canvas, count = 220) {
   const flake = top => ({
     x: rnd(0, canvas.width), y: top ? -5 : rnd(0, canvas.height * .8),
     r: rnd(1, 3.4) * devicePixelRatio, vy: rnd(.4, 1.4), ph: rnd(0, 6.28), a: rnd(.5, .95),
     life: 0, // > 0 while resting on the dock
   });
-  const flakes = Array.from({ length: 220 }, () => flake(false));
+  const flakes = Array.from({ length: count }, () => flake(false));
   const spills = []; // bits sliding off the cap's ends
   let spillIn = 1;
 
