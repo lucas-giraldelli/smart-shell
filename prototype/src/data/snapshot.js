@@ -38,7 +38,7 @@ export const apps = [
   { icon: 'youtube-music', name: 'YouTube Music', running: true },
   { icon: 'thunderbird', name: 'Thunderbird', running: true },
   { icon: 'steam', name: 'Steam', running: true },
-  { icon: 'org.xfce.thunar', name: 'Thunar', running: false },
+  { icon: 'system-file-manager', name: 'Nemo', running: false },
   { icon: 'vlc', name: 'VLC', running: false },
 ];
 

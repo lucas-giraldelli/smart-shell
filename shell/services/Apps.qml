@@ -6,8 +6,7 @@ import Quickshell.Wayland
 import ".."
 
 // The app row's apps - the prototype's `apps` slice: the pinned apps from
-// config.apps.pinned (desktop entry ids, in order), then any other app with a
-// window open. An app's windows are the toplevels whose app id matches its
+// config.apps.pinned (desktop entry ids, in order). An app's windows are the toplevels whose app id matches its
 // entry id or StartupWMClass, or - for Chromium web apps, which ignore
 // --class on Wayland - the host of its --app= URL.
 Singleton {
@@ -26,42 +25,26 @@ Singleton {
         };
     }
 
+    // only the pinned apps, like the prototype's row; one that isn't installed
+    // keeps its place (icon by its id) and launching it just tries the id
     readonly property var list: {
         if (!entryCount)
             return [];
-        const out = [];
-        const claimed = new Set();
-        for (const id of Config.apps?.pinned ?? []) {
+        return (Config.apps?.pinned ?? []).map(pin => {
+            const { id, name, icon } = typeof pin === "string" ? { id: pin } : pin;
             const entry = DesktopEntries.byId(id) ?? DesktopEntries.heuristicLookup(id);
-            if (!entry)
-                continue;
-            const match = matcher(entry);
-            const windows = toplevels.filter(match);
-            windows.forEach(t => claimed.add(t));
-            out.push({ id, entry, windows, pinned: true });
-        }
-        // unpinned apps with windows, one per app id
-        const extra = new Map();
-        for (const t of toplevels) {
-            if (claimed.has(t) || !t.appId)
-                continue;
-            if (!extra.has(t.appId)) {
-                // web apps are found by their --app= host, then by name
-                const entry = DesktopEntries.applications.values.find(e => matcher(e)(t)) ?? DesktopEntries.heuristicLookup(t.appId);
-                extra.set(t.appId, { id: t.appId, entry, windows: [], pinned: false });
-            }
-            extra.get(t.appId).windows.push(t);
-        }
-        return out.concat([...extra.values()]);
+            return { id, name, icon, entry, windows: entry ? toplevels.filter(matcher(entry)) : toplevels.filter(t => t.appId === id) };
+        });
     }
 
-    // an app's icon: Papirus by its id first (the prototype's set), then the entry's
+    // an app's icon: the configured one, then Papirus by its id (the prototype's
+    // set), then the entry's
     function iconOf(app) {
-        return Quickshell.iconPath(app.id, true) || Quickshell.iconPath(app.entry?.icon ?? "", true)
+        return (app.icon && Quickshell.iconPath(app.icon, true)) || Quickshell.iconPath(app.id, true) || Quickshell.iconPath(app.entry?.icon ?? "", true)
             || Quickshell.iconPath("application-x-executable", true);
     }
     function nameOf(app) {
-        return app.entry?.name ?? app.windows[0]?.title ?? app.id;
+        return app.name ?? app.entry?.name ?? I18n.capitalize(app.id.split(".").pop());
     }
 
     // running: focus its (most recent) window; otherwise launch it
@@ -70,7 +53,10 @@ Singleton {
             app.windows[app.windows.length - 1].activate();
             return false;
         }
-        app.entry?.execute();
+        if (app.entry)
+            app.entry.execute();
+        else
+            Quickshell.execDetached([app.id]);
         return true;
     }
     // right click: close its windows

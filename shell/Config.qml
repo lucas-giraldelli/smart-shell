@@ -39,8 +39,9 @@ Singleton {
                 }
             }
         },
-        // the app row: desktop entry ids, in order (running apps follow)
-        apps: { pinned: ["kitty", "zen", "google-chrome", "code", "io.dbeaver.DBeaver", "slack", "whatsapp", "youtube-music", "org.mozilla.Thunderbird", "steam", "thunar", "vlc"] },
+        // the app row, in order: desktop entry ids, or { id, name?, icon? } to
+        // override what the entry says
+        apps: { pinned: ["kitty", "zen", "google-chrome", "code", "io.dbeaver.DBeaver", "slack", "whatsapp", "youtube-music", "org.mozilla.Thunderbird", "steam", { id: "nemo", name: "Nemo", icon: "system-file-manager" }, "vlc"] },
         // MPRIS players the music tile never shows (substrings of identity,
         // desktop entry, title, url or command line)
         music: { ignore: ["whatsapp"] },
