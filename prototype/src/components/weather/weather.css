@@ -1,8 +1,7 @@
-/* a fixed width, so a longer condition never shifts the dock; the summary
-   fits "Trovoada com granizo" and ellipsizes anything longer (full text in
-   the tooltip) */
-.weather { width: 177px; cursor: pointer; }
-.weather .wx-text { flex: 1; min-width: 0; }
+/* as wide as its content, with the tile's padding; a long condition stops at
+   the width of "Trovoada com granizo" and ellipsizes (full text in the tooltip) */
+.weather { cursor: pointer; }
+.weather .wx-text { min-width: 0; max-width: 118px; }
 .weather [data-summary] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .weather .wx-ic { width: 26px; height: 26px; color: var(--wx); }
 .weather .wx-ic.spin { animation: spin 22s linear infinite; }
