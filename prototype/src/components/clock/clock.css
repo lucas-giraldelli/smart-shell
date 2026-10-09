@@ -1,4 +1,9 @@
-.clock { width: 168px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; cursor: pointer; }
+.clock {
+  /* compact: as wide as its widest time and date (fixed per format and
+     language, see clock.js); a reminder widens it to 168px with a spring */
+  width: var(--clock-w, 168px);
+  transition: width .45s cubic-bezier(.3, 1.15, .5, 1), background .5s, border-color .5s, transform .2s;
+  flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; cursor: pointer; }
 .clock .t-big { font-size: 20px; }
 
 /* reminder: orange before an event (warn), green during one (ok) */
@@ -9,6 +14,7 @@
 }
 
 /* the date joins the time on the first line while the event name takes the second */
+.clock.reminding { width: 168px; }
 .clock .clock-top { display: flex; align-items: baseline; gap: 7px; }
 .clock .mini-date { opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
 .clock.reminding .mini-date { opacity: 1; transform: none; }

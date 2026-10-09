@@ -20,7 +20,35 @@ Tile {
     readonly property color tint: Theme.status(status)
     readonly property string eventTitle: event ? Cal.titleOf(I18n, event) : ""
 
-    implicitWidth: 168
+    // compact: as wide as its widest time and date (fixed per format and
+    // language); a reminder widens it to 168px with the Bluetooth tile's spring
+    implicitWidth: reminding ? 168 : compactWidth
+    Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
+
+    // padding (14px a side + border) around the widest time in the current
+    // format ("00:00" / "12:00 PM", tabular digits) and the widest date line
+    // of the language (every weekday x month), so it never changes from one
+    // minute or day to the next
+    FontMetrics {
+        id: timeFont
+        font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold; features: Theme.tnum }
+    }
+    FontMetrics {
+        id: dateFont
+        font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
+    }
+    readonly property real compactWidth: {
+        const times = Config.clockFormat === "12h" ? ["12:00 AM", "12:00 PM"] : ["00:00"];
+        const time = Math.max(...times.map(s => timeFont.advanceWidth(s) - 0.4 * s.length));
+        let date = 0;
+        for (let d = 0; d < 7; d++)
+            for (let m = 0; m < 12; m++) {
+                const first = new Date(2026, m, 1);
+                const day = new Date(2026, m, 1 + ((d - first.getDay() + 7) % 7) + 21);   // a 2-digit day
+                date = Math.max(date, dateFont.advanceWidth(I18n.capitalize(I18n.formatDate(day, "date"))));
+            }
+        return Math.ceil(Math.max(time, date)) + 14 * 2 + 2;
+    }
     open: calendar.open
     color: reminding ? Theme.blend(tint, Theme.tileBg, 0.2) : Theme.tileBg
     border.color: reminding ? Theme.mix(tint, 0.6) : Theme.tileBorder
@@ -58,7 +86,7 @@ Tile {
     Item {
         x: 15
         y: (root.height - 41) / 2
-        width: 138
+        width: root.width - 30
         height: 41
 
         Label {
