@@ -34,7 +34,9 @@ uses a static wallpaper; a local video can be linked into the untracked
 - `~/.config/smart-shell/config.json` - your settings; any top-level key replaces
   the default in `prototype/src/data/config.js`. Start from
   [`config/config.example.json`](config/config.example.json):
-  - `dock` / `quick` - which widgets show, their order and grouping
+  - `dock` / `quick` - which widgets show, their order and grouping: `dock` is a
+    list of groups (a separator goes between them), each listing widget ids from
+    `prototype/src/components/registry.js`; `quick` orders the quick-tile items
   - `holidays` - holiday regions on the calendar (`br`, `cba`, `us`)
   - `events.calendars` - Thunderbird calendars to read (by name, usually the
     account's e-mail); `daysBack` / `daysAhead` - the window exported

@@ -1,6 +1,11 @@
 {
   "locale": "pt-BR",
-  "quick": ["volume", "network", "brightness", "docker"],
+  "dock": [
+    {"id": "workspaces", "widgets": ["workspaces", "capslock"]},
+    {"id": "apps", "widgets": ["apps"]},
+    {"id": "status", "tiles": true, "widgets": ["music", "system", "tray", "bluetooth", "quick", "weather", "clock"]}
+  ],
+  "quick": ["volume", "brightness", "docker", "network"],
   "holidays": ["br", "cba", "us"],
   "events": {
     "calendars": ["you@example.com", "Family"],
