@@ -2,6 +2,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.SystemTray
 import ".."
+import "../services"
 
 // System tray (prototype: components/tray): StatusNotifierItem icons in a
 // two-column grid inside a tile. Click activates an item, middle click runs its
@@ -51,13 +52,14 @@ Tile {
                 required property var modelData
                 readonly property string keys: [modelData.id, modelData.title, modelData.icon].join(" ").toLowerCase()
                 readonly property bool watchBadge: Config.trayRedBadge.some(w => keys.includes(w.toLowerCase()))
-                property bool redBadge: false
+                readonly property bool redBadge: watchBadge && TrayBadges.red[modelData.id] === true
                 // Slack also says it in its tooltip: "You have 1 notification" (mentions,
                 // DMs) as opposed to "You have unread messages" (the blue dot)
                 readonly property bool notified: watchBadge && /\b[1-9]\d* notifications?\b/i.test(modelData.tooltipTitle ?? "")
                 readonly property bool attention: modelData.status === Status.NeedsAttention || redBadge || notified
 
                 onAttentionChanged: if (attention) hop.restart()
+                transform: Translate { id: lift }
 
                 width: 18
                 height: root.rowHeight
@@ -72,34 +74,6 @@ Tile {
                     smooth: true
                     visible: false
                 }
-                // the badge check: draw the pixmap and count vivid red pixels
-                Canvas {
-                    width: 22
-                    height: 22
-                    opacity: 0
-                    enabled: false
-                    property string src: cell.watchBadge ? cell.modelData.icon : ""
-                    onSrcChanged: if (src) loadImage(src)
-                    onImageLoaded: requestPaint()
-                    onPaint: {
-                        const ctx = getContext("2d");
-                        ctx.clearRect(0, 0, width, height);
-                        if (!src || !isImageLoaded(src))
-                            return;
-                        ctx.drawImage(src, 0, 0, width, height);
-                        const d = ctx.getImageData(0, 0, width, height).data;
-                        let red = 0;
-                        for (let i = 0; i < d.length; i += 4) {
-                            const r = d[i], g = d[i + 1], b = d[i + 2];
-                            const hi = Math.max(r, g, b), lo = Math.min(r, g, b);
-                            if (d[i + 3] >= 128 && hi >= 110 && (hi - lo) / hi >= 0.5 && r === hi && g < r * 0.6 && b < r * 0.6)
-                                red++;
-                        }
-                        cell.redBadge = red >= 4;
-                        unloadImage(src);
-                    }
-                }
-
                 // the hop: -2.5px, +0.5px, rest (the caps lock arrow's)
                 SequentialAnimation {
                     id: hop
@@ -116,7 +90,6 @@ Tile {
 
                 // greyed and dimmed, badges kept in colour; full colour on hover
                 ShaderEffect {
-                    transform: Translate { id: lift }
                     anchors.fill: icon
                     property var source: icon
                     property real dim: area.containsMouse ? 1 : Theme.sub.a
