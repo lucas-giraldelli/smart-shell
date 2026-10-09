@@ -7,6 +7,7 @@ import { startNetwork } from './services/network.js';
 import { startMedia } from './services/media.js';
 import { startKeyboard } from './services/keyboard.js';
 import { startWeather } from './services/weather.js';
+import { startEvents } from './services/events.js';
 
 // Icons are inlined synchronously by components, so load them before any
 // element is defined.
@@ -20,5 +21,6 @@ startNetwork();
 startMedia();
 startKeyboard();
 startWeather();
+startEvents();
 
 await import('./components/index.js');

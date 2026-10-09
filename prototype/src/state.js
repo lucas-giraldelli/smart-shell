@@ -38,6 +38,7 @@ export const store = createStore({
   network: { ...snap.network, vpnOn: false, down: Array(40).fill(0), up: Array(40).fill(0) },
   docker: snap.docker,
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
+  events: { list: [], calendars: {}, generatedAt: null },
   media: { ...snap.media, playing: true, progress: 0.32 },
 });
 

@@ -13,6 +13,8 @@ LOCAL=assets/local
 mkdir -p "$LOCAL"
 
 [ -f "$WALLPAPER" ] && ln -sf "$WALLPAPER" "$LOCAL/wallpaper.mp4"
+# calendar events exported by tools/thunderbird-events.py (systemd timer)
+ln -sf "${XDG_CACHE_HOME:-$HOME/.cache}/smart-shell/events.json" "$LOCAL/events.json"
 
 echo "smart-shell prototype: http://localhost:$PORT"
 # no-store: browsers otherwise cache the ES modules and keep running old code

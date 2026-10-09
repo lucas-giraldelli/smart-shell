@@ -4,8 +4,9 @@ import { store, update } from '../../state.js';
 import { regions, holidaysOf, upcoming, dateKey } from '../../data/holidays.js';
 
 // Month calendar inside the clock tile: navigate months, weekends tinted,
-// holidays dotted per region (toggle regions with the chips). Selecting a
-// holiday shows its details in place of the "upcoming" list.
+// holidays dotted per region (toggle regions with the chips) and Thunderbird
+// events marked with a dash in their calendar's colour. Selecting a day with
+// something on it shows the details in place of the "upcoming" list.
 const MONTH = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
 const LONG = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 const MON = new Intl.DateTimeFormat('pt-BR', { month: 'short' });
@@ -13,6 +14,21 @@ const short = d => `${d.getDate()} ${MON.format(d).replace('.', '')}`; // "12 ou
 const cap = s => s[0].toUpperCase() + s.slice(1);
 const WEEK = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 const sameDay = (a, b) => dateKey(a) === dateKey(b);
+const TIME = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+// events touching a day (all-day ends are exclusive dates)
+function eventsOn(list, d) {
+  const from = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const to = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+  return list.filter(e => e.start < to && e.end > from);
+}
+
+const eventRow = (e, colors) => `
+  <div class="evt" style="--rc:${colors[e.calendars[0]] ?? 'var(--accent)'}">
+    <span class="bar"></span>
+    <span class="when">${e.allDay ? 'Dia todo' : `${TIME.format(e.start)}`}</span>
+    <span class="grow">${e.title}</span>
+  </div>`;
 
 const holidayRow = h => `
   <div class="hol${h.kind === 'optional' ? ' optional' : ''}" style="--rc:${regions[h.region].color}">
@@ -20,7 +36,7 @@ const holidayRow = h => `
   </div>`;
 
 class Calendar extends Component {
-  static slices = ['ui'];
+  static slices = ['ui', 'events'];
 
   setup() {
     this.classList.add('menu', 'cal');
@@ -72,12 +88,15 @@ class Calendar extends Component {
 
   draw() {
     const enabled = store.get().ui.holidayRegions;
+    const { list: events, calendars: colors } = store.get().events;
     const today = new Date();
     const y = this.view.getFullYear(), m = this.view.getMonth();
     const start = new Date(y, m, 1 - new Date(y, m, 1).getDay()); // the Sunday on/before the 1st
     const days = Array.from({ length: 42 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
     const holidays = new Map([...holidaysOf(y - 1, enabled), ...holidaysOf(y, enabled), ...holidaysOf(y + 1, enabled)]);
     const selectedList = holidays.get(dateKey(this.selected)) ?? [];
+    const selectedEvents = eventsOn(events, this.selected);
+    const hasDetails = selectedList.length + selectedEvents.length > 0;
 
     this.innerHTML = `
       <div class="cal-head">
@@ -97,16 +116,20 @@ class Calendar extends Component {
           sameDay(d, today) && 'today', sameDay(d, this.selected) && 'selected',
           list.some(h => h.kind === 'holiday') && 'holiday',
         ].filter(Boolean).join(' ');
-        const dots = list.map(h => `<i class="${h.kind}" style="--rc:${regions[h.region].color}"></i>`).join('');
-        return `<button data-day="${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}" class="${cls}" title="${list.map(h => h.name).join(' · ')}">
+        const dayEvents = eventsOn(events, d);
+        const dots = list.map(h => `<i class="${h.kind}" style="--rc:${regions[h.region].color}"></i>`).join('')
+          + (dayEvents.length ? `<b class="ev" style="--rc:${colors[dayEvents[0].calendars[0]] ?? 'var(--accent)'}"></b>` : '');
+        const tip = [...list.map(h => h.name), ...dayEvents.map(e => e.title)].join(' · ');
+        return `<button data-day="${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}" class="${cls}" title="${tip}">
           ${d.getDate()}${dots ? `<span class="dots">${dots}</span>` : ''}</button>`;
       }).join('')}
       </div>
-      <div class="cal-day">
+      ${hasDetails ? `<div class="cal-day">
         <div class="sec">${LONG.format(this.selected)}</div>
-        ${selectedList.length ? selectedList.map(holidayRow).join('') : '<div class="meta none">Nenhum feriado neste dia</div>'}
-      </div>
-      ${selectedList.length ? '' : `<div class="sec">Próximos feriados</div>
+        ${selectedList.map(holidayRow).join('')}
+        ${selectedEvents.map(e => eventRow(e, colors)).join('')}
+      </div>` : ''}
+      ${hasDetails ? '' : `<div class="sec">Próximos feriados</div>
       ${upcoming(today, enabled, 3).map(h => holidayRow(h).replace('<span class="grow">', `<span class="when">${short(h.date)}</span><span class="grow">`)).join('')
         || '<div class="meta none">Nenhuma região selecionada</div>'}`}`;
   }
