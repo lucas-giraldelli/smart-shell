@@ -1,9 +1,10 @@
 // Snowflakes falling over the wallpaper. Above the dock they land on the same
-// line the pets walk on (the top of the dock), rest there a moment and melt;
+// line the pets walk on (the snow cap on the dock), rest there a moment and melt;
 // beside the dock they keep falling to the bottom of the screen. No flake is
 // ever drawn behind the dock's glass.
 const rnd = (a, b) => a + Math.random() * (b - a);
 const MELT = 1.8; // seconds a landed flake takes to disappear
+const CAP = 7;    // the theme's snow cap rises this far above the dock: land on top of it
 
 export function snow(canvas) {
   const flake = top => ({
@@ -15,7 +16,7 @@ export function snow(canvas) {
 
   return function draw(ctx, dt, t, dock) {
     const dpr = devicePixelRatio;
-    const left = dock.left * dpr, right = dock.right * dpr, floor = dock.top * dpr;
+    const left = dock.left * dpr, right = dock.right * dpr, floor = (dock.top - CAP) * dpr;
     ctx.fillStyle = '#fff';
     for (const p of flakes) {
       if (p.life > 0) {
