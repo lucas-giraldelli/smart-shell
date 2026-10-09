@@ -16,7 +16,8 @@ import "../services"
 // brings the whole icon back in colour. An item needing attention - SNI
 // NeedsAttention, or for one listed in config.tray.redBadge a red badge in its
 // pixmap or "N notifications" in its tooltip (Slack never sets the status) - hops like the caps lock arrow, right
-// away and then every 8 s until it's dealt with.
+// away and then every 8 s until it's dealt with - every 2 s while Slack's
+// badge is red.
 Tile {
     id: root
 
@@ -84,7 +85,7 @@ Tile {
                 Timer {
                     running: cell.attention
                     repeat: true
-                    interval: 8000
+                    interval: cell.redBadge || cell.notified ? 2000 : 8000
                     onTriggered: hop.restart()
                 }
 

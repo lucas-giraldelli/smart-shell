@@ -4,7 +4,8 @@ import { tray } from '../../data/snapshot.js';
 
 // System tray (StatusNotifierItem in the real shell). An item that needs
 // attention (SNI NeedsAttention, or Slack's red mention badge) bounces once
-// right away, then again every 8 s until it's dealt with.
+// right away, then again every 8 s until it's dealt with (every 2 s for
+// Slack's red badge).
 class Tray extends Component {
   static slices = ['tray'];
 
@@ -17,7 +18,10 @@ class Tray extends Component {
   }
 
   update({ tray: t }) {
-    this.querySelectorAll('[data-item]').forEach(img => img.classList.toggle('attention', t.attention.includes(img.dataset.item)));
+    this.querySelectorAll('[data-item]').forEach(img => {
+      img.classList.toggle('attention', t.attention.includes(img.dataset.item));
+      img.classList.toggle('mention', img.dataset.item === 'slack' && t.attention.includes('slack'));
+    });
   }
 }
 
