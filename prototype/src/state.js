@@ -24,6 +24,7 @@ export const store = createStore({
     load: 20, auto: true,   // `auto` = simulated CPU; off = driven by the dev panel
     temp: 50,
     memTotal: snap.memory.totalGiB, memFree: snap.memory.freeGiB, memHeavy: false,
+    history: Array(40).fill(0),  // recent CPU load, oldest first
   },
   keyboard: { capsLock: false },
   bluetooth: { on: snap.bluetooth.on, busy: null, devices: snap.bluetooth.devices },

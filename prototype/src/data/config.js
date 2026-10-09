@@ -10,11 +10,17 @@ export const config = {
   dock: [
     { id: 'workspaces', widgets: ['workspaces', 'capslock'] },
     { id: 'apps', widgets: ['apps'] },
-    { id: 'status', tiles: true, widgets: ['music', 'weather', 'system', 'bluetooth', 'quick', 'tray', 'clock'] },
+    { id: 'status', tiles: true, widgets: ['music', 'tray', 'bluetooth', 'quick', 'weather', 'clock'] },
   ],
 
   // items in the quick tile; each one also gets a tab in the control center
-  quick: ['volume', 'network', 'brightness', 'docker'],
+  quick: ['volume', 'brightness', 'docker', 'network', 'system'],
+
+  // programs the shell opens from its buttons (run through the shell)
+  commands: {
+    monitor: 'kitty --class=btop-float -e btop',
+    docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'",
+  },
 
   pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'] },
 

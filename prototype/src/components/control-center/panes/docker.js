@@ -1,6 +1,7 @@
 import { icon } from '../../../core/icons.js';
 import { closePopover } from '../../../core/popover.js';
 import { update } from '../../../state.js';
+import { config } from '../../../data/config.js';
 import { t, formatNumber } from '../../../i18n/index.js';
 
 // Containers with start/stop. Real shell: `docker ps -a` / the Docker socket.
@@ -42,7 +43,7 @@ export default {
   }),
 
   render: () => `
-    <div class="dk-head"><span data-summary></span><button class="btn-s" data-lazy>${icon('external-link')}lazydocker</button></div>
+    <div class="dk-head"><span data-summary></span><button class="btn-s" data-lazy title="${config.commands.docker}">${icon('external-link')}lazydocker</button></div>
     <div class="dk-list"></div>`,
 
   update(root, { docker }) {
@@ -75,6 +76,6 @@ export default {
         containers: d.containers.map((c, j) => (j === i ? { ...c, state: c.state === 'running' ? 'exited' : 'running', exitCode: 0 } : c)),
       }));
     }
-    if (target.closest('[data-lazy]')) closePopover(); // launches lazydocker in the real shell
+    if (target.closest('[data-lazy]')) closePopover(); // runs config.commands.docker in the real shell
   },
 };

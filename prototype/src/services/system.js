@@ -18,7 +18,7 @@ function tick() {
   // free memory drifts slowly; `memHeavy` simulates a hungry workload
   const memTarget = s.memHeavy ? 5.2 : 26.4 - load * 0.03;
   const memFree = s.memFree + (memTarget - s.memFree) * 0.18 + (Math.random() - 0.5) * 0.15;
-  update('system', { load, memFree, temp: Math.round(46 + load * 0.36) });
+  update('system', { load, memFree, temp: Math.round(46 + load * 0.36), history: [...s.history.slice(1), load] });
 }
 
 export function startSystem() {

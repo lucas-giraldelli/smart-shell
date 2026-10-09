@@ -16,7 +16,11 @@ export default {
 
   music: { hint: 'Clique: play/pause' },
 
-  system: { detail: 'CPU {load}% · die (Tccd1) {temp}°C · {free} GiB livres de {total}' },
+  system: {
+    detail: 'CPU {load}% · die (Tccd1) {temp}°C · {free} GiB livres de {total}',
+    label: 'Sistema', cpu: 'CPU', memory: 'Memória', temp: 'Die (Tccd1) a {temp}°C',
+    free: '{free} GiB', used: '{used} de {total} GiB em uso',
+  },
 
   bluetooth: {
     hint: '{state} · clique liga/desliga · botão direito: dispositivos',
@@ -123,7 +127,7 @@ export default {
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
     theme: 'Tema', pets: 'Pets', widgets: 'Widgets', wsIcons: 'Ícone nos workspaces não selecionados',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
-    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro',
+    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia',
     tuning: 'Ajustes', cpuLoad: 'Carga da CPU', cpuAuto: 'CPU simulada (picos estilo X3D)',
     size: 'Tamanho', magnify: 'Ampliação', liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     language: 'Idioma',

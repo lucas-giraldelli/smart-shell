@@ -38,6 +38,7 @@ class DevPanel extends Component {
           ${check('data-fail', 'offline', t('dev.offline'))}
           ${check('data-fail', 'dockerDown', t('dev.dockerDown'))}
           ${check('data-fail', 'containerError', t('dev.containerError'))}
+          ${check('data-fail', 'memHeavy', t('dev.memHeavy'))}
         </div>
         <h2>${t('dev.tuning')}</h2>
         <div class="dp-row"><label>${t('dev.cpuLoad')}</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
@@ -72,6 +73,7 @@ class DevPanel extends Component {
       }
       if (cap) update('caps', { [cap]: on });
       if (fail === 'offline') update('network', { online: !on });
+      if (fail === 'memHeavy') update('system', { memHeavy: on });
       if (fail === 'dockerDown') update('docker', { running: !on });
       if (fail === 'containerError') {
         // qbittorrent stuck restarting, like a broken VPN dependency would leave it
@@ -101,6 +103,7 @@ class DevPanel extends Component {
 
   update({ ui, system, caps, network, docker }) {
     this.$('[data-fail="offline"]').checked = !network.online;
+    this.$('[data-fail="memHeavy"]').checked = system.memHeavy;
     this.$('[data-fail="dockerDown"]').checked = !docker.running;
     this.$('[data-fail="containerError"]').checked = docker.containers.some(c => c.state === 'restarting');
     this.querySelectorAll('[data-theme-id]').forEach(b => b.classList.toggle('on', b.dataset.themeId === ui.theme));

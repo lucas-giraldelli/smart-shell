@@ -1,4 +1,4 @@
-.cc { width: 384px; padding: 10px; }
+.cc { width: 430px; padding: 10px; }
 
 .cc .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 11px; background: rgba(255, 255, 255, .06); }
 .cc .tabs button {
@@ -56,6 +56,19 @@
 .cc .tl-line polyline { fill: none; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
 .cc [data-line="down"] { stroke: #38bdf8; }
 .cc [data-line="up"] { stroke: #c084fc; }
+
+/* system */
+.cc .sys-pane { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 4px 8px 8px; }
+.cc .sys-card { padding: 10px 12px; border-radius: 11px; background: rgba(255, 255, 255, .05); display: flex; flex-direction: column; gap: 7px; }
+.cc .sys-head { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #d4d4d8; }
+.cc .sys-head svg.i { width: 14px; height: 14px; color: #a1a1aa; }
+.cc .sys-head b { font-size: 16px; color: #fff; font-variant-numeric: tabular-nums; }
+.cc .sys-card[data-status="warn"] .sys-head b, .cc .sys-card[data-status="crit"] .sys-head b { color: var(--status); }
+.cc .sys-card .meta { font-variant-numeric: tabular-nums; }
+.cc .sys-card[data-status="warn"] .meta, .cc .sys-card[data-status="crit"] .meta { color: var(--status); }
+.cc [data-line="cpu"] { stroke: var(--status); }
+.cc .mem-bar { height: 6px; border-radius: 9px; background: rgba(255, 255, 255, .1); overflow: hidden; margin: 7px 0 7px; }
+.cc .mem-bar i { display: block; height: 100%; border-radius: 9px; background: var(--status); transition: width .8s; }
 
 /* docker */
 .cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: #a1a1aa; }

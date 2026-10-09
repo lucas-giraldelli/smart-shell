@@ -3,9 +3,13 @@
   "dock": [
     {"id": "workspaces", "widgets": ["workspaces", "capslock"]},
     {"id": "apps", "widgets": ["apps"]},
-    {"id": "status", "tiles": true, "widgets": ["music", "system", "tray", "bluetooth", "quick", "weather", "clock"]}
+    {"id": "status", "tiles": true, "widgets": ["music", "tray", "bluetooth", "quick", "weather", "clock"]}
   ],
-  "quick": ["volume", "brightness", "docker", "network"],
+  "quick": ["volume", "brightness", "docker", "network", "system"],
+  "commands": {
+    "monitor": "kitty -e btop",
+    "docker": "kitty -e lazydocker"
+  },
   "holidays": ["br", "cba", "us"],
   "events": {
     "calendars": ["you@example.com", "Family"],
