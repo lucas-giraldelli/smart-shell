@@ -24,7 +24,12 @@
 .cc .disabled-block { opacity: .45; pointer-events: none; }
 .cc .disabled-block .meta { color: var(--warn); }
 
-.cc .pane { display: none; padding: 8px 2px 2px; }
+/* every tab has the same height (the Docker tab's), so switching tabs never
+   resizes the popover; longer tabs scroll inside */
+.cc .pane {
+  display: none; height: 306px; padding: 8px 2px 2px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent;
+}
 .cc .pane.on { display: block; animation: paneIn .18s ease-out; }
 @keyframes paneIn { from { opacity: 0; transform: translateY(4px); } }
 .cc .pane > .sec:first-child { margin-top: 4px; }
@@ -101,7 +106,6 @@
   color: var(--menu-text); background: var(--menu-surface); border: 1px solid transparent;
 }
 .cc .set .langs button.on { border-color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
-.cc .pane[data-pane="settings"] { max-height: 460px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
 
 /* docker */
 .cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: var(--menu-sub); }
@@ -109,7 +113,9 @@
 .cc .uptime { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
 .cc .uptime svg.i { width: 13px; height: 13px; }
 .cc .dk-head [data-status="crit"] { color: var(--crit); }
-.cc .dk-list { max-height: 262px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
+/* docker: the header stays put and only the container list scrolls */
+.cc .pane[data-pane="docker"].on { display: flex; flex-direction: column; overflow: hidden; }
+.cc .dk-list { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
 .cc .ct { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 9px; font-size: 12.5px; }
 .cc .ct:hover { background: var(--menu-surface); }
 /* status led: colour comes from the nearest data-status */
