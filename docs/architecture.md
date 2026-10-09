@@ -20,6 +20,7 @@ config  ──►  dock (layout)  ──►  widgets  ◄──  store (state sl
 | **Widgets** - one folder each | `src/components/<name>/` (Web Component + CSS) | `shell/components/<Name>.qml` |
 | **Panes** - quick item + control-center tab | `src/components/control-center/panes/*` | `shell/components/panes/*.qml` |
 | **Themes** - design tokens | `src/styles/themes/<id>.css` | `shell/themes/<Id>.qml` |
+| **Translations** - every UI string | `src/i18n/locales/<tag>.js` via `t('area.key')` | Qt `qsTr` / the same keys |
 
 ## Rules of thumb
 
@@ -30,6 +31,8 @@ config  ──►  dock (layout)  ──►  widgets  ◄──  store (state sl
 - **Missing backend = disabled, not hidden.** Users see the feature exists and
   what to install.
 - **Machine data stays in `snapshot.js`.** Everything else is generic.
+- **No UI text in components.** Strings live in `src/i18n/locales`; data
+  (holidays, weather codes, reasons from tools) carries keys or codes, never prose.
 - **Themes only touch tokens** (plus decorative pseudo-elements). Components
   read `var(--…)` and never branch on the theme name.
 
