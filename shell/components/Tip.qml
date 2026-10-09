@@ -1,51 +1,75 @@
 import QtQuick
 import QtQuick.Shapes
+import Quickshell
 import ".."
 
 // Hover tooltip above a dock widget (prototype: .label in styles/base.css):
-// centred 14px above its parent, fades and rises 4px in, hidden while the
-// parent's popover is open. Put it inside the widget and bind `shown`.
-Item {
+// the popovers' glass, centred 14px above `target`, fading and rising 4px in.
+// It is its own popup surface (blurred by Hyprland's blur_popups), so nothing
+// on the dock - its bounds, a magnified icon - can clip it. Sized to the text
+// up to 360px, then elided.
+PopupWindow {
     id: root
 
+    required property Item target
     property alias text: label.text
     property bool shown: false
 
-    readonly property bool on: shown && text !== ""
+    readonly property bool on: shown && text !== "" && target.visible
+    readonly property int maxWidth: 360
 
-    anchors.horizontalCenter: parent.horizontalCenter
-    y: 1 - 14 - height + (on ? 0 : 4)
-    width: label.implicitWidth + 20 + 2     // padding 5px 10px + 1px border
-    height: label.implicitHeight + 10 + 2
-    z: 30
-    opacity: on ? 1 : 0
-    visible: opacity > 0
-    Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
-    Behavior on y { NumberAnimation { duration: 150; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+    // the box, plus the 5px arrow and 4px for the rise
+    implicitWidth: Math.ceil(Math.min(label.implicitWidth, maxWidth - 22) + 20 + 2)
+    implicitHeight: Math.ceil(label.implicitHeight + 10 + 2 + 5 + 4)
+    color: "transparent"
+    visible: on || content.opacity > 0
+    mask: Region {}
 
-    Rectangle {
-        anchors.fill: parent
-        radius: 8
-        color: Theme.labelBg
-        border.color: Theme.menuLine
-    }
-    Label {
-        id: label
-        anchors.centerIn: parent
-        size: 12
-        color: Theme.labelText
-    }
-    // the arrow: a 5px triangle under the centre
-    Shape {
-        x: root.width / 2
-        y: root.height - 1
-        preferredRendererType: Shape.CurveRenderer
-        ShapePath {
-            strokeWidth: -1
-            fillColor: Theme.labelBg
-            startX: -5; startY: 0
-            PathLine { x: 5; y: 0 }
-            PathLine { x: 0; y: 5 }
+    anchor.item: target
+    anchor.rect.x: target.width / 2
+    anchor.rect.y: 1 - 14 + 5 + 4
+    anchor.edges: Edges.Top
+    anchor.gravity: Edges.Top
+    anchor.adjustment: PopupAdjustment.Slide
+
+    Item {
+        id: content
+        width: parent.width
+        height: parent.height - 4
+        y: root.on ? 0 : 4
+        opacity: root.on ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 150; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+        Behavior on y { NumberAnimation { duration: 150; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+
+        Rectangle {
+            id: box
+            width: parent.width
+            height: parent.height - 5
+            radius: 8
+            color: Theme.labelBg
+            border.color: Theme.menuLine
+        }
+        Label {
+            id: label
+            x: 11
+            width: Math.min(implicitWidth, root.maxWidth - 22)
+            anchors.verticalCenter: box.verticalCenter
+            elide: Text.ElideRight
+            size: 12
+            color: Theme.labelText
+        }
+        // the arrow: a 5px triangle under the centre
+        Shape {
+            x: box.width / 2
+            y: box.height - 1
+            preferredRendererType: Shape.CurveRenderer
+            ShapePath {
+                strokeWidth: -1
+                fillColor: Theme.labelBg
+                startX: -5; startY: 0
+                PathLine { x: 5; y: 0 }
+                PathLine { x: 0; y: 5 }
+            }
         }
     }
 }

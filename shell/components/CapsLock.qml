@@ -19,9 +19,9 @@ Item {
     HoverHandler { id: hover }
 
     Tip {
+        target: dot
         text: I18n.t(root.on ? "capslock.on" : "capslock.off")
         shown: root.hovered
-        y: (root.height - 24) / 2 + 1 - 14 - height + (shown ? 0 : 4)
     }
 
     Item {

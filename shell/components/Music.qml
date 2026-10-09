@@ -17,6 +17,7 @@ Tile {
 
     // title and artist are cut short in the tile: the tooltip has them in full
     Tip {
+        target: root
         text: [Media.title, Media.artist, Media.source].filter(Boolean).join(" · ")
         shown: root.hovered
     }

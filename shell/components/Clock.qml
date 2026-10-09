@@ -37,6 +37,7 @@ Tile {
     }
 
     Tip {
+        target: root
         shown: root.hovered && root.reminding
         text: root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
             Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}` : ""

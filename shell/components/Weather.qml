@@ -18,6 +18,7 @@ Tile {
     open: forecast.open
 
     Tip {
+        target: root
         text: root.look.label
         shown: root.hovered && summary.implicitWidth > summary.width
     }

@@ -47,6 +47,7 @@ Tile {
     open: menu.open
 
     Tip {
+        target: root
         text: root.available ? I18n.t(root.on ? "bluetooth.turnOff" : "bluetooth.turnOn")
             : Rules.missingText(Panes.i18n, "bluetooth")
         shown: root.hovered

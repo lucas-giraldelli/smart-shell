@@ -73,6 +73,13 @@ Tile {
                     Behavior on dim { NumberAnimation { duration: 200 } }
                 }
 
+                // the app's own tooltip, or its title
+                Tip {
+                    target: cell
+                    text: cell.modelData.tooltipTitle || cell.modelData.title || cell.modelData.id
+                    shown: area.containsMouse && !menu.open
+                }
+
                 MouseArea {
                     id: area
                     anchors.centerIn: parent
