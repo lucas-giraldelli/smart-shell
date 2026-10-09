@@ -4,19 +4,121 @@ A dock for Wayland desktops: workspaces, apps
 and live status widgets in one glass bar, with themes, particle effects and
 little pets that react to CPU load.
 
-The goal is a [Quickshell](https://quickshell.outfoxxed.me/) (QML) shell that
-runs as a layer-shell surface on Hyprland. While the design settles, it lives
-as an HTML prototype that mirrors the same component structure.
+The shell is a [Quickshell](https://quickshell.outfoxxed.me/) (QML) config that
+runs as a layer-shell surface on Hyprland (`shell/`). Its approved visual spec
+is an HTML prototype with the same component structure (`prototype/`); the
+shell ports it piece by piece.
 
 ## Repository layout
 
 ```
 prototype/   HTML/JS design lab (vanilla Web Components, no build step)
-shell/       the real Quickshell config (QML) - not started yet
+shell/       the real Quickshell config (QML)
 docs/        architecture and design notes
 systemd/     user units for background jobs (installed by tools/install-services.sh)
 tools/       helper scripts (icons, calendar export, service install)
 ```
+
+## Install
+
+Dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
+
+| Package | For |
+|---|---|
+| `quickshell` (0.3.x) | the shell itself |
+| `inter-font` | the UI font |
+| `papirus-icon-theme` | app and tray icons (the shell asks for Papirus-Dark) |
+| `qt6-5compat` | app icon reflections |
+| `qt6-shadertools` | only to rebuild `shell/shaders/*.qsb` after editing a shader |
+| `networkmanager`, `iputils`, `curl` | network status, weather |
+| `ddcutil` | monitor brightness (optional) |
+| `hyprsunset` | night light (optional) |
+| `docker` | Docker tab (optional) |
+| `bluez`, `bluez-utils`, `blueman` | Bluetooth tile and its "open manager" row (optional) |
+| `btop`, `lazydocker`, `kitty` | the default commands behind the btop / lazydocker buttons |
+
+Run it:
+
+```sh
+qs -p ~/projects/smart-shell/shell          # hot-reloads on save
+qs log -p ~/projects/smart-shell/shell      # its log
+qs ipc -p ~/projects/smart-shell/shell call popover open control-center docker
+```
+
+Hyprland (`hyprland.conf`):
+
+```ini
+exec-once = qs -p ~/projects/smart-shell/shell
+
+# blur behind the dock's glass and its popovers; ignore_alpha keeps the
+# transparent parts of the surface sharp
+layerrule {
+    name = smart-shell-blur
+    match:namespace = smart-shell
+    blur = yes
+    blur_popups = yes
+    ignore_alpha = 0.2
+}
+
+general {
+    # the dock reserves its own space (exclusive zone); keep the bottom gap
+    # small so windows sit evenly between the dock and the screen edge
+    gaps_out = 20, 20, 10, 20
+}
+```
+
+Configuration lives in `~/.config/smart-shell/config.json` (start from
+[`config/config.example.json`](config/config.example.json); it reloads live).
+The dock settings tab (size, magnification, workspace icons, which widgets
+show, pet, language) is saved in Quickshell's state file instead.
+
+Calendar events need the export timer: `tools/install-services.sh` (see
+[Calendar events](#calendar-events)).
+
+## Widgets and what they need
+
+- **Workspaces** - Hyprland. Icons per workspace id in `workspaces.icons`
+  (Lucide names).
+- **Caps Lock** - reads `/sys/class/leds/*::capslock` (no setup).
+- **Apps** - the pinned apps in `apps.pinned`: desktop entry ids, or
+  `{ "id", "name", "icon" }` to override the entry. Running apps get a dot;
+  click focuses or launches, right click closes the app's windows. Web apps
+  run by Chromium are matched by their `--app=` host.
+- **Music** - any MPRIS player. The playing one wins, then the one that
+  played last; `music.ignore` (default `["whatsapp"]`) lists substrings of a
+  player's identity, desktop entry, title, url or command line to never show.
+- **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
+  has its own tile; fcitx5's menu can quit the input method). Icons are greyed
+  except vivid badge pixels; items in `tray.redBadge` (Slack) bounce while their
+  badge is red or their tooltip says "N notifications", and so does any item in
+  NeedsAttention.
+- **Bluetooth** - BlueZ (`bluez`, an adapter). Click toggles the adapter,
+  right click lists paired devices; the tile names the headset while it's
+  connected. "Open manager" runs `blueman-manager`.
+- **Quick tile + control center** - each tab needs its backend, and says what
+  to install when it's missing:
+  - Volume: PipeWire.
+  - Brightness: `ddcutil` with DDC/CI enabled on the monitor, the `i2c-dev`
+    module loaded and access to `/dev/i2c-*` (the `i2c` group or ddcutil's udev
+    rule). Night light: `hyprsunset`.
+  - Docker: the `docker` service and the user in the `docker` group. Only real
+    failures turn it red: a container restarting or running unhealthy, a crash
+    inside a compose project that's still up, or a non-compose container with
+    a restart policy that exited with an error. Containers are grouped by
+    compose project. `commands.docker` is the lazydocker button.
+  - Network: NetworkManager. Online = `nmcli networking connectivity` is
+    `full`, else a ping to 1.1.1.1 or 8.8.8.8 answers; it only shows offline
+    after 3 failed checks in a row (~30 s). VPN toggle: NetworkManager VPN or
+    WireGuard connections.
+  - System: `/proc` and the k10temp `Tccd1` sensor (AMD; the real die
+    temperature). Lists the top memory users with a two-step kill (session
+    processes are protected). `commands.monitor` is the btop button.
+- **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
+  (`weather.city` is only shown), refreshed every 10 minutes.
+- **Clock** - holidays for the regions in `holidays`; events from
+  `~/.cache/smart-shell/events.json` (Thunderbird with offline support on the
+  calendars + the export timer). The tile turns orange `events.remindMinutes`
+  before an event and green during it; `events.categories` picks its icon.
 
 ## Running the prototype
 
@@ -31,8 +133,9 @@ uses a static wallpaper; a local video can be linked into the untracked
 
 ## Making it yours
 
-- `~/.config/smart-shell/config.json` - your settings; any top-level key replaces
-  the default in `prototype/src/data/config.js`. Start from
+- `~/.config/smart-shell/config.json` - your settings; objects merge key by
+  key over the defaults (`prototype/src/data/config.js`, `shell/Config.qml`),
+  anything else replaces them. Start from
   [`config/config.example.json`](config/config.example.json):
   - `dock` / `quick` - which widgets show, their order and grouping: `dock` is a
     list of groups (a separator goes between them), each listing widget ids from
