@@ -16,7 +16,10 @@ Singleton {
     readonly property int tilesGap: 8       // between the status tiles
     readonly property int edge: 8           // gap between the dock and the screen edge
 
-    readonly property color dockBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.42)
+    readonly property color dockBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.56)
+    // a faint shadow under dock text and icons, for light wallpapers
+    // (prototype: --text-shadow 0 1px 2px / --icon-shadow 0 1px 1px, both .25)
+    readonly property color textShadow: Qt.rgba(0, 0, 0, 0.25)
     readonly property color dockBorder: Qt.rgba(1, 1, 1, 0.28)
     readonly property color tileBg: Qt.rgba(1, 1, 1, 0.12)
     readonly property color tileBorder: Qt.rgba(1, 1, 1, 0.14)

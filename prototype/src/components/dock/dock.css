@@ -15,6 +15,11 @@ ss-dock.dock {
   transition: border-radius .5s, box-shadow .5s, border-color .5s, padding .4s, height .4s;
 }
 .dock > * { position: relative; z-index: 2; }
+/* legibility on light wallpapers; popovers sit on their own dark surface */
+.dock { text-shadow: var(--text-shadow); }
+.dock svg.i { filter: var(--icon-shadow); }
+.dock .menu { text-shadow: none; }
+.dock .menu svg.i { filter: none; }
 
 .dock > .snow-cap, .dock > .snow-spill { display: none; }
 

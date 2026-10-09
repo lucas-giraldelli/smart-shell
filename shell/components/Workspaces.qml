@@ -48,6 +48,7 @@ Row {
                 Behavior on color { ColorAnimation { duration: 300 } }
 
                 Icon {
+                    shadow: true
                     anchors.centerIn: parent
                     visible: slot.showIcon
                     name: slot.iconName

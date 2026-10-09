@@ -29,6 +29,8 @@ Tile {
         Text {
             text: Qt.formatTime(clock.date, "HH:mm")
             color: Theme.text
+            style: Text.Raised
+            styleColor: Theme.textShadow
             font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold }
         }
         Text {
@@ -37,6 +39,8 @@ Tile {
                 return d.charAt(0).toUpperCase() + d.slice(1);
             }
             color: Theme.sub
+            style: Text.Raised
+            styleColor: Theme.textShadow
             font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
         }
     }

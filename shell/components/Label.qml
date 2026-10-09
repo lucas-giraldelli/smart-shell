@@ -17,6 +17,8 @@ Item {
     property real letterSpacing: 0          // px
     property bool uppercase: false
     property string family: Theme.font
+    property bool shadow: false             // dock text: Theme.textShadow 1px below
+    property real lineHeight: size * 1.2    // the prototype's body line-height
 
     readonly property real k: Number.isInteger(size) ? 1 : 0.5
     readonly property real contentWidth: label.contentWidth * k
@@ -30,6 +32,11 @@ Item {
         scale: root.k
         transformOrigin: Item.TopLeft
         y: (root.height - height * root.k) / 2
+        style: root.shadow ? Text.Raised : Text.Normal
+        styleColor: Theme.textShadow
+        lineHeightMode: Text.FixedHeight
+        lineHeight: root.lineHeight / root.k
+        verticalAlignment: Text.AlignVCenter
         font {
             family: root.family
             pixelSize: root.size / root.k
