@@ -88,7 +88,9 @@ const containerMemMiB = {
 export const docker = {
   running: true,
   containers: Object.entries(containerMemMiB).map(([name, memMiB]) => ({
-    name, memMiB, state: 'running', exitCode: 0, project: 'media', restart: 'unless-stopped',
+    name, memMiB, state: 'running', exitCode: 0, restart: 'unless-stopped',
+    // two compose projects and one standalone container
+    project: name.startsWith('atlas') ? 'atlas' : name === 'cloudflared' ? '' : 'media-stack',
     health: name === 'jellyfin' || name === 'gluetun' ? 'healthy' : '',
   })),
 };

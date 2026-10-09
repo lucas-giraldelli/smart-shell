@@ -76,86 +76,179 @@ Item {
         Column {
             id: rows
             width: list.width
-            Repeater {
-                model: Docker.containers
 
-                // .ct: padding 6px 8px, gap 10, 12.5px
-                delegate: Rectangle {
-                    id: ct
+            // one collapsible group per compose project; open as the user left
+            // it, otherwise only when failing
+            Repeater {
+                model: Rules.groups(Docker.containers)
+
+                delegate: Column {
+                    id: group
 
                     required property var modelData
-                    readonly property bool running: modelData.state === "running"
-                    readonly property string status: Docker.running ? Rules.containerStatus(modelData, Docker.containers) : "off"
+                    readonly property string status: Docker.running ? Rules.groupStatus(modelData, Docker.containers) : "off"
+                    readonly property var count: Rules.counts(modelData.containers)
+                    readonly property bool open: Ui.dockerOpen[modelData.project] ?? status === "crit"
 
-                    width: list.width
-                    height: 6 + 28.2 + 6
-                    radius: 9
-                    color: hover.hovered ? Theme.menuSurface : "transparent"
+                    width: rows.width
 
-                    HoverHandler { id: hover }
+                    // .dk-proj: padding 8px, gap 10, 12.5px
+                    Rectangle {
+                        width: parent.width
+                        height: 8 + 15 + 8
+                        radius: 9
+                        color: projHover.hovered ? Theme.menuSurface : "transparent"
 
-                    Led {
-                        x: 8
-                        anchors.verticalCenter: parent.verticalCenter
-                        status: ct.status
-                    }
-                    Column {
-                        x: 26
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: tail.x - 10 - x
-                        Label {
-                            width: parent.width
-                            text: ct.modelData.name
-                            size: 12.5
-                            elide: Text.ElideRight
-                            color: ct.status === "off" ? Theme.menuSub : Theme.menuText
-                        }
-                        Label {
-                            width: parent.width
-                            text: Docker.running ? Rules.describe(Panes.i18n, ct.modelData, Docker.containers) : "—"
-                            size: 11
-                            elide: Text.ElideRight
-                            color: ct.status === "crit" ? Theme.crit : Theme.menuSub
-                        }
-                    }
-                    Row {
-                        id: tail
-                        anchors.right: parent.right
-                        anchors.rightMargin: 8
-                        anchors.verticalCenter: parent.verticalCenter
-                        spacing: 10
+                        HoverHandler { id: projHover }
 
-                        Label {
-                            visible: Docker.running && ct.running
+                        Row {
+                            x: 8
                             anchors.verticalCenter: parent.verticalCenter
-                            text: Rules.fmtMem(Panes.i18n, ct.modelData.memMiB)
-                            size: 11
-                            tnum: true
-                            color: Theme.menuSub
-                        }
-                        // .tag: 10px, padding 2px 7px, pill
-                        Rectangle {
-                            visible: ct.running && ct.modelData.health === "healthy"
-                            anchors.verticalCenter: parent.verticalCenter
-                            width: tag.implicitWidth + 14
-                            height: tag.implicitHeight + 4
-                            radius: height / 2
-                            color: Theme.healthyBg
+                            spacing: 10
+                            Icon {
+                                anchors.verticalCenter: parent.verticalCenter
+                                name: "chevron-right"
+                                size: 14
+                                color: Theme.menuSub
+                                rotation: group.open ? 90 : 0
+                                Behavior on rotation { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+                            }
+                            Led {
+                                anchors.verticalCenter: parent.verticalCenter
+                                status: group.status
+                            }
                             Label {
-                                id: tag
-                                anchors.centerIn: parent
-                                text: "healthy"
-                                size: 10
-                                color: Theme.ok
+                                anchors.verticalCenter: parent.verticalCenter
+                                size: 12.5
+                                color: group.status === "off" ? Theme.menuSub : Theme.menuText
+                                text: group.modelData.project || I18n.t("docker.other")
                             }
                         }
-                        IconButton {
-                            width: 26
-                            height: 26
-                            radius: 8
-                            iconSize: 13
-                            icon: ct.running ? "square" : "play"
-                            onClicked: Docker.toggle(ct.modelData.name)
+                        Row {
+                            anchors.right: parent.right
+                            anchors.rightMargin: 8
+                            anchors.verticalCenter: parent.verticalCenter
+                            spacing: 10
+                            Label {
+                                visible: Docker.running && group.count.up > 0
+                                anchors.verticalCenter: parent.verticalCenter
+                                size: 11
+                                tnum: true
+                                color: Theme.menuSub
+                                text: Rules.fmtMem(Panes.i18n, Rules.groupMem(group.modelData))
+                            }
+                            Label {
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: Math.max(34, implicitWidth)
+                                horizontalAlignment: Text.AlignRight
+                                size: 11
+                                tnum: true
+                                color: Theme.menuSub
+                                text: `${group.count.up}/${group.count.total}`
+                            }
+                        }
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Ui.dockerOpen = Object.assign({}, Ui.dockerOpen, { [group.modelData.project]: !group.open })
+                        }
+                    }
+
+                    // .dk-body: height animates open / shut, containers indented 14px
+                    Item {
+                        width: parent.width
+                        height: group.open ? body.height : 0
+                        clip: true
+                        Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+
+                        Column {
+                            id: body
+                            x: 14
+                            width: parent.width - 14
+                            Repeater {
+                                model: group.modelData.containers
+
+                        // .ct: padding 6px 8px, gap 10, 12.5px
+                        delegate: Rectangle {
+                            id: ct
+
+                            required property var modelData
+                            readonly property bool running: modelData.state === "running"
+                            readonly property string status: Docker.running ? Rules.containerStatus(modelData, Docker.containers) : "off"
+
+                            width: body.width
+                            height: 6 + 28.2 + 6
+                            radius: 9
+                            color: hover.hovered ? Theme.menuSurface : "transparent"
+
+                            HoverHandler { id: hover }
+
+                            Led {
+                                x: 8
+                                anchors.verticalCenter: parent.verticalCenter
+                                status: ct.status
+                            }
+                            Column {
+                                x: 26
+                                anchors.verticalCenter: parent.verticalCenter
+                                width: tail.x - 10 - x
+                                Label {
+                                    width: parent.width
+                                    text: ct.modelData.name
+                                    size: 12.5
+                                    elide: Text.ElideRight
+                                    color: ct.status === "off" ? Theme.menuSub : Theme.menuText
+                                }
+                                Label {
+                                    width: parent.width
+                                    text: Docker.running ? Rules.describe(Panes.i18n, ct.modelData, Docker.containers) : "—"
+                                    size: 11
+                                    elide: Text.ElideRight
+                                    color: ct.status === "crit" ? Theme.crit : Theme.menuSub
+                                }
+                            }
+                            Row {
+                                id: tail
+                                anchors.right: parent.right
+                                anchors.rightMargin: 8
+                                anchors.verticalCenter: parent.verticalCenter
+                                spacing: 10
+
+                                Label {
+                                    visible: Docker.running && ct.running
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: Rules.fmtMem(Panes.i18n, ct.modelData.memMiB)
+                                    size: 11
+                                    tnum: true
+                                    color: Theme.menuSub
+                                }
+                                // .tag: 10px, padding 2px 7px, pill
+                                Rectangle {
+                                    visible: ct.running && ct.modelData.health === "healthy"
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: tag.implicitWidth + 14
+                                    height: tag.implicitHeight + 4
+                                    radius: height / 2
+                                    color: Theme.healthyBg
+                                    Label {
+                                        id: tag
+                                        anchors.centerIn: parent
+                                        text: "healthy"
+                                        size: 10
+                                        color: Theme.ok
+                                    }
+                                }
+                                IconButton {
+                                    width: 26
+                                    height: 26
+                                    radius: 8
+                                    iconSize: 13
+                                    icon: ct.running ? "square" : "play"
+                                    onClicked: Docker.toggle(ct.modelData.name)
+                                }
+                            }
+                        }
+                            }
                         }
                     }
                 }

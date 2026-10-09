@@ -22,6 +22,7 @@ Singleton {
     // transient
     property string popover: ""              // "control-center" | "tray" | ""
     property string ccTab: "volume"
+    property var dockerOpen: ({})           // compose project -> expanded, as the user left it
 
     function openPopover(name, tab) {
         if (tab)

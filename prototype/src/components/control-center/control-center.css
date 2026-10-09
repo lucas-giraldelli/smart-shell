@@ -136,6 +136,17 @@
 /* docker: the header stays put and only the container list scrolls */
 .cc .pane[data-pane="docker"].on { display: flex; flex-direction: column; overflow: hidden; }
 .cc .dk-list { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
+/* docker: one collapsible group per compose project */
+.cc .dk-proj { display: flex; align-items: center; gap: 10px; padding: 8px 8px; border-radius: 9px; font-size: 12.5px; cursor: pointer; }
+.cc .dk-proj:hover { background: var(--menu-surface); }
+.cc .dk-proj .dk-chev { width: 14px; height: 14px; color: var(--menu-sub); transition: transform .25s ease; }
+.cc .dk-group.open .dk-chev { transform: rotate(90deg); }
+.cc .dk-proj[data-status="off"] .grow { color: var(--menu-sub); }
+.cc .dk-count { min-width: 34px; text-align: right; font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.cc .dk-proj .mem { font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.cc .dk-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
+.cc .dk-group.open .dk-body { grid-template-rows: 1fr; }
+.cc .dk-body > div { overflow: hidden; min-height: 0; padding-left: 14px; }
 .cc .ct { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 9px; font-size: 12.5px; }
 .cc .ct:hover { background: var(--menu-surface); }
 /* status led: colour comes from the nearest data-status */

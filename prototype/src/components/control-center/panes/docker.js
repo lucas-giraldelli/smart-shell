@@ -32,6 +32,28 @@ export function dockerStatus(docker) {
   return cs.some(c => c.state === 'running') ? 'ok' : 'off';
 }
 
+// Containers grouped by compose project, like lazydocker; the ones without a
+// project go last, under "Other". A project is crit when one of its containers
+// failed, off when none runs, ok otherwise.
+export function groups(cs) {
+  const byProject = new Map();
+  for (const c of cs) {
+    if (!byProject.has(c.project)) byProject.set(c.project, []);
+    byProject.get(c.project).push(c);
+  }
+  const list = [...byProject].filter(([p]) => p).map(([project, containers]) => ({ project, containers }));
+  if (byProject.has('')) list.push({ project: '', containers: byProject.get('') });
+  return list;
+}
+function groupStatus(group, cs) {
+  if (group.containers.some(c => isFailure(c, cs))) return 'crit';
+  return group.containers.some(c => c.state === 'running') ? 'ok' : 'off';
+}
+
+// which groups are open: the user's choice, else open only when failing
+const expanded = new Map();
+const isExpanded = (project, status) => expanded.get(project) ?? status === 'crit';
+
 function containerStatus(c, cs) {
   if (isFailure(c, cs)) return 'crit';
   return c.state === 'running' ? 'ok' : 'off';
@@ -68,19 +90,41 @@ export default {
     summary.innerHTML = docker.running
       ? `<span class="led"></span>${t('docker.summary', { up, total, mem: fmtMem(totalMem(docker)) })}`
       : `<span class="led"></span>${t('docker.serviceDown')}`;
-    root.querySelector('.dk-list').innerHTML = docker.containers.map((c, i) => {
+    const cs = docker.containers;
+    const row = c => {
       const running = c.state === 'running';
       return `
-      <div class="ct" data-status="${docker.running ? containerStatus(c, docker.containers) : 'off'}"><span class="led"></span>
-        <span class="grow">${c.name}<div class="meta">${docker.running ? describe(c, docker.containers) : '—'}</div></span>
+      <div class="ct" data-status="${docker.running ? containerStatus(c, cs) : 'off'}"><span class="led"></span>
+        <span class="grow">${c.name}<div class="meta">${docker.running ? describe(c, cs) : '—'}</div></span>
         ${docker.running && running ? `<span class="mem">${fmtMem(c.memMiB)}</span>` : ''}
         ${running && c.health === 'healthy' ? '<span class="tag">healthy</span>' : ''}
-        <button class="ib" data-ct="${i}" title="${t(running ? 'docker.stop' : 'docker.start')}">${icon(running ? 'square' : 'play')}</button>
+        <button class="ib" data-ct="${cs.indexOf(c)}" title="${t(running ? 'docker.stop' : 'docker.start')}">${icon(running ? 'square' : 'play')}</button>
+      </div>`;
+    };
+    root.querySelector('.dk-list').innerHTML = groups(cs).map(g => {
+      const status = docker.running ? groupStatus(g, cs) : 'off';
+      const { up, total } = counts(g.containers);
+      const mem = g.containers.reduce((sum, c) => sum + memOf(c), 0);
+      return `
+      <div class="dk-group${isExpanded(g.project, status) ? ' open' : ''}" data-group="${g.project}">
+        <div class="dk-proj" data-status="${status}">${icon('chevron-right', 'dk-chev')}<span class="led"></span>
+          <span class="grow">${g.project || t('docker.other')}</span>
+          ${docker.running && up ? `<span class="mem">${fmtMem(mem)}</span>` : ''}
+          <span class="dk-count">${up}/${total}</span>
+        </div>
+        <div class="dk-body"><div>${g.containers.map(row).join('')}</div></div>
       </div>`;
     }).join('');
   },
 
   click(target) {
+    const proj = target.closest('.dk-proj');
+    if (proj) {
+      // toggled in place, so the body animates open / shut
+      const group = proj.parentElement;
+      expanded.set(group.dataset.group, group.classList.toggle('open'));
+      return;
+    }
     const ct = target.closest('[data-ct]');
     if (ct) {
       const i = +ct.dataset.ct;
