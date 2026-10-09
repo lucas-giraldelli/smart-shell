@@ -1,2 +1,45 @@
-.clock { flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; }
+.clock { flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; cursor: pointer; }
 .clock .t-big { font-size: 20px; }
+
+/* calendar popover */
+.cal { width: 316px; padding: 10px; }
+.cal-head { display: flex; align-items: center; gap: 6px; padding: 0 2px 8px; }
+.cal-head b { font-size: 14px; padding-left: 4px; }
+.cal-head .ib { width: 28px; height: 28px; }
+
+.cal .regions { display: flex; gap: 5px; padding: 0 2px 8px; }
+.cal .regions button {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 4px; cursor: pointer;
+  font: inherit; font-size: 11px; color: #71717a; border-radius: 8px;
+  background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .06);
+}
+.cal .regions button.on { color: #e4e4e7; border-color: color-mix(in srgb, var(--rc) 45%, transparent); background: color-mix(in srgb, var(--rc) 10%, transparent); }
+.cal .mark { width: 7px; height: 7px; border-radius: 99px; background: var(--rc); flex: none; }
+.cal .regions button:not(.on) .mark { background: none; box-shadow: inset 0 0 0 1.5px #52525b; }
+
+.cal .week, .cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal .week span { text-align: center; font-size: 10.5px; font-weight: 600; color: #71717a; padding: 4px 0; }
+.cal .week .weekend { color: #f0a3b0; }
+
+.cal .grid button {
+  position: relative; height: 36px; border: 0; border-radius: 9px; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-variant-numeric: tabular-nums; color: #e4e4e7; background: none;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+}
+.cal .grid button:hover { background: rgba(255, 255, 255, .07); }
+.cal .grid .weekend { color: #f0a3b0; background: rgba(240, 163, 176, .05); }
+.cal .grid .holiday { color: #fde68a; font-weight: 700; }
+.cal .grid .other { opacity: .35; }
+.cal .grid .today { box-shadow: inset 0 0 0 1.5px var(--accent); font-weight: 700; }
+.cal .grid .selected { background: rgba(255, 255, 255, .13); }
+.cal .grid .today.selected { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+.cal .dots { display: flex; gap: 2px; height: 4px; }
+.cal .dots i { width: 4px; height: 4px; border-radius: 99px; background: var(--rc); }
+.cal .dots i.optional { background: none; box-shadow: inset 0 0 0 1px var(--rc); }
+
+.cal .cal-day .sec { text-transform: none; letter-spacing: 0; font-size: 12px; color: #d4d4d8; }
+.cal .cal-day .sec::first-letter { text-transform: uppercase; }
+.cal .hol { display: flex; align-items: center; gap: 8px; padding: 5px 8px; font-size: 12px; }
+.cal .hol.optional .mark { background: none; box-shadow: inset 0 0 0 1.5px var(--rc); }
+.cal .hol .when { width: 46px; flex: none; white-space: nowrap; color: #a1a1aa; font-variant-numeric: tabular-nums; }
+.cal .none { padding: 4px 8px 2px; }

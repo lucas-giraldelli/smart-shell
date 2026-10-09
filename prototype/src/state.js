@@ -14,7 +14,8 @@ export const store = createStore({
     size: loadPref('size', 52),
     magnify: loadPref('magnify', 1.75),
     liveWallpaper: loadPref('liveWallpaper', false),
-    popover: null,          // 'bluetooth' | 'control-center' | null
+    popover: null,          // 'bluetooth' | 'control-center' | 'calendar' | 'weather' | null
+    holidayRegions: loadPref('holidayRegions', ['br', 'cba', 'us']),
     ccTab: 'volume',
   },
   caps: snap.capabilities,
