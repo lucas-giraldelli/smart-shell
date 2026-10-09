@@ -6,9 +6,13 @@ expands recurring events into concrete occurrences, applies exceptions and
 moved occurrences, drops cancelled and declined events, and removes duplicates
 (the same invite present in more than one calendar).
 
+Which calendars to read comes from ~/.config/smart-shell/config.json:
+  {"events": {"calendars": ["you@example.com", "Family"], "daysBack": 7, "daysAhead": 60}}
+(no list = every enabled calendar). Command-line flags override the file.
+
 Output (default ~/.cache/smart-shell/events.json):
-  {"generatedAt": ..., "calendars": {name: color}, "events": [
-     {"title", "start", "end", "allDay", "calendars": [names]}, ...]}
+  {"generatedAt": ..., "calendars": {name: color}, "skipped": [{name, reason}],
+   "events": [{"title", "start", "end", "allDay", "calendars": [names]}, ...]}
 
 Runs from a systemd user timer (systemd/smart-shell-events.*); safe to run any
 time, since it only reads a copy of the database.
@@ -31,6 +35,17 @@ from dateutil.rrule import rrulestr
 FLAG_ALLDAY = 8
 FLAG_RECURRING = 16
 LOCAL = datetime.now().astimezone().tzinfo
+CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "smart-shell" / "config.json"
+
+
+def load_config() -> dict:
+    """The `events` section of the smart-shell config, if any."""
+    try:
+        return json.loads(CONFIG.read_text()).get("events", {})
+    except FileNotFoundError:
+        return {}
+    except (json.JSONDecodeError, AttributeError) as err:
+        sys.exit(f"invalid {CONFIG}: {err}")
 
 
 def find_profile(root: Path) -> Path:
@@ -51,7 +66,7 @@ def find_profile(root: Path) -> Path:
 def read_calendars(profile: Path) -> dict:
     """calendar id -> {name, color, disabled} from prefs.js."""
     cals = {}
-    pattern = re.compile(r'user_pref\("calendar\.registry\.([^.]+)\.(name|color|disabled)",\s*(.+)\);')
+    pattern = re.compile(r'user_pref\("calendar\.registry\.([^.]+)\.(name|color|disabled|cache\.enabled)",\s*(.+)\);')
     for line in (profile / "prefs.js").read_text(errors="replace").splitlines():
         m = pattern.match(line)
         if m:
@@ -146,12 +161,25 @@ def export(args) -> dict:
     profile = Path(args.profile).expanduser() if args.profile else find_profile(root)
     registry = read_calendars(profile)
 
+    include = {c.casefold() for c in args.calendar}
+    exclude = {c.casefold() for c in args.exclude}
+
+    def chosen(cal_id):
+        name = registry.get(cal_id, {}).get("name", cal_id).casefold()
+        return name not in exclude and (not include or name in include)
+
     def wanted(cal_id):
         info = registry.get(cal_id, {})
-        name = info.get("name", cal_id)
-        if info.get("disabled") or name in args.exclude:
-            return False
-        return not args.calendar or name in args.calendar
+        # without "offline support" Thunderbird keeps no local copy to read
+        return chosen(cal_id) and not info.get("disabled") and info.get("cache.enabled", True)
+
+    skipped = []
+    for cal_id, info in registry.items():
+        if chosen(cal_id) and not wanted(cal_id):
+            reason = "desativado no Thunderbird" if info.get("disabled") else "sem suporte offline no Thunderbird"
+            skipped.append({"name": info.get("name", cal_id), "reason": reason})
+    known = {i.get("name", k).casefold() for k, i in registry.items()}
+    skipped += [{"name": c, "reason": "não existe no Thunderbird"} for c in args.calendar if c.casefold() not in known]
 
     now = datetime.now(LOCAL)
     window_from = (now - timedelta(days=args.days_back)).replace(hour=0, minute=0, second=0, microsecond=0)
@@ -233,6 +261,7 @@ def export(args) -> dict:
         "generatedAt": now.isoformat(timespec="seconds"),
         "range": {"from": window_from.date().isoformat(), "to": window_to.date().isoformat()},
         "calendars": {v.get("name", k): v.get("color", "#9ca3af") for k, v in registry.items() if wanted(k)},
+        "skipped": skipped,
         "events": list(unique.values()),
     }
 
@@ -241,12 +270,16 @@ def main():
     p = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     p.add_argument("--thunderbird", default="~/.thunderbird", help="Thunderbird root folder")
     p.add_argument("--profile", help="profile folder (default: the default profile)")
-    p.add_argument("--calendar", action="append", default=[], help="only this calendar (repeatable)")
+    conf = load_config()
+    p.add_argument("--calendar", action="append", help="only this calendar (repeatable; default: config)")
     p.add_argument("--exclude", action="append", default=[], help="skip this calendar (repeatable)")
-    p.add_argument("--days-back", type=int, default=7)
-    p.add_argument("--days-ahead", type=int, default=60)
+    p.add_argument("--days-back", type=int, default=conf.get("daysBack", 7))
+    p.add_argument("--days-ahead", type=int, default=conf.get("daysAhead", 60))
     p.add_argument("--output", default="~/.cache/smart-shell/events.json", help="'-' for stdout")
     args = p.parse_args()
+    if args.calendar is None:
+        args.calendar = conf.get("calendars", [])
+    args.exclude += conf.get("exclude", [])
 
     data = export(args)
     text = json.dumps(data, ensure_ascii=False, indent=1)
