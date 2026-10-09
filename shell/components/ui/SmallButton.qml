@@ -21,6 +21,7 @@ Rectangle {
         anchors.centerIn: parent
         spacing: 6
         Icon {
+            visible: root.icon !== ""
             anchors.verticalCenter: parent.verticalCenter
             name: root.icon
             size: 13

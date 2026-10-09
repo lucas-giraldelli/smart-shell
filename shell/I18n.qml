@@ -43,6 +43,25 @@ Singleton {
         return String(value).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? `{${name}}`);
     }
 
+    // Dates the way the prototype's Intl formats print them, per language
+    // (Qt has no Intl, so the patterns are spelled out):
+    //   time "13:02" / "01:02 PM", date "sex, 09 de out", mini "sex, 09",
+    //   month "outubro de 2026", long "sexta-feira, 9 de outubro", short "12 out"
+    readonly property var patterns: ({
+        "pt-BR": { time: "HH:mm", date: "ddd, dd 'de' MMM", mini: "ddd, dd", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
+        "en": { time: "hh:mm AP", date: "ddd, MMM dd", mini: "ddd dd", month: "MMMM yyyy", long: "dddd, MMMM d", short: "MMM d" }
+    })
+    function formatDate(date, kind) {
+        const pattern = (patterns[current] ?? patterns[fallback])[kind];
+        return qtLocale.toString(date, pattern).replace(/\./g, "");
+    }
+    function formatTime(date) {
+        return formatDate(date, "time");
+    }
+    function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
+    }
+
     // formatNumber(n, digits = 1): fixed decimals in the current locale
     function formatNumber(n, digits) {
         return Number(n).toLocaleString(qtLocale, "f", digits ?? 1);

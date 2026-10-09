@@ -41,6 +41,8 @@ Singleton {
     readonly property color menuHover: Qt.rgba(1, 1, 1, 0.08)
     readonly property color menuStrong: Qt.rgba(1, 1, 1, 0.13)
     readonly property color menuAccent: "#38bdf8"
+    readonly property color menuWeekend: "#f0a3b0"
+    readonly property color menuHoliday: "#fde68a"
     readonly property color menuShadow: Qt.rgba(0, 0, 0, 0.45)
     readonly property color warmFill: "#fb923c"     // night-light slider
     readonly property color upload: "#c084fc"       // network upload sparkline
@@ -60,6 +62,12 @@ Singleton {
     // color-mix(in srgb, c p%, transparent)
     function mix(c, p) {
         return Qt.rgba(c.r, c.g, c.b, c.a * p);
+    }
+    // color-mix(in srgb, a p%, b): premultiplied, like the browser
+    function blend(a, b, p) {
+        const al = a.a * p + b.a * (1 - p);
+        const ch = k => al ? (a[k] * a.a * p + b[k] * b.a * (1 - p)) / al : 0;
+        return Qt.rgba(ch("r"), ch("g"), ch("b"), al);
     }
 
     // CSS `ease`, the prototype's default transition curve
