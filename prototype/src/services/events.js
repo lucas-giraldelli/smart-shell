@@ -21,6 +21,7 @@ async function refresh() {
     update('events', {
       generatedAt: data.generatedAt,
       calendars: data.calendars ?? {},
+      skipped: data.skipped ?? [],
       list: (data.events ?? []).map(e => ({ ...e, start: parse(e.start, e.allDay), end: parse(e.end, e.allDay) })),
     });
   } catch {

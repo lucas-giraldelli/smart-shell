@@ -15,7 +15,6 @@ export const store = createStore({
     magnify: loadPref('magnify', 1.75),
     liveWallpaper: loadPref('liveWallpaper', false),
     popover: null,          // 'bluetooth' | 'control-center' | 'calendar' | 'weather' | null
-    holidayRegions: loadPref('holidayRegions', ['br', 'cba', 'us']),
     ccTab: 'volume',
   },
   caps: snap.capabilities,
@@ -38,7 +37,7 @@ export const store = createStore({
   network: { ...snap.network, vpnOn: false, down: Array(40).fill(0), up: Array(40).fill(0) },
   docker: snap.docker,
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
-  events: { list: [], calendars: {}, generatedAt: null },
+  events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   media: { ...snap.media, playing: true, progress: 0.32 },
 });
 

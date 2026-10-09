@@ -1,10 +1,11 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
-import { store, update } from '../../state.js';
+import { store } from '../../state.js';
+import { config } from '../../data/config.js';
 import { regions, holidaysOf, upcoming, dateKey } from '../../data/holidays.js';
 
 // Month calendar inside the clock tile: navigate months, weekends tinted,
-// holidays dotted per region (toggle regions with the chips) and Thunderbird
+// holidays dotted per region (config.holidays) and Thunderbird
 // events marked with a dash in their calendar's colour. Selecting a day with
 // something on it shows the details in place of the "upcoming" list.
 const MONTH = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
@@ -48,11 +49,7 @@ class Calendar extends Component {
       const t = e.target;
       if (t.closest('[data-nav]')) this.shift(+t.closest('[data-nav]').dataset.nav);
       else if (t.closest('[data-today]')) this.goToday();
-      else if (t.closest('[data-region]')) {
-        const r = t.closest('[data-region]').dataset.region, list = store.get().ui.holidayRegions;
-        update('ui', { holidayRegions: list.includes(r) ? list.filter(x => x !== r) : [...list, r] });
-        return;
-      } else if (t.closest('[data-day]')) {
+      else if (t.closest('[data-day]')) {
         const [y, m, d] = t.closest('[data-day]').dataset.day.split('-').map(Number);
         this.selected = new Date(y, m - 1, d);
         if (m - 1 !== this.view.getMonth()) this.view = new Date(y, m - 1, 1);
@@ -87,8 +84,8 @@ class Calendar extends Component {
   }
 
   draw() {
-    const enabled = store.get().ui.holidayRegions;
-    const { list: events, calendars: colors } = store.get().events;
+    const enabled = config.holidays.filter(r => regions[r]);
+    const { list: events, calendars: colors, skipped } = store.get().events;
     const today = new Date();
     const y = this.view.getFullYear(), m = this.view.getMonth();
     const start = new Date(y, m, 1 - new Date(y, m, 1).getDay()); // the Sunday on/before the 1st
@@ -104,9 +101,6 @@ class Calendar extends Component {
         <b class="grow">${cap(MONTH.format(this.view))}</b>
         <button class="btn-s" data-today>Hoje</button>
         <button class="ib" data-nav="1" title="Próximo mês">${icon('chevron-right')}</button>
-      </div>
-      <div class="regions">${Object.entries(regions).map(([id, r]) => `
-        <button data-region="${id}" class="${enabled.includes(id) ? 'on' : ''}" style="--rc:${r.color}"><span class="mark"></span>${r.name}</button>`).join('')}
       </div>
       <div class="week">${WEEK.map((w, i) => `<span class="${i === 0 || i === 6 ? 'weekend' : ''}">${w}</span>`).join('')}</div>
       <div class="grid">${days.map(d => {
@@ -131,7 +125,8 @@ class Calendar extends Component {
       </div>` : ''}
       ${hasDetails ? '' : `<div class="sec">Próximos feriados</div>
       ${upcoming(today, enabled, 3).map(h => holidayRow(h).replace('<span class="grow">', `<span class="when">${short(h.date)}</span><span class="grow">`)).join('')
-        || '<div class="meta none">Nenhuma região selecionada</div>'}`}`;
+        || ''}`}
+      ${skipped.map(s => `<div class="skipped">${icon('triangle-alert')}<span><b>${s.name}</b> não aparece: ${s.reason}</span></div>`).join('')}`;
   }
 }
 

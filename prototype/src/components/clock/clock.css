@@ -7,15 +7,7 @@
 .cal-head b { font-size: 14px; padding-left: 4px; }
 .cal-head .ib { width: 28px; height: 28px; }
 
-.cal .regions { display: flex; gap: 5px; padding: 0 2px 8px; }
-.cal .regions button {
-  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; padding: 5px 4px; cursor: pointer;
-  font: inherit; font-size: 11px; color: #71717a; border-radius: 8px;
-  background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .06);
-}
-.cal .regions button.on { color: #e4e4e7; border-color: color-mix(in srgb, var(--rc) 45%, transparent); background: color-mix(in srgb, var(--rc) 10%, transparent); }
 .cal .mark { width: 7px; height: 7px; border-radius: 99px; background: var(--rc); flex: none; }
-.cal .regions button:not(.on) .mark { background: none; box-shadow: inset 0 0 0 1.5px #52525b; }
 
 .cal .week, .cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
 .cal .week span { text-align: center; font-size: 10.5px; font-weight: 600; color: #71717a; padding: 4px 0; }
@@ -49,3 +41,5 @@
 .cal .evt .bar { width: 3px; height: 16px; border-radius: 9px; background: var(--rc); flex: none; }
 .cal .evt .when { width: 46px; flex: none; color: #a1a1aa; font-variant-numeric: tabular-nums; }
 .cal .evt .grow { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cal .skipped { display: flex; align-items: flex-start; gap: 7px; margin: 8px 4px 2px; padding: 7px 9px; border-radius: 9px; font-size: 11.5px; line-height: 1.35; color: #e4e4e7; background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.cal .skipped svg.i { width: 14px; height: 14px; color: var(--warn); margin-top: 1px; }
