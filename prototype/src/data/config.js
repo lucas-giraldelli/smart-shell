@@ -27,6 +27,10 @@ export const config = {
   // UI language (a tag from src/i18n/locales); unset = the browser's language
   locale: null,
 
+  // MPRIS players the music tile never shows (substrings of identity, desktop
+  // entry, title, url or command line): WhatsApp's voice messages by default
+  music: { ignore: ['whatsapp'] },
+
   // holiday regions marked on the calendar (see data/holidays.js)
   holidays: ['br', 'cba', 'us'],
 

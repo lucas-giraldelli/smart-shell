@@ -39,6 +39,9 @@ Singleton {
                 }
             }
         },
+        // MPRIS players the music tile never shows (substrings of identity,
+        // desktop entry, title, url or command line)
+        music: { ignore: ["whatsapp"] },
         // the forecast's place (Open-Meteo); the city is only shown
         weather: { city: "Cuiabá", lat: -15.6, lon: -56.1 },
         workspaces: { icons: {} }
@@ -61,6 +64,7 @@ Singleton {
     readonly property var trayHidden: data.tray.hidden
     readonly property var locale: data.locale
     readonly property var weather: data.weather
+    readonly property var music: data.music
     readonly property var holidays: data.holidays
     readonly property var events: data.events
     // workspace id -> Lucide icon name
