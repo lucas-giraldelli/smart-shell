@@ -1,6 +1,7 @@
 // Default configuration: what the dock shows and in which order. The user's
-// ~/.config/smart-shell/config.json (see config/config.example.json) overrides
-// any top-level key; serve.sh links it into assets/local for the prototype.
+// ~/.config/smart-shell/config.json (see config/config.example.json) is merged
+// over it - objects key by key, everything else (lists included) replaced;
+// serve.sh links it into assets/local for the prototype.
 //
 // `dock` is a list of groups; a separator is drawn between non-empty groups.
 // Every id must exist in components/registry.js. Widgets can also be switched
@@ -22,14 +23,33 @@ export const config = {
 
   // holiday regions marked on the calendar (see data/holidays.js)
   holidays: ['br', 'cba', 'us'],
+
+  // calendar events (exported from Thunderbird); categories drive icons and pets
+  events: {
+    remindMinutes: 10,
+    categories: {
+      calendars: {},
+      keywords: {
+        health: ['médico', 'medico', 'consulta', 'cardiologista', 'psicólogo', 'psiquiatra', 'dentista', 'exame', 'terapia'],
+      },
+    },
+  },
 };
 
-// Merge the user's config over the defaults (top-level keys replace). A missing
-// or broken file leaves the defaults in place.
+const isObject = v => v && typeof v === 'object' && !Array.isArray(v);
+function merge(target, source) {
+  for (const [key, value] of Object.entries(source)) {
+    if (isObject(value) && isObject(target[key])) merge(target[key], value);
+    else target[key] = value;
+  }
+}
+
+// Merge the user's config over the defaults. A missing or broken file leaves
+// the defaults in place.
 export async function loadUserConfig() {
   try {
     const res = await fetch('assets/local/config.json');
-    if (res.ok) Object.assign(config, await res.json());
+    if (res.ok) merge(config, await res.json());
   } catch (err) {
     console.warn('[config] ignoring assets/local/config.json:', err);
   }

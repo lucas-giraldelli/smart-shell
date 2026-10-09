@@ -6,6 +6,10 @@
     "calendars": ["you@example.com", "Family"],
     "daysBack": 7,
     "daysAhead": 60,
-    "remindMinutes": 10
+    "remindMinutes": 10,
+    "categories": {
+      "calendars": { "you@work.example": "work" },
+      "keywords": { "health": ["consulta", "médico", "dentista"] }
+    }
   }
 }

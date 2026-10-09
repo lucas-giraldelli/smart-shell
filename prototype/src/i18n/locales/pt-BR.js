@@ -84,6 +84,8 @@ export default {
 
   reminder: { soon: 'em {minutes} min', now: 'agora' },
 
+  categories: { work: 'Trabalho', health: 'Saúde', personal: 'Pessoal' },
+
   regions: { br: 'Brasil', cba: 'Cuiabá / MT', us: 'EUA' },
 
   holidays: {
@@ -111,7 +113,7 @@ export default {
     moods: {
       sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
       turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando',
-      pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca',
+      pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca', work: 'Em reunião',
     },
   },
 

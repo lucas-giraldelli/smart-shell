@@ -84,6 +84,8 @@ export default {
 
   reminder: { soon: 'in {minutes} min', now: 'now' },
 
+  categories: { work: 'Work', health: 'Health', personal: 'Personal' },
+
   regions: { br: 'Brazil', cba: 'Cuiabá / MT', us: 'USA' },
 
   holidays: {
@@ -111,7 +113,7 @@ export default {
     moods: {
       sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
       turn: 'Looking around', lie: 'Lying down', nap: 'Napping', zoomies: 'Zoomies!', jump: 'Jumping',
-      pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly',
+      pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly', work: 'In a meeting',
     },
   },
 
