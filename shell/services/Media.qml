@@ -58,6 +58,10 @@ Singleton {
     readonly property bool playing: player?.isPlaying ?? false
     readonly property string title: player?.trackTitle ?? ""
     readonly property string artist: player?.trackArtist ?? ""
+    // the cover: Chromium writes it to an extension-less file in /tmp that it
+    // rewrites under the same name for the next track, so the track is added
+    // to the URL (ignored for a local file) to make the image load again
+    readonly property string art: player?.trackArtUrl ?? ""
     readonly property string album: player?.trackAlbum ?? ""
     readonly property string source: player?.identity ?? ""
     // track length in seconds: Firefox / Zen sometimes leave lengthSupported

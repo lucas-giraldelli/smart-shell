@@ -165,9 +165,38 @@ Tile {
             }
             Icon {
                 anchors.centerIn: parent
+                visible: cover.status !== Image.Ready
                 name: "music"
                 size: 18
                 color: Theme.labelText
+            }
+
+            // the track's cover, when the player has one, rounded like the tile
+            Image {
+                id: cover
+                anchors.fill: parent
+                visible: false
+                cache: false
+                asynchronous: true
+                fillMode: Image.PreserveAspectCrop
+                sourceSize: Qt.size(width * 2, height * 2)
+                source: Media.art ? `${Media.art}?${encodeURIComponent(Media.track)}` : ""
+            }
+            Rectangle {
+                id: coverMask
+                anchors.fill: parent
+                radius: 9
+                visible: false
+                layer.enabled: true
+            }
+            MultiEffect {
+                anchors.fill: parent
+                visible: cover.status === Image.Ready
+                source: cover
+                maskEnabled: true
+                maskSource: coverMask
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1
             }
         }
 

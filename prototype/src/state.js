@@ -50,7 +50,8 @@ export const store = createStore({
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   agenda: { ongoing: null, upcoming: null, minutes: null },
   // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)
-  media: { ...snap.media, playing: true, progress: 0.32, volume: 70, muted: false },
+  // `art`: the cover (mpris:artUrl), none in the snapshot
+  media: { ...snap.media, art: null, playing: true, progress: 0.32, volume: 70, muted: false },
 });
 
 export const update = store.update;

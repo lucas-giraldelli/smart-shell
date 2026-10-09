@@ -18,7 +18,7 @@ class Music extends Component {
   render() {
     const m = store.get().media;
     return `
-      <div class="art">${icon('music')}</div>
+      <div class="art">${icon('music')}<img class="cover" alt="" hidden></div>
       <div class="meta-col">
         <div class="title">${m.title}</div>
         <div class="t-sub">${m.artist || m.album || ''}</div>
@@ -82,6 +82,10 @@ class Music extends Component {
   }
 
   update({ media, ui }) {
+    // the track's cover when the player has one (mpris:artUrl), else the gradient
+    const cover = this.$('.cover');
+    if (media.art) { if (cover.getAttribute('src') !== media.art) cover.src = media.art; cover.hidden = false; }
+    else cover.hidden = true;
     this.toggleAttribute('data-open', ui.popover === 'music-volume');
     setSlider(this, 'ytm', media.volume, media.muted ? t('common.muted') : media.volume + '%');
     const mute = this.$('[data-btn="ytm"]');
