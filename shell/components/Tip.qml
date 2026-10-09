@@ -15,8 +15,8 @@ Item {
 
     anchors.horizontalCenter: parent.horizontalCenter
     y: 1 - 14 - height + (on ? 0 : 4)
-    width: label.implicitWidth + 20
-    height: label.implicitHeight + 10
+    width: label.implicitWidth + 20 + 2     // padding 5px 10px + 1px border
+    height: label.implicitHeight + 10 + 2
     z: 30
     opacity: on ? 1 : 0
     visible: opacity > 0
@@ -27,6 +27,7 @@ Item {
         anchors.fill: parent
         radius: 8
         color: Theme.labelBg
+        border.color: Theme.menuLine
     }
     Label {
         id: label
@@ -37,7 +38,7 @@ Item {
     // the arrow: a 5px triangle under the centre
     Shape {
         x: root.width / 2
-        y: root.height
+        y: root.height - 1
         preferredRendererType: Shape.CurveRenderer
         ShapePath {
             strokeWidth: -1

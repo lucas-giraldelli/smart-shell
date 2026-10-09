@@ -27,7 +27,7 @@ Singleton {
     readonly property color sub: Qt.rgba(1, 1, 1, 0.72)
     readonly property color accent: "#7dd3fc"
     readonly property color sep: Qt.rgba(1, 1, 1, 0.22)
-    readonly property color labelBg: Qt.rgba(20 / 255, 20 / 255, 24 / 255, 0.78) // hover tooltips
+    readonly property color labelBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.78) // hover tooltips: the popovers' glass
     readonly property color labelText: "#ffffff"
     readonly property color ringTrack: Qt.rgba(1, 1, 1, 0.16)
 

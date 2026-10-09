@@ -19,7 +19,7 @@
   --sep: rgba(255, 255, 255, .22);
   --refl: .18;
   --tint: rgba(0, 0, 0, 0);
-  --label-bg: rgba(20, 20, 24, .78);
+  --label-bg: rgba(28, 28, 32, .78);   /* tooltips: the popovers' glass */
   --ring-track: rgba(255, 255, 255, .16);
   /* a faint shadow under dock text and icons, for light wallpapers */
   --text-shadow: 0 1px 2px rgba(0, 0, 0, .25);
@@ -73,7 +73,8 @@ svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-widt
 .label {
   position: absolute; left: 50%; bottom: calc(100% + 14px); transform: translate(-50%, 4px); z-index: 30;
   padding: 5px 10px; border-radius: 8px; white-space: nowrap; font-size: 12px; font-weight: 500;
-  background: var(--label-bg); color: #fff; backdrop-filter: blur(12px);
+  background: var(--label-bg); color: #fff; border: 1px solid var(--menu-line);
+  backdrop-filter: blur(var(--blur)) saturate(var(--sat));
   opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
 }
 .label::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--label-bg); }
