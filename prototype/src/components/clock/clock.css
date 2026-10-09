@@ -55,8 +55,13 @@
 .cal .dots i.optional { background: none; box-shadow: inset 0 0 0 1px var(--rc); }
 .cal .dots b.ev { width: 9px; height: 3px; border-radius: 9px; background: var(--rc); }
 
-.cal .cal-day .sec { text-transform: none; letter-spacing: 0; font-size: 12px; color: #d4d4d8; }
-.cal .cal-day .sec::first-letter { text-transform: uppercase; }
+/* selected day: title and the "N earlier" toggle share one line; everything
+   below starts at the same inset */
+.cal .cal-day { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding: 0 8px; }
+.cal .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.cal .day-title { font-size: 12px; font-weight: 600; color: #e4e4e7; }
+.cal .day-title::first-letter { text-transform: uppercase; }
+.cal .cal-day .hol, .cal .cal-day .evt { padding-left: 0; padding-right: 0; }
 .cal .hol { display: flex; align-items: center; gap: 8px; padding: 5px 8px; font-size: 12px; }
 .cal .hol.optional .mark { background: none; box-shadow: inset 0 0 0 1.5px var(--rc); }
 .cal .hol .when, .cal .evt .when { min-width: 52px; flex: none; white-space: nowrap; color: #a1a1aa; font-variant-numeric: tabular-nums; }
@@ -66,14 +71,14 @@
 .cal .evt.past { opacity: .45; }
 /* the day's timed events scroll after ~5 rows instead of stretching the popover */
 .cal .evt-list { max-height: 112px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
-.cal .allday { display: flex; gap: 5px; padding: 0 8px 4px; min-width: 0; }
+.cal .allday { display: flex; gap: 5px; min-width: 0; }
 .cal .chip {
   min-width: 0; max-width: 100%; padding: 2px 8px; border-radius: 99px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   color: #e4e4e7; background: color-mix(in srgb, var(--rc) 22%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 45%, transparent);
 }
 .cal .chip.more { flex: none; --rc: #a1a1aa; }
 .cal .past-toggle {
-  margin: 0 8px 2px; padding: 2px 0; border: 0; background: none; cursor: pointer;
+  flex: none; margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
   font: inherit; font-size: 11px; color: #a1a1aa; text-decoration: underline dotted; text-underline-offset: 3px;
 }
 .cal .past-toggle:hover { color: #e4e4e7; }

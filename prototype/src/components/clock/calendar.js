@@ -150,11 +150,13 @@ class Calendar extends Component {
     // on today, meetings that already ended fold into one line
     const past = sameDay(this.selected, now) ? timed.filter(e => e.end <= now) : [];
     const rest = timed.filter(e => !past.includes(e));
+    const toggle = past.length
+      ? `<button class="past-toggle" data-past>${t(this.showPast ? 'calendar.hidePast' : 'calendar.showPast', { n: past.length })}</button>`
+      : '';
     return `<div class="cal-day">
-      <div class="sec">${longDate(this.selected)}</div>
+      <div class="day-head"><span class="day-title">${longDate(this.selected)}</span>${toggle}</div>
       ${allDayChips(events.filter(e => e.allDay), colors)}
       ${holidays.map(holidayRow).join('')}
-      ${past.length ? `<button class="past-toggle" data-past>${t(this.showPast ? 'calendar.hidePast' : 'calendar.showPast', { n: past.length })}</button>` : ''}
       <div class="evt-list">
         ${this.showPast ? past.map(e => eventRow(e, colors, true)).join('') : ''}
         ${rest.map(e => eventRow(e, colors)).join('')}
