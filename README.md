@@ -69,29 +69,47 @@ general {
 
 Configuration lives in `~/.config/smart-shell/config.json` (start from
 [`config/config.example.json`](config/config.example.json); it reloads live).
-The dock settings tab (size, magnification, workspace icons, which widgets
-show, pet, language) is saved in Quickshell's state file instead.
+The theme picked in the dock settings tab is written back to it (`theme`; the
+file is re-saved as formatted JSON). The tab's other settings (size,
+magnification, workspace icons, which widgets show, pet, language) are saved
+in Quickshell's state file instead.
 
 Calendar events need the export timer: `tools/install-services.sh` (see
 [Calendar events](#calendar-events)).
 
 ## Widgets and what they need
 
+- **Themes** - `theme`: `glass` (default), `midnight`, `aqua`, `neon`,
+  `paper`, `canarinho`, `snowy`, `halloween`. Each recolours the dock, tiles
+  and popovers; aqua stands the dock on a glass shelf, halloween hangs a cobweb
+  in its corner, snowy puts a snow cap on it. Snowy (snow) and halloween
+  (bats) also animate particles, and midnight / neon / snowy / halloween tint
+  the glass - all of it inside the dock only, at 30 fps, paused while a
+  fullscreen window is focused. Hyprland's blur applies to every theme.
+- **Pet** - one per dock, picked in the dock settings ("Nenhum" for none). It
+  walks on the dock's top edge and follows the CPU load (sleeps under 10%,
+  idles, walks, runs over 72%); during a work meeting (an ongoing event in the
+  `work` category, see Clock) it types on a laptop. Hover for its mood, click
+  for a heart. Holds still while a fullscreen window is focused.
+
 - **Workspaces** - Hyprland. Icons per workspace id in `workspaces.icons`
   (Lucide names).
 - **Caps Lock** - reads `/sys/class/leds/*::capslock` (no setup).
 - **Apps** - the pinned apps in `apps.pinned`: desktop entry ids, or
-  `{ "id", "name", "icon" }` to override the entry. Running apps get a dot;
+  `{ "id", "name", "icon" }` to override the entry; only pinned apps show,
+  like the prototype's row. Running apps get a dot;
   click focuses or launches, right click closes the app's windows. Web apps
   run by Chromium are matched by their `--app=` host.
 - **Music** - any MPRIS player. The playing one wins, then the one that
   played last; `music.ignore` (default `["whatsapp"]`) lists substrings of a
   player's identity, desktop entry, title, url or command line to never show.
+  Hover shows the full title, artist and player; the progress bar follows
+  the position once a second.
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed
-  except vivid badge pixels; items in `tray.redBadge` (Slack) bounce while their
-  badge is red or their tooltip says "N notifications", and so does any item in
-  NeedsAttention.
+  except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 8 s
+  while their badge is red (read from D-Bus every 3 s) or their tooltip says
+  "N notifications", and so does any item in NeedsAttention.
 - **Bluetooth** - BlueZ (`bluez`, an adapter). Click toggles the adapter,
   right click lists paired devices; the tile names the headset while it's
   connected. "Open manager" runs `blueman-manager`.
