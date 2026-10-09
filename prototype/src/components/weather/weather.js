@@ -1,30 +1,38 @@
 import { Component, define } from '../../core/component.js';
+import { icon } from '../../core/icons.js';
+import { isOpen, openPopover, closePopover } from '../../core/popover.js';
+import { describe } from '../../data/weather-codes.js';
+import { setHTML } from '../ui/ui.js';
+import './forecast.js';
 
-// Current weather (the real shell reuses waybar's weather.sh).
+// Current weather. Click opens the forecast (hours + 7 days).
 class Weather extends Component {
-  static slices = ['weather'];
+  static slices = ['weather', 'ui'];
 
   render() {
     return `
-      <svg class="sun" viewBox="0 0 32 32">
-        <g stroke="#fbbf24" stroke-width="2.4" stroke-linecap="round">
-          <path d="M16 2v4M16 26v4M2 16h4M26 16h4M6.1 6.1l2.8 2.8M23.1 23.1l2.8 2.8M6.1 25.9l2.8-2.8M23.1 8.9l2.8-2.8"/>
-        </g>
-        <circle cx="16" cy="16" r="6.5" fill="#fcd34d"/>
-      </svg>
+      <span data-icon></span>
       <div><div class="t-big" data-temp></div><div class="t-sub" data-summary></div></div>
-      <span class="label" data-detail></span>`;
+      <ss-forecast></ss-forecast>`;
   }
 
   setup() {
-    this.classList.add('tile');
-    this.dataset.tip = '';
+    this.classList.add('tile', 'weather');
+    this.dataset.popover = 'weather';
+    this.addEventListener('click', e => {
+      if (e.target.closest('ss-forecast')) return;
+      isOpen('weather') ? closePopover() : openPopover('weather');
+    });
   }
 
-  update({ weather: w }) {
-    this.$('[data-temp]').textContent = `${w.temp}°`;
-    this.$('[data-summary]').textContent = w.summary;
-    this.$('[data-detail]').textContent = `Sensação ${w.feels}°C · Umidade ${w.humidity}% · Vento ${w.wind} km/h`;
+  update({ weather: w, ui }) {
+    const c = w.current;
+    const look = describe(c.code, c.isDay);
+    this.toggleAttribute('data-open', ui.popover === 'weather');
+    this.style.setProperty('--wx', look.color);
+    setHTML(this.$('[data-icon]'), icon(look.icon, `wx-ic${look.icon === 'sun' ? ' spin' : ''}`));
+    this.$('[data-temp]').textContent = `${c.temp}°`;
+    this.$('[data-summary]').textContent = look.label;
   }
 }
 

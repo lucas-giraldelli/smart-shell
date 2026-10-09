@@ -1,2 +1,48 @@
-ss-weather .sun { width: 26px; height: 26px; flex: none; animation: spin 22s linear infinite; }
+.weather { cursor: pointer; }
+.weather .wx-ic { width: 26px; height: 26px; color: var(--wx); }
+.weather .wx-ic.spin { animation: spin 22s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* forecast popover */
+.forecast { width: 380px; padding: 12px; }
+.forecast .wx { display: inline-grid; place-items: center; color: var(--wx); }
+.forecast .wx svg.i { width: 18px; height: 18px; }
+.forecast .wx.big svg.i { width: 40px; height: 40px; }
+.forecast svg.i { width: 13px; height: 13px; }
+
+.fc-now { display: flex; align-items: center; gap: 12px; padding: 2px 4px 10px; }
+.fc-temp { font-size: 38px; font-weight: 600; letter-spacing: -.03em; font-variant-numeric: tabular-nums; }
+.fc-now b { font-size: 13.5px; }
+.fc-now .meta { display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+.fc-range { display: flex; flex-direction: column; gap: 3px; font-size: 12px; font-weight: 600; text-align: right; color: #d4d4d8; }
+
+.fc-chips { display: flex; gap: 6px; }
+.fc-chips span {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 7px 6px;
+  border-radius: 9px; background: rgba(255, 255, 255, .06); font-size: 11.5px; color: #d4d4d8; white-space: nowrap;
+}
+.fc-chips svg.i { color: #a1a1aa; }
+
+.fc-hours { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(44px, 1fr); overflow-x: auto; scrollbar-width: none; padding: 0 2px; }
+.fc-hours .hour { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 6px 0; border-radius: 9px; }
+.fc-hours .hour:first-child { background: rgba(255, 255, 255, .06); }
+.fc-hours b { font-size: 12.5px; font-variant-numeric: tabular-nums; }
+
+.rain { display: flex; align-items: center; gap: 2px; min-height: 13px; font-size: 10.5px; color: #74c7ec; font-variant-numeric: tabular-nums; }
+.rain svg.i { width: 10px; height: 10px; }
+
+.fc-days { display: flex; flex-direction: column; }
+.fc-days .day {
+  display: grid; grid-template-columns: 58px 22px 40px 30px 1fr 30px; align-items: center; gap: 8px;
+  padding: 6px 6px; border-radius: 8px; font-size: 12.5px; font-variant-numeric: tabular-nums;
+}
+.fc-days .day:hover { background: rgba(255, 255, 255, .05); }
+.fc-days .name { text-transform: capitalize; }
+.fc-days .min { color: #a1a1aa; text-align: right; }
+.fc-days .max { font-weight: 600; }
+.fc-days .range { position: relative; height: 5px; border-radius: 9px; background: rgba(255, 255, 255, .1); }
+.fc-days .range i {
+  position: absolute; top: 0; bottom: 0; border-radius: 9px;
+  background: linear-gradient(to right, #74c7ec, #f9e2af, #fb923c);
+}
+.fc-foot { padding: 8px 6px 0; text-align: right; }

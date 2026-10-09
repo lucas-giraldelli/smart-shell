@@ -88,6 +88,21 @@ export const docker = {
   })),
 };
 
-export const weather = { temp: 32, feels: 34, humidity: 53, wind: 9, summary: 'Céu limpo' };
+// City-level location (waybar's ip-api cache) and an Open-Meteo forecast sample,
+// used when the live fetch in services/weather.js fails.
+export const weather = {
+  city: 'Cuiabá', lat: -15.6, lon: -56.1,
+  current: { temp: 34, feels: 36, humidity: 44, wind: 11, code: 3, isDay: true },
+  hourly: [
+    ['09:00', 33, 3, 0, 1], ['10:00', 34, 3, 0, 1], ['11:00', 35, 3, 4, 1], ['12:00', 35, 3, 14, 1],
+    ['13:00', 36, 2, 28, 1], ['14:00', 37, 2, 39, 1], ['15:00', 36, 1, 46, 1], ['16:00', 36, 2, 50, 1],
+    ['17:00', 27, 53, 49, 1], ['18:00', 26, 55, 40, 0], ['19:00', 27, 51, 25, 0], ['20:00', 26, 1, 14, 0],
+  ].map(([time, temp, code, precip, isDay]) => ({ time, temp, code, precip, isDay: !!isDay })),
+  daily: [
+    ['2026-10-09', 25, 37, 55, 50], ['2026-10-10', 25, 35, 80, 86], ['2026-10-11', 25, 33, 95, 35],
+    ['2026-10-12', 24, 36, 51, 39], ['2026-10-13', 26, 36, 51, 61], ['2026-10-14', 25, 35, 53, 56],
+    ['2026-10-15', 25, 29, 95, 72],
+  ].map(([date, min, max, code, precip]) => ({ date, min, max, code, precip })),
+};
 
 export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music' };
