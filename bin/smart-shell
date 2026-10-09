@@ -5,6 +5,7 @@
 #   smart-shell doctor                            what each widget is missing
 #   smart-shell hyprland                          add the exec-once / blur lines
 #   smart-shell start | restart | stop | log
+#   smart-shell fake-event "<title>" <in-min> <dur-min> [category] | --clear
 #
 # Widgets with extra needs: brightness nightlight docker bluetooth events system.
 # Everything else (workspaces, clock, music, weather, tray, network, caps lock)
@@ -187,5 +188,11 @@ case "${1:-}" in
   stop) cmd_stop ;;
   restart) cmd_stop; sleep 0.5; cmd_start ;;
   log) exec qs log -p "$SHELL_DIR" ;;
-  *) sed -n '2,11p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
+  # a test event in memory only (the reminder, the pet's meeting), never written
+  fake-event)
+    shift
+    if [ "${1:-}" = --clear ]; then exec qs ipc -p "$SHELL_DIR" call events clearFake; fi
+    [ $# -ge 3 ] || { echo 'usage: smart-shell fake-event "<title>" <starts-in-min> <duration-min> [work|personal|health] | --clear' >&2; exit 1; }
+    exec qs ipc -p "$SHELL_DIR" call events fake "$1" "$2" "$3" "${4:-personal}" ;;
+  *) sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'; exit 1 ;;
 esac
