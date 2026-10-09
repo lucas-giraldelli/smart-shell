@@ -9,8 +9,9 @@ import { t } from '../../../i18n/index.js';
 const clamp = v => Math.max(0, Math.min(100, v));
 
 // "HDMI · placa de vídeo"; an unnamed onboard output is "Saída digital onboard"
-// a device's own name and visibility, set from the pane (config
-// audio.devices in the shell, keyed by the PipeWire node.name; here ui.audioDevices)
+// a device's own description (its second line) and visibility, set from the
+// pane (config audio.devices in the shell, keyed by the PipeWire node.name;
+// here ui.audioDevices); the name stays the device's
 const custom = id => store.get().ui.audioDevices?.[id] ?? {};
 const setDevice = (id, change) => update('ui', u => {
   const all = { ...(u.audioDevices ?? {}) };
@@ -22,9 +23,9 @@ const setDevice = (id, change) => update('ui', u => {
 let editing = null;     // the device being renamed
 let showHidden = false; // the hidden devices' footer is open
 
-export const sinkName = s => custom(s.id).name || (s.name ?? t(`volume.titles.${s.kind}`));
-// a renamed device keeps only its connection under the name
-export const sinkMeta = s => s.meta ?? [s.kind && t(`volume.kinds.${s.kind}`), !custom(s.id).name && s.where && t(`volume.where.${s.where}`)].filter(Boolean).join(' · ');
+export const sinkName = s => s.name ?? t(`volume.titles.${s.kind}`);
+// the second line: the user's description, else connection · card
+export const sinkMeta = s => custom(s.id).label || (s.meta ?? [s.kind && t(`volume.kinds.${s.kind}`), s.where && t(`volume.where.${s.where}`)].filter(Boolean).join(' · '));
 
 // the connected bluetooth headset shows up as an extra output
 function sinks(audio, bluetooth) {
@@ -67,12 +68,12 @@ export default {
     const shown = list.filter(s => !custom(s.id).hidden || s.id === current.id);
     const hidden = list.filter(s => !shown.includes(s));
     const actions = s => `<span class="dev-actions">
-        <button class="ib dev-btn" data-dev-rename="${s.id}" title="${t('volume.rename')}">${icon('pencil')}</button>
+        <button class="ib dev-btn" data-dev-rename="${s.id}" title="${t('volume.editLabel')}">${icon('pencil')}</button>
         <button class="ib dev-btn" data-dev-hide="${s.id}" title="${t('volume.hide')}">${icon('eye-off')}</button></span>`;
     const sinksHtml = shown.map(s => row({
       icon: s.icon,
-      title: editing === s.id ? `<input class="dev-name" data-dev-input="${s.id}" value="${sinkName(s)}" spellcheck="false">` : sinkName(s),
-      meta: sinkMeta(s), trailing: actions(s) + radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
+      title: sinkName(s),
+      meta: editing === s.id ? `<input class="dev-name" data-dev-input="${s.id}" value="${sinkMeta(s)}" spellcheck="false">` : sinkMeta(s), trailing: actions(s) + radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
     })).join('') + (hidden.length ? `
       <div class="dev-hidden${showHidden ? ' open' : ''}">
         <button class="dev-toggle" data-dev-toggle>${icon('chevron-right', 'dev-chev')}${t('volume.hidden', { n: hidden.length })}</button>
@@ -84,11 +85,11 @@ export default {
     if (input && document.activeElement !== input) { input.focus(); input.select(); }
     if (!root.devKeys) {
       root.devKeys = true;
-      // Enter saves the name (empty = back to the default), Esc cancels
+      // Enter saves the description (empty = back to the default), Esc cancels
       root.addEventListener('keydown', e => {
         const el = e.target.closest?.('[data-dev-input]');
         if (!el) return;
-        if (e.key === 'Enter') { editing = null; setDevice(el.dataset.devInput, { name: el.value.trim() }); }
+        if (e.key === 'Enter') { editing = null; setDevice(el.dataset.devInput, { label: el.value.trim() }); }
         if (e.key === 'Escape') { editing = null; setDevice(el.dataset.devInput, {}); }
       });
     }

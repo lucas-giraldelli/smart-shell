@@ -36,7 +36,7 @@ export default {
 
   volume: {
     label: 'Volume', output: 'Saída', input: 'Entrada', apps: 'Apps',
-    rename: 'Renomear', hide: 'Ocultar', show: 'Mostrar', hidden: 'Dispositivos ocultos ({n})',
+    editLabel: 'Editar descrição', hide: 'Ocultar', show: 'Mostrar', hidden: 'Dispositivos ocultos ({n})',
     kinds: { hdmi: 'HDMI', spdif: 'S/PDIF', analog: 'Analógico', usb: 'USB', bluetooth: 'Bluetooth' },
     where: { gpu: 'placa de vídeo', board: 'placa-mãe' },
     titles: { hdmi: 'Saída HDMI', spdif: 'Saída digital onboard', analog: 'Saída analógica onboard' },
