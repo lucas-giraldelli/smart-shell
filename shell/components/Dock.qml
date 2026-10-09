@@ -15,6 +15,7 @@ Rectangle {
         music: musicWidget,
         tray: trayWidget,
         quick: quickWidget,
+        weather: weatherWidget,
         clock: clockWidget
     })
 
@@ -103,6 +104,10 @@ Rectangle {
     Component {
         id: quickWidget
         Quick {}
+    }
+    Component {
+        id: weatherWidget
+        Weather {}
     }
     Component {
         id: clockWidget
