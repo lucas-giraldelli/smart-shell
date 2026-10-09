@@ -37,6 +37,14 @@ ss-pets { display: contents; }
 .pet.tongue .tongue { animation: tongue 1.1s ease-in-out infinite; }
 @keyframes tongue { 0%, 55%, 100% { transform: scaleX(0); } 68% { transform: scaleX(1); } 80% { transform: scaleX(0); } }
 
+/* work meeting: a laptop in front, the screen flickers and the pet types */
+.pet .laptop { display: none; }
+.pet.work .laptop { display: inline; }
+.pet.work .screen { animation: screen 2.4s steps(1) infinite; }
+@keyframes screen { 0%, 100% { fill: #7dd3fc; } 30% { fill: #a5f3fc; } 55% { fill: #93c5fd; } 80% { fill: #bae6fd; } }
+.pet.work .body-g { animation: typing .2s ease-in-out infinite alternate; }
+@keyframes typing { to { transform: translateY(-.7px); } }
+
 /* poses */
 .pet .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
 .pet .closed { display: none; }

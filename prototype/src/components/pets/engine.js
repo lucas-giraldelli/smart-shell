@@ -6,6 +6,8 @@ import { t } from '../../i18n/index.js';
 // through `acts` and can set speed / hop / waddle / chill (never runs).
 // An action's `pose` becomes a CSS class on the pet while it stands still
 // ('lie', 'sleep', or any species-specific one like the frog's 'croak').
+// Outside activities override all of that: during a work meeting every pet
+// stops in front of a laptop and types.
 
 const BASE_ACTS = [
   { name: 'stand', w: 3, dur: [2, 5] },
@@ -15,6 +17,14 @@ const BASE_ACTS = [
 const STATE_SPEED = { sleep: 0, walk: 34, run: 150 };
 
 const SWITCH_DELAY = 1.2; // a load change must hold this long before the pet reacts
+
+// drawn in front of every pet, shown only during a work meeting
+const LAPTOP = `
+  <g class="laptop">
+    <rect x="40" y="18.5" width="12" height="9" rx="1.2" fill="#1f2937" stroke="#94a3b8" stroke-width=".6"/>
+    <rect class="screen" x="41.2" y="19.7" width="9.6" height="6.6" rx=".6" fill="#7dd3fc"/>
+    <rect x="37.5" y="27.6" width="16" height="2" rx="1" fill="#94a3b8"/>
+  </g>`;
 
 function actionsFor(species) {
   const byName = new Map(BASE_ACTS.map(a => [a.name, a]));
@@ -29,7 +39,7 @@ export function createPet(kind, species, host) {
   const el = document.createElement('div');
   el.className = base;
   el.innerHTML = `<span class="bubble"></span><span class="zzz">z</span><span class="zzz">z</span>
-    <svg viewBox="0 0 46 36"><g class="flip">${species.svg}</g></svg>`;
+    <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
   host.append(el);
   const flip = el.querySelector('.flip');
   const bubble = el.querySelector('.bubble');
@@ -66,7 +76,7 @@ export function createPet(kind, species, host) {
     setTimeout(() => heart.remove(), 1000);
   });
 
-  function step(dt, load) {
+  function step(dt, load, activity = null) {
     const want = loadState(load);
     if (want === state) pending = null;
     else {
@@ -83,6 +93,7 @@ export function createPet(kind, species, host) {
       target = STATE_SPEED[state];
       if (state === 'sleep') pose = 'lie sleep';
     }
+    if (activity === 'work') pose = 'work';
     if (pose) target = 0;
 
     // ease toward the target speed instead of jumping to it
@@ -107,7 +118,7 @@ export function createPet(kind, species, host) {
       if (st !== lastStep) { el.style.setProperty('--step', st); lastStep = st; }
     }
 
-    let mood = t(`pets.moods.${state === 'idle' ? act?.name ?? 'stand' : state}`);
+    let mood = t(`pets.moods.${activity === 'work' ? 'work' : state === 'idle' ? act?.name ?? 'stand' : state}`);
     if (species.chill && load + jitter >= 72) mood = t('pets.chill');
     const text = t('pets.bubble', { name: t(`pets.names.${kind}`), mood, load: Math.round(load) });
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }

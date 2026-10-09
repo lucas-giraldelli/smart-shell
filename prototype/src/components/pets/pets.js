@@ -20,8 +20,10 @@ class Pets extends Component {
   setup() {
     this.pets = [];
     this.stopLoop = onFrame(dt => {
-      const load = store.get().system.load;
-      for (const pet of this.pets) pet.step(dt, load);
+      const { system, agenda } = store.get();
+      // what the user is busy with right now (only work meetings change the pets so far)
+      const activity = agenda.ongoing?.category ?? null;
+      for (const pet of this.pets) pet.step(dt, system.load, activity);
     });
   }
 
