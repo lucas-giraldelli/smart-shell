@@ -3,15 +3,13 @@
 .caps {
   position: relative; align-self: center; flex: none; cursor: pointer;
   display: grid; place-items: center; width: 24px; height: 24px; border-radius: 99px;
-  color: var(--text); border: 1px solid transparent;
-  transition: color .1s, background .1s, border-color .1s, box-shadow .1s;
+  color: var(--text);
+  transition: color .1s, filter .1s;
 }
 .caps svg.i { width: 15px; height: 15px; }
 .caps.on {
   color: var(--status);
-  background: color-mix(in srgb, var(--status) 16%, transparent);
-  border-color: color-mix(in srgb, var(--status) 45%, transparent);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--status) 35%, transparent);
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--status) 60%, transparent));
 }
 .caps .label { bottom: calc(100% + 14px); }
 
