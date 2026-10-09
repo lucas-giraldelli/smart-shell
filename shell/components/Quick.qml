@@ -75,14 +75,22 @@ Tile {
                     // the icon always shows the status; the text only when something is wrong
                     color: slot.modelData.status ? slot.statusColor : Theme.sub
                 }
-                Label {
-                    shadow: true
+                Row {
                     x: 19
                     anchors.verticalCenter: parent.verticalCenter
-                    text: slot.modelData.text
-                    color: slot.alarm ? slot.statusColor : Theme.text
-                    size: 11.5
-                    tnum: true
+                    Repeater {
+                        // one fixed slot per live value (a plain text is one part)
+                        model: slot.modelData.parts ?? [[slot.modelData.text, slot.modelData.width]]
+                        Label {
+                            required property var modelData
+                            width: root.ch * modelData[1]
+                            shadow: true
+                            text: modelData[0]
+                            color: slot.alarm ? slot.statusColor : Theme.text
+                            size: 11.5
+                            tnum: true
+                        }
+                    }
                 }
 
                 MouseArea {

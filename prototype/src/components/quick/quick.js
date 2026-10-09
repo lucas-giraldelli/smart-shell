@@ -54,9 +54,10 @@ class Quick extends Component {
     for (const { pane, available, i } of this.slots) {
       // a missing backend keeps its slot, greyed out with a dash
       const out = available ? pane.quick(state) : { icon: pane.icon, text: '—', tone: 'disabled' };
-      const { icon: name, text, tone = '', status, width } = Array.isArray(out) ? out[i] : out;
+      const { icon: name, text, parts, tone = '', status, width } = Array.isArray(out) ? out[i] : out;
       const el = this.querySelector(`[data-item="${pane.id}"][data-slot="${i}"]`);
-      setHTML(el, icon(name) + `<span>${text}</span>`);
+      const body = parts ? parts.map(([value, w]) => `<span class="qv" style="width: ${w}">${value}</span>`).join('') : text;
+      setHTML(el, icon(name) + `<span>${body}</span>`);
       el.className = `q ${tone}`;
       if (width) el.style.setProperty('--qw', width);
       if (status) el.dataset.status = status; else delete el.dataset.status;

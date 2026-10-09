@@ -50,7 +50,7 @@ export default {
   requires: 'docker',
 
   // the quick item shows what Docker costs right now: its memory
-  quickWidth: '7ch',
+  quickWidth: '7.3ch', // fits "1023 MiB"
   quick: ({ docker }) => ({
     icon: 'container', text: docker.running ? fmtMem(totalMem(docker)) : t('common.stopped'), status: dockerStatus(docker),
   }),

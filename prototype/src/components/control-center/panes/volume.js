@@ -19,7 +19,7 @@ export default {
   get label() { return t('volume.label'); },
   icon: 'volume-2',
 
-  quickWidth: '4ch',
+  quickWidth: '4.6ch', // fits "100%"
   quick: ({ audio }) => ({
     icon: audio.muted ? 'volume-x' : 'volume-2',
     text: audio.muted ? t('common.muted') : audio.volume + '%',

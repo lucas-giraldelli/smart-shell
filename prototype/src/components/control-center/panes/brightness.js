@@ -14,7 +14,7 @@ export default {
   icon: 'sun',
   requires: 'ddcutil',
 
-  quickWidth: '4ch',
+  quickWidth: '4.6ch', // fits "100%"
   quick: ({ display }) => ({ icon: 'sun', text: display.brightness + '%' }),
   wheel: dir => update('display', d => ({ brightness: clamp(d.brightness + dir * 5) })),
 

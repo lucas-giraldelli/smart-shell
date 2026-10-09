@@ -26,7 +26,8 @@ export default {
   // one pane, two mini items
   quick: ({ system: s }) => [
     { icon: 'memory-stick', text: `${Math.round(s.memFree)} GiB`, width: '6ch', status: memStatus(s) === 'ok' ? null : memStatus(s) },
-    { icon: 'cpu', text: `${Math.round(s.load)}% ${s.temp}°`, width: '7ch', status: tempStatus(s) === 'ok' ? null : tempStatus(s) },
+    // load and temperature in fixed slots ("100%", "100°"), so neither moves the other
+    { icon: 'cpu', parts: [[`${Math.round(s.load)}%`, '5ch'], [`${s.temp}°`, '3.8ch']], width: '8.8ch', status: tempStatus(s) === 'ok' ? null : tempStatus(s) },
   ],
 
   render: () => `
