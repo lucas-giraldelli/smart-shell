@@ -44,5 +44,11 @@ export function snow(canvas) {
       ctx.fill();
     }
     ctx.globalAlpha = 1;
+    // debug numbers, mirrored on the canvas as data-* by fx.js (CSS px)
+    return {
+      floorY: Math.round(floor / dpr),
+      dockLeft: Math.round(dock.left), dockRight: Math.round(dock.right),
+      flakes: flakes.length, landed: flakes.filter(p => p.life > 0).length,
+    };
   };
 }

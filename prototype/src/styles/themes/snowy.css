@@ -7,9 +7,10 @@ body[data-theme="snowy"] {
   --menu-surface: rgba(220, 238, 255, .07); --menu-hover: rgba(220, 238, 255, .12); --menu-strong: rgba(220, 238, 255, .2);
   --menu-accent: #bae6fd;
 }
-/* a snow cap resting on the dock (the snow effect lands on it) */
-body[data-theme="snowy"] .dock::before {
-  content: ""; position: absolute; left: 16px; right: 16px; top: -8px; height: 15px; z-index: 3; pointer-events: none;
+/* a snow cap resting on the dock (the snow effect lands on it); the element is
+   rendered by the dock in every theme and only shown here */
+body[data-theme="snowy"] .dock > .snow-cap {
+  display: block; position: absolute; left: 16px; right: 16px; top: -8px; height: 15px; z-index: 3; pointer-events: none;
   background:
     radial-gradient(circle at 13px 13px, #fff 10px, transparent 10.5px) 0 0 / 31px 15px repeat-x,
     radial-gradient(circle at 7px 11px, #f4f9ff 7px, transparent 7.5px) 15px 2px / 23px 15px repeat-x;

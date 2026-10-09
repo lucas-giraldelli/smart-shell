@@ -29,7 +29,9 @@ class Dock extends Component {
         return `<${w.tag}${off}></${w.tag}>`;
       }).join('');
       return g.tiles ? `<div class="tiles">${items}</div>` : items;
-    }).join('<div class="sep"></div>');
+    }).join('<div class="sep"></div>')
+      // themed decoration (see styles/themes/snowy.css); a real node so it can be inspected
+      + '<div class="snow-cap" data-testid="snow-cap" aria-hidden="true"></div>';
   }
 }
 

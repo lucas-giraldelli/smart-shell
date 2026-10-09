@@ -11,7 +11,7 @@ class Fx extends Component {
   static slices = ['ui'];
 
   render() {
-    return '<canvas></canvas>';
+    return '<canvas data-testid="fx-canvas"></canvas>';
   }
 
   setup() {
@@ -39,6 +39,7 @@ class Fx extends Component {
 
   start(id) {
     this.effectId = id;
+    this.canvas.dataset.effect = id ?? 'none';
     this.fit();
     this.draw = id ? EFFECTS[id](this.canvas) : null;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -58,7 +59,12 @@ class Fx extends Component {
     const c = this.canvas.getBoundingClientRect();
     const d = document.querySelector('ss-dock')?.getBoundingClientRect();
     const dock = d ? { left: d.left - c.left, right: d.right - c.left, top: d.top - c.top } : { left: 0, right: 0, top: c.height };
-    this.draw(this.ctx, dt, this.t, dock);
+    const stats = this.draw(this.ctx, dt, this.t, dock);
+    // debug: what the effect is doing right now, readable in the inspector
+    if (stats) for (const [key, value] of Object.entries(stats)) {
+      const v = String(value);
+      if (this.canvas.dataset[key] !== v) this.canvas.dataset[key] = v;
+    }
   }
 }
 

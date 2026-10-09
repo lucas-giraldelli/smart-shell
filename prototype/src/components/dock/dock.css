@@ -16,6 +16,8 @@ ss-dock.dock {
 }
 .dock > * { position: relative; z-index: 2; }
 
+.dock > .snow-cap { display: none; }
+
 .tiles { display: flex; align-items: flex-end; gap: 8px; height: var(--size); }
 
 /* every status widget is a tile */
