@@ -33,9 +33,14 @@ Tile {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
-                // only for the YouTube Music app; any other player: nothing
-                if (Media.showingMusicApp)
+                // YouTube Music: its volume and controls; any other player:
+                // go to its window
+                if (Media.showingMusicApp) {
                     volume.open ? Ui.closePopover() : Ui.openPopover("music-volume");
+                } else {
+                    Ui.closePopover();
+                    Media.focusPlayer(Media.player);
+                }
                 return;
             }
             Ui.closePopover();
@@ -65,6 +70,49 @@ Tile {
                     Audio.setAppVolume(Audio.musicApp, v);
                 }
                 onButtonClicked: Audio.setMusicMuted(!Audio.musicMuted)
+            }
+            // previous / play-pause / next (MPRIS) and like (the app's Shift + "+")
+            Item {
+                visible: Media.musicPlayer !== null
+                width: parent.width
+                height: 4 + 30 + 6
+                Row {
+                    x: 8
+                    y: 4
+                    spacing: 6
+                    IconButton {
+                        icon: "skip-back"
+                        interactive: Media.musicPlayer?.canGoPrevious ?? false
+                        opacity: interactive ? 1 : 0.45
+                        onClicked: Media.musicPlayer.previous()
+                    }
+                    IconButton {
+                        icon: Media.musicPlayer?.isPlaying ? "pause" : "play"
+                        onClicked: Media.musicPlayer.togglePlaying()
+                    }
+                    IconButton {
+                        icon: "skip-forward"
+                        interactive: Media.musicPlayer?.canGoNext ?? false
+                        opacity: interactive ? 1 : 0.45
+                        onClicked: Media.musicPlayer.next()
+                    }
+                }
+                IconButton {
+                    id: like
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8
+                    y: 4
+                    icon: "heart"
+                    // a short flash: the app doesn't tell whether it's liked
+                    property bool flash: false
+                    off: flash
+                    onClicked: {
+                        Media.likeMusic();
+                        flash = true;
+                        flashTimer.restart();
+                    }
+                    Timer { id: flashTimer; interval: 600; onTriggered: like.flash = false }
+                }
             }
             MenuRow {
                 visible: Audio.musicApp === null

@@ -29,6 +29,14 @@ class Music extends Component {
       <div class="menu music-volume">
         <div class="sec">${t('music.volume')}</div>
         ${slider({ key: 'ytm', label: 'YouTube Music', iconName: 'volume-2', button: true })}
+        <div class="ytm-controls">
+          <span class="ytm-media">
+            <button class="ib" data-ytm="previous">${icon('skip-back')}</button>
+            <button class="ib" data-ytm="toggle">${icon('pause')}</button>
+            <button class="ib" data-ytm="next">${icon('skip-forward')}</button>
+          </span>
+          <button class="ib" data-ytm="like" title="Like">${icon('heart')}</button>
+        </div>
       </div>`;
   }
 
@@ -40,6 +48,15 @@ class Music extends Component {
       if (cameFrom(e, '.menu')) {
         // the mute button
         if (e.target.closest('[data-btn="ytm"]')) update('media', m => ({ muted: !m.muted }));
+        // previous / play-pause / next (MPRIS) and like (the app's "+" shortcut)
+        const ctl = e.target.closest('[data-ytm]')?.dataset.ytm;
+        if (ctl === 'toggle') update('media', m => ({ playing: !m.playing }));
+        if (ctl === 'previous' || ctl === 'next') update('media', { progress: 0 });
+        if (ctl === 'like') {
+          const b = e.target.closest('[data-ytm]');
+          b.classList.add('off');
+          setTimeout(() => b.classList.remove('off'), 600);
+        }
         return;
       }
       closePopover();
@@ -49,7 +66,14 @@ class Music extends Component {
     // (only for the YouTube Music app - config.pets.danceWith; any other player: nothing)
     this.addEventListener('contextmenu', e => {
       e.preventDefault();
-      if (!isMusicApp(store.get().media)) return;
+      // any other player: go to its window (the mock: its workspace)
+      if (!isMusicApp(store.get().media)) {
+        closePopover();
+        const src = (store.get().media.source ?? '').toLowerCase();
+        const ws = store.get().workspaces.list.find(w => w.windows.some(n => src.includes(n.toLowerCase().split(' ')[0])));
+        if (ws) update('workspaces', { active: ws.id });
+        return;
+      }
       isOpen('music-volume') ? closePopover() : openPopover('music-volume');
     });
     this.addEventListener('input', e => {
@@ -63,6 +87,7 @@ class Music extends Component {
     const mute = this.$('[data-btn="ytm"]');
     setHTML(mute, icon(media.muted ? 'volume-x' : 'volume-2'));
     mute.classList.toggle('off', media.muted);
+    setHTML(this.$('[data-ytm="toggle"]'), icon(media.playing ? 'pause' : 'play'));
     this.classList.toggle('playing', media.playing);
     // title and artist are cut short in the tile: the tooltip has them in full
     // (no player name: it's only ever "Chromium" / "Mozilla Zen")

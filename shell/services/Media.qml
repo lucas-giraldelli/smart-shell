@@ -92,6 +92,38 @@ Singleton {
     readonly property real length: lastLength
     readonly property real progress: lastLength > 0 ? Math.max(0, Math.min(1, lastPosition / lastLength)) : 0
 
+    // the YouTube Music app's own player (its popover's controls)
+    readonly property MprisPlayer musicPlayer: Mpris.players.values.find(p => isMusicApp(p)) ?? null
+
+    // Bring a player's window forward: its workspace, then the window - found
+    // by the D-Bus connection's process (the browser that owns the window),
+    // else by its desktop entry in the window class.
+    function focusPlayer(p) {
+        if (!p)
+            return;
+        windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch focuswindow "address:$addr" >/dev/null',
+            "sh", p.dbusName, (p.desktopEntry || p.identity || "").toLowerCase()];
+        windowAction.running = true;
+    }
+    // YouTube Music's like: its "+" shortcut (Shift + "=" - Hyprland can't
+    // send the shifted "plus" keysym), sent to its window without focusing it
+    function likeMusic() {
+        if (!musicPlayer)
+            return;
+        windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch sendshortcut "SHIFT,equal,address:$addr" >/dev/null',
+            "sh", musicPlayer.dbusName, "music.youtube.com"];
+        windowAction.running = true;
+    }
+    // sets $addr from $1 (a D-Bus name) and $2 (a window class hint)
+    readonly property string findWindow: 'pid=$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus '
+        + 'org.freedesktop.DBus GetConnectionUnixProcessID s "$1" 2>/dev/null | cut -d" " -f2); '
+        + 'addr=$(hyprctl clients -j | jq -r --argjson pid "${pid:-0}" --arg hint "$2" '
+        + '\'first(.[] | select(.pid == $pid)) // first(.[] | select((.class | ascii_downcase) | contains($hint))) | .address\'); '
+        + '[ -n "$addr" ] && [ "$addr" != null ] || exit 1; '
+    Process {
+        id: windowAction
+    }
+
     function toggle() {
         if (player?.canTogglePlaying)
             player.togglePlaying();

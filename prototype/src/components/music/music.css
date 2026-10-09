@@ -19,3 +19,7 @@
 @keyframes eq { from { height: 15%; } to { height: 100%; } }
 .music .progress { margin-top: 5px; height: 3px; border-radius: 2px; background: var(--ring-track); overflow: hidden; }
 .music .progress i { display: block; height: 100%; width: 0; background: var(--accent); }
+
+/* YouTube Music's popover: previous / play-pause / next and like */
+.music .ytm-controls { display: flex; justify-content: space-between; padding: 4px 8px 6px; }
+.music .ytm-media { display: flex; gap: 6px; }
