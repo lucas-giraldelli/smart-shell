@@ -1,0 +1,202 @@
+import QtQuick
+import Quickshell
+import Quickshell.Bluetooth
+import "../services"
+import ".."
+import "ui"
+import "../lib/rules.mjs" as Rules
+
+// Bluetooth (prototype: components/bluetooth). Click toggles the adapter;
+// right-click opens the device menu (like blueman). The tile is just the icon
+// (crossed out when off) and only grows - with an animation - to name the
+// headset while one is connecting or connected. BlueZ via Quickshell.Bluetooth.
+Tile {
+    id: root
+
+    readonly property var adapter: Bluetooth.defaultAdapter
+    readonly property bool available: Caps.bluetooth && adapter !== null
+    readonly property bool on: available && adapter.enabled
+    readonly property var devices: adapter ? adapter.devices.values.filter(d => d.paired) : []
+    readonly property var connected: devices.find(d => d.connected) ?? null
+    readonly property var connecting: devices.find(d => d.state === BluetoothDeviceState.Connecting) ?? null
+    readonly property var device: connected ?? connecting
+    readonly property bool expanded: device !== null
+
+    // keep the last name while collapsing, so the text doesn't vanish mid-animation
+    property string name: ""
+    property string sub: ""
+    onDeviceChanged: update()
+    Connections {
+        target: root.device
+        ignoreUnknownSignals: true
+        function onBatteryChanged() { root.update(); }
+        function onStateChanged() { root.update(); }
+    }
+    function update() {
+        if (!device)
+            return;
+        name = device.name;
+        sub = device === connecting ? I18n.t("bluetooth.connecting")
+            : device.batteryAvailable ? I18n.t("bluetooth.headset", { battery: Math.round(device.battery * 100) })
+            : I18n.t("bluetooth.headsetOutput");
+    }
+
+    // icon only (padding 0 15px), or padding 0 14px 0 13px + gap 9 + the name
+    implicitWidth: 2 + (expanded ? 13 + 20 + 9 + body.width + 14 : 15 + 20 + 15)
+    Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
+    open: menu.open
+
+    Tip {
+        text: root.available ? I18n.t("bluetooth.hint", { state: I18n.t(root.on ? "bluetooth.stateOn" : "bluetooth.stateOff") })
+            : Rules.missingText(Panes.i18n, "bluetooth")
+        shown: root.hovered
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: root.available
+        cursorShape: Qt.PointingHandCursor
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton) {
+                menu.open ? Ui.closePopover() : Ui.openPopover("bluetooth");
+            } else {
+                Ui.closePopover();
+                root.adapter.enabled = !root.adapter.enabled;
+            }
+        }
+    }
+
+    Icon {
+        id: icon
+        x: root.expanded ? 14 : 16
+        y: 14.2
+        Behavior on x { NumberAnimation { duration: 350 } }
+        name: !root.on ? "bluetooth-off" : root.connected ? "bluetooth-connected" : "bluetooth"
+        size: 20
+        shadow: true
+        color: root.on ? Theme.accent : Theme.sub
+        Behavior on color { ColorAnimation { duration: 300 } }
+
+        // connecting: the icon pulses until the headset answers
+        SequentialAnimation {
+            running: root.connecting !== null
+            loops: Animation.Infinite
+            onRunningChanged: if (!running) { icon.opacity = 1; icon.scale = 1; }
+            ParallelAnimation {
+                NumberAnimation { target: icon; property: "opacity"; to: 0.35; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: icon; property: "scale"; to: 0.88; duration: 500; easing.type: Easing.InOutQuad }
+            }
+            ParallelAnimation {
+                NumberAnimation { target: icon; property: "opacity"; to: 1; duration: 500; easing.type: Easing.InOutQuad }
+                NumberAnimation { target: icon; property: "scale"; to: 1; duration: 500; easing.type: Easing.InOutQuad }
+            }
+        }
+    }
+
+    // .bt-body: up to 120px, fades and slides in
+    Column {
+        id: body
+        x: 1 + 13 + 20 + 9 + (root.expanded ? 0 : -6)
+        anchors.verticalCenter: parent.verticalCenter
+        width: Math.min(120, Math.max(nameLabel.implicitWidth, subLabel.implicitWidth))
+        // clipped by the growing tile, like max-width + overflow: hidden
+        visible: opacity > 0 && root.width > 2 + 13 + 20 + 9 + 4
+        opacity: root.expanded ? 1 : 0
+        Behavior on opacity { NumberAnimation { duration: 250 } }
+        Behavior on x { NumberAnimation { duration: 350 } }
+
+        Label {
+            id: nameLabel
+            width: parent.width
+            elide: Text.ElideRight
+            text: root.name
+            size: 12.5
+            weight: Font.DemiBold
+            shadow: true
+            color: Theme.text
+        }
+        Label {
+            id: subLabel
+            width: parent.width
+            elide: Text.ElideRight
+            text: root.sub
+            size: 11
+            shadow: true
+            color: Theme.sub
+        }
+    }
+
+    // the device menu (prototype: the .menu built in bluetooth.js)
+    Popover {
+        id: menu
+        owner: root
+        name: "bluetooth"
+
+        Column {
+            width: parent.width
+
+            MenuRow {
+                icon: "bluetooth"
+                title: "Bluetooth"
+                onClicked: root.adapter.enabled = !root.adapter.enabled
+                Switch { on: root.on }
+            }
+            Separator {}
+            // margin-top 6, collapsing with the separator's 4
+            Section { gap: 2; text: I18n.t("bluetooth.paired") }
+            Repeater {
+                model: root.devices
+                MenuRow {
+                    id: deviceRow
+                    required property var modelData
+                    readonly property bool busy: modelData.state === BluetoothDeviceState.Connecting
+                    icon: "headphones"
+                    title: modelData.name
+                    active: modelData.connected
+                    meta: busy ? I18n.t("bluetooth.connecting")
+                        : modelData.connected ? (modelData.batteryAvailable ? I18n.t("bluetooth.connected", { battery: Math.round(modelData.battery * 100) }) : I18n.t("common.on"))
+                        : I18n.t("bluetooth.disconnected")
+                    onClicked: {
+                        if (busy)
+                            return;
+                        if (modelData.connected) {
+                            modelData.disconnect();
+                        } else {
+                            // connecting powers the adapter on, like blueman does
+                            root.adapter.enabled = true;
+                            modelData.connect();
+                        }
+                    }
+                    Label {
+                        visible: !deviceRow.busy
+                        text: I18n.t(deviceRow.modelData.connected ? "bluetooth.disconnect" : "bluetooth.connect")
+                        size: 11
+                        color: Theme.menuAccent
+                    }
+                }
+            }
+            Separator {}
+            MenuRow {
+                title: I18n.t("bluetooth.manager")
+                onClicked: {
+                    Quickshell.execDetached(["blueman-manager"]);
+                    Ui.closePopover();
+                }
+            }
+        }
+    }
+
+    // .menu-sep: 1px, margin 4px 6px
+    component Separator: Item {
+        width: parent.width
+        height: 9
+        Rectangle {
+            x: 6
+            y: 4
+            width: parent.width - 12
+            height: 1
+            color: Theme.menuHover
+        }
+    }
+}

@@ -12,6 +12,8 @@ Rectangle {
     // widget id -> component (prototype: components/registry.js)
     readonly property var widgets: ({
         workspaces: workspacesWidget,
+        capslock: capsWidget,
+        bluetooth: bluetoothWidget,
         music: musicWidget,
         tray: trayWidget,
         quick: quickWidget,
@@ -92,6 +94,14 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+    }
+    Component {
+        id: capsWidget
+        CapsLock {}
+    }
+    Component {
+        id: bluetoothWidget
+        BluetoothTile {}
     }
     Component {
         id: musicWidget

@@ -10,14 +10,15 @@ Item {
 
     property alias text: label.text
     property bool first: false
+    property real gap: first ? 4 : 12       // margin-top
 
     width: parent?.width ?? 0
-    implicitHeight: (first ? 4 : 12) + label.implicitHeight + 4
+    implicitHeight: gap + label.implicitHeight + 4
 
     Label {
         id: label
         x: 8
-        y: root.first ? 4 : 12
+        y: root.gap
         width: root.width - 16
         size: 10.5
         weight: Font.DemiBold
