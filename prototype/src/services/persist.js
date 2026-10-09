@@ -2,7 +2,7 @@ import { store } from '../state.js';
 import { savePref } from '../core/prefs.js';
 
 // Persist user preferences from the `ui` slice whenever they change.
-const KEYS = ['theme', 'hidden', 'wsIcons', 'pets', 'size', 'magnify', 'liveWallpaper'];
+const KEYS = ['theme', 'hidden', 'wsIcons', 'pet', 'size', 'magnify', 'liveWallpaper'];
 
 export function startPersist() {
   let previous = store.get().ui;

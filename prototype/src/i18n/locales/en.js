@@ -41,7 +41,7 @@ export default {
 
   settings: {
     label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', wsIcons: 'Icons on workspaces',
-    widgets: 'Widgets', pets: 'Pets', language: 'Language',
+    widgets: 'Widgets', pets: 'Pet', noPet: 'None', language: 'Language',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },
 

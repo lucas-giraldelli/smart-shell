@@ -13,6 +13,7 @@ import { t, locale, locales } from '../../../i18n/index.js';
 // would hide this very tab.
 const TOGGLEABLE = Object.keys(widgets).filter(id => id !== 'quick');
 const check = on => `<span class="chk${on ? ' on' : ''}">${icon('check')}</span>`;
+const radio = on => `<span class="radio-dot${on ? ' on' : ''}"></span>`;
 
 export default {
   id: 'settings',
@@ -35,7 +36,7 @@ export default {
       <div class="checks">${TOGGLEABLE.map(id => `<label class="check-row" data-widget="${id}"><span data-box></span>${t(`widgets.${id}`)}</label>`).join('')}</div>
 
       <div class="sec">${t('settings.pets')}</div>
-      <div class="checks">${Object.keys(species).map(k => `<label class="check-row" data-pet="${k}"><span data-box></span>${t(`pets.names.${k}`)}</label>`).join('')}</div>
+      <div class="checks">${[...Object.keys(species), 'none'].map(k => `<label class="check-row" data-pet="${k}"><span data-box></span>${t(k === 'none' ? 'settings.noPet' : `pets.names.${k}`)}</label>`).join('')}</div>
 
       <div class="sec">${t('settings.language')}</div>
       <div class="langs">${locales().map(l => `<button data-locale="${l}">${t(`settings.locales.${l}`)}</button>`).join('')}</div>
@@ -47,7 +48,7 @@ export default {
     setSlider(root, 'magnify', Math.round(ui.magnify * 100), `${ui.magnify.toFixed(2)}×`);
     setHTML(root.querySelector('[data-ws-icons]'), row({ title: t('settings.wsIcons'), trailing: toggle(ui.wsIcons), attrs: 'data-toggle="wsIcons"' }));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
-    root.querySelectorAll('[data-pet]').forEach(el => setHTML(el.querySelector('[data-box]'), check(ui.pets.includes(el.dataset.pet))));
+    root.querySelectorAll('[data-pet]').forEach(el => setHTML(el.querySelector('[data-box]'), radio((ui.pet ?? 'none') === el.dataset.pet)));
     root.querySelectorAll('[data-locale]').forEach(b => b.classList.toggle('on', b.dataset.locale === locale()));
   },
 
@@ -63,8 +64,8 @@ export default {
     }
     const pet = target.closest('[data-pet]');
     if (pet) {
-      const k = pet.dataset.pet;
-      return update('ui', { pets: ui.pets.includes(k) ? ui.pets.filter(p => p !== k) : [...ui.pets, k] });
+      // one pet per dock: picking one replaces the current
+      return update('ui', { pet: pet.dataset.pet === 'none' ? null : pet.dataset.pet });
     }
     const lang = target.closest('[data-locale]');
     // the UI is rendered once per page load, so a new language means a reload

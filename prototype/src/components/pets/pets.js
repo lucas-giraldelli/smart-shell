@@ -13,7 +13,8 @@ import frog from './species/frog.js';
 // Every sprite faces right in a 46x36 box with its feet on y=33.
 export const species = { cat, shiba, fox, penguin, bunny, capy, frog };
 
-// Pets walking on top of the dock. Must sit inside .dock-wrap, which is their floor.
+// The pet walking on top of the dock (one per dock, ui.pet). Must sit inside
+// .dock-wrap, which is its floor.
 class Pets extends Component {
   static slices = ['ui'];
 
@@ -32,7 +33,7 @@ class Pets extends Component {
   }
 
   update({ ui }) {
-    const wanted = ui.pets.filter(kind => species[kind]);
+    const wanted = species[ui.pet] ? [ui.pet] : [];
     this.pets = this.pets.filter(p => wanted.includes(p.kind) || (p.remove(), false));
     for (const kind of wanted) {
       if (!this.pets.some(p => p.kind === kind)) this.pets.push(createPet(kind, species[kind], this.parentElement));

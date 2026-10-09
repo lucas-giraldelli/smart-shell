@@ -93,6 +93,8 @@
 }
 .cc .set .chk svg.i { width: 12px; height: 12px; stroke-width: 3; }
 .cc .set .chk.on { background: var(--menu-accent); border-color: var(--menu-accent); color: var(--menu-bg); }
+.cc .set .radio-dot { flex: none; width: 17px; height: 17px; border-radius: 99px; border: 1.5px solid var(--menu-faint); transition: border-color .15s, background .15s; }
+.cc .set .radio-dot.on { border-color: var(--menu-accent); background: radial-gradient(var(--menu-accent) 0 4.5px, transparent 5px); }
 .cc .set .langs { display: flex; gap: 6px; padding: 2px 8px 4px; }
 .cc .set .langs button {
   flex: 1; padding: 7px 0; cursor: pointer; font: inherit; font-size: 12px; border-radius: 9px;
