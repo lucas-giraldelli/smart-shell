@@ -1,0 +1,130 @@
+// Português (Brasil)
+export default {
+  common: {
+    on: 'Ligado', off: 'Desligado', muted: 'Mudo', now: 'Agora', today: 'Hoje', tomorrow: 'Amanhã',
+    copy: 'Copiar', copied: 'Copiado!', stopped: 'Parado',
+  },
+
+  widgets: {
+    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Música', weather: 'Clima',
+    system: 'Sistema (RAM/CPU)', bluetooth: 'Bluetooth', quick: 'Controles rápidos', tray: 'Tray', clock: 'Relógio',
+  },
+
+  workspaces: { label: 'Workspace {id} · {windows}', empty: 'vazio' },
+
+  capslock: { on: 'Caps Lock ligado', off: 'Caps Lock desligado' },
+
+  music: { hint: 'Clique: play/pause' },
+
+  system: { detail: 'CPU {load}% · die (Tccd1) {temp}°C · {free} GiB livres de {total}' },
+
+  bluetooth: {
+    hint: '{state} · clique liga/desliga · botão direito: dispositivos',
+    stateOn: 'Bluetooth ligado', stateOff: 'Bluetooth desligado',
+    connecting: 'Conectando…', headset: 'Fone · {battery}%',
+    paired: 'Dispositivos pareados', connected: 'Conectado · {battery}%', disconnected: 'Desconectado',
+    connect: 'Conectar', disconnect: 'Desconectar', manager: 'Abrir gerenciador…',
+    headsetOutput: 'Fone Bluetooth',
+  },
+
+  volume: { label: 'Volume', output: 'Saída', input: 'Entrada', apps: 'Apps' },
+
+  brightness: {
+    label: 'Brilho', monitor: 'Monitor', night: 'Luz noturna', temperature: 'Temperatura',
+    presets: { night: 'Noite', normal: 'Normal', day: 'Dia', max: 'Máx' },
+  },
+
+  network: {
+    label: 'Rede', connected: '{kind} conectada', offline: 'Sem internet',
+    internetOk: 'internet ok', noPing: 'o ping não responde',
+    ip: 'IP', gateway: 'Gateway', dockerNet: 'Rede Docker',
+    download: 'Download', upload: 'Upload', connections: 'Conexões', vpn: 'VPN', copyIp: 'Copiar IP',
+  },
+
+  docker: {
+    label: 'Docker', summary: '{up} de {total} rodando · {mem}', serviceDown: 'Serviço do Docker parado',
+    running: 'Rodando', paused: 'Pausado', restarting: 'Reiniciando…', exitedError: 'Saiu com erro ({code})',
+    start: 'Iniciar', stop: 'Parar',
+  },
+
+  capabilities: {
+    bluetooth: 'Sem adaptador Bluetooth', ddcutil: 'ddcutil não instalado',
+    docker: 'Docker não instalado', hyprsunset: 'hyprsunset não instalado',
+    unknown: '{name} indisponível', install: 'Instale o pacote {pkg} para usar.',
+  },
+
+  weather: {
+    feels: 'Sensação {temp}°', nextHours: 'Próximas horas', days: '7 dias',
+    updated: 'Open-Meteo · atualizado {time}', sample: 'Previsão de exemplo · sem conexão',
+    codes: {
+      0: 'Céu limpo', 1: 'Predominantemente limpo', 2: 'Parcialmente nublado', 3: 'Nublado',
+      45: 'Neblina', 48: 'Neblina com gelo',
+      51: 'Garoa leve', 53: 'Garoa moderada', 55: 'Garoa intensa', 56: 'Garoa congelante', 57: 'Garoa congelante',
+      61: 'Chuva leve', 63: 'Chuva moderada', 65: 'Chuva forte', 66: 'Chuva congelante', 67: 'Chuva congelante',
+      71: 'Neve leve', 73: 'Neve moderada', 75: 'Neve forte', 77: 'Grânulos de neve',
+      80: 'Pancadas leves', 81: 'Pancadas moderadas', 82: 'Pancadas fortes',
+      85: 'Pancadas de neve', 86: 'Pancadas de neve fortes',
+      95: 'Trovoada', 96: 'Trovoada com granizo', 99: 'Trovoada com granizo',
+      unknown: 'Desconhecido',
+    },
+  },
+
+  calendar: {
+    prevMonth: 'Mês anterior', nextMonth: 'Próximo mês', today: 'Hoje',
+    weekdays: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
+    allDay: 'Dia todo', optional: 'facultativo', upcoming: 'Próximos feriados',
+    untitled: '(sem título)',
+    skipped: '{name} não aparece: {reason}',
+    reasons: {
+      offline: 'sem suporte offline no Thunderbird',
+      disabled: 'desativado no Thunderbird',
+      unknown: 'não existe no Thunderbird',
+    },
+  },
+
+  reminder: { soon: 'em {minutes} min', now: 'agora' },
+
+  regions: { br: 'Brasil', cba: 'Cuiabá / MT', us: 'EUA' },
+
+  holidays: {
+    newYear: 'Confraternização Universal', carnival: 'Carnaval', ashWednesday: 'Quarta-feira de Cinzas',
+    goodFriday: 'Sexta-feira Santa', tiradentes: 'Tiradentes', labour: 'Dia do Trabalho',
+    corpusChristi: 'Corpus Christi', independenceBR: 'Independência do Brasil',
+    aparecida: 'Nossa Senhora Aparecida', allSouls: 'Finados', republic: 'Proclamação da República',
+    blackConsciousness: 'Dia da Consciência Negra', christmas: 'Natal',
+    cuiaba: 'Aniversário de Cuiabá', matoGrosso: 'Fundação de Mato Grosso', conception: 'Nossa Senhora da Conceição',
+    usNewYear: 'Ano Novo (EUA)', mlk: 'Dia de Martin Luther King Jr.', presidents: 'Dia dos Presidentes',
+    memorial: 'Memorial Day', juneteenth: 'Juneteenth', independenceUS: 'Independência dos EUA',
+    labor: 'Labor Day', columbus: 'Columbus Day', veterans: 'Dia dos Veteranos',
+    thanksgiving: 'Ação de Graças', usChristmas: 'Natal (EUA)',
+  },
+
+  themes: {
+    glass: 'Vidro', midnight: 'Midnight', aqua: 'Aqua Shelf', neon: 'Neon', paper: 'Papel',
+    canarinho: 'Canarinho', snowy: 'Snowy Night', halloween: 'Halloween',
+  },
+
+  pets: {
+    names: { cat: 'Gato', shiba: 'Shiba', fox: 'Raposa', penguin: 'Pinguim', bunny: 'Coelho', capy: 'Capivara', frog: 'Sapo' },
+    bubble: '{name} · {mood} · CPU {load}%',
+    chill: 'Nem aí pra CPU',
+    moods: {
+      sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
+      turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando',
+      pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca',
+    },
+  },
+
+  dev: {
+    show: 'Mostrar painel (H)', title: 'smart-shell · protótipo',
+    intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
+    theme: 'Tema', pets: 'Pets', widgets: 'Widgets', wsIcons: 'Ícone nos workspaces não selecionados',
+    backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
+    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro',
+    tuning: 'Ajustes', cpuLoad: 'Carga da CPU', cpuAuto: 'CPU simulada (picos estilo X3D)',
+    size: 'Tamanho', magnify: 'Ampliação', liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
+    language: 'Idioma',
+    hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central · roda no volume/brilho · clique no sistema simula RAM cheia · clique num pet · Caps Lock acende o indicador.',
+    keys: 'H esconde o painel · 1–{n} troca o tema',
+  },
+};

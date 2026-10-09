@@ -1,4 +1,5 @@
 {
+  "locale": "pt-BR",
   "quick": ["volume", "network", "brightness", "docker"],
   "holidays": ["br", "cba", "us"],
   "events": {

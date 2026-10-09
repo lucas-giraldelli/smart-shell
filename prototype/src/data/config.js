@@ -17,6 +17,9 @@ export const config = {
 
   pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'] },
 
+  // UI language (a tag from src/i18n/locales); unset = the browser's language
+  locale: null,
+
   // holiday regions marked on the calendar (see data/holidays.js)
   holidays: ['br', 'cba', 'us'],
 };

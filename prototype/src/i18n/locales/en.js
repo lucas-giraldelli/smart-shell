@@ -1,0 +1,130 @@
+// English (fallback for any missing key)
+export default {
+  common: {
+    on: 'On', off: 'Off', muted: 'Muted', now: 'Now', today: 'Today', tomorrow: 'Tomorrow',
+    copy: 'Copy', copied: 'Copied!', stopped: 'Stopped',
+  },
+
+  widgets: {
+    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Music', weather: 'Weather',
+    system: 'System (RAM/CPU)', bluetooth: 'Bluetooth', quick: 'Quick controls', tray: 'Tray', clock: 'Clock',
+  },
+
+  workspaces: { label: 'Workspace {id} · {windows}', empty: 'empty' },
+
+  capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
+
+  music: { hint: 'Click: play/pause' },
+
+  system: { detail: 'CPU {load}% · die (Tccd1) {temp}°C · {free} GiB free of {total}' },
+
+  bluetooth: {
+    hint: '{state} · click toggles · right-click: devices',
+    stateOn: 'Bluetooth on', stateOff: 'Bluetooth off',
+    connecting: 'Connecting…', headset: 'Headset · {battery}%',
+    paired: 'Paired devices', connected: 'Connected · {battery}%', disconnected: 'Disconnected',
+    connect: 'Connect', disconnect: 'Disconnect', manager: 'Open manager…',
+    headsetOutput: 'Bluetooth headset',
+  },
+
+  volume: { label: 'Volume', output: 'Output', input: 'Input', apps: 'Apps' },
+
+  brightness: {
+    label: 'Brightness', monitor: 'Monitor', night: 'Night light', temperature: 'Temperature',
+    presets: { night: 'Night', normal: 'Normal', day: 'Day', max: 'Max' },
+  },
+
+  network: {
+    label: 'Network', connected: '{kind} connected', offline: 'No internet',
+    internetOk: 'internet ok', noPing: 'ping gets no reply',
+    ip: 'IP', gateway: 'Gateway', dockerNet: 'Docker network',
+    download: 'Download', upload: 'Upload', connections: 'Connections', vpn: 'VPN', copyIp: 'Copy IP',
+  },
+
+  docker: {
+    label: 'Docker', summary: '{up} of {total} running · {mem}', serviceDown: 'Docker service stopped',
+    running: 'Running', paused: 'Paused', restarting: 'Restarting…', exitedError: 'Exited with error ({code})',
+    start: 'Start', stop: 'Stop',
+  },
+
+  capabilities: {
+    bluetooth: 'No Bluetooth adapter', ddcutil: 'ddcutil not installed',
+    docker: 'Docker not installed', hyprsunset: 'hyprsunset not installed',
+    unknown: '{name} unavailable', install: 'Install the {pkg} package to use it.',
+  },
+
+  weather: {
+    feels: 'Feels like {temp}°', nextHours: 'Next hours', days: '7 days',
+    updated: 'Open-Meteo · updated {time}', sample: 'Sample forecast · offline',
+    codes: {
+      0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
+      45: 'Fog', 48: 'Rime fog',
+      51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle', 56: 'Freezing drizzle', 57: 'Freezing drizzle',
+      61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain',
+      71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains',
+      80: 'Light showers', 81: 'Showers', 82: 'Heavy showers',
+      85: 'Snow showers', 86: 'Heavy snow showers',
+      95: 'Thunderstorm', 96: 'Thunderstorm with hail', 99: 'Thunderstorm with hail',
+      unknown: 'Unknown',
+    },
+  },
+
+  calendar: {
+    prevMonth: 'Previous month', nextMonth: 'Next month', today: 'Today',
+    weekdays: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+    allDay: 'All day', optional: 'optional', upcoming: 'Upcoming holidays',
+    untitled: '(untitled)',
+    skipped: '{name} is hidden: {reason}',
+    reasons: {
+      offline: 'offline support is off in Thunderbird',
+      disabled: 'disabled in Thunderbird',
+      unknown: 'not found in Thunderbird',
+    },
+  },
+
+  reminder: { soon: 'in {minutes} min', now: 'now' },
+
+  regions: { br: 'Brazil', cba: 'Cuiabá / MT', us: 'USA' },
+
+  holidays: {
+    newYear: "New Year's Day (Brazil)", carnival: 'Carnival', ashWednesday: 'Ash Wednesday',
+    goodFriday: 'Good Friday', tiradentes: 'Tiradentes Day', labour: 'Labour Day',
+    corpusChristi: 'Corpus Christi', independenceBR: 'Brazilian Independence Day',
+    aparecida: 'Our Lady of Aparecida', allSouls: "All Souls' Day", republic: 'Republic Proclamation Day',
+    blackConsciousness: 'Black Consciousness Day', christmas: 'Christmas (Brazil)',
+    cuiaba: "Cuiabá's Anniversary", matoGrosso: 'Mato Grosso Foundation Day', conception: 'Our Lady of the Conception',
+    usNewYear: "New Year's Day", mlk: 'Martin Luther King Jr. Day', presidents: "Presidents' Day",
+    memorial: 'Memorial Day', juneteenth: 'Juneteenth', independenceUS: 'Independence Day',
+    labor: 'Labor Day', columbus: 'Columbus Day', veterans: 'Veterans Day',
+    thanksgiving: 'Thanksgiving', usChristmas: 'Christmas Day',
+  },
+
+  themes: {
+    glass: 'Glass', midnight: 'Midnight', aqua: 'Aqua Shelf', neon: 'Neon', paper: 'Paper',
+    canarinho: 'Canarinho', snowy: 'Snowy Night', halloween: 'Halloween',
+  },
+
+  pets: {
+    names: { cat: 'Cat', shiba: 'Shiba', fox: 'Fox', penguin: 'Penguin', bunny: 'Bunny', capy: 'Capybara', frog: 'Frog' },
+    bubble: '{name} · {mood} · CPU {load}%',
+    chill: "Couldn't care less about the CPU",
+    moods: {
+      sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
+      turn: 'Looking around', lie: 'Lying down', nap: 'Napping', zoomies: 'Zoomies!', jump: 'Jumping',
+      pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly',
+    },
+  },
+
+  dev: {
+    show: 'Show panel (H)', title: 'smart-shell · prototype',
+    intro: 'HTML mock-up. The real shell runs on Quickshell (QML) with the same look.',
+    theme: 'Theme', pets: 'Pets', widgets: 'Widgets', wsIcons: 'Icons on unselected workspaces',
+    backends: 'Installed backends (simulated)', failures: 'Simulate failures',
+    offline: 'Network down', dockerDown: 'Docker stopped', containerError: 'Container error',
+    tuning: 'Tuning', cpuLoad: 'CPU load', cpuAuto: 'Simulated CPU (X3D-style spikes)',
+    size: 'Size', magnify: 'Magnification', liveWallpaper: 'Animated wallpaper (local video)', auto: 'auto',
+    language: 'Language',
+    hint: 'Click an app to open it · right-click closes · click the quick tile for the control center · scroll on volume/brightness · click the system tile to fill RAM · click a pet · Caps Lock lights the indicator.',
+    keys: 'H hides the panel · 1–{n} switches theme',
+  },
+};
