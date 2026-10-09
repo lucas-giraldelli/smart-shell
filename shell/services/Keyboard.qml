@@ -1,0 +1,50 @@
+pragma Singleton
+
+import QtQuick
+import Quickshell
+import Quickshell.Io
+
+// Caps Lock state - the prototype's `keyboard` slice
+// (prototype/src/services/keyboard.js): the keyboards' capslock LEDs in
+// /sys/class/leds, which the kernel keeps in sync even when the keyboard has
+// no LED. sysfs can't be watched, so they're read 5 times a second.
+Singleton {
+    id: root
+
+    property bool capsLock: false
+    property var paths: []
+
+    Process {
+        running: true
+        command: ["sh", "-c", "ls -d /sys/class/leds/*::capslock 2>/dev/null"]
+        stdout: StdioCollector {
+            onStreamFinished: root.paths = text.split("\n").filter(Boolean).map(p => p + "/brightness")
+        }
+    }
+
+    Instantiator {
+        id: leds
+        model: root.paths
+        delegate: FileView {
+            required property string modelData
+            path: modelData
+            blockLoading: true
+        }
+    }
+
+    Timer {
+        running: root.paths.length > 0
+        repeat: true
+        interval: 200
+        onTriggered: {
+            let on = false;
+            for (let i = 0; i < leds.count; i++) {
+                const led = leds.objectAt(i);
+                led.reload();
+                on = on || led.text().trim() === "1";
+            }
+            if (on !== root.capsLock)
+                root.capsLock = on;
+        }
+    }
+}
