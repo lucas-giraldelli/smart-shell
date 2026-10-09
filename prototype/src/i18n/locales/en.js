@@ -14,7 +14,6 @@ export default {
 
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
-  music: { hint: 'Click: play/pause' },
 
   system: {
     label: 'System', cpu: 'CPU', memory: 'Memory', temp: 'Die (Tccd1) at {temp}°C',
@@ -26,8 +25,7 @@ export default {
   },
 
   bluetooth: {
-    hint: '{state} · click toggles · right-click: devices',
-    stateOn: 'Bluetooth on', stateOff: 'Bluetooth off',
+    turnOn: 'Click to turn on', turnOff: 'Click to turn off',
     connecting: 'Connecting…', headset: 'Headset · {battery}%',
     paired: 'Paired devices', connected: 'Connected · {battery}%', disconnected: 'Disconnected',
     connect: 'Connect', disconnect: 'Disconnect', manager: 'Open manager…',

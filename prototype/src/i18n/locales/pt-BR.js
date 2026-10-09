@@ -14,7 +14,6 @@ export default {
 
   capslock: { on: 'Caps Lock ligado', off: 'Caps Lock desligado' },
 
-  music: { hint: 'Clique: play/pause' },
 
   system: {
     label: 'Sistema', cpu: 'CPU', memory: 'Memória', temp: 'Die (Tccd1) a {temp}°C',
@@ -26,8 +25,7 @@ export default {
   },
 
   bluetooth: {
-    hint: '{state} · clique liga/desliga · botão direito: dispositivos',
-    stateOn: 'Bluetooth ligado', stateOff: 'Bluetooth desligado',
+    turnOn: 'Clique para ligar', turnOff: 'Clique para desligar',
     connecting: 'Conectando…', headset: 'Fone · {battery}%',
     paired: 'Dispositivos pareados', connected: 'Conectado · {battery}%', disconnected: 'Desconectado',
     connect: 'Conectar', disconnect: 'Desconectar', manager: 'Abrir gerenciador…',

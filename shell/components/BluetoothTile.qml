@@ -47,7 +47,7 @@ Tile {
     open: menu.open
 
     Tip {
-        text: root.available ? I18n.t("bluetooth.hint", { state: I18n.t(root.on ? "bluetooth.stateOn" : "bluetooth.stateOff") })
+        text: root.available ? I18n.t(root.on ? "bluetooth.turnOff" : "bluetooth.turnOn")
             : Rules.missingText(Panes.i18n, "bluetooth")
         shown: root.hovered
     }

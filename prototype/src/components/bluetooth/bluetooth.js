@@ -67,7 +67,7 @@ class Bluetooth extends Component {
       this.$('[data-name]').textContent = device.name;
       this.$('[data-sub]').textContent = busy ? t('bluetooth.connecting') : t('bluetooth.headset', { battery: device.battery });
     }
-    this.$('.label').textContent = t('bluetooth.hint', { state: t(bt.on ? 'bluetooth.stateOn' : 'bluetooth.stateOff') });
+    this.$('.label').textContent = t(bt.on ? 'bluetooth.turnOff' : 'bluetooth.turnOn');
 
     setHTML(this.menu, [
       row({ icon: 'bluetooth', title: 'Bluetooth', trailing: toggle(bt.on), attrs: 'data-act="power"' }),
