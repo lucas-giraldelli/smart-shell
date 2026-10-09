@@ -46,6 +46,18 @@ export const tray = ['steam', 'slack', 'discord', 'spotify'];
 
 export const memory = { totalGiB: 47, freeGiB: 26.4 };
 
+// The user's processes grouped by executable (`ps` RSS + /proc/<pid>/exe):
+// the biggest memory users, with how many processes each runs. `stubborn`
+// only drives the mock: it ignores SIGTERM, so the force step shows.
+export const processes = [
+  { name: 'zen', count: 31, memMiB: 4210 },
+  { name: 'chromium', count: 23, memMiB: 2875 },
+  { name: 'slack', count: 9, memMiB: 1104 },
+  { name: 'code', count: 14, memMiB: 980, stubborn: true },
+  { name: 'Hyprland', count: 1, memMiB: 412 },
+  { name: 'steam', count: 6, memMiB: 390 },
+];
+
 // `uptime -s`; the real shell derives it from /proc/uptime
 export const bootedAt = '2026-10-04T18:00:20-04:00';
 

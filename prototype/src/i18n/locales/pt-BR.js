@@ -20,6 +20,8 @@ export default {
     label: 'Sistema', cpu: 'CPU', memory: 'Memória', temp: 'Die (Tccd1) a {temp}°C',
     free: '{free} GiB', used: '{used} de {total} GiB em uso',
     uptime: 'Ligado há {time}', since: 'Ligado desde {date}',
+    top: 'Mais memória', kill: 'Encerrar', killArm: 'Clique de novo para encerrar',
+    killWait: 'Encerrando…', killForce: 'Ainda aberto · clique para forçar',
     uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
 

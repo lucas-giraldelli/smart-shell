@@ -16,6 +16,25 @@ export function uptime(i18n, since) {
   return i18n.t('system.uptimeMinutes', { m });
 }
 
+// --- top memory users (panes/system.js) ---
+// Processes the shell must never offer to kill: the session itself.
+export const isProtected = name => /^(Hyprland|qs|quickshell|systemd.*|\(sd-pam\)|pipewire.*|wireplumber|dbus.*|Xwayland|xdg-.*portal.*|fish|bash|zsh|sh|login|sddm.*)$/i.test(name);
+
+// [{ pid, rssKiB, exe }] -> [{ name, count, memMiB, pids }], grouped by
+// executable (a browser's many processes are one), biggest first
+export function topProcesses(rows, n = 5) {
+  const byName = new Map();
+  for (const { pid, rssKiB, exe } of rows) {
+    const name = exe.split('/').pop().replace(/ \(deleted\)$/, '').replace(/-bin$/, '');
+    const g = byName.get(name) ?? { name, count: 0, memMiB: 0, pids: [] };
+    g.count++;
+    g.memMiB += rssKiB / 1024;
+    g.pids.push(pid);
+    byName.set(name, g);
+  }
+  return [...byName.values()].sort((a, b) => b.memMiB - a.memMiB).slice(0, n);
+}
+
 // --- docker (panes/docker.js) ---
 // Only real failures are flagged; stopping a stack on purpose is not one:
 //   crit  a container restarting or running unhealthy, one exited with an

@@ -27,6 +27,7 @@ export const store = createStore({
     memTotal: snap.memory.totalGiB, memFree: snap.memory.freeGiB, memHeavy: false,
     history: Array(40).fill(0),  // recent CPU load, oldest first
     bootedAt: new Date(snap.bootedAt),
+    top: snap.processes,         // memory users by executable, biggest first
   },
   keyboard: { capsLock: false },
   bluetooth: { on: snap.bluetooth.on, busy: null, devices: snap.bluetooth.devices },

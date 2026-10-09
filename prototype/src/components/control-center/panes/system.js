@@ -1,11 +1,14 @@
 import { icon } from '../../../core/icons.js';
+import { setHTML } from '../../ui/ui.js';
+import { update as setState } from '../../../state.js';
+import { fmtMem } from './docker.js';
 import { closePopover } from '../../../core/popover.js';
 import { config } from '../../../data/config.js';
 import { t, formatNumber, dateFormat } from '../../../i18n/index.js';
 
 // CPU and memory: two items in the quick tile (free RAM, CPU load + die
 // temperature) and one tab with the details. Real shell: /proc/stat,
-// /proc/meminfo and the k10temp Tccd1 sensor.
+// /proc/meminfo, the k10temp Tccd1 sensor and `ps` for the top memory users.
 const memStatus = s => (s.memFree < 4 ? 'crit' : s.memFree < 8 ? 'warn' : 'ok');
 const tempStatus = s => (s.temp >= 87 ? 'crit' : s.temp >= 80 ? 'warn' : 'ok');
 // "4 d 16 h" / "3 h 12 min" / "8 min"
@@ -16,6 +19,31 @@ function uptime(since) {
   if (h) return t('system.uptimeHours', { h, m });
   return t('system.uptimeMinutes', { m });
 }
+// Processes the shell must never offer to kill: the session itself.
+export const isProtected = name => /^(Hyprland|qs|quickshell|systemd.*|\(sd-pam\)|pipewire.*|wireplumber|dbus.*|Xwayland|xdg-.*portal.*|fish|bash|zsh|sh|login|sddm.*)$/i.test(name);
+
+// The kill button per process group: idle -> armed (3 s to confirm) -> term
+// (SIGTERM sent) -> force (still alive after 3 s: SIGKILL on the next click).
+const killState = new Map();
+const KILL_MS = 3000;
+const rerender = () => setState('system', s => ({ top: s.top.slice() }));
+function setKill(name, state) {
+  clearTimeout(killState.get(name)?.timer);
+  if (!state) { killState.delete(name); return rerender(); }
+  const timer = state === 'armed' ? setTimeout(() => setKill(name, null), KILL_MS) : null;
+  killState.set(name, { state, timer });
+  rerender();
+}
+// the mock's processes: SIGTERM ends them unless stubborn, SIGKILL always
+function signal(name, sig) {
+  const gone = sig === 'KILL' || !procOf(name).stubborn;
+  if (gone) { killState.delete(name); setState('system', s => ({ top: s.top.filter(p => p.name !== name) })); return; }
+  setKill(name, 'term');
+  setTimeout(() => setKill(name, 'force'), KILL_MS);
+}
+let current = [];
+const procOf = name => current.find(p => p.name === name) ?? {};
+
 const points = list => list.map((v, i) => `${(i / (list.length - 1) * 100).toFixed(1)},${(19 - v / 100 * 17).toFixed(1)}`).join(' ');
 
 export default {
@@ -44,7 +72,9 @@ export default {
       </div>
     </div>
     <div class="dk-head"><span class="uptime" data-uptime></span>
-      <button class="btn-s" data-monitor title="${config.commands.monitor}">${icon('external-link')}btop</button></div>`,
+      <button class="btn-s" data-monitor title="${config.commands.monitor}">${icon('external-link')}btop</button></div>
+    <div class="sec">${t('system.top')}</div>
+    <div class="top-list"></div>`,
 
   update(root, { system: s }) {
     const cpu = root.querySelector('[data-cpu]'), mem = root.querySelector('[data-mem]');
@@ -58,6 +88,18 @@ export default {
     mem.querySelector('.mem-bar i').style.width = ((s.memTotal - s.memFree) / s.memTotal * 100).toFixed(1) + '%';
     mem.querySelector('[data-used]').textContent = t('system.used', { used: formatNumber(s.memTotal - s.memFree), total: s.memTotal });
 
+    current = s.top;
+    setHTML(root.querySelector('.top-list'), s.top.slice(0, 5).map(p => {
+      const kill = killState.get(p.name)?.state ?? 'idle';
+      const tip = { idle: t('system.kill'), armed: t('system.killArm'), term: t('system.killWait'), force: t('system.killForce') }[kill];
+      return `<div class="top-row" data-proc="${p.name}">
+        <span class="grow">${p.name}${p.count > 1 ? `<span class="cnt">×${p.count}</span>` : ''}</span>
+        <span class="mem">${fmtMem(p.memMiB)}</span>
+        ${isProtected(p.name) ? '<span class="kill-slot"></span>'
+          : `<button class="ib kill ${kill}" data-kill="${p.name}" title="${tip}">${icon('trash-2')}</button>`}
+      </div>`;
+    }).join(''));
+
     const up = root.querySelector('[data-uptime]');
     up.innerHTML = `${icon('power')}${t('system.uptime', { time: uptime(s.bootedAt) })}`;
     up.title = t('system.since', { date: dateFormat({ weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(s.bootedAt) });
@@ -65,5 +107,12 @@ export default {
 
   click(target) {
     if (target.closest('[data-monitor]')) closePopover(); // runs config.commands.monitor in the real shell
+    const kill = target.closest('[data-kill]');
+    if (kill) {
+      const name = kill.dataset.kill, state = killState.get(name)?.state ?? 'idle';
+      if (state === 'idle') setKill(name, 'armed');
+      else if (state === 'armed') signal(name, 'TERM');   // `kill -TERM <pids>` in the real shell
+      else if (state === 'force') signal(name, 'KILL');
+    }
   },
 };

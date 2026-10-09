@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import Quickshell
 import "../.."
 import "../../services"
@@ -7,12 +8,64 @@ import ".."
 import "../../lib/rules.mjs" as Rules
 
 // System tab (prototype: control-center/panes/system.js): CPU load history
-// with the die temperature, memory in use, uptime and a btop button.
+// with the die temperature, memory in use, uptime and a btop button, then the
+// top memory users with a two-step kill: idle -> armed (3 s to confirm) ->
+// term (SIGTERM sent) -> force (still alive after 3 s: SIGKILL on a click).
 PaneScroll {
     id: root
 
     readonly property string cpuStatus: Rules.tempStatus(SystemStats)
     readonly property string memStatus: Rules.memStatus(SystemStats)
+
+    property var kills: ({})    // process name -> { state, at }
+
+    function setKill(name, state) {
+        const k = Object.assign({}, kills);
+        if (state)
+            k[name] = { state, at: Date.now() };
+        else
+            delete k[name];
+        kills = k;
+    }
+
+    function clickKill(group) {
+        const state = kills[group.name]?.state ?? "idle";
+        if (state === "idle") {
+            setKill(group.name, "armed");
+        } else if (state === "armed") {
+            Processes.signal(group, "TERM");
+            setKill(group.name, "term");
+        } else if (state === "force") {
+            Processes.signal(group, "KILL");
+            setKill(group.name, null);
+        }
+    }
+
+    Component.onCompleted: Processes.watchers++
+    Component.onDestruction: Processes.watchers--
+
+    // armed expires after 3 s; 3 s after SIGTERM a survivor can be forced
+    Timer {
+        interval: 250
+        repeat: true
+        running: Object.keys(root.kills).length > 0
+        onTriggered: {
+            for (const [name, { state, at }] of Object.entries(root.kills)) {
+                if (Date.now() - at < 3000)
+                    continue;
+                if (state === "armed")
+                    root.setKill(name, null);
+                else if (state === "term")
+                    root.setKill(name, Processes.top.some(p => p.name === name) ? "force" : null);
+            }
+        }
+    }
+
+    // the CSS `ch` of 11px Inter, for the memory column (min-width 7.3ch)
+    FontMetrics {
+        id: small
+        font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
+    }
 
     // re-evaluated every minute for the uptime text
     SystemClock {
@@ -157,6 +210,98 @@ PaneScroll {
             onClicked: {
                 Quickshell.execDetached(["sh", "-c", Config.commands.monitor]);
                 Ui.closePopover();
+            }
+        }
+    }
+
+    Section { text: I18n.t("system.top") }
+    Repeater {
+        model: Processes.top
+
+        // .top-row: 25px, padding 0 8px, gap 10, 12.5px
+        Rectangle {
+            id: proc
+
+            required property var modelData
+            readonly property string kill: root.kills[modelData.name]?.state ?? "idle"
+            readonly property bool guarded: Rules.isProtected(modelData.name)
+
+            width: parent.width
+            height: 25
+            radius: 8
+            color: rowHover.hovered ? Theme.menuSurface : "transparent"
+
+            HoverHandler { id: rowHover }
+
+            Row {
+                x: 8
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 5
+                Label {
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: 12.5
+                    color: Theme.menuText
+                    text: proc.modelData.name
+                }
+                Label {
+                    visible: proc.modelData.count > 1
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: 11
+                    tnum: true
+                    color: Theme.menuSub
+                    text: `×${proc.modelData.count}`
+                }
+            }
+            Label {
+                anchors.right: parent.right
+                anchors.rightMargin: 8 + 20 + 10
+                anchors.verticalCenter: parent.verticalCenter
+                width: Math.max(implicitWidth, small.advanceWidth("0") * 7.3)
+                horizontalAlignment: Text.AlignRight
+                size: 11
+                tnum: true
+                color: Theme.menuSub
+                text: Rules.fmtMem(Panes.i18n, proc.modelData.memMiB)
+            }
+
+            // the kill button: shown on hover or while a kill is under way
+            Rectangle {
+                id: killButton
+                visible: !proc.guarded
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
+                width: 20
+                height: 20
+                radius: 6
+                readonly property bool alarm: proc.kill === "armed" || proc.kill === "force"
+                opacity: rowHover.hovered || proc.kill !== "idle" ? 1 : 0
+                color: alarm ? Theme.offTint : killArea.containsMouse && proc.kill === "idle" ? Theme.menuStrong : "transparent"
+
+                Icon {
+                    anchors.centerIn: parent
+                    name: "trash-2"
+                    size: 13
+                    color: killButton.alarm ? Theme.crit : proc.kill === "term" ? Theme.menuFaint
+                        : killArea.containsMouse ? Theme.menuText : Theme.menuSub
+                }
+                MouseArea {
+                    id: killArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    enabled: proc.kill !== "term"
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: root.clickKill(proc.modelData)
+                }
+
+                ToolTip {
+                    id: tip
+                    visible: killArea.containsMouse || proc.kill !== "idle" && rowHover.hovered
+                    delay: 300
+                    text: I18n.t({ idle: "system.kill", armed: "system.killArm", term: "system.killWait", force: "system.killForce" }[proc.kill])
+                    contentItem: Label { size: 11; color: Theme.menuText; text: tip.text }
+                    background: Rectangle { radius: 6; color: Theme.menuBg; border.color: Theme.menuLine }
+                }
             }
         }
     }

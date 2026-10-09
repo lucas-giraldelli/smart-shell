@@ -79,6 +79,19 @@
 .cc .mem-bar { height: 6px; border-radius: 9px; background: var(--menu-strong); overflow: hidden; margin: 7px 0 7px; }
 .cc .mem-bar i { display: block; height: 100%; border-radius: 9px; background: var(--status); transition: width .8s; }
 
+/* system: top memory users with a two-step kill */
+.cc .top-row { display: flex; align-items: center; gap: 10px; height: 25px; padding: 0 8px; border-radius: 8px; font-size: 12.5px; }
+.cc .top-row:hover { background: var(--menu-surface); }
+.cc .top-row .cnt { margin-left: 5px; font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.cc .top-row .mem { min-width: 7.3ch; text-align: right; font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.cc .top-row .kill, .cc .top-row .kill-slot { flex: none; width: 20px; height: 20px; border-radius: 6px; }
+.cc .top-row .kill { opacity: 0; background: none; color: var(--menu-sub); }
+.cc .top-row .kill svg.i { width: 13px; height: 13px; }
+.cc .top-row:hover .kill, .cc .top-row .kill:not(.idle) { opacity: 1; }
+.cc .top-row .kill:hover { background: var(--menu-strong); color: var(--menu-text); }
+.cc .top-row .kill.armed, .cc .top-row .kill.force { color: var(--crit); background: rgba(251, 113, 133, .14); }
+.cc .top-row .kill.term { color: var(--menu-faint); pointer-events: none; }
+
 /* dock settings */
 .cc .set .themes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 2px 8px 6px; }
 .cc .set .themes button {
