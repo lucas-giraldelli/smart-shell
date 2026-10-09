@@ -13,7 +13,7 @@ export const store = createStore({
     pets: loadPref('pets', ['cat', 'shiba', 'capy']),
     size: loadPref('size', 52),
     magnify: loadPref('magnify', 1.75),
-    liveWallpaper: loadPref('liveWallpaper', true),
+    liveWallpaper: loadPref('liveWallpaper', false),
     popover: null,          // 'bluetooth' | 'control-center' | null
     ccTab: 'volume',
   },

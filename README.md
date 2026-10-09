@@ -21,11 +21,12 @@ tools/       helper scripts (icon vendoring, ...)
 
 ```sh
 prototype/serve.sh            # http://localhost:4321
-WALLPAPER=~/Pictures/bg.jpg prototype/serve.sh
+WALLPAPER=~/Videos/bg.mp4 prototype/serve.sh   # optional animated wallpaper
 ```
 
-ES modules don't load from `file://`, hence the tiny Python server. The
-wallpaper is linked into `prototype/assets/local/` (untracked).
+ES modules don't load from `file://`, hence the tiny Python server. The page
+uses a static wallpaper; a local video can be linked into the untracked
+`prototype/assets/local/` for the dev panel's "animated wallpaper" option.
 
 ## Making it yours
 
