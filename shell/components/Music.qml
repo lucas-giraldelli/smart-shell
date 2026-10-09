@@ -32,7 +32,9 @@ Tile {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton) {
-                volume.open ? Ui.closePopover() : Ui.openPopover("music-volume");
+                // only for the YouTube Music app; any other player: nothing
+                if (Media.showingMusicApp)
+                    volume.open ? Ui.closePopover() : Ui.openPopover("music-volume");
                 return;
             }
             Ui.closePopover();

@@ -2,6 +2,10 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { store, update } from '../../state.js';
 import { t } from '../../i18n/index.js';
+import { config } from '../../data/config.js';
+
+const isMusicApp = media => (config.pets?.danceWith ?? [])
+  .some(w => `${media.url ?? ''} ${media.source ?? ''}`.toLowerCase().includes(w.toLowerCase()));
 import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
 import { slider, setSlider, setHTML } from '../ui/ui.js';
 
@@ -42,8 +46,10 @@ class Music extends Component {
       update('media', m => ({ playing: !m.playing }));
     });
     // right click: the YouTube Music app's own volume (its PipeWire stream in the shell)
+    // (only for the YouTube Music app - config.pets.danceWith; any other player: nothing)
     this.addEventListener('contextmenu', e => {
       e.preventDefault();
+      if (!isMusicApp(store.get().media)) return;
       isOpen('music-volume') ? closePopover() : openPopover('music-volume');
     });
     this.addEventListener('input', e => {

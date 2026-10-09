@@ -46,8 +46,13 @@ Singleton {
     // pets dance while one of config.pets.danceWith plays (YouTube Music, a
     // Chromium web app: only its command line names music.youtube.com)
     readonly property var danceWith: (Config.petsConfig?.danceWith ?? []).map(s => String(s).toLowerCase())
-    readonly property bool dancing: Mpris.players.values.some(p => p.isPlaying && danceWith.some(word =>
-        [p.identity, p.desktopEntry, p.metadata?.["xesam:url"], cmdlines[pidOf(p)]].filter(Boolean).join(" ").toLowerCase().includes(word)))
+    function isMusicApp(p) {
+        return !!p && danceWith.some(word =>
+            [p.identity, p.desktopEntry, p.metadata?.["xesam:url"], cmdlines[pidOf(p)]].filter(Boolean).join(" ").toLowerCase().includes(word));
+    }
+    readonly property bool dancing: Mpris.players.values.some(p => p.isPlaying && isMusicApp(p))
+    // the tile shows the YouTube Music app (its volume popover is offered then)
+    readonly property bool showingMusicApp: isMusicApp(player)
 
     readonly property bool active: player !== null
     readonly property bool playing: player?.isPlaying ?? false
