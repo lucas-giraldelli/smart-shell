@@ -22,6 +22,19 @@
   --label-bg: rgba(20, 20, 24, .78);
   --ring-track: rgba(255, 255, 255, .16);
 
+  /* popovers (menus, calendar, forecast, control center) */
+  --menu-bg: rgba(20, 20, 26, .94);
+  --menu-line: rgba(255, 255, 255, .12);
+  --menu-text: #e4e4e7;
+  --menu-sub: #a1a1aa;
+  --menu-faint: #71717a;
+  --menu-surface: rgba(255, 255, 255, .05);
+  --menu-hover: rgba(255, 255, 255, .08);
+  --menu-strong: rgba(255, 255, 255, .13);
+  --menu-accent: #38bdf8;
+  --menu-weekend: #f0a3b0;
+  --menu-holiday: #fde68a;
+
   /* status identity, shared by every widget: ok · warn · crit · off */
   --ok: #4ade80;
   --warn: #e0af68;

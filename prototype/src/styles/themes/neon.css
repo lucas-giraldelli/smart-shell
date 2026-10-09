@@ -4,5 +4,8 @@ body[data-theme="neon"] {
   --tile-bg: rgba(0, 255, 240, .06); --tile-border: rgba(255, 0, 200, .35);
   --accent: #00fff0; --dot: #ff3bd4; --sep: rgba(0, 255, 240, .35); --refl: .25;
   --tint: rgba(20, 0, 40, .35);
+  --menu-bg: rgba(10, 4, 26, .96); --menu-line: rgba(0, 255, 240, .5);
+  --menu-surface: rgba(0, 255, 240, .05); --menu-hover: rgba(255, 0, 200, .1); --menu-strong: rgba(0, 255, 240, .18);
+  --menu-accent: #00fff0;
 }
 body[data-theme="neon"] .app .ic { filter: drop-shadow(0 0 6px rgba(0, 255, 240, .45)); }

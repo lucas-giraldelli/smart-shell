@@ -34,20 +34,20 @@
 .cal .mark { width: 7px; height: 7px; border-radius: 99px; background: var(--rc); flex: none; }
 
 .cal .week, .cal .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
-.cal .week span { text-align: center; font-size: 10.5px; font-weight: 600; color: #71717a; padding: 4px 0; }
-.cal .week .weekend { color: #f0a3b0; }
+.cal .week span { text-align: center; font-size: 10.5px; font-weight: 600; color: var(--menu-faint); padding: 4px 0; }
+.cal .week .weekend { color: var(--menu-weekend); }
 
 .cal .grid button {
   position: relative; height: 36px; border: 0; border-radius: 9px; cursor: pointer;
-  font: inherit; font-size: 12.5px; font-variant-numeric: tabular-nums; color: #e4e4e7; background: none;
+  font: inherit; font-size: 12.5px; font-variant-numeric: tabular-nums; color: var(--menu-text); background: none;
   display: grid; place-items: center;
 }
-.cal .grid button:hover { background: rgba(255, 255, 255, .07); }
-.cal .grid .weekend { color: #f0a3b0; background: rgba(240, 163, 176, .05); }
-.cal .grid .holiday { color: #fde68a; font-weight: 700; }
+.cal .grid button:hover { background: var(--menu-hover); }
+.cal .grid .weekend { color: var(--menu-weekend); background: color-mix(in srgb, var(--menu-weekend) 6%, transparent); }
+.cal .grid .holiday { color: var(--menu-holiday); font-weight: 700; }
 .cal .grid .other { opacity: .35; }
 .cal .grid .today { box-shadow: inset 0 0 0 1.5px var(--accent); font-weight: 700; }
-.cal .grid .selected { background: rgba(255, 255, 255, .13); }
+.cal .grid .selected { background: var(--menu-strong); }
 .cal .grid .today.selected { background: color-mix(in srgb, var(--accent) 22%, transparent); }
 /* dots hang below the number, so every number stays centred */
 .cal .dots { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); display: flex; gap: 2px; }
@@ -59,29 +59,29 @@
    below starts at the same inset */
 .cal .cal-day { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; padding: 0 8px; }
 .cal .day-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
-.cal .day-title { font-size: 12px; font-weight: 600; color: #e4e4e7; }
+.cal .day-title { font-size: 12px; font-weight: 600; color: var(--menu-text); }
 .cal .day-title::first-letter { text-transform: uppercase; }
 .cal .cal-day .hol, .cal .cal-day .evt { padding-left: 0; padding-right: 0; }
 .cal .hol { display: flex; align-items: center; gap: 8px; padding: 5px 8px; font-size: 12px; }
 .cal .hol.optional .mark { background: none; box-shadow: inset 0 0 0 1.5px var(--rc); }
-.cal .hol .when, .cal .evt .when { min-width: 52px; flex: none; white-space: nowrap; color: #a1a1aa; font-variant-numeric: tabular-nums; }
+.cal .hol .when, .cal .evt .when { min-width: 52px; flex: none; white-space: nowrap; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
 .cal .none { padding: 4px 8px 2px; }
 .cal .evt { display: flex; align-items: center; gap: 8px; padding: 3px 8px; font-size: 12px; }
 .cal .evt .bar { width: 3px; height: 14px; border-radius: 9px; background: var(--rc); flex: none; }
 .cal .evt.past { opacity: .45; }
 /* the day's timed events scroll after ~5 rows instead of stretching the popover */
-.cal .evt-list { max-height: 112px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
+.cal .evt-list { max-height: 112px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
 .cal .allday { display: flex; gap: 5px; min-width: 0; }
 .cal .chip {
   min-width: 0; max-width: 100%; padding: 2px 8px; border-radius: 99px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  color: #e4e4e7; background: color-mix(in srgb, var(--rc) 22%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 45%, transparent);
+  color: var(--menu-text); background: color-mix(in srgb, var(--rc) 22%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 45%, transparent);
 }
-.cal .chip.more { flex: none; --rc: #a1a1aa; }
+.cal .chip.more { flex: none; --rc: var(--menu-sub); }
 .cal .past-toggle {
   flex: none; margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
-  font: inherit; font-size: 11px; color: #a1a1aa; text-decoration: underline dotted; text-underline-offset: 3px;
+  font: inherit; font-size: 11px; color: var(--menu-sub); text-decoration: underline dotted; text-underline-offset: 3px;
 }
-.cal .past-toggle:hover { color: #e4e4e7; }
+.cal .past-toggle:hover { color: var(--menu-text); }
 .cal .evt .grow { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cal .skipped { display: flex; align-items: flex-start; gap: 7px; margin: 8px 4px 2px; padding: 7px 9px; border-radius: 9px; font-size: 11.5px; line-height: 1.35; color: #e4e4e7; background: color-mix(in srgb, var(--warn) 12%, transparent); }
+.cal .skipped { display: flex; align-items: flex-start; gap: 7px; margin: 8px 4px 2px; padding: 7px 9px; border-radius: 9px; font-size: 11.5px; line-height: 1.35; color: var(--menu-text); background: color-mix(in srgb, var(--warn) 12%, transparent); }
 .cal .skipped svg.i { width: 14px; height: 14px; color: var(--warn); margin-top: 1px; }

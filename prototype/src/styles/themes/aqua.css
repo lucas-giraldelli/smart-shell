@@ -3,6 +3,9 @@ body[data-theme="aqua"] {
   --pad-b: 20px; --refl: .42; --radius: 6px;
   --tile-bg: rgba(12, 24, 48, .55); --tile-border: rgba(255, 255, 255, .35);
   --dot: #bfe9ff; --accent: #5ac8fa;
+  --menu-bg: rgba(14, 30, 54, .93); --menu-line: rgba(191, 233, 255, .45);
+  --menu-surface: rgba(191, 233, 255, .07); --menu-hover: rgba(191, 233, 255, .12); --menu-strong: rgba(191, 233, 255, .2);
+  --menu-accent: #5ac8fa;
 }
 /* the 3D glass shelf the icons stand on */
 body[data-theme="aqua"] .dock::after {

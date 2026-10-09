@@ -3,6 +3,9 @@ body[data-theme="snowy"] {
   --shadow: 0 20px 60px rgba(0, 10, 40, .55), inset 0 1px 0 rgba(255, 255, 255, .5), inset 0 -10px 30px rgba(180, 220, 255, .12);
   --tile-bg: rgba(220, 238, 255, .14); --tile-border: rgba(230, 245, 255, .3);
   --accent: #bae6fd; --dot: #e0f2fe; --refl: .3; --tint: rgba(6, 16, 52, .68);
+  --menu-bg: rgba(14, 30, 66, .94); --menu-line: rgba(230, 245, 255, .45);
+  --menu-surface: rgba(220, 238, 255, .07); --menu-hover: rgba(220, 238, 255, .12); --menu-strong: rgba(220, 238, 255, .2);
+  --menu-accent: #bae6fd;
 }
 /* a snow cap resting on the dock (the snow effect lands on it) */
 body[data-theme="snowy"] .dock::before {

@@ -4,4 +4,8 @@ body[data-theme="canarinho"] {
   --shadow: 0 18px 50px rgba(0, 40, 10, .45), inset 0 1px 0 rgba(255, 240, 120, .35);
   --tile-bg: rgba(0, 39, 118, .38); --tile-border: rgba(255, 223, 0, .35);
   --accent: #ffdf00; --dot: #ffdf00; --sep: rgba(255, 223, 0, .4); --refl: .2;
+  --menu-bg: rgba(0, 70, 35, .96); --menu-line: rgba(255, 223, 0, .55);
+  --menu-text: #f7fbe8; --menu-sub: #c9dcb0; --menu-faint: #8fb27c;
+  --menu-surface: rgba(0, 39, 118, .35); --menu-hover: rgba(255, 223, 0, .1); --menu-strong: rgba(255, 223, 0, .22);
+  --menu-accent: #ffdf00;
 }

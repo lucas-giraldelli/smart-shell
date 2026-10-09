@@ -3,4 +3,7 @@ body[data-theme="midnight"] {
   --shadow: 0 20px 60px rgba(0, 0, 20, .55), inset 0 1px 0 rgba(160, 170, 255, .18);
   --tile-bg: rgba(120, 130, 255, .10); --tile-border: rgba(140, 150, 255, .18);
   --accent: #a5b4fc; --dot: #a5b4fc; --refl: .32; --tint: rgba(8, 10, 40, .38);
+  --menu-bg: rgba(12, 14, 36, .95); --menu-line: rgba(140, 150, 255, .25);
+  --menu-surface: rgba(120, 130, 255, .07); --menu-hover: rgba(140, 150, 255, .12); --menu-strong: rgba(140, 150, 255, .2);
+  --menu-accent: #a5b4fc;
 }

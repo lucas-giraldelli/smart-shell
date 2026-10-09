@@ -4,6 +4,9 @@ body[data-theme="halloween"] {
   --tile-bg: rgba(255, 120, 0, .09); --tile-border: rgba(255, 140, 0, .28);
   --accent: #ff8c1a; --dot: #ff8c1a; --sep: rgba(255, 140, 0, .35); --refl: .25;
   --tint: rgba(35, 5, 40, .55);
+  --menu-bg: rgba(26, 8, 32, .96); --menu-line: rgba(255, 140, 0, .5);
+  --menu-surface: rgba(255, 120, 0, .07); --menu-hover: rgba(255, 140, 0, .12); --menu-strong: rgba(255, 140, 0, .22);
+  --menu-accent: #ff8c1a;
 }
 /* cobweb in the corner */
 body[data-theme="halloween"] .dock::before {
