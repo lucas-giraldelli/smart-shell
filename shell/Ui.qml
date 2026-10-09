@@ -30,9 +30,14 @@ Singleton {
     property string ccTab: "volume"
     property var dockerOpen: ({})           // compose project -> expanded, as the user left it
 
-    function openPopover(name, tab) {
+    // the screen the open popover belongs to: with a dock per screen, only
+    // that screen's popover opens (two would fight over the focus grab)
+    property string popoverScreen: ""
+
+    function openPopover(name, tab, screen) {
         if (tab)
             ccTab = tab;
+        popoverScreen = screen || (Hyprland.focusedMonitor?.name ?? "");
         popover = name;
     }
 
@@ -61,6 +66,10 @@ Singleton {
         target: "popover"
         function open(name: string, tab: string): void {
             root.openPopover(name, tab);
+        }
+        // the same on one screen: `... call popover openOn music-volume "" SHOTS`
+        function openOn(name: string, tab: string, screen: string): void {
+            root.openPopover(name, tab, screen);
         }
         function close(): void {
             root.closePopover();

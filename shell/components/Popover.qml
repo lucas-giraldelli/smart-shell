@@ -19,7 +19,9 @@ PopupWindow {
     property int bubbleWidth: 240
     property int padding: 6
 
+    // open on the screen it was opened on (Ui.popoverScreen) only
     readonly property bool open: Ui.popover === name
+        && (!Ui.popoverScreen || owner.QsWindow.window?.screen?.name === Ui.popoverScreen)
 
     // core/popover.js
     readonly property int screenEdge: 12    // keep popovers this far from the screen edges
