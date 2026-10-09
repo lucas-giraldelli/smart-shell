@@ -1,19 +1,28 @@
-.clock { width: 158px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; cursor: pointer; }
+.clock { width: 168px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; cursor: pointer; }
 .clock .t-big { font-size: 20px; }
 
-/* second line: the date, or (sliding up) the reminder of the next event */
-.clock .sub-line { width: 100%; height: 14px; overflow: hidden; }
+/* reminder: orange before an event (warn), green during one (ok) */
+.clock[data-status] {
+  background: color-mix(in srgb, var(--status) 20%, var(--tile-bg));
+  border-color: color-mix(in srgb, var(--status) 60%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--status) 25%, transparent);
+}
+
+/* the date joins the time on the first line while the event name takes the second */
+.clock .clock-top { display: flex; align-items: baseline; gap: 7px; }
+.clock .mini-date { opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
+.clock.reminding .mini-date { opacity: 1; transform: none; }
+
+.clock .sub-line { width: 100%; height: 15px; overflow: hidden; }
 .clock .ticker { display: flex; flex-direction: column; transition: transform .4s cubic-bezier(.3, .9, .4, 1); }
-.clock .ticker > * { height: 14px; line-height: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.clock.reminding .ticker { transform: translateY(-14px); }
-.clock .remind { display: flex; align-items: center; gap: 5px; color: var(--text); }
+.clock .ticker > * { height: 15px; line-height: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clock.reminding .ticker { transform: translateY(-15px); }
+.clock .remind { display: flex; align-items: center; gap: 5px; color: var(--text); font-weight: 600; }
+.clock .remind .cat { display: grid; color: var(--status); }
+.clock .remind .cat svg.i { width: 12px; height: 12px; }
 .clock .rtext { overflow: hidden; text-overflow: ellipsis; }
-.clock .rdot { flex: none; width: 6px; height: 6px; border-radius: 99px; }
-.clock.soon .rdot { animation: remind-pulse 1.6s ease-in-out infinite; }
-@keyframes remind-pulse { 50% { opacity: .35; transform: scale(.7); } }
 @media (prefers-reduced-motion: reduce) {
-  .clock .ticker { transition: none; }
-  .clock.soon .rdot { animation: none; }
+  .clock .ticker, .clock .mini-date { transition: none; }
 }
 
 /* calendar popover */
