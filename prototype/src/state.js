@@ -30,6 +30,7 @@ export const store = createStore({
     top: snap.processes,         // memory users by executable, biggest first
   },
   keyboard: { capsLock: false },
+  tray: { attention: [] },    // tray items needing attention (bounce)
   bluetooth: { on: snap.bluetooth.on, busy: null, devices: snap.bluetooth.devices },
   audio: {
     volume: snap.audio.volume, muted: false,

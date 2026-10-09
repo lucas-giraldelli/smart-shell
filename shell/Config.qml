@@ -24,7 +24,12 @@ Singleton {
         },
         // tray items left out, matched against their id, title or icon name;
         // fcitx5's menu can quit the input method, which breaks typing
-        tray: { hidden: ["blueman", "bluetooth", "fcitx"] },
+        tray: {
+            hidden: ["blueman", "bluetooth", "fcitx"],
+            // items whose red badge means attention (Slack's mentions; its blue
+            // unread dot doesn't count): matched like `hidden`
+            redBadge: ["slack"]
+        },
         pets: { available: ["cat", "shiba", "fox", "penguin", "bunny", "capy", "frog"] },
         locale: null,
         // holiday regions marked on the calendar (lib/calendar.mjs)
@@ -65,6 +70,7 @@ Singleton {
     readonly property var commands: data.commands
     readonly property var pets: data.pets.available
     readonly property var trayHidden: data.tray.hidden
+    readonly property var trayRedBadge: data.tray.redBadge ?? []
     readonly property var locale: data.locale
     readonly property var weather: data.weather
     readonly property var music: data.music

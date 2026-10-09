@@ -10,7 +10,7 @@ import { t } from '../../i18n/index.js';
 const check = (attr, id, label) => `<label class="check"><input type="checkbox" ${attr}="${id}"> ${label}</label>`;
 
 class DevPanel extends Component {
-  static slices = ['ui', 'system', 'caps', 'network', 'docker'];
+  static slices = ['ui', 'system', 'caps', 'network', 'docker', 'tray'];
 
   render() {
     return `
@@ -26,6 +26,7 @@ class DevPanel extends Component {
           ${check('data-fail', 'dockerDown', t('dev.dockerDown'))}
           ${check('data-fail', 'containerError', t('dev.containerError'))}
           ${check('data-fail', 'memHeavy', t('dev.memHeavy'))}
+          ${check('data-fail', 'trayAttention', t('dev.trayAttention'))}
         </div>
         <h2>${t('dev.tuning')}</h2>
         <div class="dp-row"><label>${t('dev.cpuLoad')}</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
@@ -47,6 +48,7 @@ class DevPanel extends Component {
       if (cap) update('caps', { [cap]: on });
       if (fail === 'offline') update('network', { online: !on });
       if (fail === 'memHeavy') update('system', { memHeavy: on });
+      if (fail === 'trayAttention') update('tray', { attention: on ? ['slack'] : [] });
       if (fail === 'dockerDown') update('docker', { running: !on });
       if (fail === 'containerError') {
         // qbittorrent stuck restarting, like a broken VPN dependency would leave it
@@ -70,7 +72,8 @@ class DevPanel extends Component {
     });
   }
 
-  update({ ui, system, caps, network, docker }) {
+  update({ ui, system, caps, network, docker, tray }) {
+    this.$('[data-fail="trayAttention"]').checked = tray.attention.length > 0;
     this.$('[data-fail="offline"]').checked = !network.online;
     this.$('[data-fail="memHeavy"]').checked = system.memHeavy;
     this.$('[data-fail="dockerDown"]').checked = !docker.running;

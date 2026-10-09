@@ -12,7 +12,10 @@ import ".."
 // are drawn grey and dimmed so app colours don't fight the glass, except for
 // vivid pixels: status badges like Slack's unread dot keep their colour (Slack
 // never sets NeedsAttention, the dot in its pixmap is the only signal). Hover
-// brings the whole icon back in colour.
+// brings the whole icon back in colour. An item needing attention - SNI
+// NeedsAttention, or a red badge on one listed in config.tray.redBadge (Slack
+// only signals mentions in its pixmap) - hops like the caps lock arrow, right
+// away and then every 8 s until it's dealt with.
 Tile {
     id: root
 
@@ -46,6 +49,12 @@ Tile {
                 id: cell
 
                 required property var modelData
+                readonly property string keys: [modelData.id, modelData.title, modelData.icon].join(" ").toLowerCase()
+                readonly property bool watchBadge: Config.trayRedBadge.some(w => keys.includes(w.toLowerCase()))
+                property bool redBadge: false
+                readonly property bool attention: modelData.status === Status.NeedsAttention || redBadge
+
+                onAttentionChanged: if (attention) hop.restart()
 
                 width: 18
                 height: root.rowHeight
@@ -60,8 +69,51 @@ Tile {
                     smooth: true
                     visible: false
                 }
+                // the badge check: draw the pixmap and count vivid red pixels
+                Canvas {
+                    width: 22
+                    height: 22
+                    opacity: 0
+                    enabled: false
+                    property string src: cell.watchBadge ? cell.modelData.icon : ""
+                    onSrcChanged: if (src) loadImage(src)
+                    onImageLoaded: requestPaint()
+                    onPaint: {
+                        const ctx = getContext("2d");
+                        ctx.clearRect(0, 0, width, height);
+                        if (!src || !isImageLoaded(src))
+                            return;
+                        ctx.drawImage(src, 0, 0, width, height);
+                        const d = ctx.getImageData(0, 0, width, height).data;
+                        let red = 0;
+                        for (let i = 0; i < d.length; i += 4) {
+                            const r = d[i], g = d[i + 1], b = d[i + 2];
+                            const hi = Math.max(r, g, b), lo = Math.min(r, g, b);
+                            if (d[i + 3] >= 128 && hi >= 110 && (hi - lo) / hi >= 0.5 && r === hi && g < r * 0.6 && b < r * 0.6)
+                                red++;
+                        }
+                        cell.redBadge = red >= 4;
+                        unloadImage(src);
+                    }
+                }
+
+                // the hop: -2.5px, +0.5px, rest (the caps lock arrow's)
+                SequentialAnimation {
+                    id: hop
+                    NumberAnimation { target: lift; property: "y"; to: -2.5; duration: 240; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.7, 0.4, 1, 1, 1] }
+                    NumberAnimation { target: lift; property: "y"; to: 0.5; duration: 208; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.7, 0.4, 1, 1, 1] }
+                    NumberAnimation { target: lift; property: "y"; to: 0; duration: 192; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.7, 0.4, 1, 1, 1] }
+                }
+                Timer {
+                    running: cell.attention
+                    repeat: true
+                    interval: 8000
+                    onTriggered: hop.restart()
+                }
+
                 // greyed and dimmed, badges kept in colour; full colour on hover
                 ShaderEffect {
+                    transform: Translate { id: lift }
                     anchors.fill: icon
                     property var source: icon
                     property real dim: area.containsMouse ? 1 : Theme.sub.a

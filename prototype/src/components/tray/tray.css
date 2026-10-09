@@ -1,3 +1,13 @@
 .tray { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0 9px; }
 .tray img { width: 18px; height: 18px; display: block; cursor: pointer; transition: transform .2s; }
 .tray img:hover { transform: scale(1.2); }
+/* needs attention: the caps lock hop, right away and then every 8 s */
+.tray img.attention { animation: tray-hop 8s cubic-bezier(.3, .7, .4, 1) infinite; }
+@keyframes tray-hop {
+  0%, 8%, 100% { translate: 0 0; }
+  3% { translate: 0 -2.5px; }
+  5.6% { translate: 0 .5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tray img.attention { animation: none; }
+}

@@ -138,7 +138,7 @@ export default {
     show: 'Mostrar painel (H)', title: 'smart-shell · protótipo',
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
-    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia',
+    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia', trayAttention: 'Slack com menção',
     tuning: 'Ajustes', cpuLoad: 'Carga da CPU', cpuAuto: 'CPU simulada (picos estilo X3D)',
     liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
