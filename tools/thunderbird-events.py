@@ -12,6 +12,7 @@ Which calendars to read comes from ~/.config/smart-shell/config.json:
 
 Output (default ~/.cache/smart-shell/events.json):
   {"generatedAt": ..., "calendars": {name: color}, "skipped": [{name, reason}],
+   (reason: "offline" | "disabled" | "unknown"; the UI translates it)
    "events": [{"title", "start", "end", "allDay", "calendars": [names]}, ...]}
 
 Runs from a systemd user timer (systemd/smart-shell-events.*); safe to run any
@@ -176,10 +177,9 @@ def export(args) -> dict:
     skipped = []
     for cal_id, info in registry.items():
         if chosen(cal_id) and not wanted(cal_id):
-            reason = "desativado no Thunderbird" if info.get("disabled") else "sem suporte offline no Thunderbird"
-            skipped.append({"name": info.get("name", cal_id), "reason": reason})
+            skipped.append({"name": info.get("name", cal_id), "reason": "disabled" if info.get("disabled") else "offline"})
     known = {i.get("name", k).casefold() for k, i in registry.items()}
-    skipped += [{"name": c, "reason": "não existe no Thunderbird"} for c in args.calendar if c.casefold() not in known]
+    skipped += [{"name": c, "reason": "unknown"} for c in args.calendar if c.casefold() not in known]
 
     now = datetime.now(LOCAL)
     window_from = (now - timedelta(days=args.days_back)).replace(hour=0, minute=0, second=0, microsecond=0)
@@ -222,7 +222,7 @@ def export(args) -> dict:
         if cmp_end < lo or cmp_start > hi:
             return
         events.append({
-            "title": (row["title"] or "(sem título)").strip(),
+            "title": (row["title"] or "").strip(),  # empty = untitled, shown translated
             "start": iso(start, all_day), "end": iso(end, all_day), "allDay": all_day,
             "calendar": registry.get(row["cal_id"], {}).get("name", row["cal_id"]),
         })
