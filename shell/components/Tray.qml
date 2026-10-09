@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import ".."
@@ -7,10 +8,16 @@ import ".."
 // two-column grid inside a tile. Click activates an item, middle click runs its
 // secondary action, scroll goes to the item, right click opens its menu in a
 // popover (TrayMenu). An empty tray hides the tile.
+// Items matching config.tray.hidden (id, title or icon) are left out - Bluetooth
+// has its own widget. Icons are drawn desaturated and dimmed so app colours
+// don't fight the glass, and come back in full on hover.
 Tile {
     id: root
 
-    readonly property var items: SystemTray.items.values
+    readonly property var items: SystemTray.items.values.filter(item => {
+        const keys = [item.id, item.title, item.icon].join(" ").toLowerCase();
+        return !Config.trayHidden.some(word => keys.includes(word.toLowerCase()));
+    })
     readonly property int rows: Math.ceil(items.length / 2)
     // grid rows stretch to fill the tile (CSS grid, align-content: normal)
     readonly property real rowHeight: Math.max(18, (Theme.size - 2 - 4 * (rows - 1)) / rows)
@@ -42,14 +49,24 @@ Tile {
                 height: root.rowHeight
 
                 Image {
+                    id: icon
                     anchors.centerIn: parent
                     width: 18
                     height: 18
                     sourceSize: Qt.size(36, 36)
                     source: cell.modelData.icon
                     smooth: true
+                    visible: false
+                }
+                MultiEffect {
+                    anchors.fill: icon
+                    source: icon
+                    saturation: area.containsMouse ? 0 : -1
+                    opacity: area.containsMouse ? 1 : Theme.sub.a
                     scale: area.containsMouse ? 1.2 : 1
                     Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+                    Behavior on saturation { NumberAnimation { duration: 200 } }
+                    Behavior on opacity { NumberAnimation { duration: 200 } }
                 }
 
                 MouseArea {

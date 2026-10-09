@@ -22,6 +22,8 @@ Singleton {
             monitor: "kitty --class=btop-float -e btop",
             docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'"
         },
+        // tray items left out, matched against their id, title or icon name
+        tray: { hidden: ["blueman", "bluetooth"] },
         pets: { available: ["cat", "shiba", "fox", "penguin", "bunny", "capy", "frog"] },
         locale: null,
         workspaces: { icons: {} }
@@ -41,6 +43,7 @@ Singleton {
     readonly property var quick: data.quick
     readonly property var commands: data.commands
     readonly property var pets: data.pets.available
+    readonly property var trayHidden: data.tray.hidden
     readonly property var locale: data.locale
     // workspace id -> Lucide icon name
     readonly property var workspaceIcons: data.workspaces?.icons ?? ({})
