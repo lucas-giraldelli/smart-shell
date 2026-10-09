@@ -4,7 +4,8 @@ import { update } from '../../state.js';
 import { t } from '../../i18n/index.js';
 
 // Workspace switcher. The active workspace is a pill; with `wsIcons` on, the
-// other occupied ones become small dots holding their icon (+ window count).
+// other occupied ones become small dots holding their icon; the windows are
+// listed in the tooltip.
 class Workspaces extends Component {
   static slices = ['workspaces', 'ui'];
 
@@ -24,7 +25,7 @@ class Workspaces extends Component {
       this.innerHTML = workspaces.list.map(ws => {
         const n = ws.windows.length;
         return `<button data-id="${ws.id}" data-tip class="${n ? 'has' : ''}">
-          ${n ? icon(ws.icon, 'g') : ''}${n > 1 ? `<span class="n">${n}</span>` : ''}
+          ${n ? icon(ws.icon, 'g') : ''}
           <span class="label">${t('workspaces.label', { id: ws.id, windows: ws.windows.join(', ') || t('workspaces.empty') })}</span>
         </button>`;
       }).join('');
