@@ -1,0 +1,1 @@
+../../../prototype/src/i18n/locales/pt-BR.js
