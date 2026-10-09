@@ -78,12 +78,15 @@ Tile {
                 Row {
                     x: 19
                     anchors.verticalCenter: parent.verticalCenter
+                    spacing: root.ch * 0.4
                     Repeater {
                         // one fixed slot per live value (a plain text is one part)
                         model: slot.modelData.parts ?? [[slot.modelData.text, slot.modelData.width]]
                         Label {
                             required property var modelData
                             width: root.ch * modelData[1]
+                            // several values: right-aligned in their slots
+                            horizontalAlignment: slot.modelData.parts ? Text.AlignRight : Text.AlignLeft
                             shadow: true
                             text: modelData[0]
                             color: slot.alarm ? slot.statusColor : Theme.text

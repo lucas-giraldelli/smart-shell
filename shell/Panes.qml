@@ -65,7 +65,7 @@ Singleton {
             return [
                 { icon: "memory-stick", text: `${Math.round(s.memFree)} GiB`, width: 6, status: mem === "ok" ? "" : mem },
                 // load and temperature in fixed slots ("100%", "100°"), so neither moves the other
-                { icon: "cpu", parts: [[`${Math.round(s.load)}%`, 5], [`${s.temp}°`, 3.8]], width: 8.8, status: temp === "ok" ? "" : temp }
+                { icon: "cpu", parts: [[`${Math.round(s.load)}%`, 4.6], [`${s.temp}°`, 3.8]], width: 8.8, status: temp === "ok" ? "" : temp }
             ];
         }
         }
