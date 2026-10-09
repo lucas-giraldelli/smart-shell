@@ -24,7 +24,7 @@
 .cal .grid button {
   position: relative; height: 36px; border: 0; border-radius: 9px; cursor: pointer;
   font: inherit; font-size: 12.5px; font-variant-numeric: tabular-nums; color: #e4e4e7; background: none;
-  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+  display: grid; place-items: center;
 }
 .cal .grid button:hover { background: rgba(255, 255, 255, .07); }
 .cal .grid .weekend { color: #f0a3b0; background: rgba(240, 163, 176, .05); }
@@ -33,7 +33,8 @@
 .cal .grid .today { box-shadow: inset 0 0 0 1.5px var(--accent); font-weight: 700; }
 .cal .grid .selected { background: rgba(255, 255, 255, .13); }
 .cal .grid .today.selected { background: color-mix(in srgb, var(--accent) 22%, transparent); }
-.cal .dots { display: flex; gap: 2px; height: 4px; }
+/* dots hang below the number, so every number stays centred */
+.cal .dots { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); display: flex; gap: 2px; }
 .cal .dots i { width: 4px; height: 4px; border-radius: 99px; background: var(--rc); }
 .cal .dots i.optional { background: none; box-shadow: inset 0 0 0 1px var(--rc); }
 

@@ -4,7 +4,8 @@ import { store, update } from '../../state.js';
 import { regions, holidaysOf, upcoming, dateKey } from '../../data/holidays.js';
 
 // Month calendar inside the clock tile: navigate months, weekends tinted,
-// holidays dotted per region (toggle regions with the chips). No events.
+// holidays dotted per region (toggle regions with the chips). Selecting a
+// holiday shows its details in place of the "upcoming" list.
 const MONTH = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
 const LONG = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
 const MON = new Intl.DateTimeFormat('pt-BR', { month: 'short' });
@@ -98,16 +99,16 @@ class Calendar extends Component {
         ].filter(Boolean).join(' ');
         const dots = list.map(h => `<i class="${h.kind}" style="--rc:${regions[h.region].color}"></i>`).join('');
         return `<button data-day="${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}" class="${cls}" title="${list.map(h => h.name).join(' · ')}">
-          ${d.getDate()}<span class="dots">${dots}</span></button>`;
+          ${d.getDate()}${dots ? `<span class="dots">${dots}</span>` : ''}</button>`;
       }).join('')}
       </div>
       <div class="cal-day">
         <div class="sec">${LONG.format(this.selected)}</div>
         ${selectedList.length ? selectedList.map(holidayRow).join('') : '<div class="meta none">Nenhum feriado neste dia</div>'}
       </div>
-      <div class="sec">Próximos feriados</div>
+      ${selectedList.length ? '' : `<div class="sec">Próximos feriados</div>
       ${upcoming(today, enabled, 3).map(h => holidayRow(h).replace('<span class="grow">', `<span class="when">${short(h.date)}</span><span class="grow">`)).join('')
-        || '<div class="meta none">Nenhuma região selecionada</div>'}`;
+        || '<div class="meta none">Nenhuma região selecionada</div>'}`}`;
   }
 }
 
