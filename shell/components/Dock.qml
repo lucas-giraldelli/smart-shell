@@ -13,6 +13,7 @@ Rectangle {
     readonly property var widgets: ({
         workspaces: workspacesWidget,
         tray: trayWidget,
+        quick: quickWidget,
         clock: clockWidget
     })
 
@@ -93,6 +94,10 @@ Rectangle {
     Component {
         id: trayWidget
         Tray {}
+    }
+    Component {
+        id: quickWidget
+        Quick {}
     }
     Component {
         id: clockWidget
