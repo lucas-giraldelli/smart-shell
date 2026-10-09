@@ -30,7 +30,10 @@ Rectangle {
             font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold }
         }
         Text {
-            text: clock.date.toLocaleDateString(Qt.locale("pt_BR"), "ddd, dd 'de' MMM").replace(/\./g, "")
+            text: {
+                const d = clock.date.toLocaleDateString(Qt.locale("pt_BR"), "ddd, dd 'de' MMM").replace(/\./g, "");
+                return d.charAt(0).toUpperCase() + d.slice(1);
+            }
             color: Theme.sub
             font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
         }
