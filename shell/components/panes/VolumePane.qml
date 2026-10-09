@@ -45,15 +45,16 @@ PaneScroll {
 
     Section { text: I18n.t("volume.apps") }
     Repeater {
-        model: Audio.streams
+        // one slider per app, setting all its streams together
+        model: Audio.apps
         Slider {
             required property var modelData
-            readonly property int volume: Math.round((modelData.audio?.volume ?? 0) * 100)
+            readonly property int volume: Audio.appVolume(modelData)
             icon: "app-window"
-            label: Audio.nameOf(modelData)
+            label: Audio.nameOf(modelData.nodes[0])
             value: volume
             valueText: volume + "%"
-            onMoved: v => Audio.setStreamVolume(modelData, v)
+            onMoved: v => Audio.setAppVolume(modelData, v)
         }
     }
 }

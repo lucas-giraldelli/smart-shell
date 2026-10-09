@@ -15,6 +15,26 @@ Singleton {
     readonly property PwNode source: Pipewire.defaultAudioSource
     readonly property var sinks: Pipewire.nodes.values.filter(n => n.audio && n.isSink && !n.isStream)
     readonly property var streams: Pipewire.nodes.values.filter(n => n.audio && n.isSink && n.isStream)
+    // one entry per app (application.name + process binary), however many
+    // streams it plays: a browser opens one per tab
+    readonly property var apps: {
+        const byApp = new Map();
+        for (const n of streams) {
+            const key = `${n.properties["application.name"] ?? n.name}|${n.properties["application.process.binary"] ?? ""}`;
+            if (!byApp.has(key))
+                byApp.set(key, { key, nodes: [] });
+            byApp.get(key).nodes.push(n);
+        }
+        return [...byApp.values()];
+    }
+    // an app's volume: its loudest stream
+    function appVolume(app) {
+        return Math.round(Math.max(0, ...app.nodes.map(n => (n.audio?.volume ?? 0) * 100)));
+    }
+    function setAppVolume(app, v) {
+        for (const n of app.nodes)
+            setStreamVolume(n, v);
+    }
 
     readonly property bool ready: !!sink?.audio
     readonly property int volume: Math.round((sink?.audio?.volume ?? 0) * 100)
