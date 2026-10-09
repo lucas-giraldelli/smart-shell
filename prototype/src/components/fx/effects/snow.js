@@ -1,7 +1,7 @@
 // Snowflakes falling over the wallpaper. Nothing falls below the top of the
 // dock (snow cap included): flakes fade out just above it and respawn on top.
 const rnd = (a, b) => a + Math.random() * (b - a);
-const CAP = 19;  // px above the dock where flakes stop (snow cap + margin)
+const CAP = 39;  // px above the dock where flakes stop (snow cap + margin)
 const FADE = 36; // px over which a flake fades before reaching the floor
 
 export function snow(canvas) {
