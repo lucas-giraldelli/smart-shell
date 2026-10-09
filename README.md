@@ -134,10 +134,16 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   played last; `music.ignore` (default `["whatsapp"]`) lists substrings of a
   player's identity, desktop entry, title, url or command line to never show.
   Hover shows the full title and artist; the progress bar follows
-  the position once a second.
+  the position once a second. Right-click focuses the player's window, or,
+  for YouTube Music, opens its volume, controls and like. The heart turns red
+  when the song is liked: start the app with `--remote-debugging-port=9223`
+  (listens on localhost only; `YTM_DEBUG_PORT` changes it) and
+  `tools/ytm-like.mjs` (Node 22+) reads and clicks the app's like button.
+  Without the port the like is sent as the app's `+` shortcut and its state
+  is unknown.
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed
-  except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 8 s
+  except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 2 s
   while their badge is red (read from D-Bus every 3 s) or their tooltip says
   "N notifications", and so does any item in NeedsAttention.
 - **Bluetooth** - BlueZ (`bluez`, an adapter). Click toggles the adapter,

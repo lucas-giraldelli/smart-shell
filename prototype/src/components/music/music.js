@@ -52,11 +52,9 @@ class Music extends Component {
         const ctl = e.target.closest('[data-ytm]')?.dataset.ytm;
         if (ctl === 'toggle') update('media', m => ({ playing: !m.playing }));
         if (ctl === 'previous' || ctl === 'next') update('media', { progress: 0 });
-        if (ctl === 'like') {
-          const b = e.target.closest('[data-ytm]');
-          b.classList.add('off');
-          setTimeout(() => b.classList.remove('off'), 600);
-        }
+        // like: flipped at once (optimistic), then confirmed by the app over
+        // its debug port in the real shell (tools/ytm-like.mjs)
+        if (ctl === 'like') e.target.closest('[data-ytm]').classList.toggle('off');
         return;
       }
       closePopover();

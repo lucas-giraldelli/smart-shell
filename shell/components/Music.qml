@@ -103,13 +103,15 @@ Tile {
                     anchors.rightMargin: 8
                     y: 4
                     icon: "heart"
-                    // a short flash: the app doesn't tell whether it's liked
+                    // red when the app says it's liked; a short flash when it can't tell
                     property bool flash: false
-                    off: flash
+                    off: flash || Media.liked
                     onClicked: {
                         Media.likeMusic();
-                        flash = true;
-                        flashTimer.restart();
+                        if (Media.likeStatus === "") {
+                            flash = true;
+                            flashTimer.restart();
+                        }
                     }
                     Timer { id: flashTimer; interval: 600; onTriggered: like.flash = false }
                 }

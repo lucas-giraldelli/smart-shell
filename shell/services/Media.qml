@@ -109,14 +109,53 @@ Singleton {
             "sh", p.dbusName, (p.desktopEntry || p.identity || "").toLowerCase()];
         windowAction.running = true;
     }
-    // YouTube Music's like: its "+" shortcut (Shift + "=" - Hyprland can't
-    // send the shifted "plus" keysym), sent to its window without focusing it
+    // YouTube Music's like state: read from the app over its debug port
+    // (tools/ytm-like.mjs). The dock flips it at once (optimistic) and the
+    // app's answer confirms it. Without the port the state stays unknown and
+    // the like is sent as the app's "+" shortcut (Shift + "=" - Hyprland
+    // can't send the shifted "plus" keysym), without focusing its window.
+    property string likeStatus: ""          // LIKE | INDIFFERENT | DISLIKE, "" unknown
+    readonly property bool liked: likeStatus === "LIKE"
+    readonly property string musicTrack: musicPlayer ? musicPlayer.trackTitle + musicPlayer.trackArtist : ""
+    onMusicTrackChanged: {
+        likeStatus = "";
+        likeRefresh.restart();
+    }
     function likeMusic() {
         if (!musicPlayer)
             return;
-        windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch sendshortcut "SHIFT,equal,address:$addr" >/dev/null',
-            "sh", musicPlayer.dbusName, "music.youtube.com"];
-        windowAction.running = true;
+        if (likeStatus !== "")
+            likeStatus = liked ? "INDIFFERENT" : "LIKE";
+        likeProc.command = [Quickshell.shellDir + "/../tools/ytm-like.mjs", "toggle"];
+        likeProc.running = true;
+    }
+    function refreshLike() {
+        if (!musicPlayer || likeProc.running)
+            return;
+        likeProc.command = [Quickshell.shellDir + "/../tools/ytm-like.mjs", "get"];
+        likeProc.running = true;
+    }
+    Timer {
+        id: likeRefresh
+        interval: 1500  // the app updates its button a moment after the track
+        onTriggered: root.refreshLike()
+    }
+    Process {
+        id: likeProc
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const s = text.trim();
+                if (s)
+                    root.likeStatus = s;
+            }
+        }
+        onExited: code => {
+            if (code !== 2 || command[1] !== "toggle")
+                return;
+            windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch sendshortcut "SHIFT,equal,address:$addr" >/dev/null',
+                "sh", root.musicPlayer.dbusName, "music.youtube.com"];
+            windowAction.running = true;
+        }
     }
     // sets $addr from $1 (a D-Bus name) and $2 (a window class hint)
     readonly property string findWindow: 'pid=$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus '
