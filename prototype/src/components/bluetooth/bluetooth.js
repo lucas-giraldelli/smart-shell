@@ -6,7 +6,8 @@ import { row, toggle, setHTML } from '../ui/ui.js';
 import { missingText } from '../../data/capabilities.js';
 
 // Click toggles the adapter; right-click opens the device menu (like blueman).
-// Off (or unavailable) shows just the crossed-out icon; the tooltip says why.
+// The tile is just the icon (crossed out when off) and only grows - with an
+// animation - to name the headset while one is connecting or connected.
 class Bluetooth extends Component {
   static slices = ['bluetooth', 'ui'];
 
@@ -54,11 +55,17 @@ class Bluetooth extends Component {
     }
     const conn = connectedDevice(bt);
     const busy = bt.busy !== null;
+    const device = conn ?? (busy ? bt.devices[bt.busy] : null);
+    this.classList.toggle('expanded', !!device);
+    this.classList.toggle('connecting', busy);
     this.toggleAttribute('data-open', ui.popover === 'bluetooth');
     this.classList.toggle('off', !bt.on);
     setHTML(this.$('[data-icon]'), icon(!bt.on ? 'bluetooth-off' : conn ? 'bluetooth-connected' : 'bluetooth', 'bt-ic'));
-    this.$('[data-name]').textContent = conn ? conn.name : 'Bluetooth';
-    this.$('[data-sub]').textContent = busy ? 'Conectando…' : conn ? `Fone · ${conn.battery}%` : 'Ligado';
+    // keep the last name while collapsing, so the text doesn't vanish mid-animation
+    if (device) {
+      this.$('[data-name]').textContent = device.name;
+      this.$('[data-sub]').textContent = busy ? 'Conectando…' : `Fone · ${device.battery}%`;
+    }
     this.$('.label').textContent = `${bt.on ? 'Bluetooth ligado' : 'Bluetooth desligado'} · clique liga/desliga · botão direito: dispositivos`;
 
     setHTML(this.menu, [

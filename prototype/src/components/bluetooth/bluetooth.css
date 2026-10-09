@@ -1,9 +1,23 @@
-.bt { width: 132px; gap: 9px; cursor: pointer; }
+/* Icon-only by default; grows to show the headset while connecting/connected. */
+.bt { width: auto; gap: 0; padding: 0 15px; cursor: pointer; transition: gap .35s, padding .35s, transform .2s, background .5s, border-color .5s; }
 .bt .bt-ic { width: 20px; height: 20px; color: var(--accent); transition: color .3s; }
 .bt.off .bt-ic { color: var(--sub); }
-/* off: the crossed-out icon says it all, so the tile shrinks to just the icon */
-.bt.off { width: auto; padding: 0 15px; }
-.bt.off .bt-body { display: none; }
-.bt-body { min-width: 0; }
-.bt-name { font-size: 12.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.bt-body {
+  min-width: 0; max-width: 0; overflow: hidden; opacity: 0; transform: translateX(-6px);
+  transition: max-width .45s cubic-bezier(.3, 1.15, .5, 1), opacity .25s, transform .35s;
+}
+.bt.expanded { gap: 9px; padding: 0 14px 0 13px; }
+.bt.expanded .bt-body { max-width: 120px; opacity: 1; transform: none; transition-delay: 0s, .1s, .1s; }
+.bt-name, .bt-body .t-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bt-name { font-size: 12.5px; font-weight: 600; }
+
+/* connecting: the icon pulses until the headset answers */
+.bt.connecting .bt-ic { animation: bt-pulse 1s ease-in-out infinite; }
+@keyframes bt-pulse { 50% { opacity: .35; transform: scale(.88); } }
+@media (prefers-reduced-motion: reduce) {
+  .bt-body, .bt { transition: none; }
+  .bt.connecting .bt-ic { animation: none; }
+}
+
 .bt .menu .sec { margin-top: 6px; }
