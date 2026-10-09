@@ -53,6 +53,7 @@ Singleton {
     readonly property bool playing: player?.isPlaying ?? false
     readonly property string title: player?.trackTitle ?? ""
     readonly property string artist: player?.trackArtist ?? ""
+    readonly property string album: player?.trackAlbum ?? ""
     readonly property string source: player?.identity ?? ""
     // track length in seconds: Firefox / Zen sometimes leave lengthSupported
     // false (and `length` unusable) but put mpris:length (µs) in the metadata

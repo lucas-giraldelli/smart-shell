@@ -3,7 +3,8 @@ import { icon } from '../../core/icons.js';
 import { store, update } from '../../state.js';
 
 // Now playing (MPRIS in the real shell). Click toggles play/pause; hovering
-// shows the full title, artist and player.
+// shows the full title, artist and player; the tile itself names only the
+// artist (or the album).
 class Music extends Component {
   static slices = ['media'];
 
@@ -13,7 +14,7 @@ class Music extends Component {
       <div class="art">${icon('music')}</div>
       <div class="meta-col">
         <div class="title">${m.title}</div>
-        <div class="t-sub">${m.artist} · ${m.source}</div>
+        <div class="t-sub">${m.artist || m.album || ''}</div>
         <div class="progress"><i></i></div>
       </div>
       <div class="eq"><i></i><i></i><i></i><i></i></div>

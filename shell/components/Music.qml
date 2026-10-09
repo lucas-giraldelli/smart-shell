@@ -94,7 +94,8 @@ Tile {
             }
             Label {
                 width: parent.width
-                text: [Media.artist, Media.source].filter(Boolean).join(" · ")
+                // the artist (or the album); the player only in the tooltip
+                text: Media.artist || Media.album
                 elide: Text.ElideRight
                 size: 11
                 shadow: true
