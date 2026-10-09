@@ -34,7 +34,8 @@ class Quick extends Component {
 
   build(caps) {
     this.items = configuredPanes(config.quick, caps);
-    this.innerHTML = this.items.map(({ pane }) => `<div class="q" data-item="${pane.id}" title="${pane.label}"></div>`).join('')
+    this.innerHTML = this.items.map(({ pane }) =>
+      `<div class="q" data-item="${pane.id}" title="${pane.label}" style="--qw: ${pane.quickWidth ?? '4ch'}"></div>`).join('')
       + '<ss-control-center></ss-control-center>';
     this.style.gridTemplateRows = `repeat(${Math.min(2, this.items.length)}, auto)`;
   }

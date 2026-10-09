@@ -18,6 +18,7 @@ export default {
   label: 'Volume',
   icon: 'volume-2',
 
+  quickWidth: '4ch',
   quick: ({ audio }) => ({
     icon: audio.muted ? 'volume-x' : 'volume-2',
     text: audio.muted ? 'Mudo' : audio.volume + '%',

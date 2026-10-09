@@ -33,6 +33,7 @@ export default {
   requires: 'docker',
 
   // the quick item shows what Docker costs right now: its memory
+  quickWidth: '7ch',
   quick: ({ docker }) => ({
     icon: 'container', text: docker.running ? fmtMem(totalMem(docker)) : 'Parado', status: dockerStatus(docker),
   }),

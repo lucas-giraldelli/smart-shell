@@ -5,7 +5,8 @@ import docker from './docker.js';
 
 // A pane is one feature of the quick tile + control center:
 //   id, label, icon, requires?   identity and the capability it needs
-//   quick(state)                 -> { icon, text, tone } for the mini item in the tile
+//   quick(state)                 -> { icon, text, tone, status } for the mini item in the tile
+//   quickWidth                   fixed text width of that item, so values never shift the dock
 //   wheel?(dir)                  scroll on the mini item (+1 up, -1 down)
 //   render()                     static markup of the tab
 //   update(root, state)          sync the tab with state (only while visible)

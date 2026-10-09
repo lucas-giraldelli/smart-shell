@@ -15,7 +15,8 @@ export default {
   label: 'Rede',
   icon: 'network',
 
-  quick: ({ network: n }) => ({ icon: 'network', text: n.online ? 'Rede' : 'Offline', status: n.online ? 'ok' : 'crit' }),
+  quickWidth: '3ch',
+  quick: ({ network: n }) => ({ icon: 'network', text: n.online ? 'ON' : 'OFF', status: n.online ? 'ok' : 'crit' }),
 
   render() {
     const n = store.get().network;
