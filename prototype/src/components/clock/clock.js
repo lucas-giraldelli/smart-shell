@@ -39,12 +39,13 @@ class Clock extends Component {
     clearInterval(this.timer);
   }
 
-  // The compact width: padding (14px a side + border) around the widest time
-  // in the current format ("00:00" / "12:00 PM", tabular digits) and the
-  // widest date line of the language (every weekday x month), so it never
-  // changes from one minute or day to the next.
-  measure(format) {
-    const key = format + locale();
+  // The compact width: the same 14px padding (+ border) on both sides of the
+  // wider of the widest time in the current format ("00:00" / "12:00 PM",
+  // tabular digits, so minutes never move it) and today's date line. The date
+  // decides, and it only changes at midnight; sizing for the widest date of
+  // the year ("dom, 08 de mar") would leave up to 8px of extra room on the right.
+  measure(format, date) {
+    const key = format + locale() + date;
     if (key === this.measured) return;
     this.measured = key;
     const ctx = (this.ctx ??= document.createElement('canvas').getContext('2d'));
@@ -53,17 +54,16 @@ class Clock extends Component {
     const times = format === '12h' ? ['12:00 AM', '12:00 PM'] : ['00:00'];
     const time = Math.max(...times.map(s => width('600 20px Inter', s, -0.4)));
     ctx.fontVariantNumeric = 'normal';
-    let date = 0;
-    for (let d = 0; d < 7; d++) for (let m = 0; m < 12; m++) {
-      const day = new Date(2026, m, 1 + ((d - new Date(2026, m, 1).getDay() + 7) % 7) + 21); // a 2-digit day
-      const s = dateFormat({ weekday: 'short', day: '2-digit', month: 'short' }).format(day).replace(/\./g, '');
-      date = Math.max(date, width('500 11px Inter', s));
-    }
-    this.style.setProperty('--clock-w', `${Math.ceil(Math.max(time, date)) + 14 * 2 + 2}px`);
+    // the date's ink: the gap on the right matches the visible one on the left
+    ctx.font = '500 11px Inter';
+    const m = ctx.measureText(date);
+    const day = m.actualBoundingBoxRight;
+    this.style.setProperty('--clock-w', `${Math.round(Math.max(time, day)) + 14 * 2 + 2}px`);
   }
 
   update({ ui, agenda }) {
-    this.measure(ui.clockFormat);
+    this.format = ui.clockFormat;
+    this.measure(ui.clockFormat, this.$('[data-date]').textContent);
     this.toggleAttribute('data-open', ui.popover === 'calendar');
 
     // what's next matters more than what's running: warn first
@@ -85,6 +85,7 @@ class Clock extends Component {
     this.$('[data-time]').textContent = formatTime(d);
     const date = dateFormat({ weekday: 'short', day: '2-digit', month: 'short' }).format(d).replace(/\./g, '');
     this.$('[data-date]').textContent = date;
+    this.measure(this.format ?? '24h', date[0].toUpperCase() + date.slice(1));
     this.$('[data-mini]').textContent = dateFormat({ weekday: 'short', day: '2-digit' }).format(d).replace(/\./g, '');
   }
 }

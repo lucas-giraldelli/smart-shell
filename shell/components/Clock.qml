@@ -25,28 +25,26 @@ Tile {
     implicitWidth: reminding ? 168 : compactWidth
     Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
 
-    // padding (14px a side + border) around the widest time in the current
-    // format ("00:00" / "12:00 PM", tabular digits) and the widest date line
-    // of the language (every weekday x month), so it never changes from one
-    // minute or day to the next
-    FontMetrics {
-        id: timeFont
-        font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold; features: Theme.tnum }
-    }
+    // the same 14px padding (+ border) on both sides of the wider of the widest
+    // time in the current format ("00:00" / "12:00 PM", tabular digits, so
+    // minutes never move it) and today's date line. The date decides, and it
+    // only changes at midnight; sizing for the widest date of the year ("Dom,
+    // 08 de mar") would leave up to 8px of extra room on the right.
     FontMetrics {
         id: dateFont
         font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
     }
+    FontMetrics {
+        id: timeFont
+        font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold; features: Theme.tnum }
+    }
     readonly property real compactWidth: {
         const times = Config.clockFormat === "12h" ? ["12:00 AM", "12:00 PM"] : ["00:00"];
         const time = Math.max(...times.map(s => timeFont.advanceWidth(s) - 0.4 * s.length));
-        let date = 0;
-        for (let d = 0; d < 7; d++)
-            for (let m = 0; m < 12; m++) {
-                const first = new Date(2026, m, 1);
-                const day = new Date(2026, m, 1 + ((d - first.getDay() + 7) % 7) + 21);   // a 2-digit day
-                date = Math.max(date, dateFont.advanceWidth(I18n.capitalize(I18n.formatDate(day, "date"))));
-            }
+        // measured to the date's ink, not its advance: the visible gap on the
+        // right then matches the one on the left (checked on screen)
+        const ink = dateFont.tightBoundingRect(dateLine.text);
+        const date = ink.x + ink.width;
         return Math.ceil(Math.max(time, date)) + 14 * 2 + 2;
     }
     open: calendar.open
@@ -125,6 +123,7 @@ Tile {
                 Behavior on y { NumberAnimation { duration: 400; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.9, 0.4, 1, 1, 1] } }
 
                 Label {
+                    id: dateLine
                     width: parent.width
                     lineHeight: 15
                     elide: Text.ElideRight
