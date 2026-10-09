@@ -1,0 +1,54 @@
+/* Design tokens. The defaults are the "glass" theme; every theme in ./themes
+   overrides a subset on body[data-theme]. Components only read these tokens. */
+:root {
+  --size: 52px;
+  --gap: 6px;
+  --pad-b: 12px;
+  --radius: 24px;
+  --blur: 26px;
+  --sat: 170%;
+  --dock-bg: rgba(28, 28, 32, .32);
+  --dock-border: rgba(255, 255, 255, .28);
+  --shadow: 0 18px 50px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .25);
+  --tile-bg: rgba(255, 255, 255, .12);
+  --tile-border: rgba(255, 255, 255, .14);
+  --text: #fff;
+  --sub: rgba(255, 255, 255, .72);
+  --accent: #7dd3fc;
+  --dot: rgba(255, 255, 255, .9);
+  --sep: rgba(255, 255, 255, .22);
+  --refl: .18;
+  --tint: rgba(0, 0, 0, 0);
+  --label-bg: rgba(20, 20, 24, .78);
+  --ring-track: rgba(255, 255, 255, .16);
+  --warn: #fbbf24;
+  --crit: #fb7185;
+  --ok: #4ade80;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: radial-gradient(ellipse at 30% 20%, #24442a, #0d1a10 70%);
+  color: var(--text);
+  font: 500 13px/1.2 Inter, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* shared primitives */
+svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.t-big { font-size: 18px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.t-sub { font-size: 11px; color: var(--sub); font-weight: 500; }
+.sep { width: 1px; align-self: center; height: calc(var(--size) * .7); background: var(--sep); flex: none; }
+
+/* hover tooltip: put <span class="label"> inside any element marked data-tip */
+.label {
+  position: absolute; left: 50%; bottom: calc(100% + 14px); transform: translate(-50%, 4px); z-index: 30;
+  padding: 5px 10px; border-radius: 8px; white-space: nowrap; font-size: 12px; font-weight: 500;
+  background: var(--label-bg); color: #fff; backdrop-filter: blur(12px);
+  opacity: 0; pointer-events: none; transition: opacity .15s, transform .15s;
+}
+.label::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -5px; border: 5px solid transparent; border-top-color: var(--label-bg); }
+[data-tip]:hover > .label { opacity: 1; transform: translate(-50%, 0); }
+[data-open] > .label { display: none; }

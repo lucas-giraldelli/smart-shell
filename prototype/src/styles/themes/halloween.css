@@ -1,0 +1,12 @@
+body[data-theme="halloween"] {
+  --dock-bg: rgba(26, 8, 32, .78); --dock-border: rgba(255, 140, 0, .55);
+  --shadow: 0 0 30px rgba(255, 110, 0, .35), 0 20px 60px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 170, 60, .25);
+  --tile-bg: rgba(255, 120, 0, .09); --tile-border: rgba(255, 140, 0, .28);
+  --accent: #ff8c1a; --dot: #ff8c1a; --sep: rgba(255, 140, 0, .35); --refl: .25;
+  --tint: rgba(35, 5, 40, .55);
+}
+/* cobweb in the corner */
+body[data-theme="halloween"] .dock::before {
+  content: ""; position: absolute; left: -2px; top: -2px; width: 46px; height: 46px; z-index: 3; pointer-events: none; opacity: .55;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 46' fill='none' stroke='%23fff' stroke-width='.8'%3E%3Cpath d='M2 2 L44 10 M2 2 L30 30 M2 2 L10 44'/%3E%3Cpath d='M14 4.5 Q12 12 6 14 M26 7 Q22 22 7 26 M38 9 Q32 32 9 38'/%3E%3C/svg%3E") no-repeat;
+}

@@ -1,0 +1,26 @@
+/* Entry stylesheet: tokens, themes, then one file per component. */
+@import url('./base.css');
+@import url('./themes/glass.css');
+@import url('./themes/midnight.css');
+@import url('./themes/aqua.css');
+@import url('./themes/neon.css');
+@import url('./themes/paper.css');
+@import url('./themes/canarinho.css');
+@import url('./themes/snowy.css');
+@import url('./themes/halloween.css');
+@import url('../components/ui/ui.css');
+@import url('../components/dock/dock.css');
+@import url('../components/workspaces/workspaces.css');
+@import url('../components/app-row/app-row.css');
+@import url('../components/music/music.css');
+@import url('../components/weather/weather.css');
+@import url('../components/system/system.css');
+@import url('../components/bluetooth/bluetooth.css');
+@import url('../components/quick/quick.css');
+@import url('../components/control-center/control-center.css');
+@import url('../components/tray/tray.css');
+@import url('../components/clock/clock.css');
+@import url('../components/pets/pets.css');
+@import url('../components/fx/fx.css');
+@import url('../components/wallpaper/wallpaper.css');
+@import url('../components/dev-panel/dev-panel.css');

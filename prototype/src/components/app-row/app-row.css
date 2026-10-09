@@ -1,0 +1,36 @@
+.apps { display: flex; align-items: flex-end; gap: var(--gap); height: var(--size); }
+.app {
+  --s: 1;
+  position: relative; flex: none; cursor: pointer;
+  width: calc(var(--size) * var(--s)); height: calc(var(--size) * var(--s));
+}
+.app .ic {
+  width: 100%; height: 100%; display: block;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, .35));
+  -webkit-user-drag: none;
+}
+.app.launching .ic { animation: bounce .62s cubic-bezier(.3, .7, .4, 1) 2; }
+.app.focus .ic { animation: focus .3s ease-out; }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-38%); } 70% { transform: translateY(-8%); } }
+@keyframes focus { 50% { transform: scale(.88); } }
+
+/* mirrored icon on the dock surface */
+.refl {
+  position: absolute; left: 0; right: 0; top: 100%; height: var(--pad-b); overflow: hidden; pointer-events: none;
+  opacity: var(--refl); transition: opacity .5s;
+}
+.refl img {
+  width: 100%; display: block; transform: scaleY(-1);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent 45%);
+  mask-image: linear-gradient(to top, #000, transparent 45%);
+}
+
+/* running indicator */
+.dot {
+  position: absolute; left: 50%; top: calc(100% + var(--pad-b) / 2 - 2px);
+  width: 4px; height: 4px; margin-left: -2px; border-radius: 9px;
+  background: var(--dot); box-shadow: 0 0 6px var(--dot);
+  opacity: 0; transform: scale(0); transition: opacity .3s, transform .3s;
+}
+.app.running .dot { opacity: 1; transform: scale(1); }
+.app:hover .label { opacity: 1; transform: translate(-50%, 0); }

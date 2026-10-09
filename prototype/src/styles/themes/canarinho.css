@@ -1,0 +1,7 @@
+body[data-theme="canarinho"] {
+  --dock-bg: linear-gradient(135deg, rgba(0, 130, 64, .78), rgba(0, 96, 48, .80));
+  --dock-border: rgba(255, 223, 0, .7);
+  --shadow: 0 18px 50px rgba(0, 40, 10, .45), inset 0 1px 0 rgba(255, 240, 120, .35);
+  --tile-bg: rgba(0, 39, 118, .38); --tile-border: rgba(255, 223, 0, .35);
+  --accent: #ffdf00; --dot: #ffdf00; --sep: rgba(255, 223, 0, .4); --refl: .2;
+}

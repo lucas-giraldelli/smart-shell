@@ -1,0 +1,3 @@
+ss-wallpaper video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+ss-wallpaper .tint { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: var(--tint); transition: background .8s; }
+ss-wallpaper .night { position: fixed; inset: 0; z-index: 50; pointer-events: none; background: #ff8a00; mix-blend-mode: multiply; opacity: 0; transition: opacity .4s; }

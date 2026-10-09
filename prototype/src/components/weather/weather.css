@@ -1,0 +1,2 @@
+ss-weather .sun { width: 26px; height: 26px; flex: none; animation: spin 22s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }

@@ -1,0 +1,8 @@
+# local wallpaper linked by prototype/serve.sh
+prototype/assets/local/
+
+# editors / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store

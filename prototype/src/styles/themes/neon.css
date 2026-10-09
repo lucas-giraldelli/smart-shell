@@ -1,0 +1,8 @@
+body[data-theme="neon"] {
+  --dock-bg: rgba(8, 4, 22, .78); --dock-border: rgba(0, 255, 240, .65);
+  --shadow: 0 0 14px rgba(0, 255, 240, .45), 0 0 50px rgba(255, 0, 200, .25), inset 0 0 24px rgba(255, 0, 200, .12);
+  --tile-bg: rgba(0, 255, 240, .06); --tile-border: rgba(255, 0, 200, .35);
+  --accent: #00fff0; --dot: #ff3bd4; --sep: rgba(0, 255, 240, .35); --refl: .25;
+  --tint: rgba(20, 0, 40, .35);
+}
+body[data-theme="neon"] .app .ic { filter: drop-shadow(0 0 6px rgba(0, 255, 240, .45)); }

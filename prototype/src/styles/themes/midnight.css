@@ -1,0 +1,6 @@
+body[data-theme="midnight"] {
+  --dock-bg: rgba(10, 12, 30, .70); --dock-border: rgba(140, 150, 255, .28);
+  --shadow: 0 20px 60px rgba(0, 0, 20, .55), inset 0 1px 0 rgba(160, 170, 255, .18);
+  --tile-bg: rgba(120, 130, 255, .10); --tile-border: rgba(140, 150, 255, .18);
+  --accent: #a5b4fc; --dot: #a5b4fc; --refl: .32; --tint: rgba(8, 10, 40, .38);
+}

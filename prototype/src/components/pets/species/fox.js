@@ -1,0 +1,28 @@
+// The fastest; strolls a lot and pounces.
+export default {
+  name: 'Raposa',
+  color: '#f97316',
+  speed: 1.3,
+  acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }],
+  svg: `
+    <g class="legs" fill="#3b2618">
+      <rect class="la" x="13" y="24" width="3.5" height="9" rx="1.7"/><rect class="lb" x="18" y="24" width="3.5" height="9" rx="1.7"/>
+      <rect class="lb" x="28" y="24" width="3.5" height="9" rx="1.7"/><rect class="la" x="32.5" y="24" width="3.5" height="9" rx="1.7"/>
+    </g>
+    <g class="body-g">
+      <g class="tail" style="transform-origin: 100% 30%">
+        <ellipse cx="8" cy="18" rx="8.5" ry="4.6" transform="rotate(-20 8 18)" fill="#f97316"/>
+        <circle cx="2" cy="20.4" r="3" fill="#fff7ed"/>
+      </g>
+      <ellipse cx="23" cy="22" rx="13" ry="7.5" fill="#f97316"/>
+      <ellipse cx="31" cy="23" rx="5" ry="5" fill="#fff7ed"/>
+      <polygon points="30,10 30,0 36,6" fill="#f97316"/><polygon points="38,6 44,0 43.5,10" fill="#f97316"/>
+      <polygon points="30.8,7 30.8,2 33.5,5" fill="#3b2618"/><polygon points="39.5,6 43,2 42.8,7.5" fill="#3b2618"/>
+      <circle cx="36" cy="13" r="7.5" fill="#f97316"/>
+      <polygon points="40,10 46.5,15 40,18.5" fill="#f97316"/>
+      <ellipse cx="40" cy="16.4" rx="4.6" ry="2.5" fill="#fff7ed"/>
+      <ellipse class="eye" cx="34.5" cy="11.6" rx="1.1" ry="1.6" fill="#1c1917"/><ellipse class="eye" cx="39.3" cy="11.6" rx="1.1" ry="1.6" fill="#1c1917"/>
+      <path class="closed" d="M33.2 12 q1.3 1.1 2.6 0 M38 12 q1.3 1.1 2.6 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <circle cx="46" cy="15" r="1.1" fill="#1c1917"/>
+    </g>`,
+};

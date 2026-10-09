@@ -1,0 +1,25 @@
+.sys { width: 170px; gap: 10px; cursor: pointer; }
+
+.sys .ring { position: relative; width: 36px; height: 36px; flex: none; }
+.sys .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.sys .ring circle { fill: none; stroke-width: 4; }
+.sys .ring .trk { stroke: var(--ring-track); }
+.sys .ring .val { stroke: var(--accent); stroke-linecap: round; transition: stroke-dashoffset .6s, stroke .4s; }
+.sys .ring.hot .val { stroke: var(--crit); }
+.sys .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* free memory is the headline; temperature sits at the end of the same line */
+.sys-body { flex: 1; min-width: 0; }
+.sys-top { display: flex; align-items: baseline; gap: 3px; }
+.sys-top .t-big { font-size: 20px; transition: color .4s; }
+.sys-top .unit { font-size: 11px; font-weight: 600; color: var(--sub); }
+.sys .temp { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--sub); font-variant-numeric: tabular-nums; transition: color .4s; }
+.sys .temp.warm { color: var(--warn); }
+.sys .temp.crit { color: var(--crit); }
+
+.sys .bar { margin-top: 5px; height: 5px; border-radius: 9px; background: var(--ring-track); overflow: hidden; }
+.sys .bar i { display: block; height: 100%; border-radius: 9px; background: var(--accent); transition: width .8s, background .4s; }
+.sys.mem-low .t-big { color: var(--warn); }
+.sys.mem-low .bar i { background: var(--warn); }
+.sys.mem-crit .t-big { color: var(--crit); }
+.sys.mem-crit .bar i { background: var(--crit); }

@@ -1,0 +1,67 @@
+.cc { width: 384px; padding: 10px; }
+
+.cc .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 11px; background: rgba(255, 255, 255, .06); }
+.cc .tabs button {
+  flex: 1; font: inherit; font-size: 12px; color: #a1a1aa; background: none; border: 0; border-radius: 8px; padding: 7px 0; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .15s, color .15s;
+}
+.cc .tabs button svg.i { width: 14px; height: 14px; }
+.cc .tabs button:hover { color: #e4e4e7; }
+.cc .tabs button.on { background: rgba(255, 255, 255, .13); color: #fff; }
+.cc .tabs button.disabled { opacity: .45; }
+
+/* empty state of a tab whose backend is missing */
+.cc .missing { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 26px 16px 22px; text-align: center; }
+.cc .missing svg.i { width: 26px; height: 26px; color: #52525b; margin-bottom: 4px; }
+.cc .missing b { font-size: 13px; }
+.cc code { font: 11px/1 ui-monospace, monospace; padding: 2px 5px; border-radius: 5px; background: rgba(255, 255, 255, .1); color: #e4e4e7; }
+
+/* a disabled row/slider inside a working tab (e.g. night light without hyprsunset) */
+.cc .disabled-block { opacity: .45; pointer-events: none; }
+.cc .disabled-block .meta { color: var(--warn); }
+
+.cc .pane { display: none; padding: 8px 2px 2px; }
+.cc .pane.on { display: block; animation: paneIn .18s ease-out; }
+@keyframes paneIn { from { opacity: 0; transform: translateY(4px); } }
+.cc .pane > .sec:first-child { margin-top: 4px; }
+
+/* brightness */
+.cc .presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 4px 8px; }
+.cc .presets button {
+  font: inherit; font-size: 11.5px; padding: 7px 0; border-radius: 8px; cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, .1); background: rgba(255, 255, 255, .05); color: #e4e4e7;
+}
+.cc .presets button:hover { background: rgba(255, 255, 255, .1); }
+.cc .presets button.on { border-color: rgba(56, 189, 248, .6); background: rgba(56, 189, 248, .15); }
+
+/* network */
+.cc .status { display: flex; align-items: center; gap: 10px; padding: 6px 8px 10px; }
+.cc .status .big { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: rgba(74, 222, 128, .14); color: var(--ok); }
+.cc .status .big svg.i { width: 18px; height: 18px; }
+.cc .status b { font-size: 13px; }
+.cc .card {
+  display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin: 0 8px; padding: 10px 12px;
+  border-radius: 11px; background: rgba(255, 255, 255, .05); font-size: 12px;
+}
+.cc .card dt { color: #a1a1aa; }
+.cc .card dd { text-align: right; font-variant-numeric: tabular-nums; }
+.cc .traffic { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 8px 0; }
+.cc .traffic > div { padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, .05); font-size: 11px; color: #a1a1aa; }
+.cc .traffic svg.i { width: 12px; height: 12px; vertical-align: -2px; }
+.cc .traffic b { display: block; margin-top: 2px; font-size: 15px; color: #fff; font-variant-numeric: tabular-nums; }
+.cc .tl-line { display: block; width: 100%; height: 20px; margin-top: 4px; }
+.cc .tl-line polyline { fill: none; stroke-width: 1.5; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+.cc [data-line="down"] { stroke: #38bdf8; }
+.cc [data-line="up"] { stroke: #c084fc; }
+
+/* docker */
+.cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: #a1a1aa; }
+.cc .dk-list { max-height: 262px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
+.cc .ct { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 9px; font-size: 12.5px; }
+.cc .ct:hover { background: rgba(255, 255, 255, .06); }
+.cc .ct .led { flex: none; width: 8px; height: 8px; border-radius: 99px; background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+.cc .ct.stopped .led { background: #52525b; box-shadow: none; }
+.cc .ct.stopped .grow { color: #a1a1aa; }
+.cc .ct .tag { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: rgba(74, 222, 128, .14); color: var(--ok); }
+.cc .ct .ib { width: 26px; height: 26px; border-radius: 8px; }
+.cc .ct .ib svg.i { width: 13px; height: 13px; }

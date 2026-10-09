@@ -1,0 +1,2 @@
+.clock { flex-direction: column; justify-content: center; align-items: flex-start; gap: 2px; padding: 0 14px; }
+.clock .t-big { font-size: 20px; }

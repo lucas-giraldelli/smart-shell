@@ -1,0 +1,52 @@
+ss-pets { display: contents; }
+
+.pet { position: absolute; bottom: calc(100% - 3px); left: 0; width: 46px; height: 36px; z-index: 1; cursor: pointer; }
+.pet svg { width: 100%; height: 100%; overflow: visible; }
+/* flip around the sprite box, not the drawing, so turning never shifts the pet */
+.pet .flip { transform-box: view-box; transform-origin: 23px 18px; }
+.pet .body-g { transform-box: fill-box; transform-origin: 50% 100%; transition: transform .35s; }
+.pet .legs { transition: opacity .3s; }
+.pet .legs rect { transform-box: fill-box; transform-origin: 50% 0; }
+@keyframes legA { 0%, 100% { transform: rotate(28deg); } 50% { transform: rotate(-28deg); } }
+@keyframes legB { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(28deg); } }
+@keyframes bob { to { transform: translateY(-1.6px); } }
+@keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes waddle { from { transform: rotate(-7deg); } to { transform: rotate(7deg); } }
+@keyframes jump { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(-16px); } }
+@keyframes wag { from { transform: rotate(-12deg); } to { transform: rotate(14deg); } }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 97% { transform: scaleY(.1); } }
+
+/* shared walk: the leg cadence (--step) follows the actual speed */
+.pet.moving .la { animation: legA var(--step, .42s) linear infinite; }
+.pet.moving .lb { animation: legB var(--step, .42s) linear infinite; }
+.pet.fast .body-g { animation: bob calc(var(--step) / 2) ease-in-out infinite alternate; }
+.pet .tail { transform-box: fill-box; transform-origin: 100% 100%; animation: wag 1.6s ease-in-out infinite alternate; }
+.pet.fast .tail { animation-duration: .25s; }
+
+/* species overrides */
+.pet.hop.moving svg { animation: hop calc(var(--step) * 1.3) ease-in-out infinite; }
+.pet.hop.moving .la, .pet.hop.moving .lb { animation: none; }
+.pet.waddle.moving .body-g { animation: waddle var(--step) ease-in-out infinite alternate; }
+.pet.jump svg { animation: jump .55s cubic-bezier(.3, .7, .4, 1); }
+
+/* poses */
+.pet .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
+.pet .closed { display: none; }
+.pet.lie .legs { opacity: 0; }
+.pet.lie .body-g { transform: translateY(5px); }
+.pet.sleep .eye { display: none; }
+.pet.sleep .closed { display: inline; }
+.pet.lie .tail { animation-duration: 4s; }
+.pet .zzz { position: absolute; left: 30px; top: -6px; font-weight: 700; font-size: 11px; color: var(--text); opacity: 0; pointer-events: none; }
+.pet.sleep .zzz { animation: zzz 2.4s ease-out infinite; }
+.pet.sleep .zzz:nth-of-type(2) { animation-delay: 1.2s; }
+@keyframes zzz { 0% { opacity: 0; transform: translate(0, 4px) scale(.7); } 30% { opacity: .9; } 100% { opacity: 0; transform: translate(10px, -16px) scale(1.15); } }
+
+.pet .bubble {
+  position: absolute; bottom: calc(100% + 4px); left: 50%; transform: translateX(-50%);
+  padding: 4px 8px; border-radius: 8px; background: var(--label-bg); color: #fff; font-size: 11px; white-space: nowrap;
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.pet:hover .bubble { opacity: 1; }
+.pet .heart { position: absolute; left: 50%; top: -4px; color: var(--crit); font-size: 16px; pointer-events: none; animation: heart 1s ease-out forwards; }
+@keyframes heart { from { opacity: 1; transform: translate(-50%, 0) scale(.6); } to { opacity: 0; transform: translate(-50%, -30px) scale(1.3); } }
