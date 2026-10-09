@@ -115,7 +115,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   | YouTube Music plays | dances its own dance with music notes, taking a few steps every 8-14 s (with `cava` installed, to the beat) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
   | CPU below 10% / 40% / 72% / above | sleeps / idles and strolls / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
   | free RAM below 8 GiB / 4 GiB | heavy: 0.6x speed, lower hops, squashed; at 4 GiB a sweat drop | `thresholds.memFreeGiB.warn` / `.crit` |
-  | die temperature (Tccd1) from 80 °C / 87 °C | reddish; at 87 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
+  | die temperature (Tccd1) from 85 °C / 99 °C, while it walks or runs | reddish; at 99 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
 
   The same `thresholds` colour the quick tile (memory, CPU temperature). With
   `thresholds.tempC.roomTemp` set (e.g. 30), warn / crit become degrees over

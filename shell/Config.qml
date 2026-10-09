@@ -61,7 +61,7 @@ Singleton {
         thresholds: {
             cpu: { sleep: 15, idle: 50, walk: 85 },
             memFreeGiB: { warn: 8, crit: 4 },
-            tempC: { warn: 80, crit: 87, roomTemp: null }
+            tempC: { warn: 85, crit: 99, roomTemp: null }
         },
         // the VPN profile the network tab uses (an openvpn3 config or a
         // NetworkManager connection name); null = the first openvpn3 config

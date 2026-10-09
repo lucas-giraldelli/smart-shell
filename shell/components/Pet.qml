@@ -31,7 +31,10 @@ Item {
         return status === "crit" ? 2 : status === "warn" ? 1 : 0;
     }
     readonly property int heavy: level(Rules.memStatus(SystemStats, Config.thresholds))
-    readonly property int hot: level(Rules.tempStatus(SystemStats, Config.thresholds))
+    // the heat only shows while it walks or runs - not dancing, at the
+    // laptop, asleep or idling
+    readonly property bool active: s.moving && s.pose !== "dance" && s.pose !== "work"
+    readonly property int hot: active ? level(Rules.tempStatus(SystemStats, Config.thresholds)) : 0
     readonly property bool dancing: Media.dancing && !working
     readonly property var dance: Engine.DANCES[kind] ?? null
     // where in its dance loop the pet is (one beat = 0.5 s)

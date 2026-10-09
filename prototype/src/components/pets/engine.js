@@ -160,7 +160,9 @@ export function createPet(kind, species, host) {
 
     const moving = v > 4;
     const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
-      opts.heavy && 'heavy', opts.heavy === 2 && 'sweat', opts.hot && 'hot', opts.hot === 2 && 'scorch']
+      opts.heavy && 'heavy', opts.heavy === 2 && 'sweat',
+      // the heat only shows while it walks or runs - not dancing, at the laptop, asleep or idling
+      moving && !pose && opts.hot && 'hot', moving && !pose && opts.hot === 2 && 'scorch']
       .filter(Boolean).join(' ');
     if (cls !== lastCls) { el.className = cls; lastCls = cls; }
     if (moving) {

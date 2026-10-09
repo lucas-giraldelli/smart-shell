@@ -8,7 +8,7 @@
 export const defaultThresholds = {
   cpu: { sleep: 10, idle: 40, walk: 72 },
   memFreeGiB: { warn: 8, crit: 4 },
-  tempC: { warn: 80, crit: 87, roomTemp: null },
+  tempC: { warn: 85, crit: 99, roomTemp: null },
 };
 export function memStatus(s, t = defaultThresholds) {
   const m = t.memFreeGiB;
