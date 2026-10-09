@@ -1,10 +1,10 @@
 // Snowflakes falling over the wallpaper. Above the dock they land on the same
 // line the pets walk on (the snow cap on the dock), rest there a moment and melt;
-// beside the dock they keep falling to the bottom of the screen. No flake is
-// ever drawn behind the dock's glass.
+// beside the dock they keep falling to the bottom of the screen. Now and then a
+// bit of snow slips off an end of the cap and falls down the dock's side. No
+// flake is ever drawn behind the dock's glass.
 const rnd = (a, b) => a + Math.random() * (b - a);
 const MELT = 1.8; // seconds a landed flake takes to disappear
-const CAP = 7;    // the theme's snow cap rises this far above the dock: land on top of it
 
 export function snow(canvas) {
   const flake = top => ({
@@ -13,10 +13,13 @@ export function snow(canvas) {
     life: 0, // > 0 while resting on the dock
   });
   const flakes = Array.from({ length: 220 }, () => flake(false));
+  const spills = []; // bits sliding off the cap's ends
+  let spillIn = 1;
 
   return function draw(ctx, dt, t, dock) {
     const dpr = devicePixelRatio;
-    const left = dock.left * dpr, right = dock.right * dpr, floor = (dock.top - CAP) * dpr;
+    // dock.top is the landing line (the snow cap's top when there is one, see fx.js)
+    const left = dock.left * dpr, right = dock.right * dpr, floor = dock.top * dpr;
     ctx.fillStyle = '#fff';
     for (const p of flakes) {
       if (p.life > 0) {
@@ -43,12 +46,30 @@ export function snow(canvas) {
       ctx.arc(p.x, p.y, p.r, 0, 6.28);
       ctx.fill();
     }
+    // spills: start at a cap end, drift outwards and fall past the dock
+    if ((spillIn -= dt) <= 0) {
+      spillIn = rnd(.6, 1.8);
+      const side = Math.random() < .5 ? -1 : 1;
+      spills.push({ x: (side < 0 ? left + rnd(6, 16) * dpr : right - rnd(6, 16) * dpr), y: floor + 6 * dpr,
+        vx: side * rnd(.3, .9) * dpr, vy: rnd(.2, .6) * dpr, r: rnd(1.2, 2.6) * dpr, a: rnd(.6, .95) });
+    }
+    for (let i = spills.length - 1; i >= 0; i--) {
+      const p = spills[i];
+      p.vy += .05 * dpr * dt * 60; // gravity: they tumble, not float
+      p.x += p.vx * dt * 60;
+      p.y += p.vy * dt * 60;
+      if (p.y > canvas.height + 5) { spills.splice(i, 1); continue; }
+      ctx.globalAlpha = p.a;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.28);
+      ctx.fill();
+    }
     ctx.globalAlpha = 1;
     // debug numbers, mirrored on the canvas as data-* by fx.js (CSS px)
     return {
       floorY: Math.round(floor / dpr),
       dockLeft: Math.round(dock.left), dockRight: Math.round(dock.right),
-      flakes: flakes.length, landed: flakes.filter(p => p.life > 0).length,
+      flakes: flakes.length, landed: flakes.filter(p => p.life > 0).length, spilling: spills.length,
     };
   };
 }

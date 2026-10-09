@@ -55,10 +55,15 @@ class Fx extends Component {
     if (this.fit()) this.start(this.effectId);
     this.t += dt * 60;
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    // dock edges in CSS px relative to the canvas; effects multiply by devicePixelRatio
+    // dock edges in CSS px relative to the canvas; effects multiply by devicePixelRatio.
+    // `top` is where things land: the theme's snow cap when it is shown, else the dock
     const c = this.canvas.getBoundingClientRect();
     const d = document.querySelector('ss-dock')?.getBoundingClientRect();
-    const dock = d ? { left: d.left - c.left, right: d.right - c.left, top: d.top - c.top } : { left: 0, right: 0, top: c.height };
+    const cap = document.querySelector('ss-dock > .snow-cap');
+    const capTop = cap && cap.offsetParent ? cap.getBoundingClientRect().top : null;
+    const dock = d
+      ? { left: d.left - c.left, right: d.right - c.left, top: (capTop ?? d.top) - c.top }
+      : { left: 0, right: 0, top: c.height };
     const stats = this.draw(this.ctx, dt, this.t, dock);
     // debug: what the effect is doing right now, readable in the inspector
     if (stats) for (const [key, value] of Object.entries(stats)) {

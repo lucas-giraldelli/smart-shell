@@ -16,7 +16,7 @@ ss-dock.dock {
 }
 .dock > * { position: relative; z-index: 2; }
 
-.dock > .snow-cap { display: none; }
+.dock > .snow-cap, .dock > .snow-spill { display: none; }
 
 .tiles { display: flex; align-items: flex-end; gap: 8px; height: var(--size); }
 
