@@ -48,13 +48,37 @@ Singleton {
     readonly property string title: player?.trackTitle ?? ""
     readonly property string artist: player?.trackArtist ?? ""
     readonly property string source: player?.identity ?? ""
-    // track length in seconds: Firefox / Zen leave lengthSupported false (and
-    // `length` unusable), but put mpris:length (µs) in the metadata
-    readonly property real length: !player ? 0
+    // track length in seconds: Firefox / Zen sometimes leave lengthSupported
+    // false (and `length` unusable) but put mpris:length (µs) in the metadata
+    readonly property real reportedLength: !player ? 0
         : player.lengthSupported && player.length > 0 ? player.length
         : Number(player.metadata?.["mpris:length"] ?? 0) / 1e6
-    readonly property real progress: player && length > 0
-        ? Math.max(0, Math.min(1, player.position / length)) : 0
+    readonly property string track: player ? `${player.dbusName}|${title}|${artist}` : ""
+
+    // Firefox briefly reports position 0 / no length when playback starts or
+    // pauses, which made the bar flash empty. Keep the last good reading of
+    // this track instead; a new track or a real seek still moves it.
+    property string lastTrack: ""
+    property real lastLength: 0
+    property real lastPosition: 0
+    function read() {
+        if (!player)
+            return;
+        const pos = player.position, len = reportedLength;
+        if (track !== lastTrack) {
+            lastTrack = track;
+            lastLength = len;
+            lastPosition = pos;
+            return;
+        }
+        if (len > 0)
+            lastLength = len;
+        if (pos > 0 || lastPosition < 2)
+            lastPosition = pos;
+    }
+    onTrackChanged: read()
+    readonly property real length: lastLength
+    readonly property real progress: lastLength > 0 ? Math.max(0, Math.min(1, lastPosition / lastLength)) : 0
 
     function toggle() {
         if (player?.canTogglePlaying)
@@ -76,6 +100,7 @@ Singleton {
             root.lastPlayed = last;
             // MPRIS doesn't signal position while playing; ask now and then
             root.player?.positionChanged();
+            root.read();
         }
     }
 

@@ -112,6 +112,12 @@ Tile {
                     width: parent.width * Media.progress
                     height: parent.height
                     color: Theme.accent
+                    // the position is read once a second: glide between reads
+                    // (a seek or a new track jumps)
+                    Behavior on width {
+                        enabled: Media.playing
+                        NumberAnimation { duration: 1000 }
+                    }
                 }
             }
         }
