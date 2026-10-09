@@ -54,7 +54,7 @@ export default {
 
   docker: {
     label: 'Docker', summary: '{up} de {total} rodando · {mem}', serviceDown: 'Serviço do Docker parado',
-    running: 'Rodando', paused: 'Pausado', restarting: 'Reiniciando…', exitedError: 'Saiu com erro ({code})',
+    running: 'Rodando', paused: 'Pausado', restarting: 'Reiniciando…', unhealthy: 'Rodando · unhealthy', exitedError: 'Saiu com erro ({code})',
     start: 'Iniciar', stop: 'Parar',
   },
 

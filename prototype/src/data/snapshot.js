@@ -79,7 +79,8 @@ export const network = {
 
 // `systemctl is-active docker` + `docker ps -a` + `docker stats` (memory in MiB).
 // A container `state` is running | paused | restarting | exited; `exitCode`
-// matters only when exited.
+// matters only when exited. `project` is its compose project ('' = none),
+// `restart` its restart policy, `health` healthy | unhealthy | ''.
 const containerMemMiB = {
   'atlas-db': 63.6, atlas: 2.4, jellyseerr: 58.4, bazarr: 171.1, radarr: 131.3, sonarr: 189.1, prowlarr: 36.5,
   jellyfin: 147.4, qbittorrent: 28.6, gluetun: 49, flaresolverr: 6.4, redis: 2.4, cloudflared: 21.8, 'torrent-indexer': 2.6,
@@ -87,7 +88,8 @@ const containerMemMiB = {
 export const docker = {
   running: true,
   containers: Object.entries(containerMemMiB).map(([name, memMiB]) => ({
-    name, memMiB, state: 'running', exitCode: 0, healthy: name === 'jellyfin' || name === 'gluetun',
+    name, memMiB, state: 'running', exitCode: 0, project: 'media', restart: 'unless-stopped',
+    health: name === 'jellyfin' || name === 'gluetun' ? 'healthy' : '',
   })),
 };
 

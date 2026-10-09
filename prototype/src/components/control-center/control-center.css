@@ -142,7 +142,6 @@
 .cc .led { flex: none; width: 8px; height: 8px; border-radius: 99px; background: var(--status); box-shadow: 0 0 6px var(--status); }
 .cc [data-status="off"] .led { box-shadow: none; }
 .cc .ct[data-status="off"] .grow { color: var(--menu-sub); }
-.cc .ct[data-status="warn"] .meta { color: var(--warn); }
 .cc .ct[data-status="crit"] .meta { color: var(--crit); }
 .cc .ct .mem { font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
 .cc .ct .tag { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: rgba(74, 222, 128, .14); color: var(--ok); }

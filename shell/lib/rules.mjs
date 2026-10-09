@@ -17,27 +17,41 @@ export function uptime(i18n, since) {
 }
 
 // --- docker (panes/docker.js) ---
-// Status follows waybar's docker-status.sh: service down = crit, any container
-// paused / restarting / exited with an error = warn, otherwise ok.
+// Only real failures are flagged; stopping a stack on purpose is not one:
+//   crit  a container restarting or running unhealthy, one exited with an
+//         error while the rest of its compose project still runs, or a
+//         non-compose one that exited with an error and has a restart policy
+//   off   the Docker service is down, or nothing is running
+//   ok    everything else (stopped stacks, paused containers)
 export const counts = cs => ({ up: cs.filter(c => c.state === 'running').length, total: cs.length });
 const memOf = c => (c.state === 'running' ? c.memMiB : 0);
 // e.g. "910 MiB" / "1,4 GiB"
 export const fmtMem = (i18n, mib) => (mib < 1024 ? `${Math.round(mib)} MiB` : `${i18n.formatNumber(mib / 1024)} GiB`);
 export const totalMem = docker => (docker.running ? docker.containers.reduce((sum, c) => sum + memOf(c), 0) : 0);
-const isBad = c => c.state === 'paused' || c.state === 'restarting' || (c.state === 'exited' && c.exitCode !== 0);
+
+// a crash inside a live stack, not the stack being shut down
+const projectLive = (cs, c) => cs.some(o => o.project === c.project && o.state === 'running');
+const crashed = (c, cs) => c.state === 'exited' && c.exitCode !== 0
+  && (c.project ? projectLive(cs, c) : c.restart !== 'no');
+// a stopped container keeps its last health check, so only a running one counts
+const unhealthy = c => c.state === 'running' && c.health === 'unhealthy';
+const isFailure = (c, cs) => c.state === 'restarting' || unhealthy(c) || crashed(c, cs);
 
 export function dockerStatus(docker) {
-  if (!docker.running) return 'crit';
-  return docker.containers.some(isBad) ? 'warn' : 'ok';
+  if (!docker.running) return 'off';
+  const cs = docker.containers;
+  if (cs.some(c => isFailure(c, cs))) return 'crit';
+  return cs.some(c => c.state === 'running') ? 'ok' : 'off';
 }
 
-export function containerStatus(c) {
-  if (c.state === 'running') return 'ok';
-  return isBad(c) ? (c.state === 'exited' ? 'crit' : 'warn') : 'off';
+export function containerStatus(c, cs) {
+  if (isFailure(c, cs)) return 'crit';
+  return c.state === 'running' ? 'ok' : 'off';
 }
 
-export function describe(i18n, c) {
-  if (c.state === 'exited') return c.exitCode ? i18n.t('docker.exitedError', { code: c.exitCode }) : i18n.t('common.stopped');
+export function describe(i18n, c, cs) {
+  if (c.state === 'exited') return crashed(c, cs) ? i18n.t('docker.exitedError', { code: c.exitCode }) : i18n.t('common.stopped');
+  if (unhealthy(c)) return i18n.t('docker.unhealthy');
   return i18n.t(`docker.${c.state}`);
 }
 

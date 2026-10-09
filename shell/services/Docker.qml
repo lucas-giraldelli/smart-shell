@@ -5,10 +5,11 @@ import Quickshell
 import Quickshell.Io
 
 // Docker service state and containers - the prototype's `docker` slice
-// (prototype/src/data/snapshot.js documents the sources): `systemctl is-active
-// docker`, `docker ps -a` and `docker stats` (memory in MiB). A container
-// `state` is running | paused | restarting | exited; `exitCode` matters only
-// when exited.
+// (prototype/src/data/snapshot.js documents the shape): `systemctl is-active
+// docker`, `docker inspect` of every container and `docker stats` (memory in
+// MiB). A container `state` is running | paused | restarting | exited;
+// `exitCode` matters only when exited; `project` is its compose project
+// ("" = none), `restart` its restart policy, `health` healthy | unhealthy | "".
 Singleton {
     id: root
 
@@ -18,7 +19,9 @@ Singleton {
 
     // UTF-8 safe separators between the sections of one poll
     readonly property string script: "systemctl is-active --quiet docker && echo up || echo down; echo '--ps'; "
-        + "docker ps -a --format '{{.Names}}\t{{.State}}\t{{.Status}}' 2>/dev/null; echo '--stats'; "
+        + "ids=$(docker ps -aq 2>/dev/null); [ -n \"$ids\" ] && docker inspect -f '{{.Name}}\t{{.State.Status}}\t{{.State.ExitCode}}\t"
+        + "{{if .State.Health}}{{.State.Health.Status}}{{end}}\t{{index .Config.Labels \"com.docker.compose.project\"}}\t"
+        + "{{.HostConfig.RestartPolicy.Name}}' $ids 2>/dev/null; echo '--stats'; "
         + "docker stats --no-stream --format '{{.Name}}\t{{.MemUsage}}' 2>/dev/null"
 
     function refresh() {
@@ -45,16 +48,18 @@ Singleton {
             mem[name] = toMiB(usage ?? "");
         }
         containers = (ps ?? "").split("\n").filter(Boolean).map(line => {
-            const [name, rawState, status] = line.split("\t");
-            const exit = (status ?? "").match(/^Exited \((\d+)\)/);
+            const [slashName, rawState, exitCode, health, project, restart] = line.split("\t");
+            const name = slashName.replace(/^\//, "");
             // created / dead / removing count as stopped
             const state = ["running", "paused", "restarting"].includes(rawState) ? rawState : "exited";
             return {
                 name,
                 state,
-                exitCode: exit ? Number(exit[1]) : 0,
+                exitCode: state === "exited" ? Number(exitCode) || 0 : 0,
                 memMiB: mem[name] ?? 0,
-                healthy: /\(healthy\)/.test(status ?? "")
+                health: health ?? "",
+                project: project ?? "",
+                restart: restart || "no"
             };
         });
         loaded = true;

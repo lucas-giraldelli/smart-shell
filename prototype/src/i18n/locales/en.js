@@ -54,7 +54,7 @@ export default {
 
   docker: {
     label: 'Docker', summary: '{up} of {total} running · {mem}', serviceDown: 'Docker service stopped',
-    running: 'Running', paused: 'Paused', restarting: 'Restarting…', exitedError: 'Exited with error ({code})',
+    running: 'Running', paused: 'Paused', restarting: 'Restarting…', unhealthy: 'Running · unhealthy', exitedError: 'Exited with error ({code})',
     start: 'Start', stop: 'Stop',
   },
 
