@@ -45,10 +45,11 @@ class Quick extends Component {
     this.toggleAttribute('data-open', state.ui.popover === 'control-center');
     for (const { pane, available } of this.items) {
       // a missing backend keeps its slot, greyed out with a dash
-      const { icon: name, text, tone = '' } = available ? pane.quick(state) : { icon: pane.icon, text: '—', tone: 'disabled' };
+      const { icon: name, text, tone = '', status } = available ? pane.quick(state) : { icon: pane.icon, text: '—', tone: 'disabled' };
       const el = this.querySelector(`[data-item="${pane.id}"]`);
       setHTML(el, icon(name) + `<span>${text}</span>`);
       el.className = `q ${tone}`;
+      if (status) el.dataset.status = status; else delete el.dataset.status;
     }
   }
 }

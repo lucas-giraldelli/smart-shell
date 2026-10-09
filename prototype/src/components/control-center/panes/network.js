@@ -15,13 +15,12 @@ export default {
   label: 'Rede',
   icon: 'network',
 
-  quick: () => ({ icon: 'network', text: 'Rede', tone: 'ok' }),
+  quick: ({ network: n }) => ({ icon: 'network', text: n.online ? 'Rede' : 'Offline', status: n.online ? 'ok' : 'crit' }),
 
   render() {
     const n = store.get().network;
     return `
-      <div class="status"><span class="big">${icon('network')}</span>
-        <span class="grow"><b>${n.kind} conectada</b><div class="meta">${n.iface} · ${n.speed} · internet ok</div></span></div>
+      <div class="status" data-online></div>
       <dl class="card"><dt>IP</dt><dd>${n.ip}</dd><dt>Gateway</dt><dd>${n.gateway}</dd><dt>Rede Docker</dt><dd>${n.dockerNet}</dd></dl>
       <div class="traffic">
         <div>${icon('arrow-down')} Download<b data-rate="down"></b>${spark('down')}</div>
@@ -33,6 +32,11 @@ export default {
   },
 
   update(root, { network: n }) {
+    const online = root.querySelector('[data-online]');
+    online.dataset.status = n.online ? 'ok' : 'crit';
+    setHTML(online, `<span class="big">${icon('network')}</span><span class="grow">
+      <b>${n.online ? `${n.kind} conectada` : 'Sem internet'}</b>
+      <div class="meta">${n.iface} · ${n.speed} · ${n.online ? 'internet ok' : 'o ping não responde'}</div></span>`);
     for (const key of ['down', 'up']) {
       root.querySelector(`[data-rate="${key}"]`).textContent = fmtRate(n[key].at(-1));
       root.querySelector(`[data-line="${key}"]`).setAttribute('points', points(n[key]));

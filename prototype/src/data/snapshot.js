@@ -68,15 +68,21 @@ export const audio = {
 export const display = { name: 'Odyssey G60SD', brightness: 30 };
 
 export const network = {
+  online: true,  // waybar's network-status.sh: ping google.com
   iface: 'enp8s0', kind: 'Ethernet', speed: '1 Gb/s',
   ip: '192.168.100.63', gateway: '192.168.100.1', dockerNet: '172.19.0.1/16',
   vpn: 'OpenVPN Connect',
 };
 
-export const containers = [
-  'atlas-db', 'atlas', 'jellyseerr', 'bazarr', 'radarr', 'sonarr', 'prowlarr', 'jellyfin',
-  'qbittorrent', 'gluetun', 'flaresolverr', 'redis', 'cloudflared', 'torrent-indexer',
-].map(name => ({ name, up: true, healthy: name === 'jellyfin' || name === 'gluetun' }));
+// `systemctl is-active docker` + `docker ps -a`. A container `state` is
+// running | paused | restarting | exited; `exitCode` matters only when exited.
+export const docker = {
+  running: true,
+  containers: [
+    'atlas-db', 'atlas', 'jellyseerr', 'bazarr', 'radarr', 'sonarr', 'prowlarr', 'jellyfin',
+    'qbittorrent', 'gluetun', 'flaresolverr', 'redis', 'cloudflared', 'torrent-indexer',
+  ].map(name => ({ name, state: 'running', exitCode: 0, healthy: name === 'jellyfin' || name === 'gluetun' })),
+};
 
 export const weather = { temp: 32, feels: 34, humidity: 53, wind: 9, summary: 'Céu limpo' };
 

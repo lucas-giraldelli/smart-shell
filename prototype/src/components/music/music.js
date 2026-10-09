@@ -13,9 +13,9 @@ class Music extends Component {
       <div class="meta-col">
         <div class="title">${m.title}</div>
         <div class="t-sub">${m.artist} · ${m.source}</div>
+        <div class="progress"><i></i></div>
       </div>
       <div class="eq"><i></i><i></i><i></i><i></i></div>
-      <div class="progress"><i></i></div>
       <span class="label">Clique: play/pause</span>`;
   }
 

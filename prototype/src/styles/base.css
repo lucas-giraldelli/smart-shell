@@ -21,9 +21,12 @@
   --tint: rgba(0, 0, 0, 0);
   --label-bg: rgba(20, 20, 24, .78);
   --ring-track: rgba(255, 255, 255, .16);
-  --warn: #fbbf24;
-  --crit: #fb7185;
+
+  /* status identity, shared by every widget: ok · warn · crit · off */
   --ok: #4ade80;
+  --warn: #e0af68;
+  --crit: #f7768e;
+  --off: #71717a;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -41,6 +44,12 @@ svg.i { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-widt
 .t-big { font-size: 18px; font-weight: 600; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
 .t-sub { font-size: 11px; color: var(--sub); font-weight: 500; }
 .sep { width: 1px; align-self: center; height: calc(var(--size) * .7); background: var(--sep); flex: none; }
+
+/* status colour: set data-status="ok|warn|crit|off" and read var(--status) */
+[data-status="ok"] { --status: var(--ok); }
+[data-status="warn"] { --status: var(--warn); }
+[data-status="crit"] { --status: var(--crit); }
+[data-status="off"] { --status: var(--off); }
 
 /* hover tooltip: put <span class="label"> inside any element marked data-tip */
 .label {

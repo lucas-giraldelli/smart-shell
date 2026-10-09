@@ -2,7 +2,7 @@
 .quick { display: grid; grid-auto-flow: column; gap: 3px 12px; padding: 0 12px; align-content: center; cursor: pointer; }
 .quick .q { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text); }
 .quick .q svg.i { width: 14px; height: 14px; color: var(--sub); }
-.quick .q.ok svg.i { color: var(--ok); }
-.quick .q.warn svg.i { color: var(--warn); }
+.quick .q[data-status] svg.i { color: var(--status); }
+.quick .q[data-status="crit"] { color: var(--crit); }
 .quick .q.muted { opacity: .45; }
 .quick .q.disabled { opacity: .4; filter: grayscale(1); }

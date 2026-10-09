@@ -36,7 +36,10 @@
 
 /* network */
 .cc .status { display: flex; align-items: center; gap: 10px; padding: 6px 8px 10px; }
-.cc .status .big { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px; background: rgba(74, 222, 128, .14); color: var(--ok); }
+.cc .status .big {
+  display: grid; place-items: center; width: 36px; height: 36px; border-radius: 11px;
+  color: var(--status); background: color-mix(in srgb, var(--status) 15%, transparent);
+}
 .cc .status .big svg.i { width: 18px; height: 18px; }
 .cc .status b { font-size: 13px; }
 .cc .card {
@@ -56,12 +59,17 @@
 
 /* docker */
 .cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: #a1a1aa; }
+.cc .dk-head [data-summary] { display: flex; align-items: center; gap: 8px; }
+.cc .dk-head [data-status="crit"] { color: var(--crit); }
 .cc .dk-list { max-height: 262px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
 .cc .ct { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 9px; font-size: 12.5px; }
 .cc .ct:hover { background: rgba(255, 255, 255, .06); }
-.cc .ct .led { flex: none; width: 8px; height: 8px; border-radius: 99px; background: var(--ok); box-shadow: 0 0 6px var(--ok); }
-.cc .ct.stopped .led { background: #52525b; box-shadow: none; }
-.cc .ct.stopped .grow { color: #a1a1aa; }
+/* status led: colour comes from the nearest data-status */
+.cc .led { flex: none; width: 8px; height: 8px; border-radius: 99px; background: var(--status); box-shadow: 0 0 6px var(--status); }
+.cc [data-status="off"] .led { box-shadow: none; }
+.cc .ct[data-status="off"] .grow { color: #a1a1aa; }
+.cc .ct[data-status="warn"] .meta { color: var(--warn); }
+.cc .ct[data-status="crit"] .meta { color: var(--crit); }
 .cc .ct .tag { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: rgba(74, 222, 128, .14); color: var(--ok); }
 .cc .ct .ib { width: 26px; height: 26px; border-radius: 8px; }
 .cc .ct .ib svg.i { width: 13px; height: 13px; }

@@ -12,7 +12,7 @@ const chip = (attr, id, name, swatch, extra = '') =>
 const check = (attr, id, label) => `<label class="check"><input type="checkbox" ${attr}="${id}"> ${label}</label>`;
 
 class DevPanel extends Component {
-  static slices = ['ui', 'system', 'caps'];
+  static slices = ['ui', 'system', 'caps', 'network', 'docker'];
 
   render() {
     return `
@@ -29,6 +29,12 @@ class DevPanel extends Component {
         ${check('data-opt', 'wsIcons', 'Ícone nos workspaces não selecionados')}
         <h2>Backends instalados (simulação)</h2>
         <div class="checks">${Object.entries(capabilities).map(([id, c]) => check('data-cap', id, c.label)).join('')}</div>
+        <h2>Simular falhas</h2>
+        <div class="checks">
+          ${check('data-fail', 'offline', 'Rede caiu')}
+          ${check('data-fail', 'dockerDown', 'Docker parado')}
+          ${check('data-fail', 'containerError', 'Container com erro')}
+        </div>
         <h2>Ajustes</h2>
         <div class="dp-row"><label>Carga da CPU</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
         ${check('data-opt', 'cpuAuto', 'CPU simulada (picos estilo X3D)')}
@@ -54,13 +60,21 @@ class DevPanel extends Component {
       }
     });
     this.addEventListener('change', e => {
-      const { widget, cap, opt } = e.target.dataset;
+      const { widget, cap, opt, fail } = e.target.dataset;
       const on = e.target.checked;
       if (widget) {
         const hidden = store.get().ui.hidden.filter(id => id !== widget);
         update('ui', { hidden: on ? hidden : [...hidden, widget] });
       }
       if (cap) update('caps', { [cap]: on });
+      if (fail === 'offline') update('network', { online: !on });
+      if (fail === 'dockerDown') update('docker', { running: !on });
+      if (fail === 'containerError') {
+        // qbittorrent stuck restarting, like a broken VPN dependency would leave it
+        update('docker', d => ({
+          containers: d.containers.map(c => (c.name === 'qbittorrent' ? { ...c, state: on ? 'restarting' : 'running' } : c)),
+        }));
+      }
       if (opt === 'cpuAuto') update('system', { auto: on });
       else if (opt) update('ui', { [opt]: on });
     });
@@ -79,7 +93,10 @@ class DevPanel extends Component {
     });
   }
 
-  update({ ui, system, caps }) {
+  update({ ui, system, caps, network, docker }) {
+    this.$('[data-fail="offline"]').checked = !network.online;
+    this.$('[data-fail="dockerDown"]').checked = !docker.running;
+    this.$('[data-fail="containerError"]').checked = docker.containers.some(c => c.state === 'restarting');
     this.querySelectorAll('[data-theme-id]').forEach(b => b.classList.toggle('on', b.dataset.themeId === ui.theme));
     this.querySelectorAll('[data-pet]').forEach(b => b.classList.toggle('on', ui.pets.includes(b.dataset.pet)));
     this.querySelectorAll('[data-widget]').forEach(c => { c.checked = !ui.hidden.includes(c.dataset.widget); });

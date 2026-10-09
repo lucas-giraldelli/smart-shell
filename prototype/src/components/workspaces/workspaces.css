@@ -8,19 +8,19 @@
 }
 .ws button:hover { opacity: .8; }
 .ws button.on { width: 28px; opacity: 1; background: var(--accent); }
-.ws button .g { display: none; width: 14px; height: 14px; color: var(--text); }
+.ws button .g { display: none; width: 12px; height: 12px; color: var(--text); }
 .ws button .n { display: none; }
 .ws .label { bottom: calc(100% + 12px); }
 
 /* icon mode: an occupied, unselected workspace becomes a bigger dot with its icon */
 .ws.icons button.has:not(.on) {
-  width: 25px; height: 25px; opacity: .92;
+  width: 21px; height: 21px; opacity: .92;
   background: var(--tile-bg); border-color: var(--tile-border);
 }
 .ws.icons button.has:not(.on):hover { opacity: 1; transform: scale(1.12); }
 .ws.icons button.has:not(.on) .g { display: block; }
 .ws.icons button.has:not(.on) .n {
   display: grid; place-items: center; position: absolute; top: -4px; right: -5px;
-  min-width: 13px; height: 13px; padding: 0 3px; border-radius: 99px;
-  font-size: 8.5px; font-weight: 700; color: #111; background: var(--accent);
+  min-width: 12px; height: 12px; padding: 0 3px; border-radius: 99px;
+  font-size: 8px; font-weight: 700; color: #111; background: var(--accent);
 }
