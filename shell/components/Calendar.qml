@@ -21,9 +21,9 @@ Popover {
     property date now: new Date()
 
     readonly property var enabled: (Config.holidays ?? []).filter(r => Cal.regions[r])
-    readonly property var days: Cal.monthDays(I18n, view, selected, now, enabled, Events.list)
+    readonly property var days: Cal.monthDays(I18n, view, selected, now, enabled, Events.all)
     readonly property var dayHolidays: Cal.holidaysOf(I18n, selected.getFullYear(), enabled).get(Cal.dateKey(selected)) ?? []
-    readonly property var dayEvents: Cal.eventsOn(Events.list, selected)
+    readonly property var dayEvents: Cal.eventsOn(Events.all, selected)
     readonly property bool hasDetails: dayHolidays.length + dayEvents.length > 0
     readonly property var timed: dayEvents.filter(e => !e.allDay).sort((a, b) => a.start - b.start)
     // on today, meetings that already ended fold into one line

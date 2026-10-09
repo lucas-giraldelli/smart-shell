@@ -23,6 +23,8 @@ Singleton {
     //   qs ipc -p <shell> call events fake "<title>" <startsInMinutes> <durationMinutes> <category> "<meet url or empty>"
     //   qs ipc -p <shell> call events clearFake
     property var fakes: []
+    // what the calendar shows: the exported events and the fake ones
+    readonly property var all: list.concat(fakes)
 
     property var ongoing: null
     property var upcoming: null
