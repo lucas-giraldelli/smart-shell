@@ -32,6 +32,7 @@ Singleton {
         },
         pets: { available: ["cat", "shiba", "fox", "penguin", "bunny", "capy", "frog"] },
         locale: null,
+        theme: "glass",
         // holiday regions marked on the calendar (lib/calendar.mjs)
         holidays: ["br", "cba", "us"],
         // calendar events (exported from Thunderbird); categories drive icons
@@ -72,6 +73,7 @@ Singleton {
     readonly property var trayHidden: data.tray.hidden
     readonly property var trayRedBadge: data.tray.redBadge ?? []
     readonly property var locale: data.locale
+    readonly property string theme: data.theme ?? "glass"
     readonly property var weather: data.weather
     readonly property var music: data.music
     readonly property var apps: data.apps
@@ -92,6 +94,20 @@ Singleton {
                 target[key] = source[key];
         }
         return target;
+    }
+
+    // change one top-level key of the user's file (the dock settings' theme);
+    // the rest of the file is kept, reformatted as JSON
+    function set(key, value) {
+        let user = {};
+        try {
+            user = JSON.parse(file.text() || "{}");
+        } catch (e) {
+            console.warn("[config] not saving", key, "- the file isn't valid JSON:", e);
+            return;
+        }
+        user[key] = value;
+        file.setText(JSON.stringify(user, null, 2) + "\n");
     }
 
     FileView {

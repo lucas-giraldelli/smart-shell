@@ -62,7 +62,7 @@ PaneScroll {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: Ui.theme = theme.modelData.id
+                        onClicked: Ui.setTheme(theme.modelData.id)
                     }
                 }
             }

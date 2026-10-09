@@ -101,8 +101,8 @@ Item {
                         anchors.fill: image
                         source: image
                         shadowEnabled: true
-                        shadowColor: Qt.rgba(0, 0, 0, 0.35)
-                        shadowVerticalOffset: 5
+                        shadowColor: Theme.iconShadow
+                        shadowVerticalOffset: Theme.iconShadowY
                         shadowBlur: 0.5
                         blurMax: 16
                     }

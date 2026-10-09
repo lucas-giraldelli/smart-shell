@@ -11,7 +11,7 @@ Singleton {
     id: root
 
     // persisted preferences
-    property alias theme: prefs.theme
+    readonly property string theme: Config.theme     // saved in config.json
     property alias hidden: prefs.hidden      // widget ids switched off
     property alias wsIcons: prefs.wsIcons
     property alias pet: prefs.pet            // one pet per dock, "" = none
@@ -32,6 +32,10 @@ Singleton {
 
     function closePopover() {
         popover = "";
+    }
+
+    function setTheme(id) {
+        Config.set("theme", id);
     }
 
     function toggleHidden(id) {
@@ -64,7 +68,6 @@ Singleton {
 
         JsonAdapter {
             id: prefs
-            property string theme: "glass"
             property var hidden: []
             property bool wsIcons: true
             property string pet: "cat"

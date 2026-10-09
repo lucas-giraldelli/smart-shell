@@ -34,6 +34,35 @@ Rectangle {
     radius: Theme.radius
     color: Theme.dockBg
     border.color: Theme.dockBorder
+    // canarinho: a diagonal gradient (drawn left to right here)
+    gradient: Theme.dockGradient ? dockGradient : null
+    Gradient {
+        id: dockGradient
+        orientation: Gradient.Horizontal
+        GradientStop { position: 0; color: Theme.dockGradient?.[0] ?? "transparent" }
+        GradientStop { position: 1; color: Theme.dockGradient?.[1] ?? "transparent" }
+    }
+
+    // --shadow: the theme's outer shadow and a 1px inner highlight on top
+    OuterShadow {
+        z: -2
+        anchors.fill: parent
+        color: Theme.dockShadow
+        offsetY: Theme.dockShadowY
+        blur: Theme.dockShadowBlur
+        radius: root.radius
+    }
+    Rectangle {
+        x: root.radius * 0.6
+        y: 1
+        width: root.width - root.radius * 1.2
+        height: 1
+        color: Theme.dockInset
+    }
+
+    DockDecor {
+        anchors.fill: parent
+    }
 
     // a click on the bar itself closes any open popover
     MouseArea {
