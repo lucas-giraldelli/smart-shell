@@ -51,6 +51,8 @@ Singleton {
         // MPRIS players the music tile never shows (substrings of identity,
         // desktop entry, title, url or command line)
         music: { ignore: ["whatsapp"] },
+        // the clock: "24h" or "12h", whatever the language
+        clock: { format: "24h" },
         // the forecast's place (Open-Meteo); the city is only shown
         weather: { city: "Cuiabá", lat: -15.6, lon: -56.1 },
         workspaces: { icons: {} }
@@ -81,6 +83,7 @@ Singleton {
     readonly property var events: data.events
     // "icons" | "numbers" | "dots", or undefined (Ui falls back to its old switch)
     readonly property var workspaceStyle: data.workspaces?.style
+    readonly property string clockFormat: data.clock?.format === "12h" ? "12h" : "24h"
     // workspace id -> Lucide icon name
     readonly property var workspaceIcons: data.workspaces?.icons ?? ({})
 

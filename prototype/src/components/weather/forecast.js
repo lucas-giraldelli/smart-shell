@@ -2,7 +2,7 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { describe } from '../../data/weather-codes.js';
 import { setHTML } from '../ui/ui.js';
-import { t, dateFormat, formatTime } from '../../i18n/index.js';
+import { t, dateFormat, formatTime, formatHour } from '../../i18n/index.js';
 
 // Forecast popover inside the weather tile: now, the next hours and 7 days.
 const wxIcon = (code, isDay, extra = '') => {
@@ -53,7 +53,7 @@ class Forecast extends Component {
       <div class="sec">${t('weather.nextHours')}</div>
       <div class="fc-hours">${w.hourly.slice(0, 12).map((h, i) => `
         <div class="hour">
-          <span class="meta">${i === 0 ? t('common.now') : h.time.slice(0, 2) + 'h'}</span>
+          <span class="meta">${i === 0 ? t('common.now') : formatHour(+h.time.slice(0, 2))}</span>
           ${wxIcon(h.code, h.isDay)}
           <b>${h.temp}°</b>
           ${rain(h.precip)}

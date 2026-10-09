@@ -10,6 +10,7 @@
     "monitor": "kitty -e btop",
     "docker": "kitty -e lazydocker"
   },
+  "clock": {"format": "24h"},
   "music": {"ignore": ["whatsapp"]},
   "weather": {"city": "Cuiabá", "lat": -15.6, "lon": -56.1},
   "workspaces": {"style": "icons", "icons": {"1": "house", "2": "git-branch", "3": "code", "4": "globe", "5": "gamepad-2"}},

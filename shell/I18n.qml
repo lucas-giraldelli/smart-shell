@@ -44,19 +44,25 @@ Singleton {
     }
 
     // Dates the way the prototype's Intl formats print them, per language
-    // (Qt has no Intl, so the patterns are spelled out):
-    //   time "13:02" / "01:02 PM", date "sex, 09 de out", mini "sex, 09",
-    //   month "outubro de 2026", long "sexta-feira, 9 de outubro", short "12 out"
+    // (Qt has no Intl, so the patterns are spelled out): date "sex, 09 de out",
+    // mini "sex, 09", month "outubro de 2026", long "sexta-feira, 9 de
+    // outubro", short "12 out". Times don't depend on the language.
     readonly property var patterns: ({
-        "pt-BR": { time: "HH:mm", date: "ddd, dd 'de' MMM", mini: "ddd, dd", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
-        "en": { time: "hh:mm AP", date: "ddd, MMM dd", mini: "ddd dd", month: "MMMM yyyy", long: "dddd, MMMM d", short: "MMM d" }
+        "pt-BR": { date: "ddd, dd 'de' MMM", mini: "ddd, dd", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
+        "en": { date: "ddd, MMM dd", mini: "ddd dd", month: "MMMM yyyy", long: "dddd, MMMM d", short: "MMM d" }
     })
     function formatDate(date, kind) {
         const pattern = (patterns[current] ?? patterns[fallback])[kind];
         return qtLocale.toString(date, pattern).replace(/\./g, "");
     }
+    // times follow config.clock.format: "14:05" or "2:05 PM"
     function formatTime(date) {
-        return formatDate(date, "time");
+        const h = date.getHours(), m = String(date.getMinutes()).padStart(2, "0");
+        return Config.clockFormat === "12h" ? `${h % 12 || 12}:${m} ${h < 12 ? "AM" : "PM"}` : `${String(h).padStart(2, "0")}:${m}`;
+    }
+    // an hour on its own (the hourly forecast): "13h" / "1 PM"
+    function formatHour(h) {
+        return Config.clockFormat === "12h" ? `${h % 12 || 12} ${h < 12 ? "AM" : "PM"}` : `${String(h).padStart(2, "0")}h`;
     }
     function capitalize(s) {
         return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;

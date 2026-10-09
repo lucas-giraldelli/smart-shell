@@ -45,7 +45,7 @@ export default {
   },
 
   settings: {
-    label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', wsStyle: 'Workspaces', wsStyles: { icons: 'Icons', numbers: 'Numbers', dots: 'Dots' },
+    label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', clock: 'Clock', wsStyle: 'Workspaces', wsStyles: { icons: 'Icons', numbers: 'Numbers', dots: 'Dots' },
     widgets: 'Widgets', pets: 'Pet', noPet: 'None', language: 'Language',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },

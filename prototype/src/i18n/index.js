@@ -38,6 +38,15 @@ export function dateFormat(options) {
   if (!cache.has(key)) cache.set(key, new Intl.DateTimeFormat(current, options));
   return cache.get(key);
 }
-export const formatTime = d => dateFormat({ hour: '2-digit', minute: '2-digit' }).format(d);
+// Times follow the clock setting (ui.clockFormat), not the language:
+// '24h' -> "14:05", '12h' -> "2:05 PM". setClockFormat() is called by main.js.
+let clockFormat = '24h';
+export const setClockFormat = f => { clockFormat = f === '12h' ? '12h' : '24h'; };
+const pad = n => String(n).padStart(2, '0');
+export const formatTime = d => (clockFormat === '12h'
+  ? `${d.getHours() % 12 || 12}:${pad(d.getMinutes())} ${d.getHours() < 12 ? 'AM' : 'PM'}`
+  : `${pad(d.getHours())}:${pad(d.getMinutes())}`);
+// an hour on its own (the hourly forecast): "13h" / "1 PM"
+export const formatHour = h => (clockFormat === '12h' ? `${h % 12 || 12} ${h < 12 ? 'AM' : 'PM'}` : `${pad(h)}h`);
 export const formatNumber = (n, digits = 1) =>
   new Intl.NumberFormat(current, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(n);

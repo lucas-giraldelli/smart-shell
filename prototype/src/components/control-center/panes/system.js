@@ -4,7 +4,7 @@ import { update as setState } from '../../../state.js';
 import { fmtMem } from './docker.js';
 import { closePopover } from '../../../core/popover.js';
 import { config } from '../../../data/config.js';
-import { t, formatNumber, dateFormat } from '../../../i18n/index.js';
+import { t, formatNumber, dateFormat, formatTime } from '../../../i18n/index.js';
 
 // CPU and memory: two items in the quick tile (free RAM, CPU load + die
 // temperature) and one tab with the details. Real shell: /proc/stat,
@@ -104,7 +104,7 @@ export default {
 
     const up = root.querySelector('[data-uptime]');
     up.innerHTML = `${icon('power')}${t('system.uptime', { time: uptime(s.bootedAt) })}`;
-    up.title = t('system.since', { date: dateFormat({ weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(s.bootedAt) });
+    up.title = t('system.since', { date: `${dateFormat({ weekday: 'short', day: '2-digit', month: '2-digit' }).format(s.bootedAt)} ${formatTime(s.bootedAt)}` });
   },
 
   click(target) {

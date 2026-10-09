@@ -40,6 +40,10 @@ Singleton {
         popover = "";
     }
 
+    function setClockFormat(format) {
+        Config.set("clock.format", format);
+    }
+
     function setWsStyle(style) {
         Config.set("workspaces.style", style);
     }

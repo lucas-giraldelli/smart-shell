@@ -1,6 +1,7 @@
 import { loadIcons } from './core/icons.js';
 import { config, loadUserConfig } from './data/config.js';
-import { setLocale } from './i18n/index.js';
+import { setLocale, setClockFormat } from './i18n/index.js';
+import { store } from './state.js';
 import { loadPref } from './core/prefs.js';
 import { startPopovers } from './core/popover.js';
 import { startTheme } from './services/theme.js';
@@ -20,6 +21,9 @@ await Promise.all([loadIcons(), loadUserConfig()]);
 setLocale(loadPref('locale', null) ?? config.locale);
 
 startTheme();
+// times follow the clock setting, not the language
+setClockFormat(store.get().ui.clockFormat);
+store.subscribe((state, slice) => { if (slice === 'ui') setClockFormat(state.ui.clockFormat); });
 startPersist();
 startPopovers();
 startSystem();

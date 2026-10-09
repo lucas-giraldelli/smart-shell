@@ -145,7 +145,7 @@ Popover {
                             spacing: 5
                             Label {
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                text: hour.index === 0 ? I18n.t("common.now") : hour.modelData.time.slice(0, 2) + "h"
+                                text: hour.index === 0 ? I18n.t("common.now") : I18n.formatHour(Number(hour.modelData.time.slice(0, 2)))
                                 size: 11
                                 color: Theme.menuSub
                             }
@@ -234,7 +234,7 @@ Popover {
             Label {
                 x: parent.width - 6 - width
                 y: 8
-                text: I18n.t("weather.updated", { time: Qt.formatTime(Weather.updatedAt, "HH:mm") })
+                text: I18n.t("weather.updated", { time: I18n.formatTime(Weather.updatedAt) })
                 size: 11
                 color: Theme.menuSub
             }

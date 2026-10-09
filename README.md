@@ -87,8 +87,8 @@ general {
 Configuration lives in `~/.config/smart-shell/config.json` (start from
 [`config/config.example.json`](config/config.example.json); it reloads live).
 The theme picked in the dock settings tab is written back to it (`theme`; the
-file is re-saved as formatted JSON). So is the workspaces style
-(`workspaces.style`). The tab's other settings (size, magnification, which
+file is re-saved as formatted JSON). So are the workspaces style
+(`workspaces.style`) and the clock format (`clock.format`). The tab's other settings (size, magnification, which
 widgets show, pet, language) are saved in Quickshell's state file instead.
 
 Calendar events need the export timer: `tools/install-services.sh` (see
@@ -156,7 +156,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     processes are protected). `commands.monitor` is the btop button.
 - **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
   (`weather.city` is only shown), refreshed every 10 minutes.
-- **Clock** - holidays for the regions in `holidays`; events from
+- **Clock** - `clock.format` (also in the dock settings): `24h` (default, any
+  language: "14:05") or `12h` ("2:05 PM"); it applies to every time shown -
+  the tile, events, reminders and the forecast. Holidays for the regions in `holidays`; events from
   `~/.cache/smart-shell/events.json` (Thunderbird with offline support on the
   calendars + the export timer). The tile turns orange `events.remindMinutes`
   before an event and green during it; `events.categories` picks its icon.
