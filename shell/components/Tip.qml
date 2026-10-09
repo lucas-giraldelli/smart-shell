@@ -4,7 +4,8 @@ import Quickshell
 import ".."
 
 // Hover tooltip above a dock widget (prototype: .label in styles/base.css):
-// the popovers' glass, centred 14px above `target`, fading and rising 4px in.
+// the popovers' glass (Theme.labelBg / menuLine), centred above `target` and
+// 8px clear of the dock's top edge, fading and rising 4px in.
 // It is its own popup surface (blurred by Hyprland's blur_popups), so nothing
 // on the dock - its bounds, a magnified icon - can clip it. Sized to the text
 // up to 360px, then elided.
@@ -25,9 +26,23 @@ PopupWindow {
     visible: on || content.opacity > 0
     mask: Region {}
 
+    // the box sits 8px clear of the dock's top edge (or of the target, when a
+    // magnified icon rises above it); recomputed each time it shows
+    readonly property int clearance: 8
+    property real lift: 0
+    onOnChanged: if (on) place()
+    function place() {
+        const win = target.QsWindow.window;
+        if (!win)
+            return;
+        const top = target.mapToItem(null, 0, 0).y;
+        const dockTop = win.height - Theme.edge - (Theme.size + Theme.padTop + Theme.padBottom);
+        lift = top - Math.min(top, dockTop) + clearance;
+    }
+
     anchor.item: target
     anchor.rect.x: target.width / 2
-    anchor.rect.y: 1 - 14 + 5 + 4
+    anchor.rect.y: -lift + 5 + 4
     anchor.edges: Edges.Top
     anchor.gravity: Edges.Top
     anchor.adjustment: PopupAdjustment.Slide
