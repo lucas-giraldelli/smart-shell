@@ -1,13 +1,17 @@
 .cc { width: 430px; padding: 10px; }
 
 .cc .tabs { display: flex; gap: 4px; padding: 4px; border-radius: 11px; background: var(--menu-surface); }
+/* inactive tabs show only their icon; the active one also shows its name */
 .cc .tabs button {
-  flex: 1; font: inherit; font-size: 12px; color: var(--menu-sub); background: none; border: 0; border-radius: 8px; padding: 7px 0; cursor: pointer;
+  flex: 0 0 auto; min-width: 34px; padding-left: 9px; padding-right: 9px; font: inherit; font-size: 12px; color: var(--menu-sub); background: none; border: 0; border-radius: 8px; padding: 7px 0; cursor: pointer;
   display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .15s, color .15s;
 }
 .cc .tabs button svg.i { width: 14px; height: 14px; }
 .cc .tabs button:hover { color: var(--menu-text); }
-.cc .tabs button.on { background: var(--menu-strong); color: var(--menu-text); }
+.cc .tabs button.on { flex: 1; background: var(--menu-strong); color: var(--menu-text); }
+.cc .tabs button span { display: none; }
+.cc .tabs button.on span { display: inline; }
+.cc .tabs { justify-content: space-between; }
 .cc .tabs button.disabled { opacity: .45; }
 
 /* empty state of a tab whose backend is missing */
@@ -69,6 +73,33 @@
 .cc [data-line="cpu"] { stroke: var(--status); }
 .cc .mem-bar { height: 6px; border-radius: 9px; background: var(--menu-strong); overflow: hidden; margin: 7px 0 7px; }
 .cc .mem-bar i { display: block; height: 100%; border-radius: 9px; background: var(--status); transition: width .8s; }
+
+/* dock settings */
+.cc .set .themes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 2px 8px 6px; }
+.cc .set .themes button {
+  display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 8px 4px; cursor: pointer;
+  font: inherit; font-size: 11px; color: var(--menu-sub); border-radius: 10px;
+  background: var(--menu-surface); border: 1px solid transparent;
+}
+.cc .set .themes button:hover { background: var(--menu-hover); color: var(--menu-text); }
+.cc .set .themes button.on { color: var(--menu-text); border-color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
+.cc .set .sw { width: 22px; height: 22px; border-radius: 7px; border: 1px solid var(--menu-strong); }
+.cc .set .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; padding: 0 8px; }
+.cc .set .check-row { display: flex; align-items: center; gap: 9px; padding: 6px 4px; border-radius: 8px; font-size: 12.5px; cursor: pointer; }
+.cc .set .check-row:hover { background: var(--menu-hover); }
+.cc .set .chk {
+  display: grid; place-items: center; flex: none; width: 17px; height: 17px; border-radius: 5px;
+  border: 1.5px solid var(--menu-faint); color: transparent; transition: background .15s, border-color .15s;
+}
+.cc .set .chk svg.i { width: 12px; height: 12px; stroke-width: 3; }
+.cc .set .chk.on { background: var(--menu-accent); border-color: var(--menu-accent); color: var(--menu-bg); }
+.cc .set .langs { display: flex; gap: 6px; padding: 2px 8px 4px; }
+.cc .set .langs button {
+  flex: 1; padding: 7px 0; cursor: pointer; font: inherit; font-size: 12px; border-radius: 9px;
+  color: var(--menu-text); background: var(--menu-surface); border: 1px solid transparent;
+}
+.cc .set .langs button.on { border-color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
+.cc .pane[data-pane="settings"] { max-height: 460px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
 
 /* docker */
 .cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: var(--menu-sub); }

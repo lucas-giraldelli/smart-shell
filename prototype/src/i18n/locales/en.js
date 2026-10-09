@@ -39,6 +39,12 @@ export default {
     presets: { night: 'Night', normal: 'Normal', day: 'Day', max: 'Max' },
   },
 
+  settings: {
+    label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', wsIcons: 'Icons on workspaces',
+    widgets: 'Widgets', pets: 'Pets', language: 'Language',
+    locales: { 'pt-BR': 'Português', en: 'English' },
+  },
+
   network: {
     label: 'Network', connected: '{kind} connected', offline: 'No internet',
     internetOk: 'internet ok', noPing: 'ping gets no reply',
@@ -126,13 +132,11 @@ export default {
   dev: {
     show: 'Show panel (H)', title: 'smart-shell · prototype',
     intro: 'HTML mock-up. The real shell runs on Quickshell (QML) with the same look.',
-    theme: 'Theme', pets: 'Pets', widgets: 'Widgets', wsIcons: 'Icons on unselected workspaces',
     backends: 'Installed backends (simulated)', failures: 'Simulate failures',
     offline: 'Network down', dockerDown: 'Docker stopped', containerError: 'Container error', memHeavy: 'RAM almost full',
     tuning: 'Tuning', cpuLoad: 'CPU load', cpuAuto: 'Simulated CPU (X3D-style spikes)',
-    size: 'Size', magnify: 'Magnification', liveWallpaper: 'Animated wallpaper (local video)', auto: 'auto',
-    language: 'Language',
-    hint: 'Click an app to open it · right-click closes · click the quick tile for the control center · scroll on volume/brightness · click the system tile to fill RAM · click a pet · Caps Lock lights the indicator.',
+    liveWallpaper: 'Animated wallpaper (local video)', auto: 'auto',
+    hint: 'Click an app to open it · right-click closes · click the quick tile for the control center (dock settings in its Dock tab) · scroll on volume/brightness · click a pet · Caps Lock lights the indicator.',
     keys: 'H hides the panel · 1–{n} switches theme',
   },
 };

@@ -5,7 +5,7 @@
     {"id": "apps", "widgets": ["apps"]},
     {"id": "status", "tiles": true, "widgets": ["music", "tray", "bluetooth", "quick", "weather", "clock"]}
   ],
-  "quick": ["volume", "brightness", "docker", "network", "system"],
+  "quick": ["volume", "brightness", "docker", "network", "system", "settings"],
   "commands": {
     "monitor": "kitty -e btop",
     "docker": "kitty -e lazydocker"

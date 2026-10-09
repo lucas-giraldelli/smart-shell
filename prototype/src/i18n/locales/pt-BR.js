@@ -39,6 +39,12 @@ export default {
     presets: { night: 'Noite', normal: 'Normal', day: 'Dia', max: 'Máx' },
   },
 
+  settings: {
+    label: 'Dock', look: 'Aparência', size: 'Tamanho', magnify: 'Ampliação', wsIcons: 'Ícones nos workspaces',
+    widgets: 'Widgets', pets: 'Pets', language: 'Idioma',
+    locales: { 'pt-BR': 'Português', en: 'English' },
+  },
+
   network: {
     label: 'Rede', connected: '{kind} conectada', offline: 'Sem internet',
     internetOk: 'internet ok', noPing: 'o ping não responde',
@@ -126,13 +132,11 @@ export default {
   dev: {
     show: 'Mostrar painel (H)', title: 'smart-shell · protótipo',
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
-    theme: 'Tema', pets: 'Pets', widgets: 'Widgets', wsIcons: 'Ícone nos workspaces não selecionados',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
     offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia',
     tuning: 'Ajustes', cpuLoad: 'Carga da CPU', cpuAuto: 'CPU simulada (picos estilo X3D)',
-    size: 'Tamanho', magnify: 'Ampliação', liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
-    language: 'Idioma',
-    hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central · roda no volume/brilho · clique no sistema simula RAM cheia · clique num pet · Caps Lock acende o indicador.',
+    liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
+    hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
     keys: 'H esconde o painel · 1–{n} troca o tema',
   },
 };

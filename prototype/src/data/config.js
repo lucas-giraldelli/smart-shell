@@ -14,7 +14,7 @@ export const config = {
   ],
 
   // items in the quick tile; each one also gets a tab in the control center
-  quick: ['volume', 'brightness', 'docker', 'network', 'system'],
+  quick: ['volume', 'brightness', 'docker', 'network', 'system', 'settings'],
 
   // programs the shell opens from its buttons (run through the shell)
   commands: {
