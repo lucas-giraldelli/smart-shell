@@ -21,7 +21,23 @@ tools/       helper scripts (icons, calendar export, service install)
 
 ## Install
 
-Dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
+`bin/smart-shell` does it for you (Arch / CachyOS, uses `paru`):
+
+```sh
+ln -s ~/projects/smart-shell/bin/smart-shell ~/.local/bin/   # once
+smart-shell install full          # core + every widget's packages and setup
+smart-shell install core          # just the dock
+smart-shell install docker events # only what some widgets need
+smart-shell hyprland              # add the exec-once and blur lines (asks first)
+smart-shell doctor                # what each widget is still missing
+smart-shell restart               # also: start, stop, log
+```
+
+`install` also loads `i2c-dev` and adds you to the `i2c` / `docker` groups
+for brightness / Docker, enables the bluetooth and docker services, installs
+the calendar export timer and copies the example config if you have none.
+
+The manual way - dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
 
 | Package | For |
 |---|---|
