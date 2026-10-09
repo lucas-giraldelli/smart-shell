@@ -12,6 +12,7 @@ Rectangle {
     // widget id -> component (prototype: components/registry.js)
     readonly property var widgets: ({
         workspaces: workspacesWidget,
+        music: musicWidget,
         tray: trayWidget,
         quick: quickWidget,
         clock: clockWidget
@@ -90,6 +91,10 @@ Rectangle {
                 anchors.verticalCenter: parent.verticalCenter
             }
         }
+    }
+    Component {
+        id: musicWidget
+        Music {}
     }
     Component {
         id: trayWidget
