@@ -48,8 +48,13 @@ Singleton {
     readonly property string title: player?.trackTitle ?? ""
     readonly property string artist: player?.trackArtist ?? ""
     readonly property string source: player?.identity ?? ""
-    readonly property real progress: player && player.lengthSupported && player.length > 0
-        ? Math.max(0, Math.min(1, player.position / player.length)) : 0
+    // track length in seconds: Firefox / Zen leave lengthSupported false (and
+    // `length` unusable), but put mpris:length (µs) in the metadata
+    readonly property real length: !player ? 0
+        : player.lengthSupported && player.length > 0 ? player.length
+        : Number(player.metadata?.["mpris:length"] ?? 0) / 1e6
+    readonly property real progress: player && length > 0
+        ? Math.max(0, Math.min(1, player.position / length)) : 0
 
     function toggle() {
         if (player?.canTogglePlaying)
