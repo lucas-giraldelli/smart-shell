@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 // The prototype's `ui` slice (prototype/src/state.js): the user's dock
 // preferences, saved to the shell's state file, plus transient popover state.
@@ -20,6 +21,8 @@ Singleton {
     property alias locale: prefs.locale      // "" = config.locale, then the system's
 
     // transient
+    // a fullscreen window is focused: pets and effects hold still
+    readonly property bool calm: Hyprland.focusedMonitor?.activeWorkspace?.hasFullscreen ?? false
     property string popover: ""              // "control-center" | "tray" | ""
     property string ccTab: "volume"
     property var dockerOpen: ({})           // compose project -> expanded, as the user left it

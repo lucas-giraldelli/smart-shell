@@ -31,6 +31,13 @@ ShellRoot {
             mask: Region {
                 item: dock
                 Region { item: dock.appsHit }
+                Region { item: pet.visible ? pet : null }
+            }
+
+            // the pet walks on the dock's top edge, drawn behind the dock
+            Pet {
+                id: pet
+                floor: dock
             }
 
             Dock {

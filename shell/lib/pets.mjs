@@ -1,0 +1,149 @@
+// The pets' behaviour and drawing, ported from the prototype
+// (prototype/src/components/pets/engine.js and pets.css). The prototype
+// animates the SVG's parts with CSS classes; here each look the CSS can produce
+// (legs swung, lying down, eyes closed, at the laptop...) is baked into its own
+// SVG string, and the shell swaps images.
+
+// --- behaviour (engine.js) ---
+// A pet reacts to CPU load: sleep (< 10%) · idle (< 40%) · walk (< 72%) · run.
+// While idle it picks weighted actions; each species adds or overrides actions
+// through `acts` and can set speed / hop / waddle / chill (never runs). During
+// a work meeting every pet stops in front of a laptop and types.
+const BASE_ACTS = [
+  { name: 'stand', w: 3, dur: [2, 5] },
+  { name: 'stroll', w: 4, dur: [3, 7], speed: 26 },
+  { name: 'turn', w: 1, dur: [.8, 1.5], turn: true },
+];
+const STATE_SPEED = { sleep: 0, walk: 34, run: 150 };
+const SWITCH_DELAY = 1.2; // a load change must hold this long before the pet reacts
+
+function actionsFor(species) {
+  const byName = new Map(BASE_ACTS.map(a => [a.name, a]));
+  for (const a of species.acts ?? []) byName.set(a.name, a);
+  return [...byName.values()];
+}
+
+// step(dt, load, activity, width) -> { x, dir, moving, fast, pose, jump, step, mood }
+// (`mood` is a translation key under pets.moods, or 'chill')
+export function createPet(species, width) {
+  const acts = actionsFor(species);
+  const mult = species.speed ?? 1;
+  // each pet reacts at slightly different loads, so they don't all switch at once
+  const jitter = (Math.random() - .5) * 12;
+  let x = 20 + Math.random() * Math.max(0, width - 100);
+  let dir = Math.random() < .5 ? -1 : 1, v = 0;
+  let state = 'idle', pending = null, pendingT = 0;
+  let act = null, actLeft = 0, jumpLeft = 0;
+
+  function loadState(load) {
+    const l = load + jitter;
+    if (l < 10) return 'sleep';
+    if (l < 40) return 'idle';
+    if (l < 72 || species.chill) return 'walk';
+    return 'run';
+  }
+
+  function pickAct() {
+    let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
+    act = acts.find(a => (r -= a.w) < 0) ?? acts[0];
+    actLeft = act.dur[0] + Math.random() * (act.dur[1] - act.dur[0]);
+    if (act.turn) dir = -dir;
+    if (act.jump) jumpLeft = .55;
+  }
+
+  function step(dt, load, activity, w) {
+    const want = loadState(load);
+    if (want === state) pending = null;
+    else {
+      if (pending !== want) { pending = want; pendingT = 0; }
+      if ((pendingT += dt) > SWITCH_DELAY) { state = want; pending = null; act = null; }
+    }
+
+    let target, pose = '';
+    if (state === 'idle') {
+      if (!act || (actLeft -= dt) <= 0) pickAct();
+      target = act.speed ?? 0;
+      if (act.pose) pose = act.pose === 'sleep' ? 'lie sleep' : act.pose;
+    } else {
+      target = STATE_SPEED[state];
+      if (state === 'sleep') pose = 'lie sleep';
+    }
+    if (activity === 'work') pose = 'work';
+    if (pose) target = 0;
+
+    // ease toward the target speed instead of jumping to it
+    v += (target * mult - v) * (1 - Math.exp(-dt * 4));
+    if (target === 0 && v < .5) v = 0;
+    jumpLeft = Math.max(0, jumpLeft - dt);
+
+    const max = w - 60;
+    x += dir * v * dt;
+    if (x > max) { x = max; dir = -1; }
+    if (x < 14) { x = 14; dir = 1; }
+
+    const moving = v > 4;
+    let mood = activity === 'work' ? 'work' : state === 'idle' ? act?.name ?? 'stand' : state;
+    if (species.chill && load + jitter >= 72) mood = 'chill';
+    return {
+      x, dir, moving, fast: v > 90, pose: pose && v < 3 ? pose : '', jump: jumpLeft > 0,
+      // legs keep pace with the body: faster walk, shorter step
+      step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
+      mood,
+    };
+  }
+
+  return { step };
+}
+
+// --- drawing (pets.css) ---
+// drawn in front of every pet, shown only during a work meeting
+const LAPTOP = (screen) => `
+  <g class="laptop">
+    <rect x="40" y="18.5" width="12" height="9" rx="1.2" fill="#1f2937" stroke="#94a3b8" stroke-width=".6"/>
+    <rect class="screen" x="41.2" y="19.7" width="9.6" height="6.6" rx=".6" fill="${screen}"/>
+    <rect x="37.5" y="27.6" width="16" height="2" rx="1" fill="#94a3b8"/>
+  </g>`;
+export const SCREEN_COLORS = ['#7dd3fc', '#a5f3fc', '#93c5fd', '#bae6fd'];
+
+const drop = (svg, cls) => svg.replace(new RegExp(`<[a-z]+ class="${cls}[^"]*"[^>]*/>`, 'g'), '');
+
+// One look of a sprite as an SVG data URL:
+//   leg     -1 / 0 / 1: legs swung back, straight, forward (legA / legB, 28deg)
+//   lie     legs hidden, body 5px lower
+//   closed  eyes closed (sleep, or a blink)
+//   tongue  the frog's tongue out
+//   pouch   the frog's throat pouch scale (croak)
+//   bob     body raised (fast run, typing)
+//   screen  the laptop's screen colour, or '' for no laptop
+export function look(species, opts) {
+  const key = JSON.stringify(opts);
+  if (!species.__looks) species.__looks = new Map();
+  if (species.__looks.has(key)) return species.__looks.get(key);
+  const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '' } = opts;
+  let svg = species.svg;
+  if (leg) {
+    svg = svg.replace(/<rect class="(la|lb)" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)"([^>]*)\/>/g,
+      (_, cls, x, y, w, rest) => {
+        const a = (cls === 'la' ? 28 : -28) * leg;
+        const cx = +x + w / 2;
+        return `<rect class="${cls}" x="${x}" y="${y}" width="${w}"${rest} transform="rotate(${a} ${cx} ${y})"/>`;
+      });
+  }
+  if (lie) svg = svg.replace(/<g class="legs"[\s\S]*?<\/g>/, '');
+  const lift = (lie ? 5 : 0) - bob;
+  if (lift) svg = svg.replace('<g class="body-g"', `<g class="body-g" transform="translate(0 ${lift})"`);
+  svg = closed ? drop(svg, 'eye') : drop(svg, 'closed');
+  if (!tongue) svg = drop(svg, 'tongue');
+  if (pouch !== 1) {
+    svg = svg.replace(/<ellipse class="pouch" cx="([\d.]+)" cy="([\d.]+)" rx="([\d.]+)" ry="([\d.]+)"/,
+      (m, cx, cy, rx, ry) => {
+        // transform-origin 20% 30% of the pouch
+        const ox = cx - rx + 0.4 * rx, oy = cy - ry + 0.6 * ry;
+        return `${m} transform="translate(${ox} ${oy}) scale(${pouch}) translate(${-ox} ${-oy})"`;
+      });
+  }
+  if (screen) svg += LAPTOP(screen);
+  const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 36">${svg}</svg>`);
+  species.__looks.set(key, url);
+  return url;
+}

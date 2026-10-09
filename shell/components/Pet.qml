@@ -1,0 +1,141 @@
+import QtQuick
+import "../services"
+import ".."
+import "../lib/pets.mjs" as Engine
+
+// The pet walking on top of the dock (prototype: components/pets, one per
+// dock, Ui.pet). It reacts to CPU load - sleeps, idles, walks or runs - and
+// during a work meeting (an ongoing event in the "work" category) sits at a
+// laptop and types. Hover shows its name, mood and the load; a click sends up
+// a heart. Holds still while a fullscreen window is focused.
+Item {
+    id: root
+
+    required property Item floor            // the dock: its top edge is the ground
+    readonly property string kind: Pets.species[Ui.pet] ? Ui.pet : ""
+    readonly property var species: Pets.species[kind] ?? null
+
+    property var engine: null
+    property var s: ({ x: 20, dir: 1, moving: false, fast: false, pose: "", jump: false, step: 0.42, mood: "stand" })
+    property real clock: 0                  // seconds, drives the leg / blink / screen cycles
+
+    readonly property bool working: (Events.ongoing?.category ?? "") === "work"
+    readonly property bool lying: s.pose.includes("lie")
+    readonly property bool sleeping: s.pose.includes("sleep")
+
+    visible: species !== null
+    width: 46
+    height: 36
+    // bottom: calc(100% - 3px) of the dock
+    y: floor.y - height + 3
+    x: floor.x + s.x
+
+    function hatch() {
+        engine = species ? Engine.createPet(species, floor.width) : null;
+    }
+    onKindChanged: hatch()
+    Component.onCompleted: hatch()
+
+    FrameAnimation {
+        running: root.engine !== null && !Ui.calm
+        onTriggered: {
+            const dt = Math.min(frameTime, 0.05);
+            root.clock += dt;
+            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : null, root.floor.width);
+        }
+    }
+
+    // the look of this frame (pets.css, baked into SVGs by lib/pets.mjs)
+    readonly property var lookOpts: {
+        const t = clock, s = root.s;
+        const phase = (t % s.step) / s.step;                         // legA / legB cadence
+        const blink = (t % 4.5) / 4.5 > 0.94 && (t % 4.5) / 4.5 < 0.99;
+        const tongue = s.pose === "tongue" && ((t % 1.1) / 1.1 > 0.55 && (t % 1.1) / 1.1 < 0.8);
+        const croak = s.pose === "croak" ? 1 + 0.7 * (0.5 - 0.5 * Math.cos(t / 0.42 * Math.PI)) : 1;
+        return {
+            leg: s.moving && !root.species?.hop ? (phase < 0.25 || phase >= 0.75 ? 1 : -1) : 0,
+            lie: root.lying,
+            closed: root.sleeping || blink,
+            tongue,
+            pouch: Math.round(croak * 10) / 10,
+            bob: s.pose === "work" ? (Math.floor(t / 0.2) % 2 ? 0.7 : 0) : s.fast ? (Math.floor(t / (s.step / 2)) % 2 ? 1.6 : 0) : 0,
+            screen: s.pose === "work" ? Engine.SCREEN_COLORS[Math.floor((t % 2.4) / 0.6) % 4] : ""
+        };
+    }
+
+    Item {
+        id: sprite
+        width: 46
+        height: 36
+        // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks it
+        y: {
+            if (root.s.jump)
+                return -16 * Math.sin(Math.min(1, (root.clock % 0.55) / 0.55) * Math.PI);
+            if (root.species?.hop && root.s.moving)
+                return -8 * Math.abs(Math.sin(root.clock / (root.s.step * 1.3) * Math.PI));
+            return 0;
+        }
+        rotation: root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
+        transformOrigin: Item.Bottom
+
+        Image {
+            anchors.fill: parent
+            sourceSize: Qt.size(92, 72)
+            smooth: true
+            source: root.species ? Engine.look(root.species, root.lookOpts) : ""
+            // faces right; flip around the sprite box when walking left
+            transform: Scale { origin.x: 23; xScale: root.s.dir < 0 ? -1 : 1 }
+        }
+    }
+
+    // sleeping: two z's drifting up (2.4 s, staggered)
+    Repeater {
+        model: [0, 1.2]
+        Text {
+            required property real modelData
+            readonly property real p: ((root.clock + modelData) % 2.4) / 2.4
+            visible: root.sleeping
+            x: 30 + 10 * p
+            y: -6 + 4 - 20 * p
+            scale: 0.7 + 0.45 * p
+            opacity: p < 0.3 ? p / 0.3 * 0.9 : 0.9 * (1 - (p - 0.3) / 0.7)
+            text: "z"
+            color: Theme.text
+            font { family: Theme.font; pixelSize: 11; weight: Font.Bold }
+        }
+    }
+
+    // hover: "Gato · Andando · CPU 23%"
+    Tip {
+        target: root
+        shown: hover.hovered
+        text: !root.species ? "" : I18n.t("pets.bubble", {
+            name: I18n.t(`pets.names.${root.kind}`),
+            mood: root.s.mood === "chill" ? I18n.t("pets.chill") : I18n.t(`pets.moods.${root.s.mood}`),
+            load: Math.round(SystemStats.load)
+        })
+    }
+    HoverHandler { id: hover }
+
+    // click: a heart floats up
+    Text {
+        id: heart
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: -4
+        opacity: 0
+        text: "♥"
+        color: Theme.crit
+        font.pixelSize: 16
+        ParallelAnimation {
+            id: love
+            NumberAnimation { target: heart; property: "opacity"; from: 1; to: 0; duration: 1000; easing.type: Easing.OutQuad }
+            NumberAnimation { target: heart; property: "y"; from: -4; to: -34; duration: 1000; easing.type: Easing.OutQuad }
+            NumberAnimation { target: heart; property: "scale"; from: 0.6; to: 1.3; duration: 1000; easing.type: Easing.OutQuad }
+        }
+    }
+    MouseArea {
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        onClicked: love.restart()
+    }
+}
