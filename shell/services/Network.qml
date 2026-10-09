@@ -5,7 +5,7 @@ import Quickshell
 import Quickshell.Io
 
 // Connection details, live traffic and VPN - the prototype's `network` slice.
-// `online` follows waybar's network-status.sh (ping google.com); the route to
+// `online` comes from NetworkManager with a ping fallback (below); the route to
 // the internet gives the interface, IP and gateway; NetworkManager gives the
 // connection kind and VPNs; /sys gives link speed and byte counters.
 Singleton {
@@ -25,18 +25,49 @@ Singleton {
 
     property var lastBytes: null
 
-    // waybar's network-status.sh
+    // Online check: NetworkManager's connectivity ("full" = online); only when
+    // it says otherwise, ping 1.1.1.1 and 8.8.8.8 by IP and count either
+    // answering as online. Going offline takes 3 failed checks in a row
+    // (~30 s), so one lost packet or DNS hiccup never flips it; the first
+    // success brings it back. Transitions are logged.
+    property int failures: 0
+    readonly property int failuresToOffline: 3
+
+    function checked(ok, why) {
+        if (ok) {
+            if (!online)
+                console.info("[network] online again:", why);
+            failures = 0;
+            online = true;
+        } else {
+            failures++;
+            if (online && failures >= failuresToOffline) {
+                console.info("[network] offline after", failures, "failed checks:", why);
+                online = false;
+            }
+        }
+    }
+
     Timer {
         running: true
         repeat: true
         triggeredOnStart: true
         interval: 10000
-        onTriggered: ping.running = true
+        onTriggered: if (!check.running) check.running = true
     }
     Process {
-        id: ping
-        command: ["ping", "-c", "1", "-W", "2", "-q", "google.com"]
-        onExited: code => root.online = code === 0
+        id: check
+        command: ["sh", "-c", "state=$(nmcli networking connectivity 2>/dev/null); echo \"nm=$state\"; "
+            + "[ \"$state\" = full ] && exit 0; "
+            + "ping -c 1 -W 2 -q 1.1.1.1 >/dev/null 2>&1 && { echo ping=1.1.1.1; exit 0; }; "
+            + "ping -c 1 -W 2 -q 8.8.8.8 >/dev/null 2>&1 && { echo ping=8.8.8.8; exit 0; }; "
+            + "echo ping=none; exit 1"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const why = text.trim().replace(/\n/g, " ");
+                root.checked(!why.endsWith("ping=none"), why);
+            }
+        }
     }
 
     // interface, addresses, kind, speed, docker bridge and VPN
