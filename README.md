@@ -35,6 +35,7 @@ Dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
 | `hyprsunset` | night light (optional) |
 | `docker` | Docker tab (optional) |
 | `bluez`, `bluez-utils`, `blueman` | Bluetooth tile and its "open manager" row (optional) |
+| `python-bluetooth-battery` (AUR) | headset battery for headsets that don't report it to BlueZ (optional) |
 | `btop`, `lazydocker`, `kitty` | the default commands behind the btop / lazydocker buttons |
 
 Run it:
@@ -114,7 +115,11 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   "N notifications", and so does any item in NeedsAttention.
 - **Bluetooth** - BlueZ (`bluez`, an adapter). Click toggles the adapter,
   right click lists paired devices; the tile names the headset while it's
-  connected. "Open manager" runs `blueman-manager`.
+  connected. "Open manager" runs `blueman-manager`. Battery comes from
+  BlueZ (`org.bluez.Battery1`) when the headset reports it; many TWS headsets
+  don't, so the tile falls back to `bluetooth_battery` (AUR
+  `python-bluetooth-battery`, reads it over the Serial Port channel) once a
+  minute.
 - **Quick tile + control center** - each tab needs its backend, and says what
   to install when it's missing:
   - Volume: PipeWire.

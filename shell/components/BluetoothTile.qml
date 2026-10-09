@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Io
 import "../services"
 import ".."
 import "ui"
@@ -36,9 +37,42 @@ Tile {
         if (!device)
             return;
         name = device.name;
+        const battery = batteryOf(device);
         sub = device === connecting ? I18n.t("bluetooth.connecting")
-            : device.batteryAvailable ? I18n.t("bluetooth.headset", { battery: Math.round(device.battery * 100) })
+            : battery >= 0 ? I18n.t("bluetooth.headset", { battery })
             : I18n.t("bluetooth.headsetOutput");
+    }
+
+    // battery in %, or -1. Many TWS headsets (e.g. Kuba Mali 2) never expose
+    // org.bluez.Battery1, but answer AT commands on their Serial Port channel:
+    // `bluetooth_battery` (python-bluetooth-battery) reads that, once a minute.
+    property int sppBattery: -1
+    onConnectedChanged: sppBattery = -1
+    onSppBatteryChanged: update()
+    function batteryOf(d) {
+        if (d.batteryAvailable)
+            return Math.round(d.battery * 100);
+        return d === connected ? sppBattery : -1;
+    }
+    Timer {
+        running: root.connected !== null && !root.connected.batteryAvailable
+        repeat: true
+        triggeredOnStart: true
+        interval: 60000
+        onTriggered: {
+            spp.command = ["bluetooth_battery", root.connected.address];
+            spp.running = true;
+        }
+    }
+    Process {
+        id: spp
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const m = text.match(/(\d+)%/);
+                if (m)
+                    root.sppBattery = Number(m[1]);
+            }
+        }
     }
 
     // icon only (padding 0 15px), or padding 0 14px 0 13px + gap 9 + the name
@@ -156,7 +190,7 @@ Tile {
                     title: modelData.name
                     active: modelData.connected
                     meta: busy ? I18n.t("bluetooth.connecting")
-                        : modelData.connected ? (modelData.batteryAvailable ? I18n.t("bluetooth.connected", { battery: Math.round(modelData.battery * 100) }) : I18n.t("common.on"))
+                        : modelData.connected ? (root.batteryOf(modelData) >= 0 ? I18n.t("bluetooth.connected", { battery: root.batteryOf(modelData) }) : I18n.t("common.on"))
                         : I18n.t("bluetooth.disconnected")
                     onClicked: {
                         if (busy)
