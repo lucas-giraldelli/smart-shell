@@ -10,7 +10,9 @@ export const isOpen = name => store.get().ui.popover === name;
 export function startPopovers() {
   document.addEventListener('click', e => {
     const name = store.get().ui.popover;
-    if (name && !e.target.closest(`[data-popover="${name}"]`)) closePopover();
+    // composedPath() is fixed when the click is dispatched, so it still holds the
+    // popover even if the click handler re-rendered (and detached) the target
+    if (name && !e.composedPath().some(el => el.dataset?.popover === name)) closePopover();
   });
   addEventListener('keydown', e => {
     if (e.key === 'Escape') closePopover();
