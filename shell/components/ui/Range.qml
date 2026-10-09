@@ -74,6 +74,7 @@ Item {
         }
         onPressed: mouse => update(mouse.x)
         onPositionChanged: mouse => update(mouse.x)
-        onWheel: wheel => root.moved(Math.max(root.from, Math.min(root.to, root.value + (wheel.angleDelta.y > 0 ? 1 : -1) * root.stepSize * (root.stepSize === 1 ? 5 : 1))))
+        // the wheel scrolls the pane, never the value (an input range ignores it too)
+        onWheel: wheel => wheel.accepted = false
     }
 }
