@@ -1,14 +1,24 @@
 /* Shared building blocks for popovers: the bluetooth menu and the control center
    are both made of these. */
 
-/* popover: anchored above its tile, shown while the tile has [data-open] */
+/* popover: a speech bubble above its tile, shown while the tile has [data-open].
+   core/popover.js sets --menu-left (opens to the right, kept on screen) and
+   --arrow-x (where the tail points: the tile's centre). */
 .menu {
-  position: absolute; right: 0; bottom: calc(100% + 12px); width: 240px; padding: 6px; z-index: 20; cursor: default;
-  border-radius: 14px; color: #f4f4f5; background: rgba(20, 20, 26, .9); border: 1px solid rgba(255, 255, 255, .12);
+  --menu-bg: rgba(20, 20, 26, .94);
+  --menu-line: rgba(255, 255, 255, .12);
+  position: absolute; left: var(--menu-left, 0); bottom: calc(100% + 16px); width: 240px; padding: 6px; z-index: 20; cursor: default;
+  border-radius: 14px; color: #f4f4f5; background: var(--menu-bg); border: 1px solid var(--menu-line);
   backdrop-filter: blur(20px) saturate(160%); box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
-  opacity: 0; transform: translateY(6px) scale(.98); transform-origin: bottom right; pointer-events: none;
+  opacity: 0; transform: translateY(6px) scale(.98); transform-origin: var(--arrow-x, 24px) 100%; pointer-events: none;
   transition: opacity .16s, transform .16s;
 }
+/* the tail: an outline triangle with a fill triangle on top */
+.menu::before, .menu::after {
+  content: ""; position: absolute; top: 100%; left: var(--arrow-x, 24px); border: solid transparent; pointer-events: none;
+}
+.menu::before { margin-left: -10px; border-width: 10px; border-top-color: var(--menu-line); }
+.menu::after { margin-left: -9px; margin-top: -1px; border-width: 9px; border-top-color: var(--menu-bg); }
 [data-open] > .menu { opacity: 1; transform: none; pointer-events: auto; }
 [data-open] { transform: none !important; }
 
