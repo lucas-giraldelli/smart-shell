@@ -13,8 +13,8 @@ import ".."
 // vivid pixels: status badges like Slack's unread dot keep their colour (Slack
 // never sets NeedsAttention, the dot in its pixmap is the only signal). Hover
 // brings the whole icon back in colour. An item needing attention - SNI
-// NeedsAttention, or a red badge on one listed in config.tray.redBadge (Slack
-// only signals mentions in its pixmap) - hops like the caps lock arrow, right
+// NeedsAttention, or for one listed in config.tray.redBadge a red badge in its
+// pixmap or "N notifications" in its tooltip (Slack never sets the status) - hops like the caps lock arrow, right
 // away and then every 8 s until it's dealt with.
 Tile {
     id: root
@@ -52,7 +52,10 @@ Tile {
                 readonly property string keys: [modelData.id, modelData.title, modelData.icon].join(" ").toLowerCase()
                 readonly property bool watchBadge: Config.trayRedBadge.some(w => keys.includes(w.toLowerCase()))
                 property bool redBadge: false
-                readonly property bool attention: modelData.status === Status.NeedsAttention || redBadge
+                // Slack also says it in its tooltip: "You have 1 notification" (mentions,
+                // DMs) as opposed to "You have unread messages" (the blue dot)
+                readonly property bool notified: watchBadge && /\b[1-9]\d* notifications?\b/i.test(modelData.tooltipTitle ?? "")
+                readonly property bool attention: modelData.status === Status.NeedsAttention || redBadge || notified
 
                 onAttentionChanged: if (attention) hop.restart()
 
