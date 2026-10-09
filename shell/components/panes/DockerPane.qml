@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC
 import Quickshell
 import "../.."
 import "../../services"
@@ -67,8 +67,8 @@ Item {
         clip: true
         boundsBehavior: Flickable.StopAtBounds
 
-        ScrollBar.vertical: ScrollBar {
-            policy: list.contentHeight > list.height ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+        QQC.ScrollBar.vertical: QQC.ScrollBar {
+            policy: list.contentHeight > list.height ? QQC.ScrollBar.AsNeeded : QQC.ScrollBar.AlwaysOff
             width: 6
             contentItem: Rectangle { radius: 3; color: Theme.menuStrong; opacity: parent.active ? 1 : 0 }
         }

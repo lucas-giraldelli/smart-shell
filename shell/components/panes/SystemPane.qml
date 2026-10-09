@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC
 import Quickshell
 import "../.."
 import "../../services"
@@ -294,7 +294,7 @@ PaneScroll {
                     onClicked: root.clickKill(proc.modelData)
                 }
 
-                ToolTip {
+                QQC.ToolTip {
                     id: tip
                     visible: killArea.containsMouse || proc.kill !== "idle" && rowHover.hovered
                     delay: 300

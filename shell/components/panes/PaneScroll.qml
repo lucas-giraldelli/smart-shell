@@ -1,5 +1,5 @@
 import QtQuick
-import QtQuick.Controls
+import QtQuick.Controls as QQC
 import "../.."
 
 // A control-center tab's scrolling body (prototype: .cc .pane): fixed 306px,
@@ -22,8 +22,8 @@ Flickable {
         width: root.width - 4
     }
 
-    ScrollBar.vertical: ScrollBar {
-        policy: root.contentHeight > root.height ? ScrollBar.AsNeeded : ScrollBar.AlwaysOff
+    QQC.ScrollBar.vertical: QQC.ScrollBar {
+        policy: root.contentHeight > root.height ? QQC.ScrollBar.AsNeeded : QQC.ScrollBar.AlwaysOff
         width: 6
         contentItem: Rectangle {
             radius: 3
