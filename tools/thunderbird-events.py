@@ -13,7 +13,7 @@ Which calendars to read comes from ~/.config/smart-shell/config.json:
 Output (default ~/.cache/smart-shell/events.json):
   {"generatedAt": ..., "calendars": {name: color}, "skipped": [{name, reason}],
    (reason: "offline" | "disabled" | "unknown"; the UI translates it)
-   "events": [{"title", "start", "end", "allDay", "calendars": [names]}, ...]}
+   "events": [{"title", "start", "end", "allDay", "recurring", "calendars": [names]}, ...]}
 
 Runs from a systemd user timer (systemd/smart-shell-events.*); safe to run any
 time, since it only reads a copy of the database.
@@ -211,7 +211,7 @@ def export(args) -> dict:
 
     events = []
 
-    def add(row, start, end, all_day):
+    def add(row, start, end, all_day, recurring=False):
         if row["ical_status"] == "CANCELLED":
             return
         if (row["cal_id"], row["id"], row["recurrence_id"]) in declined:
@@ -223,7 +223,7 @@ def export(args) -> dict:
             return
         events.append({
             "title": (row["title"] or "").strip(),  # empty = untitled, shown translated
-            "start": iso(start, all_day), "end": iso(end, all_day), "allDay": all_day,
+            "start": iso(start, all_day), "end": iso(end, all_day), "allDay": all_day, "recurring": recurring,
             "calendar": registry.get(row["cal_id"], {}).get("name", row["cal_id"]),
         })
 
@@ -243,9 +243,9 @@ def export(args) -> dict:
             if moved is not None:
                 add(moved, to_datetime(moved["event_start"], moved["event_start_tz"]),
                     to_datetime(moved["event_end"], moved["event_end_tz"] or moved["event_start_tz"]),
-                    bool(moved["flags"] & FLAG_ALLDAY))
+                    bool(moved["flags"] & FLAG_ALLDAY), recurring=True)
             else:
-                add(r, occ, occ + length, all_day)
+                add(r, occ, occ + length, all_day, recurring=True)
 
     # dedup: the same invite in several calendars has the same title and times
     unique = {}
