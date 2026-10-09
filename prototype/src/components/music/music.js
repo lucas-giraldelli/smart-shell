@@ -1,12 +1,15 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { store, update } from '../../state.js';
+import { t } from '../../i18n/index.js';
+import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
+import { slider, setSlider, setHTML } from '../ui/ui.js';
 
 // Now playing (MPRIS in the real shell). Click toggles play/pause; hovering
 // shows the full title, artist and player; the tile itself names only the
 // artist (or the album).
 class Music extends Component {
-  static slices = ['media'];
+  static slices = ['media', 'ui'];
 
   render() {
     const m = store.get().media;
@@ -18,16 +21,42 @@ class Music extends Component {
         <div class="progress"><i></i></div>
       </div>
       <div class="eq"><i></i><i></i><i></i><i></i></div>
-      <span class="label"></span>`;
+      <span class="label"></span>
+      <div class="menu music-volume">
+        <div class="sec">${t('music.volume')}</div>
+        ${slider({ key: 'ytm', label: 'YouTube Music', iconName: 'volume-2', button: true })}
+      </div>`;
   }
 
   setup() {
     this.classList.add('tile', 'music');
     this.dataset.tip = '';
-    this.addEventListener('click', () => update('media', m => ({ playing: !m.playing })));
+    this.dataset.popover = 'music-volume';
+    this.addEventListener('click', e => {
+      if (cameFrom(e, '.menu')) {
+        // the mute button
+        if (e.target.closest('[data-btn="ytm"]')) update('media', m => ({ muted: !m.muted }));
+        return;
+      }
+      closePopover();
+      update('media', m => ({ playing: !m.playing }));
+    });
+    // right click: the YouTube Music app's own volume (its PipeWire stream in the shell)
+    this.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      isOpen('music-volume') ? closePopover() : openPopover('music-volume');
+    });
+    this.addEventListener('input', e => {
+      if (e.target.dataset.range === 'ytm') update('media', { volume: +e.target.value, muted: false });
+    });
   }
 
-  update({ media }) {
+  update({ media, ui }) {
+    this.toggleAttribute('data-open', ui.popover === 'music-volume');
+    setSlider(this, 'ytm', media.volume, media.muted ? t('common.muted') : media.volume + '%');
+    const mute = this.$('[data-btn="ytm"]');
+    setHTML(mute, icon(media.muted ? 'volume-x' : 'volume-2'));
+    mute.classList.toggle('off', media.muted);
     this.classList.toggle('playing', media.playing);
     // title and artist are cut short in the tile: the tooltip has them in full
     this.$('.label').textContent = [media.title, media.artist, media.source].filter(Boolean).join(' · ');

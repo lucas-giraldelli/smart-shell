@@ -12,6 +12,8 @@ export default {
 
   workspaces: { label: 'Workspace {id} · {windows}', empty: 'empty' },
 
+  music: { volume: 'YouTube Music volume', notPlaying: 'YouTube Music isn\'t open' },
+
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
 

@@ -46,7 +46,8 @@ export const store = createStore({
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   agenda: { ongoing: null, upcoming: null, minutes: null },
-  media: { ...snap.media, playing: true, progress: 0.32 },
+  // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)
+  media: { ...snap.media, playing: true, progress: 0.32, volume: 70, muted: false },
 });
 
 export const update = store.update;

@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Effects
 import QtQuick.Shapes
 import "../services"
+import "ui"
 import ".."
 
 // Now playing (prototype: components/music): cover tile, title, artist ·
 // player, progress and a little equaliser that dances while playing. Click
-// toggles play/pause; hovering shows the full title, artist and player.
+// toggles play/pause, right click opens the YouTube Music app's volume;
+// hovering shows the full title, artist and player.
 // Hidden while no MPRIS player is around.
 Tile {
     id: root
@@ -14,6 +16,7 @@ Tile {
     readonly property bool shown: Media.active
 
     implicitWidth: 212
+    open: volume.open
 
     // title and artist are cut short in the tile: the tooltip has them in full
     Tip {
@@ -22,12 +25,50 @@ Tile {
         shown: root.hovered
     }
 
+    // click: play / pause; right click: the YouTube Music app's own volume
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: {
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton) {
+                volume.open ? Ui.closePopover() : Ui.openPopover("music-volume");
+                return;
+            }
             Ui.closePopover();
             Media.toggle();
+        }
+    }
+
+    Popover {
+        id: volume
+        owner: root
+        name: "music-volume"
+        bubbleWidth: 240
+
+        Column {
+            width: parent.width
+            Section { text: I18n.t("music.volume") }
+            Slider {
+                visible: Audio.musicApp !== null
+                icon: Audio.musicMuted ? "volume-x" : "volume-2"
+                button: true
+                off: Audio.musicMuted
+                label: "YouTube Music"
+                value: Audio.musicApp ? Audio.appVolume(Audio.musicApp) : 0
+                valueText: Audio.musicMuted ? I18n.t("common.muted") : `${value}%`
+                onMoved: v => {
+                    Audio.setMusicMuted(false);
+                    Audio.setAppVolume(Audio.musicApp, v);
+                }
+                onButtonClicked: Audio.setMusicMuted(!Audio.musicMuted)
+            }
+            MenuRow {
+                visible: Audio.musicApp === null
+                enabled: false
+                icon: "music"
+                title: I18n.t("music.notPlaying")
+            }
         }
     }
 

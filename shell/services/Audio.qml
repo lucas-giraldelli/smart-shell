@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
 import ".."
+import Quickshell.Io
 import "../lib/rules.mjs" as Rules
 
 // Output volume and device, microphone and per-app streams - the prototype's
@@ -27,6 +28,59 @@ Singleton {
         }
         return [...byApp.values()];
     }
+    // The YouTube Music web app's streams (config.pets.danceWith - the same
+    // match the dancing pets use). Chromium's MPRIS has no volume, so this is
+    // the PipeWire stream itself: its process is the app's own audio service,
+    // whose parent browser has --app=https://music.youtube.com on its command
+    // line. The PWA runs with its own --user-data-dir, so its audio never
+    // shares a stream with WhatsApp or other Chromium windows.
+    property var ancestry: ({})     // stream pid -> the command lines of it and its parents
+    readonly property var musicWords: (Config.petsConfig?.danceWith ?? []).map(s => String(s).toLowerCase())
+    readonly property var musicApp: {
+        const nodes = streams.filter(n => {
+            const chain = (ancestry[n.properties["application.process.id"]] ?? "").toLowerCase();
+            return musicWords.some(w => chain.includes(w));
+        });
+        return nodes.length ? { key: "music", nodes } : null;
+    }
+    readonly property bool musicMuted: musicApp ? musicApp.nodes.every(n => n.audio?.muted) : false
+    function setMusicMuted(muted) {
+        for (const n of musicApp?.nodes ?? [])
+            if (n.audio)
+                n.audio.muted = muted;
+    }
+    // stream properties arrive after the nodes, so look again until every
+    // stream's process is known
+    Timer {
+        running: root.streams.some(n => n.properties["application.process.id"] && !(n.properties["application.process.id"] in root.ancestry))
+            || root.streams.some(n => !n.properties["application.process.id"])
+        repeat: true
+        triggeredOnStart: true
+        interval: 2000
+        onTriggered: lineage.refresh()
+    }
+    Process {
+        id: lineage
+        function refresh() {
+            const pids = [...new Set(root.streams.map(n => n.properties["application.process.id"]).filter(Boolean))];
+            if (!pids.length || running)
+                return;
+            // each pid: its command line and its ancestors', up to init
+            command = ["sh", "-c", 'for p in "$@"; do printf "%s\t" "$p"; q=$p; while [ "$q" -gt 1 ] 2>/dev/null; do tr "\\0" " " < /proc/$q/cmdline 2>/dev/null; printf " | "; q=$(cut -d" " -f4 /proc/$q/stat 2>/dev/null); done; echo; done', "sh", ...pids.map(String)];
+            running = true;
+        }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const map = {};
+                for (const line of text.split("\n").filter(Boolean)) {
+                    const i = line.indexOf("\t");
+                    map[line.slice(0, i)] = line.slice(i + 1);
+                }
+                root.ancestry = map;
+            }
+        }
+    }
+
     // an app's volume: its loudest stream
     function appVolume(app) {
         return Math.round(Math.max(0, ...app.nodes.map(n => (n.audio?.volume ?? 0) * 100)));
