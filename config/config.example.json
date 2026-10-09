@@ -4,6 +4,7 @@
   "events": {
     "calendars": ["you@example.com", "Family"],
     "daysBack": 7,
-    "daysAhead": 60
+    "daysAhead": 60,
+    "remindMinutes": 10
   }
 }

@@ -9,6 +9,7 @@ import { startMedia } from './services/media.js';
 import { startKeyboard } from './services/keyboard.js';
 import { startWeather } from './services/weather.js';
 import { startEvents } from './services/events.js';
+import { startAgenda } from './services/agenda.js';
 
 // Icons are inlined synchronously by components and the layout comes from the
 // config, so load both before any element is defined.
@@ -23,5 +24,6 @@ startMedia();
 startKeyboard();
 startWeather();
 startEvents();
+startAgenda();
 
 await import('./components/index.js');
