@@ -73,6 +73,7 @@ export default {
     prevMonth: 'Mês anterior', nextMonth: 'Próximo mês', today: 'Hoje',
     weekdays: ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'],
     allDay: 'Dia todo', optional: 'facultativo', upcoming: 'Próximos feriados',
+    showPast: p => (p.n === 1 ? '1 anterior' : `${p.n} anteriores`), hidePast: 'ocultar anteriores',
     untitled: '(sem título)',
     skipped: '{name} não aparece: {reason}',
     reasons: {

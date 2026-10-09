@@ -61,8 +61,22 @@
 .cal .hol.optional .mark { background: none; box-shadow: inset 0 0 0 1.5px var(--rc); }
 .cal .hol .when, .cal .evt .when { min-width: 52px; flex: none; white-space: nowrap; color: #a1a1aa; font-variant-numeric: tabular-nums; }
 .cal .none { padding: 4px 8px 2px; }
-.cal .evt { display: flex; align-items: center; gap: 8px; padding: 5px 8px; font-size: 12px; }
-.cal .evt .bar { width: 3px; height: 16px; border-radius: 9px; background: var(--rc); flex: none; }
+.cal .evt { display: flex; align-items: center; gap: 8px; padding: 3px 8px; font-size: 12px; }
+.cal .evt .bar { width: 3px; height: 14px; border-radius: 9px; background: var(--rc); flex: none; }
+.cal .evt.past { opacity: .45; }
+/* the day's timed events scroll after ~5 rows instead of stretching the popover */
+.cal .evt-list { max-height: 112px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
+.cal .allday { display: flex; gap: 5px; padding: 0 8px 4px; min-width: 0; }
+.cal .chip {
+  min-width: 0; max-width: 100%; padding: 2px 8px; border-radius: 99px; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  color: #e4e4e7; background: color-mix(in srgb, var(--rc) 22%, transparent); border: 1px solid color-mix(in srgb, var(--rc) 45%, transparent);
+}
+.cal .chip.more { flex: none; --rc: #a1a1aa; }
+.cal .past-toggle {
+  margin: 0 8px 2px; padding: 2px 0; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 11px; color: #a1a1aa; text-decoration: underline dotted; text-underline-offset: 3px;
+}
+.cal .past-toggle:hover { color: #e4e4e7; }
 .cal .evt .grow { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .cal .skipped { display: flex; align-items: flex-start; gap: 7px; margin: 8px 4px 2px; padding: 7px 9px; border-radius: 9px; font-size: 11.5px; line-height: 1.35; color: #e4e4e7; background: color-mix(in srgb, var(--warn) 12%, transparent); }
 .cal .skipped svg.i { width: 14px; height: 14px; color: var(--warn); margin-top: 1px; }

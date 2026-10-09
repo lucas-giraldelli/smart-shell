@@ -6,9 +6,10 @@ import { regions, regionName, holidaysOf, upcoming, dateKey } from '../../data/h
 import { t, dateFormat, formatTime } from '../../i18n/index.js';
 
 // Month calendar inside the clock tile: navigate months, weekends tinted,
-// holidays dotted per region (config.holidays) and Thunderbird
-// events marked with a dash in their calendar's colour. Selecting a day with
-// something on it shows the details in place of the "upcoming" list.
+// holidays dotted per region (config.holidays) and days with one-off events
+// (not routine recurring meetings) marked with a dash in their calendar's
+// colour. Selecting a day lists its holidays, all-day events as compact chips
+// and the timed ones - today's finished ones folded away.
 const monthTitle = d => dateFormat({ month: 'long', year: 'numeric' }).format(d);
 const longDate = d => dateFormat({ weekday: 'long', day: 'numeric', month: 'long' }).format(d);
 const short = d => dateFormat({ day: 'numeric', month: 'short' }).format(d).replace('.', ''); // "12 out" / "Oct 12"
@@ -22,12 +23,26 @@ function eventsOn(list, d) {
   return list.filter(e => e.start < to && e.end > from);
 }
 
-const eventRow = (e, colors) => `
-  <div class="evt" style="--rc:${colors[e.calendars[0]] ?? 'var(--accent)'}">
+const colorOf = (e, colors) => colors[e.calendars[0]] ?? 'var(--accent)';
+const titleOf = e => e.title || t('calendar.untitled');
+
+const eventRow = (e, colors, past = false) => `
+  <div class="evt${past ? ' past' : ''}" style="--rc:${colorOf(e, colors)}" title="${titleOf(e)}">
     <span class="bar"></span>
-    <span class="when">${e.allDay ? t('calendar.allDay') : formatTime(e.start)}</span>
-    <span class="grow">${e.title || t('calendar.untitled')}</span>
+    <span class="when">${formatTime(e.start)}</span>
+    <span class="grow">${titleOf(e)}</span>
   </div>`;
+
+// all-day events as one line of chips; the rest folds into "+N" (full list on hover)
+const CHIP_LIMIT = 2;
+function allDayChips(list, colors) {
+  if (!list.length) return '';
+  const shown = list.slice(0, CHIP_LIMIT).map(e =>
+    `<span class="chip" style="--rc:${colorOf(e, colors)}" title="${titleOf(e)}">${titleOf(e)}</span>`).join('');
+  const rest = list.slice(CHIP_LIMIT);
+  const more = rest.length ? `<span class="chip more" title="${rest.map(titleOf).join(' · ')}">+${rest.length}</span>` : '';
+  return `<div class="allday">${shown}${more}</div>`;
+}
 
 const holidayRow = h => `
   <div class="hol${h.kind === 'optional' ? ' optional' : ''}" style="--rc:${regions[h.region].color}">
@@ -45,11 +60,13 @@ class Calendar extends Component {
 
     this.addEventListener('click', e => {
       const t = e.target;
-      if (t.closest('[data-nav]')) this.shift(+t.closest('[data-nav]').dataset.nav);
+      if (t.closest('[data-past]')) this.showPast = !this.showPast;
+      else if (t.closest('[data-nav]')) this.shift(+t.closest('[data-nav]').dataset.nav);
       else if (t.closest('[data-today]')) this.goToday();
       else if (t.closest('[data-day]')) {
         const [y, m, d] = t.closest('[data-day]').dataset.day.split('-').map(Number);
         this.selected = new Date(y, m - 1, d);
+        this.showPast = false;
         if (m - 1 !== this.view.getMonth()) this.view = new Date(y, m - 1, 1);
       } else return;
       this.draw();
@@ -71,6 +88,7 @@ class Calendar extends Component {
     const now = new Date();
     this.view = new Date(now.getFullYear(), now.getMonth(), 1);
     this.selected = now;
+    this.showPast = false;
   }
 
   update({ ui }) {
@@ -109,23 +127,39 @@ class Calendar extends Component {
           list.some(h => h.kind === 'holiday') && 'holiday',
         ].filter(Boolean).join(' ');
         const dayEvents = eventsOn(events, d);
+        // routine (recurring) meetings would mark nearly every weekday: only one-offs get a dash
+        const special = dayEvents.filter(e => !e.recurring);
         const dots = list.map(h => `<i class="${h.kind}" style="--rc:${regions[h.region].color}"></i>`).join('')
-          + (dayEvents.length ? `<b class="ev" style="--rc:${colors[dayEvents[0].calendars[0]] ?? 'var(--accent)'}"></b>` : '');
+          + (special.length ? `<b class="ev" style="--rc:${colorOf(special[0], colors)}"></b>` : '');
         const tip = [...list.map(h => h.name), ...dayEvents.map(e => e.title || t('calendar.untitled'))].join(' · ');
         return `<button data-day="${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}" class="${cls}" title="${tip}">
           ${d.getDate()}${dots ? `<span class="dots">${dots}</span>` : ''}</button>`;
       }).join('')}
       </div>
-      ${hasDetails ? `<div class="cal-day">
-        <div class="sec">${longDate(this.selected)}</div>
-        ${selectedList.map(holidayRow).join('')}
-        ${selectedEvents.map(e => eventRow(e, colors)).join('')}
-      </div>` : ''}
+      ${hasDetails ? this.dayDetails(selectedList, selectedEvents, colors) : ''}
       ${hasDetails ? '' : `<div class="sec">${t('calendar.upcoming')}</div>
       ${upcoming(today, enabled, 3).map(h => holidayRow(h).replace('<span class="grow">', `<span class="when">${short(h.date)}</span><span class="grow">`)).join('')
         || ''}`}
       ${skipped.map(s => `<div class="skipped">${icon('triangle-alert')}<span>${
         t('calendar.skipped', { name: `<b>${s.name}</b>`, reason: t(`calendar.reasons.${s.reason}`) })}</span></div>`).join('')}`;
+  }
+
+  dayDetails(holidays, events, colors) {
+    const now = new Date();
+    const timed = events.filter(e => !e.allDay).sort((a, b) => a.start - b.start);
+    // on today, meetings that already ended fold into one line
+    const past = sameDay(this.selected, now) ? timed.filter(e => e.end <= now) : [];
+    const rest = timed.filter(e => !past.includes(e));
+    return `<div class="cal-day">
+      <div class="sec">${longDate(this.selected)}</div>
+      ${allDayChips(events.filter(e => e.allDay), colors)}
+      ${holidays.map(holidayRow).join('')}
+      ${past.length ? `<button class="past-toggle" data-past>${t(this.showPast ? 'calendar.hidePast' : 'calendar.showPast', { n: past.length })}</button>` : ''}
+      <div class="evt-list">
+        ${this.showPast ? past.map(e => eventRow(e, colors, true)).join('') : ''}
+        ${rest.map(e => eventRow(e, colors)).join('')}
+      </div>
+    </div>`;
   }
 }
 
