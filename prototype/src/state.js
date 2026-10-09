@@ -10,7 +10,7 @@ export const store = createStore({
     theme: loadPref('theme', 'glass'),
     hidden: loadPref('hidden', []),   // widget ids switched off in the dev panel
     wsIcons: loadPref('wsIcons', true),
-    pets: loadPref('pets', ['cat', 'shiba', 'capy']),
+    pets: loadPref('pets', ['cat', 'shiba', 'capy', 'frog']),
     size: loadPref('size', 52),
     magnify: loadPref('magnify', 1.75),
     liveWallpaper: loadPref('liveWallpaper', false),

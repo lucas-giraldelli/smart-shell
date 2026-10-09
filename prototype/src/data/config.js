@@ -14,5 +14,5 @@ export const config = {
   // items in the quick tile; each one also gets a tab in the control center
   quick: ['volume', 'network', 'brightness', 'docker'],
 
-  pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy'] },
+  pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'] },
 };

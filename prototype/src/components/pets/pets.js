@@ -8,9 +8,10 @@ import fox from './species/fox.js';
 import penguin from './species/penguin.js';
 import bunny from './species/bunny.js';
 import capy from './species/capy.js';
+import frog from './species/frog.js';
 
 // Every sprite faces right in a 46x36 box with its feet on y=33.
-export const species = { cat, shiba, fox, penguin, bunny, capy };
+export const species = { cat, shiba, fox, penguin, bunny, capy, frog };
 
 // Pets walking on top of the dock. Must sit inside .dock-wrap, which is their floor.
 class Pets extends Component {

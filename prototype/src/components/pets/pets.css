@@ -29,6 +29,14 @@ ss-pets { display: contents; }
 .pet.waddle.moving .body-g { animation: waddle var(--step) ease-in-out infinite alternate; }
 .pet.jump svg { animation: jump .55s cubic-bezier(.3, .7, .4, 1); }
 
+/* frog: croak inflates the throat pouch, tongue flicks out for a fly */
+.pet .pouch { transform-box: fill-box; transform-origin: 20% 30%; }
+.pet.croak .pouch { animation: croak .42s ease-in-out infinite alternate; }
+@keyframes croak { to { transform: scale(1.7); } }
+.pet .tongue { transform-box: view-box; transform-origin: 37.5px 20.6px; transform: scaleX(0); }
+.pet.tongue .tongue { animation: tongue 1.1s ease-in-out infinite; }
+@keyframes tongue { 0%, 55%, 100% { transform: scaleX(0); } 68% { transform: scaleX(1); } 80% { transform: scaleX(0); } }
+
 /* poses */
 .pet .eye { transform-box: fill-box; transform-origin: center; animation: blink 4.5s infinite; }
 .pet .closed { display: none; }

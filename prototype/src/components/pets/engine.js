@@ -2,6 +2,8 @@
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
 // While idle it picks weighted actions; each species adds or overrides actions
 // through `acts` and can set speed / hop / waddle / chill (never runs).
+// An action's `pose` becomes a CSS class on the pet while it stands still
+// ('lie', 'sleep', or any species-specific one like the frog's 'croak').
 
 const BASE_ACTS = [
   { name: 'stand', w: 3, dur: [2, 5] },
@@ -13,6 +15,7 @@ const MOODS = {
   sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!',
   stand: 'De boa', stroll: 'Passeando', turn: 'Olhando em volta', lie: 'Deitado',
   nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando', pounce: 'Dando o bote',
+  croak: 'Coaxando', tongue: 'Pegando mosca',
 };
 const SWITCH_DELAY = 1.2; // a load change must hold this long before the pet reacts
 
@@ -78,7 +81,7 @@ export function createPet(kind, species, host) {
     if (state === 'idle') {
       if (!act || (actLeft -= dt) <= 0) pickAct();
       target = act.speed ?? 0;
-      if (act.pose) pose = act.pose === 'sleep' ? 'lie sleep' : 'lie';
+      if (act.pose) pose = act.pose === 'sleep' ? 'lie sleep' : act.pose;
     } else {
       target = STATE_SPEED[state];
       if (state === 'sleep') pose = 'lie sleep';
