@@ -33,7 +33,7 @@ export function dockerStatus(docker) {
 }
 
 // Containers grouped by compose project, like lazydocker; the ones without a
-// project go last, under "Other". A project is crit when one of its containers
+// project go under "Other". A project is crit when one of its containers
 // failed, off when none runs, ok otherwise.
 export function groups(cs) {
   const byProject = new Map();
@@ -41,9 +41,13 @@ export function groups(cs) {
     if (!byProject.has(c.project)) byProject.set(c.project, []);
     byProject.get(c.project).push(c);
   }
-  const list = [...byProject].filter(([p]) => p).map(([project, containers]) => ({ project, containers }));
-  if (byProject.has('')) list.push({ project: '', containers: byProject.get('') });
-  return list;
+  // failing first, then running projects (A-Z), "Other", fully stopped ones last
+  const rank = g => {
+    const status = groupStatus(g, cs);
+    return status === 'crit' ? 0 : !g.project ? 2 : status === 'ok' ? 1 : 3;
+  };
+  return [...byProject].map(([project, containers]) => ({ project, containers }))
+    .sort((a, b) => rank(a) - rank(b) || a.project.localeCompare(b.project));
 }
 function groupStatus(group, cs) {
   if (group.containers.some(c => isFailure(c, cs))) return 'crit';
