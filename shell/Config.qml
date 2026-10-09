@@ -63,6 +63,9 @@ Singleton {
             memFreeGiB: { warn: 8, crit: 4 },
             tempC: { warn: 80, crit: 87, roomTemp: null }
         },
+        // the VPN profile the network tab uses (an openvpn3 config or a
+        // NetworkManager connection name); null = the first openvpn3 config
+        vpn: { profile: null },
         // the clock: "24h" or "12h", whatever the language
         clock: { format: "24h" },
         // the forecast's place (Open-Meteo); the city is only shown
@@ -92,6 +95,7 @@ Singleton {
     readonly property var weather: data.weather
     readonly property var music: data.music
     readonly property var thresholds: data.thresholds
+    readonly property var vpn: data.vpn
     // audio devices by PipeWire node.name: { name, hidden }
     readonly property var audioDevices: data.audio?.devices ?? ({})
     readonly property var apps: data.apps

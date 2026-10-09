@@ -57,7 +57,7 @@ export default {
     label: 'Rede', connected: '{kind} conectada', offline: 'Sem internet',
     internetOk: 'internet ok', noPing: 'o ping não responde',
     ip: 'IP', gateway: 'Gateway', dockerNet: 'Rede Docker',
-    download: 'Download', upload: 'Upload', connections: 'Conexões', vpn: 'VPN', copyIp: 'Copiar IP',
+    download: 'Download', upload: 'Upload', connections: 'Conexões', vpn: 'VPN', vpnStates: { off: 'Desligada', authenticating: 'Aguardando aprovação no navegador', connecting: 'Conectando…', on: 'Ligada · {server}', error: 'Erro ao conectar' }, vpnOnTip: 'VPN ligada · {server}', profile: 'Perfil', copyIp: 'Copiar IP',
   },
 
   docker: {

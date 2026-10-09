@@ -2,7 +2,7 @@
 .quick { display: grid; grid-auto-flow: column; gap: 3px 12px; padding: 0 12px; align-content: center; cursor: pointer; }
 .quick .q { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text); }
 .quick .q svg.i { width: 14px; height: 14px; color: var(--sub); }
-.quick .q > span { display: inline-block; width: var(--qw); white-space: nowrap; }
+.quick .q > span:not(.label) { display: inline-block; width: var(--qw); white-space: nowrap; }
 /* an item with several live values gives each a fixed, left-aligned slot,
    5px apart (the icon's gap), so one value gaining a digit never pushes the next */
 .quick .q .qv { display: inline-block; white-space: nowrap; }
@@ -13,3 +13,9 @@
 .quick .q[data-status="warn"], .quick .q[data-status="crit"] { color: var(--status); }
 .quick .q.muted { opacity: .45; }
 .quick .q.disabled { opacity: .4; filter: grayscale(1); }
+
+/* the VPN: green text too when it's on, a gentle pulse while it connects */
+.quick .q.color-text { color: var(--status); }
+.quick .q.pulse { animation: q-pulse 1.4s ease-in-out infinite; }
+@keyframes q-pulse { 50% { opacity: .45; } }
+.quick .q { position: relative; }

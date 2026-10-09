@@ -11,6 +11,7 @@
     "docker": "kitty -e lazydocker"
   },
   "clock": {"format": "24h"},
+  "vpn": {"profile": null},
   "pets": {"danceWith": ["music.youtube.com"]},
   "thresholds": {
     "cpu": {"sleep": 10, "idle": 40, "walk": 72},

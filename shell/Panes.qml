@@ -19,7 +19,7 @@ Singleton {
     readonly property var info: ({
         volume: { id: "volume", icon: "volume-2", quickWidth: 4.6, wheel: true },     // fits "100%"
         brightness: { id: "brightness", icon: "sun", requires: "ddcutil", quickWidth: 4.6, wheel: true },
-        network: { id: "network", icon: "network", quickWidth: 3 },
+        network: { id: "network", icon: "network", quickWidth: 4.7 },   // fits "VPN…"
         docker: { id: "docker", icon: "container", requires: "docker", quickWidth: 7.3 },  // fits "1023 MiB"
         system: { id: "system", icon: "cpu" },
         settings: { id: "settings", icon: "sliders-horizontal", tabOnly: true }
@@ -50,7 +50,14 @@ Singleton {
         case "brightness":
             return [{ icon: "sun", text: Brightness.loaded ? Brightness.brightness + "%" : "—" }];
         case "network":
-            return [{ icon: "network", text: Network.online ? "ON" : "OFF", status: Network.online ? "ok" : "crit" }];
+            // a VPN takes over the item: shield + "VPN", pulsing while it connects
+            if (!Network.online)
+                return [{ icon: "network", text: "OFF", status: "crit" }];
+            if (Network.vpnOn)
+                return [{ icon: "shield-check", text: "VPN", status: "ok", colorText: true, tip: I18n.t("network.vpnOnTip", { server: Network.vpnServer || Network.vpn }) }];
+            if (Network.vpnBusy)
+                return [{ icon: "shield", text: "VPN…", status: "warn", pulse: true, tip: I18n.t(`network.vpnStates.${Network.vpnState}`) }];
+            return [{ icon: "network", text: "ON", status: "ok" }];
         case "docker":
             if (!Docker.loaded)
                 return [{ icon: "container", text: "—" }];

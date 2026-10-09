@@ -142,13 +142,44 @@ PaneScroll {
     }
 
     Section { text: I18n.t("network.connections") }
+    // VPN: openvpn3 or NetworkManager; the switch follows the session
     MenuRow {
-        icon: "shield"
-        title: I18n.t("network.vpn")
-        meta: Network.vpn || "—"
+        icon: Network.vpnOn ? "shield-check" : "shield"
+        title: Network.vpn ? `${I18n.t("network.vpn")} · ${Network.vpn}` : I18n.t("network.vpn")
+        meta: !Network.vpn ? "—"
+            : I18n.t(`network.vpnStates.${Network.vpnState}`, { server: Network.vpnServer || Network.vpn })
+        metaColor: Network.vpnOn ? Theme.ok : Network.vpnBusy ? Theme.warn : Network.vpnState === "error" ? Theme.crit : Theme.menuSub
         enabled: Network.vpn !== ""
         onClicked: Network.toggleVpn()
-        Switch { on: Network.vpnOn }
+        Switch { on: Network.vpnOn || Network.vpnBusy }
+    }
+    // several profiles: pick one (saved as vpn.profile)
+    Column {
+        id: profiles
+        visible: Network.vpnProfiles.length > 1
+        property bool open: false
+        width: parent.width
+        MenuRow {
+            icon: "chevron-right"
+            title: I18n.t("network.profile")
+            meta: Network.vpn
+            onClicked: profiles.open = !profiles.open
+        }
+        Repeater {
+            model: profiles.open ? Network.vpnProfiles : []
+            MenuRow {
+                id: profileRow
+                required property var modelData
+                title: modelData.name
+                meta: modelData.source === "openvpn3" ? "openvpn3" : "NetworkManager"
+                active: modelData.name === Network.vpn
+                onClicked: {
+                    Network.setVpnProfile(modelData.name);
+                    profiles.open = false;
+                }
+                Radio { on: profileRow.active }
+            }
+        }
     }
     MenuRow {
         icon: "copy"

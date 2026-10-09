@@ -89,7 +89,8 @@ export const network = {
   online: true,  // waybar's network-status.sh: ping google.com
   iface: 'enp8s0', kind: 'Ethernet', speed: '1 Gb/s',
   ip: '192.168.100.63', gateway: '192.168.100.1', dockerNet: '172.19.0.1/16',
-  vpn: 'OpenVPN Connect',
+  // openvpn3 configs-list (and NetworkManager VPNs); vpnServer: the first remote's short name
+  vpnProfiles: ['TrackFive'], vpnServer: 'br-gru',
 };
 
 // `systemctl is-active docker` + `docker ps -a` + `docker stats` (memory in MiB).

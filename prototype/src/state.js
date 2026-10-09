@@ -42,7 +42,8 @@ export const store = createStore({
     streams: snap.audio.streams,
   },
   display: { name: snap.display.name, brightness: snap.display.brightness, night: false, nightK: 4500 },
-  network: { ...snap.network, vpnOn: false, down: Array(40).fill(0), up: Array(40).fill(0) },
+  // vpnState: off | authenticating | connecting | on | error
+  network: { ...snap.network, vpnState: 'off', down: Array(40).fill(0), up: Array(40).fill(0) },
   docker: snap.docker,
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },

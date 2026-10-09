@@ -7,7 +7,7 @@
 #   smart-shell start | restart | stop | log
 #   smart-shell fake-event "<title>" <in-min> <dur-min> [category] | --clear
 #
-# Widgets with extra needs: brightness nightlight docker bluetooth events system pets.
+# Widgets with extra needs: brightness nightlight docker bluetooth events system pets vpn.
 # Everything else (workspaces, clock, music, weather, tray, network, caps lock)
 # only needs the core packages.
 set -euo pipefail
@@ -17,7 +17,7 @@ SHELL_DIR="$REPO/shell"
 HYPR_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/config.json"
 
-WIDGETS=(brightness nightlight docker bluetooth events system pets)
+WIDGETS=(brightness nightlight docker bluetooth events system pets vpn)
 
 # packages per widget; core is always installed
 declare -A PKGS=(
@@ -29,6 +29,7 @@ declare -A PKGS=(
   [events]="python"
   [system]="btop kitty"
   [pets]="cava"
+  [vpn]="openvpn3"
 )
 
 bold() { printf '\033[1m%s\033[0m\n' "$*"; }
@@ -140,6 +141,13 @@ cmd_doctor() {
   bold "system"
   check_pkgs "${PKGS[system]}"
   if grep -qs Tccd1 /sys/class/hwmon/hwmon*/temp*_label; then ok "Tccd1 sensor"; else note "no Tccd1 (non-AMD?) - temperature hidden"; fi
+
+  bold "vpn"
+  check_pkgs "${PKGS[vpn]}"
+  if command -v openvpn3 >/dev/null; then
+    local n; n=$(openvpn3 configs-list 2>/dev/null | grep -cvE '^(-+|Configuration Name.*)?$' || true)
+    if [ "$n" -gt 0 ]; then ok "$n openvpn3 profile(s)"; else note "no profile - openvpn3 config-import --config file.ovpn --name X --persistent"; fi
+  fi
 
   bold "pets (optional)"
   if command -v cava >/dev/null; then ok "cava - they dance to the beat"; else note "no cava - they dance at a fixed tempo (smart-shell install pets)"; fi

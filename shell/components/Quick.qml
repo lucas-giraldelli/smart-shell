@@ -66,7 +66,8 @@ Tile {
 
                 width: 14 + 5 + root.ch * modelData.width
                 height: 14
-                opacity: modelData.tone === "muted" ? 0.45 : modelData.tone === "disabled" ? 0.4 : 1
+                readonly property real baseOpacity: modelData.tone === "muted" ? 0.45 : modelData.tone === "disabled" ? 0.4 : 1
+                opacity: baseOpacity
 
                 Icon {
                     shadow: true
@@ -87,11 +88,28 @@ Tile {
                             width: root.ch * modelData[1]
                             shadow: true
                             text: modelData[0]
-                            color: slot.alarm ? slot.statusColor : Theme.text
+                            color: slot.alarm || slot.modelData.colorText ? slot.statusColor : Theme.text
                             size: 11.5
                             tnum: true
                         }
                     }
+                }
+
+                // an item that has something to say on hover (the VPN)
+                Tip {
+                    target: slot
+                    text: slot.modelData.tip ?? ""
+                    shown: slotHover.hovered && !root.ccOpen
+                }
+                HoverHandler { id: slotHover }
+
+                // connecting: a gentle pulse
+                SequentialAnimation on opacity {
+                    running: slot.modelData.pulse === true
+                    loops: Animation.Infinite
+                    onRunningChanged: if (!running) slot.opacity = slot.baseOpacity
+                    NumberAnimation { to: 0.45; duration: 700; easing.type: Easing.InOutSine }
+                    NumberAnimation { to: 1; duration: 700; easing.type: Easing.InOutSine }
                 }
 
                 MouseArea {

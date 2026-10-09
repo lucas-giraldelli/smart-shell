@@ -16,8 +16,14 @@ export default {
   get label() { return t('network.label'); },
   icon: 'network',
 
-  quickWidth: '3ch',
-  quick: ({ network: n }) => ({ icon: 'network', text: n.online ? 'ON' : 'OFF', status: n.online ? 'ok' : 'crit' }),
+  quickWidth: '4.7ch', // fits "VPN…"
+  // a VPN takes over the item: shield + "VPN", pulsing while it connects
+  quick: ({ network: n }) => {
+    if (!n.online) return { icon: 'network', text: 'OFF', status: 'crit' };
+    if (n.vpnState === 'on') return { icon: 'shield-check', text: 'VPN', status: 'ok', colorText: true, tip: t('network.vpnOnTip', { server: n.vpnServer }) };
+    if (n.vpnState === 'authenticating' || n.vpnState === 'connecting') return { icon: 'shield', text: 'VPN…', status: 'warn', pulse: true, tip: t(`network.vpnStates.${n.vpnState}`) };
+    return { icon: 'network', text: 'ON', status: 'ok' };
+  },
 
   render() {
     const n = store.get().network;
@@ -43,12 +49,24 @@ export default {
       root.querySelector(`[data-rate="${key}"]`).textContent = fmtRate(n[key].at(-1));
       root.querySelector(`[data-line="${key}"]`).setAttribute('points', points(n[key]));
     }
-    const vpn = row({ icon: 'shield', title: t('network.vpn'), meta: n.vpn, trailing: toggle(n.vpnOn) });
+    // VPN: openvpn3 or NetworkManager; the switch follows the session
+    const profile = n.vpnProfiles[0];
+    const busy = n.vpnState === 'authenticating' || n.vpnState === 'connecting';
+    const vpn = row({
+      icon: n.vpnState === 'on' ? 'shield-check' : 'shield', title: profile ? `${t('network.vpn')} · ${profile}` : t('network.vpn'),
+      meta: profile ? `<span class="vpn-${n.vpnState}">${t(`network.vpnStates.${n.vpnState}`, { server: n.vpnServer })}</span>` : '—',
+      trailing: toggle(n.vpnState === 'on' || busy),
+    });
     setHTML(root.querySelector('[data-vpn]'), vpn);
   },
 
   click(target, root) {
-    if (target.closest('[data-vpn]')) update('network', n => ({ vpnOn: !n.vpnOn }));
+    // the mock's openvpn3: approval in the browser takes a moment, then it connects
+    if (target.closest('[data-vpn]')) {
+      const off = ['off', 'error'].includes(store.get().network.vpnState);
+      update('network', { vpnState: off ? 'authenticating' : 'off' });
+      if (off) setTimeout(() => { if (store.get().network.vpnState === 'authenticating') update('network', { vpnState: 'on' }); }, 2500);
+    }
     if (target.closest('[data-copy]')) {
       try { navigator.clipboard.writeText(store.get().network.ip); } catch {}
       const note = root.querySelector('[data-copied]');

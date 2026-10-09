@@ -160,8 +160,17 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     compose project. `commands.docker` is the lazydocker button.
   - Network: NetworkManager. Online = `nmcli networking connectivity` is
     `full`, else a ping to 1.1.1.1 or 8.8.8.8 answers; it only shows offline
-    after 3 failed checks in a row (~30 s). VPN toggle: NetworkManager VPN or
-    WireGuard connections.
+    after 3 failed checks in a row (~30 s).
+    VPN: [openvpn3](https://openvpn.net/openvpn-3-linux/) profiles (they do
+    the browser sign-in OpenVPN Cloud / Access Server profiles need, which
+    NetworkManager's plugin can't) and NetworkManager VPN / WireGuard
+    connections. The switch starts the session - openvpn3 opens the browser
+    for the approval and the tab says "Aguardando aprovação no navegador" until
+    it connects - or disconnects it. `vpn.profile` picks the profile (default:
+    the first openvpn3 config; with several, the tab lists them). Any `.ovpn`
+    works: `openvpn3 config-import --config file.ovpn --name X --persistent`;
+    the OpenVPN Connect app isn't needed. While a VPN is on, the quick tile's
+    network item turns into a green shield "VPN".
   - System: `/proc` and the k10temp `Tccd1` sensor (AMD; the real die
     temperature). Lists the top memory users with a two-step kill (session
     processes are protected). `commands.monitor` is the btop button.

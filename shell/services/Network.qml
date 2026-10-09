@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import ".."
 
 // Connection details, live traffic and VPN - the prototype's `network` slice.
 // `online` comes from NetworkManager with a ping fallback (below); the route to
@@ -18,8 +19,20 @@ Singleton {
     property string ip: "—"
     property string gateway: "—"
     property string dockerNet: "—"
-    property string vpn: ""                 // NetworkManager VPN / WireGuard connection, "" = none
-    property bool vpnOn: false
+    // VPN profiles: openvpn3 configs (they can do the browser sign-in
+    // NetworkManager can't) and NetworkManager VPN / WireGuard connections.
+    // The one used is config.vpn.profile, else the first openvpn3 config.
+    property var vpnProfiles: []            // [{ source: "openvpn3" | "nm", name }]
+    property var openvpnProfiles: []
+    property var nmProfiles: []             // [{ name, active }]
+    readonly property var vpnProfile: vpnProfiles.find(p => p.name === Config.vpn?.profile) ?? vpnProfiles[0] ?? null
+    readonly property string vpn: vpnProfile?.name ?? ""
+    // off | authenticating | connecting | on | error
+    property string vpnState: "off"
+    property string vpnServer: ""           // "br-gru": the first label of the server's host name
+    property bool vpnStarting: false        // we asked to connect and wait for the browser
+    readonly property bool vpnOn: vpnState === "on"
+    readonly property bool vpnBusy: vpnState === "authenticating" || vpnState === "connecting"
     property var down: Array(40).fill(0)    // MB/s, oldest first
     property var up: Array(40).fill(0)
 
@@ -85,7 +98,7 @@ Singleton {
             + "cat /sys/class/net/$dev/speed 2>/dev/null || echo; "
             + "nmcli -t -g GENERAL.TYPE device show $dev 2>/dev/null || echo; "
             + "ip -br -4 addr | awk '($1 ~ /^(br-|docker)/) && $2 == \"UP\" { print $3; exit }'; echo; "
-            + "nmcli -t -f NAME,TYPE,ACTIVE connection show | awk -F: '$2 ~ /vpn|wireguard/ { print $1 \":\" $3; exit }'"]
+            + "nmcli -t -f NAME,TYPE,ACTIVE connection show | awk -F: '$2 ~ /vpn|wireguard/ { printf \"%s:%s;\", $1, $3 }'"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.split("\n");
@@ -102,9 +115,9 @@ Singleton {
                 const type = (lines[3] ?? "").trim();
                 root.kind = type === "wifi" ? "Wi-Fi" : type === "ethernet" ? "Ethernet" : type || "—";
                 root.dockerNet = (lines[4] ?? "").trim() || "—";
-                const [vpnName, active] = (lines[6] ?? "").trim().split(":");
-                root.vpn = vpnName ?? "";
-                root.vpnOn = active === "yes";
+                root.nmProfiles = (lines[6] ?? "").trim().split(";").filter(Boolean)
+                    .map(s => ({ name: s.split(":")[0], active: s.split(":")[1] === "yes" }));
+                root.mergeProfiles();
             }
         }
     }
@@ -137,15 +150,115 @@ Singleton {
         blockLoading: true
     }
 
+    function mergeProfiles() {
+        vpnProfiles = openvpnProfiles.map(name => ({ source: "openvpn3", name }))
+            .concat(nmProfiles.map(p => ({ source: "nm", name: p.name })));
+        if (vpnProfile?.source === "nm")
+            vpnState = nmProfiles.find(p => p.name === vpn)?.active ? "on" : "off";
+    }
+
+    function setVpnProfile(name) {
+        Config.set("vpn.profile", name);
+    }
+
+    // on: openvpn3 opens the browser for the sign-in itself (a URL it prints
+    // instead is opened with xdg-open); off: disconnect the session
     function toggleVpn() {
-        if (!vpn)
+        const p = vpnProfile;
+        if (!p)
             return;
-        vpnAction.command = ["nmcli", "connection", vpnOn ? "down" : "up", "id", vpn];
-        vpnAction.running = true;
+        const on = vpnState !== "off" && vpnState !== "error";
+        if (p.source === "nm") {
+            vpnAction.command = ["nmcli", "connection", on ? "down" : "up", "id", p.name];
+            vpnAction.running = true;
+            return;
+        }
+        if (on) {
+            vpnStarting = false;
+            ovpnStart.running = false;
+            vpnAction.command = ["openvpn3", "session-manage", "--config", p.name, "--disconnect"];
+            vpnAction.running = true;
+        } else {
+            vpnStarting = true;
+            vpnState = "authenticating";
+            ovpnStart.command = ["openvpn3", "session-start", "--config", p.name];
+            ovpnStart.running = true;
+        }
     }
     Process {
         id: vpnAction
-        onExited: info.running = true
+        onExited: {
+            info.running = true;
+            sessions.running = true;
+        }
+    }
+    Process {
+        id: ovpnStart
+        stdout: SplitParser {
+            onRead: line => {
+                const url = (line.match(/https:\/\/\S+/) ?? [])[0];
+                if (url)
+                    Quickshell.execDetached(["xdg-open", url]);
+            }
+        }
+        onExited: {
+            root.vpnStarting = false;
+            sessions.running = true;
+        }
+    }
+
+    // openvpn3: the configs, the session state and the server's name; every 5 s
+    // while the network tab shows, every 30 s otherwise
+    Timer {
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        interval: (Ui.popover === "control-center" && Ui.ccTab === "network") || root.vpnBusy ? 5000 : 30000
+        onTriggered: if (!sessions.running) sessions.running = true
+    }
+    Process {
+        id: sessions
+        command: ["sh", "-c", "command -v openvpn3 >/dev/null || exit 0; "
+            + "echo '--configs'; openvpn3 configs-list 2>/dev/null; echo '--sessions'; openvpn3 sessions-list 2>/dev/null"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const [, configs = "", list = ""] = text.split(/--configs\n|--sessions\n/);
+                // the config names: rows between the dashed lines, without the date
+                root.openvpnProfiles = configs.split("\n")
+                    .filter(l => l && !/^-+$/.test(l) && !/^Configuration Name/.test(l))
+                    .map(l => l.replace(/\s+\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\s*$/, "").trim())
+                    .filter(Boolean);
+                root.mergeProfiles();
+                if (root.vpnProfile?.source !== "openvpn3")
+                    return;
+                // the session of our config, if any
+                const block = list.split(/^-+$/m)
+                    .find(b => ((b.match(/Config name:\s*(.*)$/m) ?? [])[1] ?? "").trim() === root.vpn) ?? "";
+                const status = (block.match(/Status:\s*(.*)$/m) ?? [])[1] ?? "";
+                if (!block)
+                    root.vpnState = root.vpnStarting ? "authenticating" : "off";
+                else if (/client connected/i.test(status))
+                    root.vpnState = "on";
+                else if (/web auth|authentication|URL/i.test(status) || root.vpnStarting)
+                    root.vpnState = "authenticating";
+                else if (/connect|reconnect|wait/i.test(status))
+                    root.vpnState = "connecting";
+                else if (/disconnect|fail|error/i.test(status))
+                    root.vpnState = "error";
+                else
+                    root.vpnState = "connecting";
+                if (root.vpnState === "on" && !root.vpnServer)
+                    server.running = true;
+            }
+        }
+    }
+    // the server's short name, from the profile's first remote ("br-gru.gw.openvpn.com" -> "br-gru")
+    Process {
+        id: server
+        command: ["sh", "-c", `openvpn3 config-dump --config "$1" 2>/dev/null | awk '$1 == "remote" { print $2; exit }'`, "sh", root.vpn]
+        stdout: StdioCollector {
+            onStreamFinished: root.vpnServer = text.trim().split(".")[0]
+        }
     }
 
     function copyIp() {
