@@ -41,7 +41,7 @@ class DevPanel extends Component {
         <div class="dp-row"><label>Tamanho</label><input type="range" min="40" max="72" data-set="size"><output data-out="size"></output></div>
         <div class="dp-row"><label>Ampliação</label><input type="range" min="100" max="220" data-set="magnify"><output data-out="magnify"></output></div>
         ${check('data-opt', 'liveWallpaper', 'Wallpaper animado')}
-        <div class="hint">Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central · roda no volume/brilho · clique no sistema simula RAM cheia · clique num pet.<br>H esconde o painel · 1–${themes.length} troca o tema</div>
+        <div class="hint">Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central · roda no volume/brilho · clique no sistema simula RAM cheia · clique num pet · Caps Lock acende o indicador.<br>H esconde o painel · 1–${themes.length} troca o tema</div>
       </aside>`;
   }
 

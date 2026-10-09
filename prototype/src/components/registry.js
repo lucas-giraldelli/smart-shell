@@ -7,6 +7,7 @@ export const available = (def, caps) => !def.requires || caps[def.requires];
 
 export const widgets = {
   workspaces: { tag: 'ss-workspaces', name: 'Workspaces' },
+  capslock: { tag: 'ss-capslock', name: 'Caps Lock' },
   apps: { tag: 'ss-app-row', name: 'Apps' },
   music: { tag: 'ss-music', name: 'Música' },
   weather: { tag: 'ss-weather', name: 'Clima' },

@@ -25,6 +25,7 @@ export const store = createStore({
     temp: 50,
     memTotal: snap.memory.totalGiB, memFree: snap.memory.freeGiB, memHeavy: false,
   },
+  keyboard: { capsLock: false },
   bluetooth: { on: snap.bluetooth.on, busy: null, devices: snap.bluetooth.devices },
   audio: {
     volume: snap.audio.volume, muted: false,

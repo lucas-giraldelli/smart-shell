@@ -5,6 +5,7 @@ import { startPersist } from './services/persist.js';
 import { startSystem } from './services/system.js';
 import { startNetwork } from './services/network.js';
 import { startMedia } from './services/media.js';
+import { startKeyboard } from './services/keyboard.js';
 
 // Icons are inlined synchronously by components, so load them before any
 // element is defined.
@@ -16,5 +17,6 @@ startPopovers();
 startSystem();
 startNetwork();
 startMedia();
+startKeyboard();
 
 await import('./components/index.js');

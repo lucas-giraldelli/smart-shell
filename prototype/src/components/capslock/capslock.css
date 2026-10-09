@@ -1,0 +1,22 @@
+.caps {
+  position: relative; align-self: center; flex: none; cursor: pointer;
+  display: flex; align-items: center; gap: 0; height: 24px; padding: 0 5px; border-radius: 99px;
+  color: var(--status); border: 1px solid transparent;
+  transition: background .25s, border-color .25s, box-shadow .25s, gap .25s, padding .25s;
+}
+.caps svg.i { width: 15px; height: 15px; }
+.caps:not(.on) { opacity: .6; }
+
+/* the text slides out only while Caps Lock is on */
+.caps .caps-text {
+  max-width: 0; overflow: hidden; font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+  transition: max-width .25s ease;
+}
+.caps.on {
+  gap: 5px; padding: 0 9px 0 7px;
+  background: color-mix(in srgb, var(--status) 16%, transparent);
+  border-color: color-mix(in srgb, var(--status) 45%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--status) 35%, transparent);
+}
+.caps.on .caps-text { max-width: 40px; }
+.caps .label { bottom: calc(100% + 14px); }

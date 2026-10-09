@@ -6,7 +6,7 @@
 // off at runtime from the dev panel (stored in `ui.hidden`).
 export const config = {
   dock: [
-    { id: 'workspaces', widgets: ['workspaces'] },
+    { id: 'workspaces', widgets: ['workspaces', 'capslock'] },
     { id: 'apps', widgets: ['apps'] },
     { id: 'status', tiles: true, widgets: ['music', 'weather', 'system', 'bluetooth', 'quick', 'tray', 'clock'] },
   ],

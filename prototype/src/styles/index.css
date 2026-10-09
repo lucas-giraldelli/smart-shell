@@ -11,6 +11,7 @@
 @import url('../components/ui/ui.css');
 @import url('../components/dock/dock.css');
 @import url('../components/workspaces/workspaces.css');
+@import url('../components/capslock/capslock.css');
 @import url('../components/app-row/app-row.css');
 @import url('../components/music/music.css');
 @import url('../components/weather/weather.css');

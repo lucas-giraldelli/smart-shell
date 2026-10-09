@@ -2,6 +2,7 @@
 // once defined, and they all read from the same store.
 import './dock/dock.js';
 import './workspaces/workspaces.js';
+import './capslock/capslock.js';
 import './app-row/app-row.js';
 import './music/music.js';
 import './weather/weather.js';
