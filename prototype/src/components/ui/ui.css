@@ -2,21 +2,25 @@
    are both made of these. */
 
 /* popover: a speech bubble above its tile, shown while the tile has [data-open].
-   core/popover.js sets --menu-left (opens to the right, kept on screen) and
-   --arrow-x (where the tail points: the tile's centre). */
+   core/popover.js sets --menu-left (opens to the right, kept on screen),
+   --arrow-x (where the tail points: the tile's centre) and the bubble's
+   outline as one path - body and tail are a single shape, so the glass, its
+   blur and its 1px border run through the tail without a seam. */
 .menu {
   position: absolute; left: var(--menu-left, 0); bottom: calc(100% + 16px); width: 240px; padding: 6px; z-index: 20; cursor: default;
-  border-radius: 14px; color: var(--menu-text); background: var(--menu-bg); border: 1px solid var(--menu-line);
-  backdrop-filter: blur(var(--blur)) saturate(var(--sat)); box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
+  border-radius: 14px; color: var(--menu-text); border: 1px solid transparent;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
   opacity: 0; transform: translateY(6px) scale(.98); transform-origin: var(--arrow-x, 24px) 100%; pointer-events: none;
   transition: opacity .16s, transform .16s;
 }
-/* the tail: an outline triangle with a fill triangle on top */
+/* the glass (::before) and its border ring (::after), both clipped to the
+   bubble + tail path; they sit behind the content */
 .menu::before, .menu::after {
-  content: ""; position: absolute; top: 100%; left: var(--arrow-x, 24px); border: solid transparent; pointer-events: none;
+  content: ""; position: absolute; left: -1px; top: -1px; width: calc(100% + 2px); height: calc(100% + 12px);
+  z-index: -1; pointer-events: none;
 }
-.menu::before { margin-left: -10px; border-width: 10px; border-top-color: var(--menu-line); }
-.menu::after { margin-left: -9px; margin-top: -1px; border-width: 9px; border-top-color: var(--menu-bg); }
+.menu::before { background: var(--menu-bg); backdrop-filter: blur(var(--blur)) saturate(var(--sat)); clip-path: var(--bubble-fill); }
+.menu::after { background: var(--menu-line); clip-path: var(--bubble-ring); }
 [data-open] > .menu { opacity: 1; transform: none; pointer-events: auto; }
 [data-open] { transform: none !important; }
 

@@ -31,6 +31,25 @@ function place(name) {
   const arrow = Math.min(Math.max(tile.width / 2 - left, ARROW), width - ARROW);
   menu.style.setProperty('--menu-left', `${left}px`);
   menu.style.setProperty('--arrow-x', `${arrow}px`);
+  shape(menu, arrow);
+  // the content can change size while open (the calendar's day list...)
+  menu.resizer ??= new ResizeObserver(() => shape(menu, parseFloat(menu.style.getPropertyValue('--arrow-x')) || 24));
+  menu.resizer.observe(menu);
+}
+
+// The bubble's outline: a rounded rect with the tail cut into its bottom
+// edge, as one path (border-box coordinates; the tail is 10px tall). `ring`
+// is the 1px border: the outline minus the same shape 1px inside.
+function outline(w, h, r, ax, tail, inset = 0) {
+  const i = inset, R = r - i, b = h - i, t = tail - i * 1.4142;
+  return `M ${r} ${i} H ${w - r} A ${R} ${R} 0 0 1 ${w - i} ${r} V ${b - R} A ${R} ${R} 0 0 1 ${w - r} ${b}`
+    + ` H ${ax + t} L ${ax} ${b + t} L ${ax - t} ${b} H ${r} A ${R} ${R} 0 0 1 ${i} ${b - R} V ${r} A ${R} ${R} 0 0 1 ${r} ${i} Z`;
+}
+function shape(menu, arrow) {
+  const w = menu.offsetWidth, h = menu.offsetHeight, r = 14, ax = arrow + 1;
+  const outer = outline(w, h, r, ax, 10), inner = outline(w, h, r, ax, 10, 1);
+  menu.style.setProperty('--bubble-fill', `path("${outer}")`);
+  menu.style.setProperty('--bubble-ring', `path(evenodd, "${outer} ${inner}")`);
 }
 
 export function startPopovers() {

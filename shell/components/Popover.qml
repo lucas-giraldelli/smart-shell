@@ -35,6 +35,14 @@ PopupWindow {
     property real left: 0
     property real arrowX: 24
 
+    // the bubble's outline: a rounded rect with the tail cut into its bottom
+    // edge (prototype: outline() in core/popover.js)
+    function outline(w, h, r, ax, tail, i) {
+        const R = r - i, b = h - i, t = tail - i * 1.4142;
+        return `M ${r} ${i} H ${w - r} A ${R} ${R} 0 0 1 ${w - i} ${r} V ${b - R} A ${R} ${R} 0 0 1 ${w - r} ${b}`
+            + ` H ${ax + t} L ${ax} ${b + t} L ${ax - t} ${b} H ${r} A ${R} ${R} 0 0 1 ${i} ${b - R} V ${r} A ${R} ${R} 0 0 1 ${r} ${i} Z`;
+    }
+
     function place() {
         const win = owner.QsWindow.window;
         if (!win)
@@ -143,13 +151,29 @@ PopupWindow {
             }
         }
 
-        Rectangle {
+        // body and tail are one path, so the glass and its 1px border run
+        // through the tail without a seam (the fill is the outline, the
+        // border the outline minus the same shape 1px inside)
+        Shape {
+            preferredRendererType: Shape.CurveRenderer
+            ShapePath {
+                strokeWidth: -1
+                fillColor: Theme.menuBg
+                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 0) }
+            }
+            ShapePath {
+                strokeWidth: -1
+                fillColor: Theme.menuLine
+                fillRule: ShapePath.OddEvenFill
+                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 0) + " " + root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 1) }
+            }
+        }
+
+        Item {
             id: bubble
+            readonly property real radius: 14
             width: root.bubbleWidth
             height: body.childrenRect.height + root.padding * 2 + 2
-            radius: 14
-            color: Theme.menuBg
-            border.color: Theme.menuLine
 
             Item {
                 id: body
@@ -160,26 +184,5 @@ PopupWindow {
             }
         }
 
-        // the tail: an outline triangle with a fill triangle on top
-        Shape {
-            preferredRendererType: Shape.CurveRenderer
-            x: 1 + root.arrowX
-            y: bubble.height - 1
-
-            ShapePath {
-                strokeWidth: -1
-                fillColor: Theme.menuLine
-                startX: -10; startY: 0
-                PathLine { x: 10; y: 0 }
-                PathLine { x: 0; y: 10 }
-            }
-            ShapePath {
-                strokeWidth: -1
-                fillColor: Theme.menuBg
-                startX: -9; startY: -1
-                PathLine { x: 9; y: -1 }
-                PathLine { x: 0; y: 8 }
-            }
-        }
     }
 }
