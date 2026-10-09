@@ -14,7 +14,7 @@ Singleton {
     readonly property int radius: 24
     readonly property int edge: 14          // gap between the dock and the screen edge
 
-    readonly property color dockBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.32)
+    readonly property color dockBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.42)
     readonly property color dockBorder: Qt.rgba(1, 1, 1, 0.28)
     readonly property color tileBg: Qt.rgba(1, 1, 1, 0.12)
     readonly property color tileBorder: Qt.rgba(1, 1, 1, 0.14)
