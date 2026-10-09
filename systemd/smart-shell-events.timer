@@ -1,0 +1,10 @@
+[Unit]
+Description=smart-shell: refresh calendar events every 5 minutes
+
+[Timer]
+OnStartupSec=30s
+OnUnitActiveSec=5min
+AccuracySec=30s
+
+[Install]
+WantedBy=timers.target

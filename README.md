@@ -14,7 +14,8 @@ as an HTML prototype that mirrors the same component structure.
 prototype/   HTML/JS design lab (vanilla Web Components, no build step)
 shell/       the real Quickshell config (QML) - not started yet
 docs/        architecture and design notes
-tools/       helper scripts (icon vendoring, ...)
+systemd/     user units for background jobs (installed by tools/install-services.sh)
+tools/       helper scripts (icons, calendar export, service install)
 ```
 
 ## Running the prototype
@@ -38,6 +39,23 @@ uses a static wallpaper; a local video can be linked into the untracked
   their feature visible but disabled, telling what to install.
 
 See [docs/architecture.md](docs/architecture.md) for how the pieces fit.
+
+## Calendar events
+
+`tools/thunderbird-events.py` exports the events of your Thunderbird calendars
+to `~/.cache/smart-shell/events.json`: recurring events expanded, moved and
+cancelled occurrences applied, declined invites dropped and duplicates (the same
+invite in several calendars) merged. A systemd user timer refreshes it every 5
+minutes:
+
+```sh
+tools/install-services.sh              # install + start the timer
+tools/install-services.sh --uninstall
+tools/thunderbird-events.py --output - # run once, print to stdout
+```
+
+Thunderbird only keeps a local copy of calendars with **Offline support** enabled
+(calendar properties); other calendars can't be read.
 
 ## Icons
 

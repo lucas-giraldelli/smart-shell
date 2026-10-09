@@ -1,0 +1,8 @@
+[Unit]
+Description=smart-shell: export Thunderbird calendar events
+
+[Service]
+Type=oneshot
+# installed by tools/install-services.sh, which points this at the repo
+ExecStart=/usr/bin/python3 @REPO@/tools/thunderbird-events.py
+Nice=10
