@@ -29,6 +29,9 @@ class Clock extends Component {
     this.dataset.popover = 'calendar';
     this.addEventListener('click', e => {
       if (cameFrom(e, 'ss-calendar')) return;
+      // the reminder line of a meeting with a Meet link joins it
+      const event = store.get().agenda.upcoming ?? store.get().agenda.ongoing;
+      if (event?.meet && e.target.closest('.remind')) { window.open(event.meet, '_blank'); return; }
       isOpen('calendar') ? closePopover() : openPopover('calendar');
     });
     this.tick();
@@ -71,14 +74,16 @@ class Clock extends Component {
     const event = agenda.upcoming ?? agenda.ongoing;
     this.classList.toggle('reminding', !!event);
     this.toggleAttribute('data-tip', !!event);
-    if (!event) { delete this.dataset.status; return; }
+    if (!event) { delete this.dataset.status; this.classList.remove('has-meet'); return; }
 
     this.dataset.status = agenda.upcoming ? 'warn' : 'ok';
     const title = event.title || t('calendar.untitled');
     setHTML(this.$('.cat'), icon(categories[event.category]?.icon ?? 'user'));
     this.$('.rtext').textContent = title;
     const when = agenda.upcoming ? t('reminder.soon', { minutes: agenda.minutes }) : t('reminder.now');
-    this.$('.label').textContent = `${title} · ${formatTime(event.start)}–${formatTime(event.end)} · ${when}`;
+    this.$(':scope > .label').textContent = `${title} · ${formatTime(event.start)}–${formatTime(event.end)} · ${when}`
+      + (event.meet ? ` · ${t('reminder.join')}` : '');
+    this.classList.toggle('has-meet', !!event.meet);
   }
 
   tick() {

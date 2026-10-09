@@ -104,7 +104,7 @@ export default {
     },
   },
 
-  reminder: { soon: 'em {minutes} min', now: 'agora' },
+  reminder: { soon: 'em {minutes} min', now: 'agora', join: 'clique para entrar no Meet' },
 
   categories: { work: 'Trabalho', health: 'Saúde', personal: 'Pessoal' },
 

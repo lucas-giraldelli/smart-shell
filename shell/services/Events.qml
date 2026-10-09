@@ -20,7 +20,7 @@ Singleton {
     property var skipped: []        // [{ name, reason }]
 
     // test events added over IPC, never written anywhere:
-    //   qs ipc -p <shell> call events fake "<title>" <startsInMinutes> <durationMinutes> <category>
+    //   qs ipc -p <shell> call events fake "<title>" <startsInMinutes> <durationMinutes> <category> "<meet url or empty>"
     //   qs ipc -p <shell> call events clearFake
     property var fakes: []
 
@@ -62,11 +62,11 @@ Singleton {
 
     IpcHandler {
         target: "events"
-        function fake(title: string, startsInMinutes: real, durationMinutes: real, category: string): void {
+        function fake(title: string, startsInMinutes: real, durationMinutes: real, category: string, meet: string): void {
             const start = new Date(Date.now() + startsInMinutes * 60000);
             root.fakes = root.fakes.concat([{
                 title, start, end: new Date(start.getTime() + durationMinutes * 60000), allDay: false,
-                recurring: false, calendars: [], fake: true, fakeCategory: category || "personal"
+                recurring: false, calendars: [], fake: true, fakeCategory: category || "personal", meet: meet || null
             }]);
             root.evaluate();
         }

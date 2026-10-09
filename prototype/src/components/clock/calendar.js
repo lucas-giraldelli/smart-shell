@@ -31,6 +31,7 @@ const eventRow = (e, colors, past = false) => `
     <span class="bar"></span>
     <span class="when">${formatTime(e.start)}</span>
     <span class="grow">${titleOf(e)}</span>
+    ${e.meet ? `<button class="ib meet" data-meet="${e.meet}" title="Google Meet">${icon('video')}</button>` : ''}
   </div>`;
 
 // all-day events as one line of chips; the rest folds into "+N" (full list on hover)
@@ -60,6 +61,9 @@ class Calendar extends Component {
 
     this.addEventListener('click', e => {
       const t = e.target;
+      // a Meet link opens in the browser (xdg-open in the real shell)
+      const meet = t.closest('[data-meet]');
+      if (meet) { window.open(meet.dataset.meet, '_blank'); return; }
       if (t.closest('[data-past]')) this.showPast = !this.showPast;
       else if (t.closest('[data-nav]')) this.shift(+t.closest('[data-nav]').dataset.nav);
       else if (t.closest('[data-today]')) this.goToday();

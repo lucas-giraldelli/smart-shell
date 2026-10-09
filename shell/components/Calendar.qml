@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import QtQuick.Controls as QQC
 import "../services"
 import ".."
@@ -301,10 +302,21 @@ Popover {
                             color: Theme.menuSub
                         }
                     }
+                    // a Google Meet link: a small button that opens it
+                    IconButton {
+                        id: meetButton
+                        visible: !!modelData.e.meet
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 22; height: 22; radius: 7; iconSize: 13
+                        flat: true
+                        icon: "video"
+                        onClicked: Quickshell.execDetached(["xdg-open", modelData.e.meet])
+                    }
                     Label {
                         x: 3 + 8 + 52 + 8
                         anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width - x
+                        width: parent.width - x - (meetButton.visible ? 26 : 0)
                         elide: Text.ElideRight
                         text: Cal.titleOf(I18n, modelData.e)
                         size: 12

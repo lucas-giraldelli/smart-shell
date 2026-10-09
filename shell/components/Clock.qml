@@ -70,13 +70,24 @@ Tile {
         target: root
         shown: root.hovered && root.reminding
         text: root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
-            Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}` : ""
+            Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}${
+            root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
     }
 
+    // click opens the calendar; the reminder line of a meeting with a Meet
+    // link joins it instead
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: calendar.open ? Ui.closePopover() : Ui.openPopover("calendar")
+        onClicked: mouse => {
+            const meet = root.event?.meet;
+            if (meet && mouse.y >= root.height / 2) {
+                Ui.closePopover();
+                Quickshell.execDetached(["xdg-open", meet]);
+                return;
+            }
+            calendar.open ? Ui.closePopover() : Ui.openPopover("calendar");
+        }
     }
 
     SystemClock {

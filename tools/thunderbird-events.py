@@ -13,7 +13,10 @@ Which calendars to read comes from ~/.config/smart-shell/config.json:
 Output (default ~/.cache/smart-shell/events.json):
   {"generatedAt": ..., "calendars": {name: color}, "skipped": [{name, reason}],
    (reason: "offline" | "disabled" | "unknown"; the UI translates it)
-   "events": [{"title", "start", "end", "allDay", "recurring", "calendars": [names]}, ...]}
+   "events": [{"title", "start", "end", "allDay", "recurring", "calendars": [names], "meet"}, ...]}
+
+`meet` is the event's Google Meet link (its X-GOOGLE-CONFERENCE, else the
+first meet.google.com link in its description or location) or null.
 
 Runs from a systemd user timer (systemd/smart-shell-events.*); safe to run any
 time, since it only reads a copy of the database.
@@ -38,6 +41,8 @@ FLAG_RECURRING = 16
 LOCAL = datetime.now().astimezone().tzinfo
 CONFIG = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config")) / "smart-shell" / "config.json"
 
+
+MEET = re.compile(r"https://meet\.google\.com/[a-z0-9-]+", re.I)
 
 def load_config() -> dict:
     """The `events` section of the smart-shell config, if any."""
@@ -194,6 +199,12 @@ def export(args) -> dict:
             for line in (r["icalString"] or "").splitlines():
                 if line.strip():
                     rules.setdefault((r["cal_id"], r["item_id"]), []).append(line.strip())
+        # Google Meet links: X-GOOGLE-CONFERENCE first, then a meet.google.com
+        # URL in the description or location
+        props = {}
+        for r in db.execute("SELECT cal_id, item_id, recurrence_id, key, value FROM cal_properties "
+                            "WHERE key IN ('X-GOOGLE-CONFERENCE', 'DESCRIPTION', 'LOCATION')"):
+            props.setdefault((r["cal_id"], r["item_id"], r["recurrence_id"]), {})[r["key"]] = r["value"] or ""
         declined = set()
         for r in db.execute("SELECT cal_id, item_id, recurrence_id, icalString FROM cal_attendees"):
             # the calendar's own address (CalDAV calendars are named after it) declined
@@ -211,6 +222,20 @@ def export(args) -> dict:
 
     events = []
 
+    def meet_of(row):
+        """The event's Meet link: its own properties, else the series'."""
+        for key in ((row["cal_id"], row["id"], row["recurrence_id"]), (row["cal_id"], row["id"], None)):
+            p = props.get(key)
+            if not p:
+                continue
+            conference = p.get("X-GOOGLE-CONFERENCE", "")
+            if conference.startswith("https://"):
+                return conference.strip()
+            found = MEET.search(p.get("DESCRIPTION", "") + " " + p.get("LOCATION", ""))
+            if found:
+                return found.group(0)
+        return None
+
     def add(row, start, end, all_day, recurring=False):
         if row["ical_status"] == "CANCELLED":
             return
@@ -225,6 +250,7 @@ def export(args) -> dict:
             "title": (row["title"] or "").strip(),  # empty = untitled, shown translated
             "start": iso(start, all_day), "end": iso(end, all_day), "allDay": all_day, "recurring": recurring,
             "calendar": registry.get(row["cal_id"], {}).get("name", row["cal_id"]),
+            "meet": meet_of(row),
         })
 
     for r in rows:
