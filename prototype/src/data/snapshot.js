@@ -60,8 +60,11 @@ export const bluetooth = {
 export const audio = {
   volume: 88,
   sinks: [
-    { id: 'hdmi', name: 'Odyssey G60SD', meta: 'HDMI · placa de vídeo', icon: 'monitor' },
-    { id: 'spdif', name: 'Saída digital onboard', meta: 'S/PDIF · placa-mãe', icon: 'speaker' },
+    // `kind` (connection) and `where` (the sound card's place) are translated
+    // under volume.kinds / volume.where; an onboard output without a name gets
+    // volume.titles.<kind>
+    { id: 'hdmi', name: 'Odyssey G60SD', kind: 'hdmi', where: 'gpu', icon: 'monitor' },
+    { id: 'spdif', kind: 'spdif', where: 'board', icon: 'speaker' },
   ],
   sink: 'hdmi',
   mic: { name: 'USB Composite Device', volume: 73 },

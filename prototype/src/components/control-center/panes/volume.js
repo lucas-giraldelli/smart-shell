@@ -8,6 +8,10 @@ import { t } from '../../../i18n/index.js';
 // Real shell: PipeWire via Quickshell.Services.Pipewire.
 const clamp = v => Math.max(0, Math.min(100, v));
 
+// "HDMI · placa de vídeo"; an unnamed onboard output is "Saída digital onboard"
+export const sinkName = s => s.name ?? t(`volume.titles.${s.kind}`);
+export const sinkMeta = s => s.meta ?? [s.kind && t(`volume.kinds.${s.kind}`), s.where && t(`volume.where.${s.where}`)].filter(Boolean).join(' · ');
+
 // the connected bluetooth headset shows up as an extra output
 function sinks(audio, bluetooth) {
   const bt = connectedDevice(bluetooth);
@@ -40,13 +44,13 @@ export default {
     const list = sinks(audio, bluetooth);
     const current = list.find(s => s.id === audio.sink) ?? list[0];
     setSlider(root, 'out', audio.volume, audio.muted ? t('common.muted') : audio.volume + '%');
-    root.querySelector('[data-label="out"]').textContent = current.name;
+    root.querySelector('[data-label="out"]').textContent = sinkName(current);
     const mute = root.querySelector('[data-btn="out"]');
     setHTML(mute, icon(audio.muted ? 'volume-x' : 'volume-2'));
     mute.classList.toggle('off', audio.muted);
 
     const sinksHtml = list.map(s => row({
-      icon: s.icon, title: s.name, meta: s.meta, trailing: radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
+      icon: s.icon, title: sinkName(s), meta: sinkMeta(s), trailing: radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
     })).join('');
     setHTML(root.querySelector('[data-sinks]'), sinksHtml);
 

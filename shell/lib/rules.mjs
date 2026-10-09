@@ -81,6 +81,26 @@ export function describe(i18n, c, cs) {
 // --- network (panes/network.js) ---
 export const fmtRate = mb => (mb >= 1 ? mb.toFixed(1) + ' MB/s' : Math.round(mb * 1000) + ' KB/s');
 
+// --- volume (panes/volume.js) ---
+// What an output is, from its PipeWire properties: `kind` is the connection
+// (volume.kinds), `where` the sound card's place (volume.where), `name` the
+// device's own name when it has a real one (a monitor's, a headset's).
+export function sinkInfo(p) {
+  const profile = `${p['device.profile.name'] ?? ''} ${p['api.alsa.path'] ?? ''}`;
+  const bus = p['device.bus'] ?? '';
+  if ((p['device.api'] ?? '').startsWith('bluez')) return { kind: 'bluetooth', name: p['node.description'] };
+  if (bus === 'usb') return { kind: 'usb', name: p['node.nick'] || p['node.description'] };
+  const kind = /hdmi|displayport/i.test(profile) ? 'hdmi' : /iec958/i.test(profile) ? 'spdif' : 'analog';
+  // HDMI audio lives on the graphics card; anything else on PCI is onboard
+  const gpu = /nvidia|radeon|hdmi|\bdp\b/i.test(`${p['alsa.card_name'] ?? ''} ${p['alsa.mixer_name'] ?? ''}`);
+  const where = bus === 'pci' ? (gpu ? 'gpu' : 'board') : '';
+  // an HDMI output is named after the monitor (its EDID), when known
+  const name = kind === 'hdmi' && p['alsa.name'] && !/^HDMI/i.test(p['alsa.name']) ? p['alsa.name'] : undefined;
+  return { kind, where, name };
+}
+export const sinkName = (i18n, s) => s.name ?? i18n.t(`volume.titles.${s.kind}`);
+export const sinkMeta = (i18n, s) => [s.kind && i18n.t(`volume.kinds.${s.kind}`), s.where && i18n.t(`volume.where.${s.where}`)].filter(Boolean).join(' · ');
+
 // --- brightness / volume ---
 export const clampBrightness = v => Math.max(5, Math.min(100, v));
 export const clampVolume = v => Math.max(0, Math.min(100, v));

@@ -11,7 +11,7 @@ PaneScroll {
         icon: Audio.muted ? "volume-x" : "volume-2"
         button: true
         off: Audio.muted
-        label: Audio.sink ? Audio.nameOf(Audio.sink) : "—"
+        label: Audio.sink ? Audio.sinkName(Audio.sink) : "—"
         value: Audio.volume
         valueText: Audio.muted ? I18n.t("common.muted") : Audio.volume + "%"
         onMoved: v => Audio.setVolume(v)
@@ -23,8 +23,8 @@ PaneScroll {
             id: sinkRow
             required property var modelData
             icon: Audio.iconOf(modelData)
-            title: modelData.nickname || modelData.description
-            meta: Audio.metaOf(modelData)
+            title: Audio.sinkName(modelData)
+            meta: Audio.sinkMeta(modelData)
             active: modelData === Audio.sink
             onClicked: Audio.setSink(modelData)
             Radio { on: sinkRow.active }

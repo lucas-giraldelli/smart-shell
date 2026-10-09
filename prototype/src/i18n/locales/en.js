@@ -32,7 +32,12 @@ export default {
     headsetOutput: 'Bluetooth headset',
   },
 
-  volume: { label: 'Volume', output: 'Output', input: 'Input', apps: 'Apps' },
+  volume: {
+    label: 'Volume', output: 'Output', input: 'Input', apps: 'Apps',
+    kinds: { hdmi: 'HDMI', spdif: 'S/PDIF', analog: 'Analog', usb: 'USB', bluetooth: 'Bluetooth' },
+    where: { gpu: 'graphics card', board: 'motherboard' },
+    titles: { hdmi: 'HDMI output', spdif: 'Onboard digital output', analog: 'Onboard analog output' },
+  },
 
   brightness: {
     label: 'Brightness', monitor: 'Monitor', night: 'Night light', temperature: 'Temperature',

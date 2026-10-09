@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Services.Pipewire
+import ".."
 import "../lib/rules.mjs" as Rules
 
 // Output volume and device, microphone and per-app streams - the prototype's
@@ -22,13 +23,25 @@ Singleton {
     readonly property bool micMuted: source?.audio?.muted ?? false
     readonly property string micName: source ? nameOf(source) : ""
 
+    // a stream's app, by its desktop entry's name ("Zen" -> "Zen Browser"),
+    // or a device's name
+    // desktop entries load after start-up; bindings using nameOf() re-run then
+    readonly property int entries: DesktopEntries.applications.values.length
+
     function nameOf(node) {
-        return node.properties["application.name"] || node.nickname || node.description || node.name;
+        const app = node.properties["application.name"];
+        if (app && entries)
+            return DesktopEntries.heuristicLookup(node.properties["application.process.binary"]?.replace(/-bin$/, "") || app)?.name || app;
+        return node.nickname || node.description || node.name;
     }
 
-    // a sink's second line: its full description, minus the nickname already shown
-    function metaOf(node) {
-        return node.nickname ? node.description.replace(` [${node.nickname}]`, "") : "";
+    // an output's friendly name and second line ("Odyssey G60SD", "HDMI · placa
+    // de vídeo"), falling back to PipeWire's description
+    function sinkName(node) {
+        return Rules.sinkName(I18n, Rules.sinkInfo(node.properties)) || node.description;
+    }
+    function sinkMeta(node) {
+        return Rules.sinkMeta(I18n, Rules.sinkInfo(node.properties)) || node.description;
     }
 
     function iconOf(node) {
