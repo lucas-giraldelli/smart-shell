@@ -1,6 +1,6 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
-import { isOpen, openPopover, closePopover } from '../../core/popover.js';
+import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
 import { describe } from '../../data/weather-codes.js';
 import { setHTML } from '../ui/ui.js';
 import './forecast.js';
@@ -20,7 +20,7 @@ class Weather extends Component {
     this.classList.add('tile', 'weather');
     this.dataset.popover = 'weather';
     this.addEventListener('click', e => {
-      if (e.target.closest('ss-forecast')) return;
+      if (cameFrom(e, 'ss-forecast')) return;
       isOpen('weather') ? closePopover() : openPopover('weather');
     });
   }

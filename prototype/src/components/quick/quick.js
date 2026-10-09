@@ -1,7 +1,7 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { config } from '../../data/config.js';
-import { isOpen, openPopover, closePopover } from '../../core/popover.js';
+import { isOpen, openPopover, closePopover, cameFrom, pathFind } from '../../core/popover.js';
 import { store } from '../../state.js';
 import { configuredPanes } from '../control-center/panes/index.js';
 import { setHTML } from '../ui/ui.js';
@@ -14,9 +14,9 @@ class Quick extends Component {
     this.classList.add('tile', 'quick');
     this.dataset.popover = 'control-center';
     const open = e => {
-      if (e.target.closest('ss-control-center')) return;
+      if (cameFrom(e, 'ss-control-center')) return;
       e.preventDefault();
-      const tab = e.target.closest('[data-item]')?.dataset.item ?? store.get().ui.ccTab;
+      const tab = pathFind(e, '[data-item]')?.dataset.item ?? store.get().ui.ccTab;
       if (isOpen('control-center') && store.get().ui.ccTab === tab) closePopover();
       else openPopover('control-center', { ccTab: tab });
     };

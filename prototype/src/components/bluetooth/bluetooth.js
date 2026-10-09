@@ -1,6 +1,6 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
-import { isOpen, openPopover, closePopover } from '../../core/popover.js';
+import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
 import { setPower, toggleDevice, connectedDevice } from '../../services/bluetooth.js';
 import { row, toggle, setHTML } from '../ui/ui.js';
 import { missingText } from '../../data/capabilities.js';
@@ -26,7 +26,7 @@ class Bluetooth extends Component {
     this.menu = this.$('.menu');
     this.addEventListener('click', e => {
       if (this.hasAttribute('data-unavailable')) return;
-      if (this.menu.contains(e.target)) return this.menuClick(e.target);
+      if (cameFrom(e, '.bt > .menu')) return this.menuClick(e.target);
       setPower(!this.state.on);
     });
     this.addEventListener('contextmenu', e => {

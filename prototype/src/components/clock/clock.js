@@ -1,5 +1,5 @@
 import { Component, define } from '../../core/component.js';
-import { isOpen, openPopover, closePopover } from '../../core/popover.js';
+import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
 import './calendar.js';
 
 // Time and date. Click opens the month calendar.
@@ -14,7 +14,7 @@ class Clock extends Component {
     this.classList.add('tile', 'clock');
     this.dataset.popover = 'calendar';
     this.addEventListener('click', e => {
-      if (e.target.closest('ss-calendar')) return;
+      if (cameFrom(e, 'ss-calendar')) return;
       isOpen('calendar') ? closePopover() : openPopover('calendar');
     });
     this.tick();

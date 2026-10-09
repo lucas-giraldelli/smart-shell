@@ -7,6 +7,12 @@ export const openPopover = (name, extra = {}) => update('ui', { popover: name, .
 export const closePopover = () => update('ui', { popover: null });
 export const isOpen = name => store.get().ui.popover === name;
 
+// Did the event come from inside an element matching `selector`? Uses the path
+// fixed at dispatch, so it still works after a handler re-rendered the target.
+export const cameFrom = (e, selector) => e.composedPath().some(el => el.matches?.(selector));
+// The element matching `selector` the event passed through, if any.
+export const pathFind = (e, selector) => e.composedPath().find(el => el.matches?.(selector));
+
 export function startPopovers() {
   document.addEventListener('click', e => {
     const name = store.get().ui.popover;
