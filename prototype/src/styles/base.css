@@ -26,11 +26,13 @@
   --icon-shadow: drop-shadow(0 1px 1px rgba(0, 0, 0, .25));
 
   /* popovers (menus, calendar, forecast, control center) */
-  --menu-bg: rgba(20, 20, 26, .94);
-  --menu-line: rgba(255, 255, 255, .12);
+  /* the dock's glass, a little denser so text stays AA over light wallpapers
+     (text 8.5:1, sub 6.2:1, faint 5.2:1 over a bright one) */
+  --menu-bg: rgba(28, 28, 32, .78);
+  --menu-line: rgba(255, 255, 255, .28);
   --menu-text: #e4e4e7;
-  --menu-sub: #a1a1aa;
-  --menu-faint: #85858d;
+  --menu-sub: #c4c4cc;
+  --menu-faint: #b4b4bc;
   --menu-surface: rgba(255, 255, 255, .05);
   --menu-hover: rgba(255, 255, 255, .08);
   --menu-strong: rgba(255, 255, 255, .13);

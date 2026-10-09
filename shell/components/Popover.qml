@@ -98,12 +98,49 @@ PopupWindow {
         ]
         Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
 
-        RectangularShadow {
-            anchors.fill: bubble
-            offset.y: 16
-            blur: 40
-            radius: bubble.radius
-            color: Theme.menuShadow
+        // box-shadow 0 16px 40px: drawn only outside the bubble, like CSS,
+        // so it doesn't darken the glass
+        Item {
+            id: shade
+            x: -root.shadowX
+            y: -root.shadowTop
+            width: bubble.width + root.shadowX * 2
+            height: bubble.height + root.shadowTop + root.shadowBottom
+            layer.enabled: true
+            layer.effect: MultiEffect {
+                maskEnabled: true
+                maskInverted: true
+                maskSource: cutout
+                maskThresholdMin: 0.5
+                maskSpreadAtMin: 1
+            }
+
+            RectangularShadow {
+                x: root.shadowX
+                y: root.shadowTop
+                width: bubble.width
+                height: bubble.height
+                offset.y: 16
+                blur: 40
+                radius: bubble.radius
+                color: Theme.menuShadow
+            }
+        }
+        Item {
+            id: cutout
+            x: shade.x
+            y: shade.y
+            width: shade.width
+            height: shade.height
+            visible: false
+            layer.enabled: true
+            Rectangle {
+                x: root.shadowX
+                y: root.shadowTop
+                width: bubble.width
+                height: bubble.height
+                radius: bubble.radius
+            }
         }
 
         Rectangle {

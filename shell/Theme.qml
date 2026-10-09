@@ -32,11 +32,13 @@ Singleton {
     readonly property color ringTrack: Qt.rgba(1, 1, 1, 0.16)
 
     // popovers (menus, control center)
-    readonly property color menuBg: Qt.rgba(20 / 255, 20 / 255, 26 / 255, 0.94)
-    readonly property color menuLine: Qt.rgba(1, 1, 1, 0.12)
+    // the dock's glass, a little denser so text stays AA over light wallpapers
+    // (blurred by Hyprland's blur_popups)
+    readonly property color menuBg: Qt.rgba(28 / 255, 28 / 255, 32 / 255, 0.78)
+    readonly property color menuLine: Qt.rgba(1, 1, 1, 0.28)
     readonly property color menuText: "#e4e4e7"
-    readonly property color menuSub: "#a1a1aa"
-    readonly property color menuFaint: "#85858d"
+    readonly property color menuSub: "#c4c4cc"
+    readonly property color menuFaint: "#b4b4bc"
     readonly property color menuSurface: Qt.rgba(1, 1, 1, 0.05)
     readonly property color menuHover: Qt.rgba(1, 1, 1, 0.08)
     readonly property color menuStrong: Qt.rgba(1, 1, 1, 0.13)
