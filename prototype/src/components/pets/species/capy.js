@@ -1,6 +1,5 @@
 // Never runs, whatever the CPU does. Mostly lies down.
 export default {
-  name: 'Capivara',
   color: '#a0703f',
   speed: .55,
   chill: true,

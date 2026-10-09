@@ -1,8 +1,8 @@
 import { Component, define } from '../../core/component.js';
 import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
+import { t, dateFormat, formatTime } from '../../i18n/index.js';
 import './calendar.js';
 
-const TIME = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
 const SOON_MIN = 2; // the dot starts pulsing this close to the start
 
 // Time and date. The date line slides away to a subtle reminder while an event
@@ -45,16 +45,17 @@ class Clock extends Component {
     this.toggleAttribute('data-tip', !!event);
     if (!event) return;
 
-    const when = agenda.ongoing ? 'agora' : `em ${agenda.minutes} min`;
-    this.$('.rtext').textContent = `${when} · ${event.title}`;
+    const when = agenda.ongoing ? t('reminder.now') : t('reminder.soon', { minutes: agenda.minutes });
+    const title = event.title || t('calendar.untitled');
+    this.$('.rtext').textContent = `${when} · ${title}`;
     this.$('.rdot').style.background = events.calendars[event.calendars[0]] ?? 'var(--accent)';
-    this.$('.label').textContent = `${event.title} · ${TIME.format(event.start)}–${TIME.format(event.end)}`;
+    this.$('.label').textContent = `${title} · ${formatTime(event.start)}–${formatTime(event.end)}`;
   }
 
   tick() {
     const d = new Date();
-    this.$('[data-time]').textContent = d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    this.$('[data-date]').textContent = d.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' }).replace(/\./g, '');
+    this.$('[data-time]').textContent = formatTime(d);
+    this.$('[data-date]').textContent = dateFormat({ weekday: 'short', day: '2-digit', month: 'short' }).format(d).replace(/\./g, '');
   }
 }
 

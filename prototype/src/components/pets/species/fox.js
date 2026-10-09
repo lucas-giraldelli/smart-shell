@@ -1,6 +1,5 @@
 // The fastest; strolls a lot and pounces.
 export default {
-  name: 'Raposa',
   color: '#f97316',
   speed: 1.3,
   acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }],

@@ -1,6 +1,5 @@
 // Fast; gets random zoomies and jumps.
 export default {
-  name: 'Shiba',
   color: '#e0a15e',
   speed: 1.15,
   acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }],

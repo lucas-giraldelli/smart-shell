@@ -1,6 +1,5 @@
 // Moves by hopping; sometimes lies down.
 export default {
-  name: 'Coelho',
   color: '#e2e8f0',
   speed: 1.1,
   hop: true,

@@ -2,20 +2,18 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { store } from '../../state.js';
 import { config } from '../../data/config.js';
-import { regions, holidaysOf, upcoming, dateKey } from '../../data/holidays.js';
+import { regions, regionName, holidaysOf, upcoming, dateKey } from '../../data/holidays.js';
+import { t, dateFormat, formatTime } from '../../i18n/index.js';
 
 // Month calendar inside the clock tile: navigate months, weekends tinted,
 // holidays dotted per region (config.holidays) and Thunderbird
 // events marked with a dash in their calendar's colour. Selecting a day with
 // something on it shows the details in place of the "upcoming" list.
-const MONTH = new Intl.DateTimeFormat('pt-BR', { month: 'long', year: 'numeric' });
-const LONG = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
-const MON = new Intl.DateTimeFormat('pt-BR', { month: 'short' });
-const short = d => `${d.getDate()} ${MON.format(d).replace('.', '')}`; // "12 out"
+const monthTitle = d => dateFormat({ month: 'long', year: 'numeric' }).format(d);
+const longDate = d => dateFormat({ weekday: 'long', day: 'numeric', month: 'long' }).format(d);
+const short = d => dateFormat({ day: 'numeric', month: 'short' }).format(d).replace('.', ''); // "12 out" / "Oct 12"
 const cap = s => s[0].toUpperCase() + s.slice(1);
-const WEEK = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S'];
 const sameDay = (a, b) => dateKey(a) === dateKey(b);
-const TIME = new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
 // events touching a day (all-day ends are exclusive dates)
 function eventsOn(list, d) {
@@ -27,13 +25,13 @@ function eventsOn(list, d) {
 const eventRow = (e, colors) => `
   <div class="evt" style="--rc:${colors[e.calendars[0]] ?? 'var(--accent)'}">
     <span class="bar"></span>
-    <span class="when">${e.allDay ? 'Dia todo' : `${TIME.format(e.start)}`}</span>
-    <span class="grow">${e.title}</span>
+    <span class="when">${e.allDay ? t('calendar.allDay') : formatTime(e.start)}</span>
+    <span class="grow">${e.title || t('calendar.untitled')}</span>
   </div>`;
 
 const holidayRow = h => `
   <div class="hol${h.kind === 'optional' ? ' optional' : ''}" style="--rc:${regions[h.region].color}">
-    <span class="mark"></span><span class="grow">${h.name}</span><span class="meta">${regions[h.region].name}${h.kind === 'optional' ? ' · facultativo' : ''}</span>
+    <span class="mark"></span><span class="grow">${h.name}</span><span class="meta">${regionName(h.region)}${h.kind === 'optional' ? ` · ${t('calendar.optional')}` : ''}</span>
   </div>`;
 
 class Calendar extends Component {
@@ -97,12 +95,12 @@ class Calendar extends Component {
 
     this.innerHTML = `
       <div class="cal-head">
-        <button class="ib" data-nav="-1" title="Mês anterior">${icon('chevron-left')}</button>
-        <b class="grow">${cap(MONTH.format(this.view))}</b>
-        <button class="btn-s" data-today>Hoje</button>
-        <button class="ib" data-nav="1" title="Próximo mês">${icon('chevron-right')}</button>
+        <button class="ib" data-nav="-1" title="${t('calendar.prevMonth')}">${icon('chevron-left')}</button>
+        <b class="grow">${cap(monthTitle(this.view))}</b>
+        <button class="btn-s" data-today>${t('calendar.today')}</button>
+        <button class="ib" data-nav="1" title="${t('calendar.nextMonth')}">${icon('chevron-right')}</button>
       </div>
-      <div class="week">${WEEK.map((w, i) => `<span class="${i === 0 || i === 6 ? 'weekend' : ''}">${w}</span>`).join('')}</div>
+      <div class="week">${t('calendar.weekdays').map((w, i) => `<span class="${i === 0 || i === 6 ? 'weekend' : ''}">${w}</span>`).join('')}</div>
       <div class="grid">${days.map(d => {
         const list = holidays.get(dateKey(d)) ?? [];
         const cls = [
@@ -113,20 +111,21 @@ class Calendar extends Component {
         const dayEvents = eventsOn(events, d);
         const dots = list.map(h => `<i class="${h.kind}" style="--rc:${regions[h.region].color}"></i>`).join('')
           + (dayEvents.length ? `<b class="ev" style="--rc:${colors[dayEvents[0].calendars[0]] ?? 'var(--accent)'}"></b>` : '');
-        const tip = [...list.map(h => h.name), ...dayEvents.map(e => e.title)].join(' · ');
+        const tip = [...list.map(h => h.name), ...dayEvents.map(e => e.title || t('calendar.untitled'))].join(' · ');
         return `<button data-day="${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}" class="${cls}" title="${tip}">
           ${d.getDate()}${dots ? `<span class="dots">${dots}</span>` : ''}</button>`;
       }).join('')}
       </div>
       ${hasDetails ? `<div class="cal-day">
-        <div class="sec">${LONG.format(this.selected)}</div>
+        <div class="sec">${longDate(this.selected)}</div>
         ${selectedList.map(holidayRow).join('')}
         ${selectedEvents.map(e => eventRow(e, colors)).join('')}
       </div>` : ''}
-      ${hasDetails ? '' : `<div class="sec">Próximos feriados</div>
+      ${hasDetails ? '' : `<div class="sec">${t('calendar.upcoming')}</div>
       ${upcoming(today, enabled, 3).map(h => holidayRow(h).replace('<span class="grow">', `<span class="when">${short(h.date)}</span><span class="grow">`)).join('')
         || ''}`}
-      ${skipped.map(s => `<div class="skipped">${icon('triangle-alert')}<span><b>${s.name}</b> não aparece: ${s.reason}</span></div>`).join('')}`;
+      ${skipped.map(s => `<div class="skipped">${icon('triangle-alert')}<span>${
+        t('calendar.skipped', { name: `<b>${s.name}</b>`, reason: t(`calendar.reasons.${s.reason}`) })}</span></div>`).join('')}`;
   }
 }
 

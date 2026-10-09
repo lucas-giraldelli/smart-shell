@@ -26,6 +26,7 @@
 .dev-panel .dp-row { display: flex; align-items: center; gap: 10px; font-size: 12px; margin-top: 8px; }
 .dev-panel .dp-row label { flex: 0 0 92px; color: #d4d4d8; }
 .dev-panel .dp-row input { flex: 1; accent-color: #7dd3fc; }
+.dev-panel .dp-row select { flex: 1; font: inherit; font-size: 12px; padding: 4px 6px; border-radius: 7px; color: #e4e4e7; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .12); }
 .dev-panel .dp-row output { flex: 0 0 40px; text-align: right; font-variant-numeric: tabular-nums; color: #a1a1aa; }
 .dev-panel .hint { margin-top: 12px; font-size: 11px; color: #71717a; line-height: 1.45; }
 .dev-panel .dp-toggle {

@@ -1,6 +1,5 @@
 // Lies down and naps between strolls.
 export default {
-  name: 'Gato',
   color: '#f2a65a',
   acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }],
   svg: `

@@ -1,21 +1,18 @@
-// WMO weather codes (Open-Meteo) -> label, Lucide icon and tone. Tones reuse the
-// colours of waybar's weather module so both bars read the same.
+import { t } from '../i18n/index.js';
+
+// WMO weather codes (Open-Meteo) -> tone and Lucide icon; labels are translated
+// under `weather.codes.<code>`. Tones reuse the colours of waybar's weather
+// module so both bars read the same.
 const TONES = {
   clear: '#f9e2af', cloudy: '#bac2de', fog: '#a6adc8',
   rain: '#74c7ec', snow: '#cdd6f4', storm: '#cba6f7',
 };
 
-const CODES = {
-  0: ['Céu limpo', 'clear'], 1: ['Predominantemente limpo', 'clear'], 2: ['Parcialmente nublado', 'cloudy'],
-  3: ['Nublado', 'cloudy'], 45: ['Neblina', 'fog'], 48: ['Neblina com gelo', 'fog'],
-  51: ['Garoa leve', 'rain'], 53: ['Garoa moderada', 'rain'], 55: ['Garoa intensa', 'rain'],
-  56: ['Garoa congelante', 'rain'], 57: ['Garoa congelante', 'rain'],
-  61: ['Chuva leve', 'rain'], 63: ['Chuva moderada', 'rain'], 65: ['Chuva forte', 'rain'],
-  66: ['Chuva congelante', 'rain'], 67: ['Chuva congelante', 'rain'],
-  71: ['Neve leve', 'snow'], 73: ['Neve moderada', 'snow'], 75: ['Neve forte', 'snow'], 77: ['Grânulos de neve', 'snow'],
-  80: ['Pancadas leves', 'rain'], 81: ['Pancadas moderadas', 'rain'], 82: ['Pancadas fortes', 'rain'],
-  85: ['Pancadas de neve', 'snow'], 86: ['Pancadas de neve fortes', 'snow'],
-  95: ['Trovoada', 'storm'], 96: ['Trovoada com granizo', 'storm'], 99: ['Trovoada com granizo', 'storm'],
+const TONE_OF = {
+  0: 'clear', 1: 'clear', 2: 'cloudy', 3: 'cloudy', 45: 'fog', 48: 'fog',
+  51: 'rain', 53: 'rain', 55: 'rain', 56: 'rain', 57: 'rain', 61: 'rain', 63: 'rain', 65: 'rain', 66: 'rain', 67: 'rain',
+  71: 'snow', 73: 'snow', 75: 'snow', 77: 'snow', 80: 'rain', 81: 'rain', 82: 'rain', 85: 'snow', 86: 'snow',
+  95: 'storm', 96: 'storm', 99: 'storm',
 };
 
 function iconFor(code, isDay) {
@@ -30,7 +27,8 @@ function iconFor(code, isDay) {
 }
 
 export function describe(code, isDay = true) {
-  const [label, tone] = CODES[code] ?? ['Desconhecido', 'cloudy'];
+  const tone = TONE_OF[code] ?? 'cloudy';
+  const label = t(`weather.codes.${code in TONE_OF ? code : 'unknown'}`);
   // a clear night is drawn in the cloudy tone, not sun-yellow
   const color = tone === 'clear' && !isDay ? TONES.cloudy : TONES[tone];
   return { label, tone, color, icon: iconFor(code, isDay) };

@@ -1,6 +1,7 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { update } from '../../state.js';
+import { t } from '../../i18n/index.js';
 
 // Workspace switcher. The active workspace is a pill; with `wsIcons` on, the
 // other occupied ones become small dots holding their icon (+ window count).
@@ -24,7 +25,7 @@ class Workspaces extends Component {
         const n = ws.windows.length;
         return `<button data-id="${ws.id}" data-tip class="${n ? 'has' : ''}">
           ${n ? icon(ws.icon, 'g') : ''}${n > 1 ? `<span class="n">${n}</span>` : ''}
-          <span class="label">Workspace ${ws.id} · ${ws.windows.join(', ') || 'vazio'}</span>
+          <span class="label">${t('workspaces.label', { id: ws.id, windows: ws.windows.join(', ') || t('workspaces.empty') })}</span>
         </button>`;
       }).join('');
     }

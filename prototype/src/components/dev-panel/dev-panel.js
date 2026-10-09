@@ -1,9 +1,11 @@
 import { Component, define } from '../../core/component.js';
 import { store, update } from '../../state.js';
+import { savePref } from '../../core/prefs.js';
 import { themes } from '../../data/themes.js';
 import { capabilities } from '../../data/capabilities.js';
 import { widgets } from '../registry.js';
 import { species } from '../pets/pets.js';
+import { t, locale, locales } from '../../i18n/index.js';
 
 // Prototype-only controls: themes, pets, which widgets are on, simulated
 // backends and tuning. Not part of the real shell.
@@ -16,32 +18,34 @@ class DevPanel extends Component {
 
   render() {
     return `
-      <button class="dp-toggle" title="Mostrar painel (H)">⚙</button>
+      <button class="dp-toggle" title="${t('dev.show')}">⚙</button>
       <aside class="dp">
-        <h1>smart-shell · protótipo</h1>
-        <p>Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.</p>
-        <h2>Tema</h2>
-        <div class="chips">${themes.map((t, i) => chip('data-theme-id', t.id, t.name, t.swatch, `<kbd>${i + 1}</kbd>`)).join('')}</div>
-        <h2>Pets</h2>
-        <div class="chips">${Object.entries(species).map(([k, s]) => chip('data-pet', k, s.name, s.color)).join('')}</div>
-        <h2>Widgets</h2>
-        <div class="checks">${Object.entries(widgets).map(([id, w]) => check('data-widget', id, w.name)).join('')}</div>
-        ${check('data-opt', 'wsIcons', 'Ícone nos workspaces não selecionados')}
-        <h2>Backends instalados (simulação)</h2>
+        <h1>${t('dev.title')}</h1>
+        <p>${t('dev.intro')}</p>
+        <div class="dp-row"><label>${t('dev.language')}</label>
+          <select data-locale>${locales().map(l => `<option value="${l}"${l === locale() ? ' selected' : ''}>${l}</option>`).join('')}</select></div>
+        <h2>${t('dev.theme')}</h2>
+        <div class="chips">${themes.map((th, i) => chip('data-theme-id', th.id, t(`themes.${th.id}`), th.swatch, `<kbd>${i + 1}</kbd>`)).join('')}</div>
+        <h2>${t('dev.pets')}</h2>
+        <div class="chips">${Object.entries(species).map(([k, s]) => chip('data-pet', k, t(`pets.names.${k}`), s.color)).join('')}</div>
+        <h2>${t('dev.widgets')}</h2>
+        <div class="checks">${Object.keys(widgets).map(id => check('data-widget', id, t(`widgets.${id}`))).join('')}</div>
+        ${check('data-opt', 'wsIcons', t('dev.wsIcons'))}
+        <h2>${t('dev.backends')}</h2>
         <div class="checks">${Object.entries(capabilities).map(([id, c]) => check('data-cap', id, c.label)).join('')}</div>
-        <h2>Simular falhas</h2>
+        <h2>${t('dev.failures')}</h2>
         <div class="checks">
-          ${check('data-fail', 'offline', 'Rede caiu')}
-          ${check('data-fail', 'dockerDown', 'Docker parado')}
-          ${check('data-fail', 'containerError', 'Container com erro')}
+          ${check('data-fail', 'offline', t('dev.offline'))}
+          ${check('data-fail', 'dockerDown', t('dev.dockerDown'))}
+          ${check('data-fail', 'containerError', t('dev.containerError'))}
         </div>
-        <h2>Ajustes</h2>
-        <div class="dp-row"><label>Carga da CPU</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
-        ${check('data-opt', 'cpuAuto', 'CPU simulada (picos estilo X3D)')}
-        <div class="dp-row"><label>Tamanho</label><input type="range" min="40" max="72" data-set="size"><output data-out="size"></output></div>
-        <div class="dp-row"><label>Ampliação</label><input type="range" min="100" max="220" data-set="magnify"><output data-out="magnify"></output></div>
-        ${check('data-opt', 'liveWallpaper', 'Wallpaper animado (vídeo local)')}
-        <div class="hint">Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central · roda no volume/brilho · clique no sistema simula RAM cheia · clique num pet · Caps Lock acende o indicador.<br>H esconde o painel · 1–${themes.length} troca o tema</div>
+        <h2>${t('dev.tuning')}</h2>
+        <div class="dp-row"><label>${t('dev.cpuLoad')}</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
+        ${check('data-opt', 'cpuAuto', t('dev.cpuAuto'))}
+        <div class="dp-row"><label>${t('dev.size')}</label><input type="range" min="40" max="72" data-set="size"><output data-out="size"></output></div>
+        <div class="dp-row"><label>${t('dev.magnify')}</label><input type="range" min="100" max="220" data-set="magnify"><output data-out="magnify"></output></div>
+        ${check('data-opt', 'liveWallpaper', t('dev.liveWallpaper'))}
+        <div class="hint">${t('dev.hint')}<br>${t('dev.keys', { n: themes.length })}</div>
       </aside>`;
   }
 
@@ -75,6 +79,8 @@ class DevPanel extends Component {
           containers: d.containers.map(c => (c.name === 'qbittorrent' ? { ...c, state: on ? 'restarting' : 'running' } : c)),
         }));
       }
+      // the UI is rendered once per page load, so a new language means a reload
+      if (e.target.matches('[data-locale]')) { savePref('locale', e.target.value); location.reload(); return; }
       if (opt === 'cpuAuto') update('system', { auto: on });
       else if (opt) update('ui', { [opt]: on });
     });
@@ -110,7 +116,7 @@ class DevPanel extends Component {
       if (document.activeElement !== input) input.value = value;
       this.$(`[data-out="${key}"]`).textContent = out;
     };
-    set('load', Math.round(system.load), system.auto ? 'auto' : Math.round(system.load) + '%');
+    set('load', Math.round(system.load), system.auto ? t('dev.auto') : Math.round(system.load) + '%');
     set('size', ui.size, ui.size + 'px');
     set('magnify', Math.round(ui.magnify * 100), ui.magnify.toFixed(2) + '×');
   }

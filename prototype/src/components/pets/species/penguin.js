@@ -1,6 +1,5 @@
 // Slow and waddles; mostly stands around.
 export default {
-  name: 'Pinguim',
   color: '#1f2937',
   speed: .7,
   waddle: true,

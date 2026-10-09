@@ -1,6 +1,7 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { store, update } from '../../state.js';
+import { t } from '../../i18n/index.js';
 
 // Now playing (MPRIS in the real shell). Click toggles play/pause.
 class Music extends Component {
@@ -16,7 +17,7 @@ class Music extends Component {
         <div class="progress"><i></i></div>
       </div>
       <div class="eq"><i></i><i></i><i></i><i></i></div>
-      <span class="label">Clique: play/pause</span>`;
+      <span class="label">${t('music.hint')}</span>`;
   }
 
   setup() {

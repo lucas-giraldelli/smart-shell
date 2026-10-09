@@ -1,6 +1,5 @@
 // Moves by hopping; stops to croak (throat pouch) or to catch a fly (tongue).
 export default {
-  name: 'Sapo',
   color: '#5cbf60',
   speed: 1,
   hop: true,

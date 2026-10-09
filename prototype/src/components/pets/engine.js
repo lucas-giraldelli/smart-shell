@@ -1,3 +1,5 @@
+import { t } from '../../i18n/index.js';
+
 // Behaviour shared by every pet. A pet reacts to CPU load:
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
 // While idle it picks weighted actions; each species adds or overrides actions
@@ -11,12 +13,7 @@ const BASE_ACTS = [
   { name: 'turn', w: 1, dur: [.8, 1.5], turn: true },
 ];
 const STATE_SPEED = { sleep: 0, walk: 34, run: 150 };
-const MOODS = {
-  sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!',
-  stand: 'De boa', stroll: 'Passeando', turn: 'Olhando em volta', lie: 'Deitado',
-  nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando', pounce: 'Dando o bote',
-  croak: 'Coaxando', tongue: 'Pegando mosca',
-};
+
 const SWITCH_DELAY = 1.2; // a load change must hold this long before the pet reacts
 
 function actionsFor(species) {
@@ -110,9 +107,9 @@ export function createPet(kind, species, host) {
       if (st !== lastStep) { el.style.setProperty('--step', st); lastStep = st; }
     }
 
-    let mood = state === 'idle' ? MOODS[act?.name] ?? MOODS.stand : MOODS[state];
-    if (species.chill && load + jitter >= 72) mood = 'Nem aí pra CPU';
-    const text = `${species.name} · ${mood} · CPU ${Math.round(load)}%`;
+    let mood = t(`pets.moods.${state === 'idle' ? act?.name ?? 'stand' : state}`);
+    if (species.chill && load + jitter >= 72) mood = t('pets.chill');
+    const text = t('pets.bubble', { name: t(`pets.names.${kind}`), mood, load: Math.round(load) });
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }
   }
 

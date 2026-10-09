@@ -1,8 +1,8 @@
 import { Component, define } from '../../core/component.js';
 import { update } from '../../state.js';
+import { t, formatNumber } from '../../i18n/index.js';
 
 const CIRC = 94.25; // 2πr for r=15
-const fmt = v => v.toFixed(1).replace('.', ',');
 
 // One widget for the machine's health: CPU load in the ring, free memory as the
 // headline (with a usage bar) and the die temperature (k10temp Tccd1).
@@ -46,7 +46,7 @@ class System extends Component {
     temp.className = 'temp' + (s.temp >= 87 ? ' crit' : s.temp >= 80 ? ' warm' : '');
 
     this.$('[data-detail]').textContent =
-      `CPU ${load}% · die (Tccd1) ${s.temp}°C · ${fmt(s.memFree)} GiB livres de ${s.memTotal}`;
+      t('system.detail', { load, temp: s.temp, free: formatNumber(s.memFree), total: s.memTotal });
   }
 }
 

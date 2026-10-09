@@ -4,6 +4,7 @@ import { config } from '../../data/config.js';
 import { store, update } from '../../state.js';
 import { configuredPanes } from './panes/index.js';
 import { missingText, installHint } from '../../data/capabilities.js';
+import { t } from '../../i18n/index.js';
 
 // Tabbed popover hosting one pane per quick item. Lives inside <ss-quick>,
 // which decides when it is open.
@@ -40,7 +41,7 @@ class ControlCenter extends Component {
   missing(pane) {
     const hint = installHint(pane.requires);
     return `<div class="missing">${icon(pane.icon)}<b>${missingText(pane.requires)}</b>
-      ${hint ? `<span class="meta">Instale o pacote <code>${hint}</code> para usar.</span>` : ''}</div>`;
+      ${hint ? `<span class="meta">${t('capabilities.install', { pkg: `<code>${hint}</code>` })}</span>` : ''}</div>`;
   }
 
   update(state) {
