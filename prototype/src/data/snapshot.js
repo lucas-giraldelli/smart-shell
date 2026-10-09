@@ -46,6 +46,9 @@ export const tray = ['steam', 'slack', 'discord', 'spotify'];
 
 export const memory = { totalGiB: 47, freeGiB: 26.4 };
 
+// `uptime -s`; the real shell derives it from /proc/uptime
+export const bootedAt = '2026-10-04T18:00:20-04:00';
+
 export const bluetooth = {
   on: false,
   devices: [

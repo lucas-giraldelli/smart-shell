@@ -1,13 +1,21 @@
 import { icon } from '../../../core/icons.js';
 import { closePopover } from '../../../core/popover.js';
 import { config } from '../../../data/config.js';
-import { t, formatNumber } from '../../../i18n/index.js';
+import { t, formatNumber, dateFormat } from '../../../i18n/index.js';
 
 // CPU and memory: two items in the quick tile (free RAM, CPU load + die
 // temperature) and one tab with the details. Real shell: /proc/stat,
 // /proc/meminfo and the k10temp Tccd1 sensor.
 const memStatus = s => (s.memFree < 4 ? 'crit' : s.memFree < 8 ? 'warn' : 'ok');
 const tempStatus = s => (s.temp >= 87 ? 'crit' : s.temp >= 80 ? 'warn' : 'ok');
+// "4 d 16 h" / "3 h 12 min" / "8 min"
+function uptime(since) {
+  const min = Math.floor((Date.now() - since) / 60000);
+  const d = Math.floor(min / 1440), h = Math.floor(min / 60) % 24, m = min % 60;
+  if (d) return t('system.uptimeDays', { d, h });
+  if (h) return t('system.uptimeHours', { h, m });
+  return t('system.uptimeMinutes', { m });
+}
 const points = list => list.map((v, i) => `${(i / (list.length - 1) * 100).toFixed(1)},${(19 - v / 100 * 17).toFixed(1)}`).join(' ');
 
 export default {
@@ -34,7 +42,7 @@ export default {
         <div class="meta" data-used></div>
       </div>
     </div>
-    <div class="dk-head"><span></span>
+    <div class="dk-head"><span class="uptime" data-uptime></span>
       <button class="btn-s" data-monitor title="${config.commands.monitor}">${icon('external-link')}btop</button></div>`,
 
   update(root, { system: s }) {
@@ -48,6 +56,10 @@ export default {
     mem.querySelector('[data-free]').textContent = t('system.free', { free: formatNumber(s.memFree) });
     mem.querySelector('.mem-bar i').style.width = ((s.memTotal - s.memFree) / s.memTotal * 100).toFixed(1) + '%';
     mem.querySelector('[data-used]').textContent = t('system.used', { used: formatNumber(s.memTotal - s.memFree), total: s.memTotal });
+
+    const up = root.querySelector('[data-uptime]');
+    up.innerHTML = `${icon('power')}${t('system.uptime', { time: uptime(s.bootedAt) })}`;
+    up.title = t('system.since', { date: dateFormat({ weekday: 'short', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(s.bootedAt) });
   },
 
   click(target) {

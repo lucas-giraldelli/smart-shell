@@ -73,6 +73,8 @@
 /* docker */
 .cc .dk-head { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 8px; font-size: 12px; color: #a1a1aa; }
 .cc .dk-head [data-summary] { display: flex; align-items: center; gap: 8px; }
+.cc .uptime { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; }
+.cc .uptime svg.i { width: 13px; height: 13px; }
 .cc .dk-head [data-status="crit"] { color: var(--crit); }
 .cc .dk-list { max-height: 262px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, .2) transparent; }
 .cc .ct { display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 9px; font-size: 12.5px; }

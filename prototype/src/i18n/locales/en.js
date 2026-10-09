@@ -19,6 +19,8 @@ export default {
   system: {
     label: 'System', cpu: 'CPU', memory: 'Memory', temp: 'Die (Tccd1) at {temp}°C',
     free: '{free} GiB', used: '{used} of {total} GiB in use',
+    uptime: 'Up for {time}', since: 'On since {date}',
+    uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
 
   bluetooth: {
