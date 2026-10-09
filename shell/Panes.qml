@@ -61,7 +61,7 @@ Singleton {
             }];
         case "system": {
             const s = SystemStats;
-            const mem = Rules.memStatus(s), temp = Rules.tempStatus(s);
+            const mem = Rules.memStatus(s, Config.thresholds), temp = Rules.tempStatus(s, Config.thresholds);
             return [
                 { icon: "memory-stick", text: `${Math.round(s.memFree)} GiB`, width: 6, status: mem === "ok" ? "" : mem },
                 // load and temperature left-aligned in fixed slots exactly as wide as

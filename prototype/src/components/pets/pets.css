@@ -100,3 +100,24 @@ ss-pets { display: contents; }
   50% { transform: translate(calc(var(--dx) * .5 + 3px), -12px) rotate(calc(var(--rot) * .5)) scale(1); }
   100% { opacity: 0; transform: translate(var(--dx), -24px) rotate(var(--rot)) scale(1.05); }
 }
+
+/* low free RAM: heavy - squashed a little, lower hops (the engine slows it);
+   critical: a sweat drop runs down */
+.pet.heavy svg { scale: 1.04 .94; transform-origin: 50% 100%; }
+.pet.heavy.hop.moving svg { animation-name: hop-heavy; }
+@keyframes hop-heavy { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.pet.sweat::after {
+  content: ""; position: absolute; left: 33px; top: 4px; width: 4px; height: 6px; border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: #7dd3fc; opacity: 0; animation: sweat 1.6s ease-in infinite; pointer-events: none;
+}
+@keyframes sweat { 0% { opacity: 0; transform: translateY(0); } 20% { opacity: .9; } 100% { opacity: 0; transform: translateY(10px); } }
+
+/* heat (Tccd1): reddish from warn, more at crit, with heat waves above */
+.pet.hot svg { filter: sepia(.35) saturate(1.8) hue-rotate(-28deg); }
+.pet.scorch svg { filter: sepia(.6) saturate(2.6) hue-rotate(-35deg); }
+.pet.scorch::before {
+  content: ""; position: absolute; left: 12px; top: -12px; width: 22px; height: 12px; pointer-events: none; opacity: .7;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 12' fill='none' stroke='%23fb923c' stroke-width='1.2' stroke-linecap='round'%3E%3Cpath d='M3 11 q2-2 0-4 q-2-2 0-4'/%3E%3Cpath d='M11 11 q2-2 0-4 q-2-2 0-4'/%3E%3Cpath d='M19 11 q2-2 0-4 q-2-2 0-4'/%3E%3C/svg%3E") no-repeat;
+  animation: heat 1.2s ease-in-out infinite;
+}
+@keyframes heat { 0% { transform: translateY(2px); opacity: 0; } 40% { opacity: .75; } 100% { transform: translateY(-6px); opacity: 0; } }

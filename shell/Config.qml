@@ -53,6 +53,16 @@ Singleton {
         // MPRIS players the music tile never shows (substrings of identity,
         // desktop entry, title, url or command line)
         music: { ignore: ["whatsapp"] },
+        // one set of thresholds for the quick tile's colours and the pets
+        // (see the README): cpu % - the pet sleeps / idles / walks below
+        // these, runs above; free RAM in GiB - warn colours, a heavy pet;
+        // die temperature (Tccd1) - warn colours, a reddish pet; with
+        // roomTemp set, warn / crit are degrees over it
+        thresholds: {
+            cpu: { sleep: 10, idle: 40, walk: 72 },
+            memFreeGiB: { warn: 8, crit: 4 },
+            tempC: { warn: 80, crit: 87, roomTemp: null }
+        },
         // the clock: "24h" or "12h", whatever the language
         clock: { format: "24h" },
         // the forecast's place (Open-Meteo); the city is only shown
@@ -81,6 +91,7 @@ Singleton {
     readonly property string theme: data.theme ?? "glass"
     readonly property var weather: data.weather
     readonly property var music: data.music
+    readonly property var thresholds: data.thresholds
     // audio devices by PipeWire node.name: { name, hidden }
     readonly property var audioDevices: data.audio?.devices ?? ({})
     readonly property var apps: data.apps

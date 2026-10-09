@@ -24,7 +24,8 @@ function actionsFor(species) {
   return [...byName.values()];
 }
 
-// step(dt, load, activity, width) -> { x, dir, moving, fast, pose, jump, step, mood }
+// step(dt, load, activity, width, opts) -> { x, dir, moving, fast, pose, jump, step, mood }
+// opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit: slower) }
 // (`mood` is a translation key under pets.moods, or 'chill')
 export function createPet(species, width) {
   const acts = actionsFor(species);
@@ -36,13 +37,20 @@ export function createPet(species, width) {
   let state = 'idle', pending = null, pendingT = 0;
   let act = null, actLeft = 0, jumpLeft = 0;
 
+  // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
+  // below `walk` it walks, above it runs
+  let cpu = { sleep: 10, idle: 40, walk: 72 };
   function loadState(load) {
     const l = load + jitter;
-    if (l < 10) return 'sleep';
-    if (l < 40) return 'idle';
-    if (l < 72 || species.chill) return 'walk';
+    if (l < cpu.sleep) return 'sleep';
+    if (l < cpu.idle) return 'idle';
+    if (l < cpu.walk || species.chill) return 'walk';
     return 'run';
   }
+
+  // dancing, it now and then takes a few steps (every 8-14 s, for 1.5-3 s)
+  // still moving to the music, then dances in place again
+  let danceWalkIn = 8 + Math.random() * 6, danceWalkLeft = 0;
 
   function pickAct() {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
@@ -52,7 +60,8 @@ export function createPet(species, width) {
     if (act.jump) jumpLeft = .55;
   }
 
-  function step(dt, load, activity, w) {
+  function step(dt, load, activity, w, opts = {}) {
+    if (opts.cpu) cpu = opts.cpu;
     const want = loadState(load);
     if (want === state) pending = null;
     else {
@@ -72,9 +81,21 @@ export function createPet(species, width) {
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
     if (pose) target = 0;
+    if (activity === 'dance') {
+      if (danceWalkLeft > 0) {
+        danceWalkLeft -= dt;
+        target = 30;
+      } else if ((danceWalkIn -= dt) <= 0) {
+        danceWalkIn = 8 + Math.random() * 6;
+        danceWalkLeft = 1.5 + Math.random() * 1.5;
+        if (Math.random() < .5) dir = -dir;
+      }
+    }
 
-    // ease toward the target speed instead of jumping to it
-    v += (target * mult - v) * (1 - Math.exp(-dt * 4));
+    // ease toward the target speed instead of jumping to it; low free RAM
+    // makes it heavy and slow
+    const heavy = opts.heavy ? .6 : 1;
+    v += (target * mult * heavy - v) * (1 - Math.exp(-dt * 4));
     if (target === 0 && v < .5) v = 0;
     jumpLeft = Math.max(0, jumpLeft - dt);
 
@@ -87,7 +108,7 @@ export function createPet(species, width) {
     let mood = activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state;
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
-      x, dir, moving, fast: v > 90, pose: pose && v < 3 ? pose : '', jump: jumpLeft > 0,
+      x, dir, moving, fast: v > 90, pose: pose === 'dance' || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
       // legs keep pace with the body: faster walk, shorter step
       step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
       mood,

@@ -33,6 +33,19 @@ export const config = {
   // entry, title, url or command line): WhatsApp's voice messages by default
   music: { ignore: ['whatsapp'] },
 
+  // one set of thresholds for the quick tile's colours and the pets:
+  //   cpu (%): the pet sleeps below `sleep`, idles below `idle`, walks below
+  //     `walk`, runs above
+  //   memFreeGiB: free RAM below `warn` / `crit` - warn colours, a heavy pet
+  //   tempC: the die temperature (Tccd1) from `warn` / `crit` - warn colours, a
+  //     reddish pet with heat waves; with `roomTemp` set, warn / crit are
+  //     degrees over that room temperature instead
+  thresholds: {
+    cpu: { sleep: 10, idle: 40, walk: 72 },
+    memFreeGiB: { warn: 8, crit: 4 },
+    tempC: { warn: 80, crit: 87, roomTemp: null },
+  },
+
   // holiday regions marked on the calendar (see data/holidays.js)
   holidays: ['br', 'cba', 'us'],
 

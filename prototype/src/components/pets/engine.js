@@ -55,13 +55,20 @@ export function createPet(kind, species, host) {
   let act = null, actLeft = 0, jumpLeft = 0;
   let lastCls = '', lastStep = '', lastDir = 0, lastMood = '';
 
+  // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
+  // below `walk` it walks, above it runs
+  let cpu = { sleep: 10, idle: 40, walk: 72 };
   function loadState(load) {
     const l = load + jitter;
-    if (l < 10) return 'sleep';
-    if (l < 40) return 'idle';
-    if (l < 72 || species.chill) return 'walk';
+    if (l < cpu.sleep) return 'sleep';
+    if (l < cpu.idle) return 'idle';
+    if (l < cpu.walk || species.chill) return 'walk';
     return 'run';
   }
+
+  // dancing, it now and then takes a few steps (every 8-14 s, for 1.5-3 s)
+  // still moving to the music, then dances in place again
+  let danceWalkIn = 8 + Math.random() * 6, danceWalkLeft = 0;
 
   function pickAct() {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
@@ -101,7 +108,9 @@ export function createPet(kind, species, host) {
     for (let i = 0; i < count; i++) setTimeout(note, i * 120);
   }
 
-  function step(dt, load, activity = null) {
+  // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit) }
+  function step(dt, load, activity = null, opts = {}) {
+    if (opts.cpu) cpu = opts.cpu;
     if (activity === 'dance') {
       if ((burstIn -= dt) <= 0) { burst(); burstIn = 1.2 + Math.random() * .6; }
     } else burstIn = 0;
@@ -124,9 +133,21 @@ export function createPet(kind, species, host) {
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
     if (pose) target = 0;
+    if (activity === 'dance') {
+      if (danceWalkLeft > 0) {
+        danceWalkLeft -= dt;
+        target = 30;
+      } else if ((danceWalkIn -= dt) <= 0) {
+        danceWalkIn = 8 + Math.random() * 6;
+        danceWalkLeft = 1.5 + Math.random() * 1.5;
+        if (Math.random() < .5) dir = -dir;
+      }
+    }
 
-    // ease toward the target speed instead of jumping to it
-    v += (target * mult - v) * (1 - Math.exp(-dt * 4));
+    // ease toward the target speed instead of jumping to it; low free RAM
+    // makes it heavy and slow
+    const heavy = opts.heavy ? .6 : 1;
+    v += (target * mult * heavy - v) * (1 - Math.exp(-dt * 4));
     if (target === 0 && v < .5) v = 0;
     jumpLeft = Math.max(0, jumpLeft - dt);
 
@@ -138,7 +159,8 @@ export function createPet(kind, species, host) {
     if (dir !== lastDir) { flip.style.transform = dir < 0 ? 'scaleX(-1)' : ''; lastDir = dir; }
 
     const moving = v > 4;
-    const cls = [base, moving && 'moving', v > 90 && 'fast', pose && v < 3 && pose, jumpLeft > 0 && 'jump']
+    const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
+      opts.heavy && 'heavy', opts.heavy === 2 && 'sweat', opts.hot && 'hot', opts.hot === 2 && 'scorch']
       .filter(Boolean).join(' ');
     if (cls !== lastCls) { el.className = cls; lastCls = cls; }
     if (moving) {

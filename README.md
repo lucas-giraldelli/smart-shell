@@ -105,16 +105,21 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   the glass - all of it inside the dock only, at 30 fps, paused while a
   fullscreen window is focused. Hyprland's blur applies to every theme.
 - **Pet** - one per dock, picked in the dock settings ("Nenhum" for none). It
-  walks on the dock's top edge and follows the CPU load (sleeps under 10%,
-  idles, walks, runs over 72%); during a work meeting (an ongoing event in the
-  `work` category, see Clock) it types on a laptop, and while YouTube Music
-  plays (`pets.danceWith`, default `["music.youtube.com"]`, matched against a
-  player's url, identity, desktop entry or command line) it dances its own
-  dance with music notes popping out (a meeting wins over music). With `cava`
-  installed (optional) the dance follows the music's beat and loudness;
-  without it, a fixed ~120 bpm. Hover for its mood, click for a heart. Holds
-  still while a fullscreen window is focused.
+  walks on the dock's top edge. Hover for its mood, click for a heart; it
+  holds still while a fullscreen window is focused. What it does, in order of
+  priority:
 
+  | When | The pet | Config |
+  |---|---|---|
+  | a work meeting is on (an event in the `work` category, see Clock) | types on a laptop | `events.categories` |
+  | YouTube Music plays | dances its own dance with music notes, taking a few steps every 8-14 s (with `cava` installed, to the beat) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
+  | CPU below 10% / 40% / 72% / above | sleeps / idles and strolls / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
+  | free RAM below 8 GiB / 4 GiB | heavy: 0.6x speed, lower hops, squashed; at 4 GiB a sweat drop | `thresholds.memFreeGiB.warn` / `.crit` |
+  | die temperature (Tccd1) from 80 °C / 87 °C | reddish; at 87 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
+
+  The same `thresholds` colour the quick tile (memory, CPU temperature). With
+  `thresholds.tempC.roomTemp` set (e.g. 30), warn / crit become degrees over
+  that room temperature.
 - **Workspaces** - Hyprland. `workspaces.style` (also in the dock settings)
   picks how occupied workspaces show: `icons` (default; per workspace id in
   `workspaces.icons`, Lucide names), `numbers` (their id; the active pill shows

@@ -3,6 +3,7 @@ import { onFrame } from '../../core/loop.js';
 import { store } from '../../state.js';
 import { createPet } from './engine.js';
 import { config } from '../../data/config.js';
+import { memStatus, tempStatus } from '../control-center/panes/system.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
@@ -31,7 +32,11 @@ class Pets extends Component {
       // what the user is busy with right now: a work meeting wins over music
       const work = agenda.ongoing?.category === 'work';
       const activity = work ? 'work' : dancing(store.get().media) ? 'dance' : null;
-      for (const pet of this.pets) pet.step(dt, system.load, activity);
+      // config.thresholds: CPU drives what it does; low free RAM makes it
+      // heavy, heat turns it reddish (1 = warn, 2 = crit)
+      const level = st => (st === 'crit' ? 2 : st === 'warn' ? 1 : 0);
+      const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)) };
+      for (const pet of this.pets) pet.step(dt, system.load, activity, opts);
     });
   }
 

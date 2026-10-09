@@ -4,8 +4,22 @@
 // argument, since modules can't reach QML singletons.
 
 // --- system (panes/system.js) ---
-export const memStatus = s => (s.memFree < 4 ? 'crit' : s.memFree < 8 ? 'warn' : 'ok');
-export const tempStatus = s => (s.temp >= 87 ? 'crit' : s.temp >= 80 ? 'warn' : 'ok');
+// config.thresholds (shared with the pets); `t` defaults to the built-ins
+export const defaultThresholds = {
+  cpu: { sleep: 10, idle: 40, walk: 72 },
+  memFreeGiB: { warn: 8, crit: 4 },
+  tempC: { warn: 80, crit: 87, roomTemp: null },
+};
+export function memStatus(s, t = defaultThresholds) {
+  const m = t.memFreeGiB;
+  return s.memFree < m.crit ? 'crit' : s.memFree < m.warn ? 'warn' : 'ok';
+}
+// with roomTemp set, warn / crit are degrees over the room temperature
+export function tempStatus(s, t = defaultThresholds) {
+  const { warn, crit, roomTemp } = t.tempC;
+  const base = roomTemp ?? 0;
+  return s.temp >= base + crit ? 'crit' : s.temp >= base + warn ? 'warn' : 'ok';
+}
 
 // "4 d 16 h" / "3 h 12 min" / "8 min"
 export function uptime(i18n, since) {

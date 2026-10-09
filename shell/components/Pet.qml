@@ -1,7 +1,10 @@
 import QtQuick
+import QtQuick.Effects
+import QtQuick.Shapes
 import "../services"
 import ".."
 import "../lib/pets.mjs" as Engine
+import "../lib/rules.mjs" as Rules
 
 // The pet walking on top of the dock (prototype: components/pets, one per
 // dock, Ui.pet). It reacts to CPU load - sleeps, idles, walks or runs - and
@@ -22,6 +25,13 @@ Item {
 
     // a work meeting wins over music, music over the CPU
     readonly property bool working: (Events.ongoing?.category ?? "") === "work"
+    // config.thresholds: low free RAM makes it heavy, heat turns it reddish
+    // (0 ok, 1 warn, 2 crit)
+    function level(status) {
+        return status === "crit" ? 2 : status === "warn" ? 1 : 0;
+    }
+    readonly property int heavy: level(Rules.memStatus(SystemStats, Config.thresholds))
+    readonly property int hot: level(Rules.tempStatus(SystemStats, Config.thresholds))
     readonly property bool dancing: Media.dancing && !working
     readonly property var dance: Engine.DANCES[kind] ?? null
     // where in its dance loop the pet is (one beat = 0.5 s)
@@ -93,7 +103,8 @@ Item {
         onTriggered: {
             const dt = Math.min(frameTime, 0.05);
             root.clock += dt;
-            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.dancing ? "dance" : null, root.floor.width);
+            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.dancing ? "dance" : null, root.floor.width,
+                { cpu: Config.thresholds.cpu, heavy: root.heavy });
             root.tickNotes();
         }
     }
@@ -130,21 +141,35 @@ Item {
                 return root.move.dy;
             if (root.s.jump)
                 return -16 * Math.sin(Math.min(1, (root.clock % 0.55) / 0.55) * Math.PI);
-            if (root.species?.hop && root.s.moving)
-                return -8 * Math.abs(Math.sin(root.clock / (root.s.step * 1.3) * Math.PI));
+            if (root.species?.hop && root.s.moving)    // heavy: lower hops
+                return -(root.heavy ? 4 : 8) * Math.abs(Math.sin(root.clock / (root.s.step * 1.3) * Math.PI));
             return 0;
         }
         rotation: root.move.rot !== undefined ? root.move.rot
             : root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
         transformOrigin: Item.Bottom
 
+        // heavy: squashed a little (scale 1.04 x .94 from its feet)
+        transform: Scale { origin.x: 23; origin.y: 36; xScale: root.heavy ? 1.04 : 1; yScale: root.heavy ? 0.94 : 1 }
+
         Image {
+            id: spriteImage
             anchors.fill: parent
+            visible: root.hot === 0
             sourceSize: Qt.size(92, 72)
             smooth: true
             source: root.species ? Engine.look(root.species, root.lookOpts) : ""
             // faces right; flip around the sprite box when walking left
             transform: Scale { origin.x: 23; xScale: root.s.dir < 0 ? -1 : 1 }
+        }
+        // heat: reddish from warn, more at crit
+        MultiEffect {
+            visible: root.hot > 0
+            anchors.fill: spriteImage
+            source: spriteImage
+            transform: Scale { origin.x: 23; xScale: root.s.dir < 0 ? -1 : 1 }
+            colorization: root.hot === 2 ? 0.45 : 0.25
+            colorizationColor: "#f97316"
         }
     }
 
@@ -182,6 +207,37 @@ Item {
             style: Text.Raised
             styleColor: Qt.rgba(0, 0, 0, 0.35)
             font { family: Theme.font; pixelSize: Math.round(modelData.size); weight: Font.Bold }
+        }
+    }
+
+    // critical free RAM: a sweat drop runs down (1.6 s)
+    Rectangle {
+        readonly property real p: (root.clock % 1.6) / 1.6
+        visible: root.heavy === 2
+        x: root.s.dir < 0 ? 46 - 33 - 4 : 33
+        y: 4 + 10 * p * p
+        width: 4
+        height: 6
+        radius: 2
+        color: "#7dd3fc"
+        opacity: p < 0.2 ? p / 0.2 * 0.9 : 0.9 * (1 - (p - 0.2) / 0.8)
+    }
+    // critical heat: waves rising above it (1.2 s)
+    Shape {
+        readonly property real p: (root.clock % 1.2) / 1.2
+        visible: root.hot === 2
+        x: 12
+        y: -12 + 2 - 8 * p
+        width: 22
+        height: 12
+        opacity: p < 0.4 ? p / 0.4 * 0.75 : 0.75 * (1 - (p - 0.4) / 0.6)
+        preferredRendererType: Shape.CurveRenderer
+        ShapePath {
+            strokeColor: "#fb923c"
+            strokeWidth: 1.2
+            fillColor: "transparent"
+            capStyle: ShapePath.RoundCap
+            PathSvg { path: "M3 11 q2 -2 0 -4 q-2 -2 0 -4 M11 11 q2 -2 0 -4 q-2 -2 0 -4 M19 11 q2 -2 0 -4 q-2 -2 0 -4" }
         }
     }
 

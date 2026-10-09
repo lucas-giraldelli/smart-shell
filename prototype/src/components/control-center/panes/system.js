@@ -9,8 +9,16 @@ import { t, formatNumber, dateFormat, formatTime } from '../../../i18n/index.js'
 // CPU and memory: two items in the quick tile (free RAM, CPU load + die
 // temperature) and one tab with the details. Real shell: /proc/stat,
 // /proc/meminfo, the k10temp Tccd1 sensor and `ps` for the top memory users.
-const memStatus = s => (s.memFree < 4 ? 'crit' : s.memFree < 8 ? 'warn' : 'ok');
-const tempStatus = s => (s.temp >= 87 ? 'crit' : s.temp >= 80 ? 'warn' : 'ok');
+// config.thresholds (shared with the pets)
+export function memStatus(s) {
+  const m = config.thresholds.memFreeGiB;
+  return s.memFree < m.crit ? 'crit' : s.memFree < m.warn ? 'warn' : 'ok';
+}
+export function tempStatus(s) {
+  const { warn, crit, roomTemp } = config.thresholds.tempC;
+  const base = roomTemp ?? 0;
+  return s.temp >= base + crit ? 'crit' : s.temp >= base + warn ? 'warn' : 'ok';
+}
 // "4 d 16 h" / "3 h 12 min" / "8 min"
 function uptime(since) {
   const min = Math.floor((Date.now() - since) / 60000);

@@ -14,8 +14,8 @@ import "../../lib/rules.mjs" as Rules
 PaneScroll {
     id: root
 
-    readonly property string cpuStatus: Rules.tempStatus(SystemStats)
-    readonly property string memStatus: Rules.memStatus(SystemStats)
+    readonly property string cpuStatus: Rules.tempStatus(SystemStats, Config.thresholds)
+    readonly property string memStatus: Rules.memStatus(SystemStats, Config.thresholds)
 
     property var kills: ({})    // process name -> { state, at }
 
