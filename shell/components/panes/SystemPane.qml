@@ -200,6 +200,19 @@ PaneScroll {
                 text: clock.date, I18n.t("system.uptime", { time: Rules.uptime(Panes.i18n, SystemStats.bootedAt.getTime()) })
             }
         }
+        // the user's Super+F10: blank the panel so the OLED can run its care cycle
+        SmallButton {
+            anchors.right: btop.left
+            anchors.rightMargin: 6
+            y: 4
+            icon: "monitor-off"
+            text: I18n.t("system.screen")
+            onClicked: {
+                const screen = Ui.popoverScreen;
+                Ui.closePopover();
+                Quickshell.execDetached(["hyprctl", "dispatch", "dpms", "toggle", screen]);
+            }
+        }
         SmallButton {
             id: btop
             anchors.right: parent.right

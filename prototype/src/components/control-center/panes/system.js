@@ -82,6 +82,7 @@ export default {
       </div>
     </div>
     <div class="dk-head"><span class="uptime" data-uptime></span>
+      <button class="btn-s" data-screen-off title="${t('system.screenOff')}">${icon('monitor-off')}${t('system.screen')}</button>
       <button class="btn-s" data-monitor title="${config.commands.monitor}">${icon('external-link')}btop</button></div>
     <div class="sec">${t('system.top')}</div>
     <div class="top-list"></div>`,
@@ -116,6 +117,7 @@ export default {
   },
 
   click(target) {
+    if (target.closest('[data-screen-off]')) closePopover(); // `hyprctl dispatch dpms toggle <screen>` in the real shell
     if (target.closest('[data-monitor]')) closePopover(); // runs config.commands.monitor in the real shell
     const kill = target.closest('[data-kill]');
     if (kill) {
