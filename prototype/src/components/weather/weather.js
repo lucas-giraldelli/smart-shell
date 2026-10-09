@@ -12,7 +12,8 @@ class Weather extends Component {
   render() {
     return `
       <span data-icon></span>
-      <div><div class="t-big" data-temp></div><div class="t-sub" data-summary></div></div>
+      <div class="wx-text"><div class="t-big" data-temp></div><div class="t-sub" data-summary></div></div>
+      <span class="label"></span>
       <ss-forecast></ss-forecast>`;
   }
 
@@ -32,7 +33,11 @@ class Weather extends Component {
     this.style.setProperty('--wx', look.color);
     setHTML(this.$('[data-icon]'), icon(look.icon, `wx-ic${look.icon === 'sun' ? ' spin' : ''}`));
     this.$('[data-temp]').textContent = `${c.temp}°`;
-    this.$('[data-summary]').textContent = look.label;
+    const summary = this.$('[data-summary]');
+    summary.textContent = look.label;
+    // the tooltip only when the summary doesn't fit
+    this.$('.label').textContent = look.label;
+    this.toggleAttribute('data-tip', summary.scrollWidth > summary.clientWidth);
   }
 }
 

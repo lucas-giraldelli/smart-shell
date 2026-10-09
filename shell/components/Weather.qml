@@ -5,15 +5,22 @@ import "../lib/rules.mjs" as Rules
 
 // Current weather (prototype: components/weather): the condition's icon in its
 // tone (the sun turns slowly), temperature and summary. Click opens the
-// forecast. Hidden until the first forecast arrives.
+// forecast. Hidden until the first forecast arrives. A fixed width, so a
+// longer condition never shifts the dock: the summary fits "Trovoada com
+// granizo" and ellipsizes anything longer, with the full text on hover.
 Tile {
     id: root
 
     readonly property bool shown: Weather.loaded
     readonly property var look: Rules.weatherLook(Panes.i18n, Weather.current.code, Weather.current.isDay)
 
-    implicitWidth: 1 + 11 + 26 + 9 + Math.max(temp.implicitWidth, summary.implicitWidth) + 11 + 1
+    implicitWidth: 177
     open: forecast.open
+
+    Tip {
+        text: root.look.label
+        shown: root.hovered && summary.implicitWidth > summary.width
+    }
 
     MouseArea {
         anchors.fill: parent
@@ -55,6 +62,8 @@ Tile {
         }
         Label {
             id: summary
+            width: root.width - 47 - 12
+            elide: Text.ElideRight
             text: root.look.label
             size: 11
             shadow: true
