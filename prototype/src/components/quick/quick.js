@@ -56,7 +56,7 @@ class Quick extends Component {
       const out = available ? pane.quick(state) : { icon: pane.icon, text: '—', tone: 'disabled' };
       const { icon: name, text, parts, tone = '', status, width } = Array.isArray(out) ? out[i] : out;
       const el = this.querySelector(`[data-item="${pane.id}"][data-slot="${i}"]`);
-      const body = parts ? parts.map(([value, w]) => `<span class="qv" style="width: ${w}">${value}</span>`).join('') : text;
+      const body = parts ? parts.map(([value, w, align = 'right']) => `<span class="qv" style="width: ${w}; text-align: ${align}">${value}</span>`).join('') : text;
       setHTML(el, icon(name) + `<span>${body}</span>`);
       el.className = `q ${tone}`;
       if (width) el.style.setProperty('--qw', width);

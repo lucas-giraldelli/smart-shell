@@ -38,7 +38,7 @@ Singleton {
         return I18n.t(`${id}.label`);
     }
 
-    // -> [{ icon, text | parts, tone?, status?, width? }]; parts: [[value, width in ch], ...]
+    // -> [{ icon, text | parts, tone?, status?, width? }]; parts: [[value, width in ch, align?], ...]
     function quick(id) {
         switch (id) {
         case "volume":
@@ -64,8 +64,9 @@ Singleton {
             const mem = Rules.memStatus(s), temp = Rules.tempStatus(s);
             return [
                 { icon: "memory-stick", text: `${Math.round(s.memFree)} GiB`, width: 6, status: mem === "ok" ? "" : mem },
-                // load and temperature in fixed slots ("100%", "100°"), so neither moves the other
-                { icon: "cpu", parts: [[`${Math.round(s.load)}%`, 4.6], [`${s.temp}°`, 3.8]], width: 8.8, status: temp === "ok" ? "" : temp }
+                // load and temperature in fixed slots exactly as wide as "100%" and "100°"
+                // (tabular 11.5px Inter), so neither moves the other
+                { icon: "cpu", parts: [[`${Math.round(s.load)}%`, 4.55, "right"], [`${s.temp}°`, 3.72, "left"]], width: 8.8, status: temp === "ok" ? "" : temp }
             ];
         }
         }

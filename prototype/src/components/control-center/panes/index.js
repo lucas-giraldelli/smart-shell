@@ -8,7 +8,7 @@ import settings from './settings.js';
 // A pane is one feature of the quick tile + control center:
 //   id, label, icon, requires?   identity and the capability it needs
 //   quick?(state)                -> { icon, text | parts, tone, status, width? } for the mini item in the tile
-//                                   (`parts`: [[value, width], ...] for several live values),
+//                                   (`parts`: [[value, width, align?], ...] for several live values),
 //                                   a list of them for several items, or omitted for a tab-only pane
 //   quickWidth                   fixed text width of that item, so values never shift the dock
 //   wheel?(dir)                  scroll on the mini item (+1 up, -1 down)

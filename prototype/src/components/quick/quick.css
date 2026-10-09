@@ -3,10 +3,10 @@
 .quick .q { display: flex; align-items: center; gap: 5px; font-size: 11.5px; font-variant-numeric: tabular-nums; color: var(--text); }
 .quick .q svg.i { width: 14px; height: 14px; color: var(--sub); }
 .quick .q > span { display: inline-block; width: var(--qw); white-space: nowrap; }
-/* an item with several live values gives each a fixed, right-aligned slot,
-   so one value gaining a digit never pushes the next */
-.quick .q .qv { display: inline-block; white-space: nowrap; text-align: right; }
-.quick .q .qv + .qv { margin-left: .4ch; }
+/* an item with several live values gives each a fixed slot (width and
+   alignment per part), so one value gaining a digit never pushes the next */
+.quick .q .qv { display: inline-block; white-space: nowrap; }
+.quick .q .qv + .qv { margin-left: 4px; }
 /* same rule for every item: the icon always shows the status, the text only
    picks up the colour when something is wrong */
 .quick .q[data-status] svg.i { color: var(--status); }
