@@ -9,8 +9,22 @@ import { t } from '../../../i18n/index.js';
 const clamp = v => Math.max(0, Math.min(100, v));
 
 // "HDMI · placa de vídeo"; an unnamed onboard output is "Saída digital onboard"
-export const sinkName = s => s.name ?? t(`volume.titles.${s.kind}`);
-export const sinkMeta = s => s.meta ?? [s.kind && t(`volume.kinds.${s.kind}`), s.where && t(`volume.where.${s.where}`)].filter(Boolean).join(' · ');
+// a device's own name and visibility, set from the pane (config
+// audio.devices in the shell, keyed by the PipeWire node.name; here ui.audioDevices)
+const custom = id => store.get().ui.audioDevices?.[id] ?? {};
+const setDevice = (id, change) => update('ui', u => {
+  const all = { ...(u.audioDevices ?? {}) };
+  const next = { ...(all[id] ?? {}), ...change };
+  for (const k of Object.keys(next)) if (next[k] === undefined || next[k] === '' || next[k] === false) delete next[k];
+  if (Object.keys(next).length) all[id] = next; else delete all[id];
+  return { audioDevices: all };
+});
+let editing = null;     // the device being renamed
+let showHidden = false; // the hidden devices' footer is open
+
+export const sinkName = s => custom(s.id).name || (s.name ?? t(`volume.titles.${s.kind}`));
+// a renamed device keeps only its connection under the name
+export const sinkMeta = s => s.meta ?? [s.kind && t(`volume.kinds.${s.kind}`), !custom(s.id).name && s.where && t(`volume.where.${s.where}`)].filter(Boolean).join(' · ');
 
 // the connected bluetooth headset shows up as an extra output
 function sinks(audio, bluetooth) {
@@ -49,10 +63,35 @@ export default {
     setHTML(mute, icon(audio.muted ? 'volume-x' : 'volume-2'));
     mute.classList.toggle('off', audio.muted);
 
-    const sinksHtml = list.map(s => row({
-      icon: s.icon, title: sinkName(s), meta: sinkMeta(s), trailing: radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
-    })).join('');
+    // devices: rename / hide on hover; hidden ones fold into a footer
+    const shown = list.filter(s => !custom(s.id).hidden || s.id === current.id);
+    const hidden = list.filter(s => !shown.includes(s));
+    const actions = s => `<span class="dev-actions">
+        <button class="ib dev-btn" data-dev-rename="${s.id}" title="${t('volume.rename')}">${icon('pencil')}</button>
+        <button class="ib dev-btn" data-dev-hide="${s.id}" title="${t('volume.hide')}">${icon('eye-off')}</button></span>`;
+    const sinksHtml = shown.map(s => row({
+      icon: s.icon,
+      title: editing === s.id ? `<input class="dev-name" data-dev-input="${s.id}" value="${sinkName(s)}" spellcheck="false">` : sinkName(s),
+      meta: sinkMeta(s), trailing: actions(s) + radio(), active: s.id === current.id, attrs: `data-sink="${s.id}"`,
+    })).join('') + (hidden.length ? `
+      <div class="dev-hidden${showHidden ? ' open' : ''}">
+        <button class="dev-toggle" data-dev-toggle>${icon('chevron-right', 'dev-chev')}${t('volume.hidden', { n: hidden.length })}</button>
+        ${showHidden ? hidden.map(s => row({ icon: s.icon, title: sinkName(s), meta: sinkMeta(s),
+          trailing: `<button class="ib dev-btn" data-dev-show="${s.id}" title="${t('volume.show')}">${icon('eye')}</button>` })).join('') : ''}
+      </div>` : '');
     setHTML(root.querySelector('[data-sinks]'), sinksHtml);
+    const input = root.querySelector('[data-dev-input]');
+    if (input && document.activeElement !== input) { input.focus(); input.select(); }
+    if (!root.devKeys) {
+      root.devKeys = true;
+      // Enter saves the name (empty = back to the default), Esc cancels
+      root.addEventListener('keydown', e => {
+        const el = e.target.closest?.('[data-dev-input]');
+        if (!el) return;
+        if (e.key === 'Enter') { editing = null; setDevice(el.dataset.devInput, { name: el.value.trim() }); }
+        if (e.key === 'Escape') { editing = null; setDevice(el.dataset.devInput, {}); }
+      });
+    }
 
     setSlider(root, 'mic', audio.mic, audio.micMuted ? t('common.muted') : audio.mic + '%');
     root.querySelector('[data-btn="mic"]').classList.toggle('off', audio.micMuted);
@@ -60,6 +99,12 @@ export default {
   },
 
   click(target) {
+    const rename = target.closest('[data-dev-rename]'), hide = target.closest('[data-dev-hide]'), show = target.closest('[data-dev-show]');
+    if (rename) { editing = rename.dataset.devRename; return setDevice(editing, {}); }
+    if (hide) return setDevice(hide.dataset.devHide, { hidden: true });
+    if (show) return setDevice(show.dataset.devShow, { hidden: false });
+    if (target.closest('[data-dev-toggle]')) { showHidden = !showHidden; return setDevice('_', {}); }
+    if (target.closest('[data-dev-input]')) return;
     if (target.closest('[data-btn="out"]')) update('audio', a => ({ muted: !a.muted }));
     else if (target.closest('[data-btn="mic"]')) update('audio', a => ({ micMuted: !a.micMuted }));
     else {

@@ -36,6 +36,7 @@ export default {
 
   volume: {
     label: 'Volume', output: 'Output', input: 'Input', apps: 'Apps',
+    rename: 'Rename', hide: 'Hide', show: 'Show', hidden: 'Hidden devices ({n})',
     kinds: { hdmi: 'HDMI', spdif: 'S/PDIF', analog: 'Analog', usb: 'USB', bluetooth: 'Bluetooth' },
     where: { gpu: 'graphics card', board: 'motherboard' },
     titles: { hdmi: 'HDMI output', spdif: 'Onboard digital output', analog: 'Onboard analog output' },

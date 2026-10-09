@@ -12,6 +12,7 @@ export const store = createStore({
     // workspaces: 'icons' | 'numbers' | 'dots' (an old wsIcons: false means dots)
     wsStyle: loadPref('wsStyle', loadPref('wsIcons', true) === false ? 'dots' : 'icons'),
     clockFormat: loadPref('clockFormat', '24h'),  // '24h' | '12h', whatever the language
+    audioDevices: loadPref('audioDevices', {}),   // device id -> { name, hidden }
     // one pet per dock (null = none); older saves kept a list, use its first pet
     pet: loadPref('pet', loadPref('pets', ['cat'])[0] ?? null),
     size: loadPref('size', 52),

@@ -111,11 +111,25 @@ Singleton {
 
     // an output's friendly name and second line ("Odyssey G60SD", "HDMI · placa
     // de vídeo"), falling back to PipeWire's description
-    function sinkName(node) {
-        return Rules.sinkName(I18n, Rules.sinkInfo(node.properties)) || node.description;
+    // a device's own name and visibility, from config.audio.devices
+    function custom(node) {
+        return Config.audioDevices[node?.name] ?? {};
     }
+    function sinkName(node) {
+        return custom(node).name || Rules.sinkName(I18n, Rules.sinkInfo(node.properties)) || node.description;
+    }
+    // a renamed device keeps only its connection under the name
     function sinkMeta(node) {
-        return Rules.sinkMeta(I18n, Rules.sinkInfo(node.properties)) || node.description;
+        const info = Rules.sinkInfo(node.properties);
+        if (custom(node).name)
+            info.where = "";
+        return Rules.sinkMeta(I18n, info) || node.description;
+    }
+    function renameDevice(node, name) {
+        Config.setIn(["audio", "devices", node.name, "name"], name.trim() || undefined);
+    }
+    function hideDevice(node, hidden) {
+        Config.setIn(["audio", "devices", node.name, "hidden"], hidden || undefined);
     }
 
     function iconOf(node) {

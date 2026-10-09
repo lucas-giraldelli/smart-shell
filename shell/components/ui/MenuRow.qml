@@ -22,7 +22,10 @@ Rectangle {
     // from the parts, not the layout: Qt Layouts round to whole pixels
     implicitHeight: Math.max(texts.implicitHeight, trail.implicitHeight, 16) + 16
     radius: 9
-    color: area.containsMouse && enabled ? Theme.menuHover : "transparent"
+    readonly property bool hovered: hover.hovered
+    color: hover.hovered && enabled ? Theme.menuHover : "transparent"
+
+    HoverHandler { id: hover }
     opacity: enabled ? 1 : 0.45
 
     RowLayout {
@@ -73,8 +76,10 @@ Rectangle {
         }
     }
 
+    // under the trailing controls, so buttons there get their own clicks
     MouseArea {
         id: area
+        z: -1
         anchors.fill: parent
         hoverEnabled: true
         cursorShape: root.enabled ? Qt.PointingHandCursor : Qt.ArrowCursor

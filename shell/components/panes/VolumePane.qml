@@ -2,6 +2,7 @@ import QtQuick
 import "../.."
 import "../../services"
 import "../ui"
+import ".."
 
 // Audio tab (prototype: control-center/panes/volume.js): output volume and
 // device, microphone, per-app streams - all PipeWire.
@@ -17,17 +18,65 @@ PaneScroll {
         onMoved: v => Audio.setVolume(v)
         onButtonClicked: Audio.toggleMute()
     }
+    // devices: rename / hide on hover; hidden ones fold into a footer
     Repeater {
-        model: Audio.sinks
-        MenuRow {
-            id: sinkRow
+        model: Audio.sinks.filter(n => !Audio.custom(n).hidden || n === Audio.sink)
+        DeviceRow {
             required property var modelData
-            icon: Audio.iconOf(modelData)
-            title: Audio.sinkName(modelData)
-            meta: Audio.sinkMeta(modelData)
-            active: modelData === Audio.sink
-            onClicked: Audio.setSink(modelData)
-            Radio { on: sinkRow.active }
+            node: modelData
+        }
+    }
+    Item {
+        id: hiddenDevices
+        readonly property var list: Audio.sinks.filter(n => Audio.custom(n).hidden && n !== Audio.sink)
+        property bool open: false
+        visible: list.length > 0
+        width: parent.width
+        height: visible ? toggle.height + (open ? hiddenList.height : 0) : 0
+
+        Item {
+            id: toggle
+            width: parent.width
+            height: 6 + 13.2 + 6
+            Row {
+                x: 10
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 6
+                Icon {
+                    anchors.verticalCenter: parent.verticalCenter
+                    name: "chevron-right"
+                    size: 12
+                    color: toggleArea.containsMouse ? Theme.menuText : Theme.menuSub
+                    rotation: hiddenDevices.open ? 90 : 0
+                    Behavior on rotation { NumberAnimation { duration: 200 } }
+                }
+                Label {
+                    size: 11
+                    color: toggleArea.containsMouse ? Theme.menuText : Theme.menuSub
+                    text: I18n.t("volume.hidden", { n: hiddenDevices.list.length })
+                }
+            }
+            MouseArea {
+                id: toggleArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: hiddenDevices.open = !hiddenDevices.open
+            }
+        }
+        Column {
+            id: hiddenList
+            y: toggle.height
+            width: parent.width
+            visible: hiddenDevices.open
+            Repeater {
+                model: hiddenDevices.list
+                DeviceRow {
+                    required property var modelData
+                    node: modelData
+                    hiddenRow: true
+                }
+            }
         }
     }
 

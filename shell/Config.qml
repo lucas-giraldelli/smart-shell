@@ -81,6 +81,8 @@ Singleton {
     readonly property string theme: data.theme ?? "glass"
     readonly property var weather: data.weather
     readonly property var music: data.music
+    // audio devices by PipeWire node.name: { name, hidden }
+    readonly property var audioDevices: data.audio?.devices ?? ({})
     readonly property var apps: data.apps
     readonly property var holidays: data.holidays
     readonly property var events: data.events
@@ -107,21 +109,28 @@ Singleton {
     // change one key of the user's file ("theme", "workspaces.style" - the
     // dock settings); the rest of the file is kept, reformatted as JSON
     function set(key, value) {
+        setIn(key.split("."), value);
+    }
+    // the same with an explicit path, for keys that contain dots (PipeWire
+    // node names); `undefined` removes the key
+    function setIn(path, value) {
         let user = {};
         try {
             user = JSON.parse(file.text() || "{}");
         } catch (e) {
-            console.warn("[config] not saving", key, "- the file isn't valid JSON:", e);
+            console.warn("[config] not saving", path.join("."), "- the file isn't valid JSON:", e);
             return;
         }
-        const path = key.split(".");
         let node = user;
         for (const part of path.slice(0, -1)) {
             if (!isObject(node[part]))
                 node[part] = {};
             node = node[part];
         }
-        node[path[path.length - 1]] = value;
+        if (value === undefined)
+            delete node[path[path.length - 1]];
+        else
+            node[path[path.length - 1]] = value;
         file.setText(JSON.stringify(user, null, 2) + "\n");
     }
 

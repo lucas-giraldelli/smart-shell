@@ -180,3 +180,21 @@
 .cc .ct .tag { font-size: 10px; padding: 2px 7px; border-radius: 99px; background: rgba(74, 222, 128, .14); color: var(--ok); }
 .cc .ct .ib { width: 26px; height: 26px; border-radius: 8px; }
 .cc .ct .ib svg.i { width: 13px; height: 13px; }
+
+/* volume: per-device rename / hide (shown on hover) and the hidden ones' footer */
+.cc .row .dev-actions { display: flex; gap: 2px; opacity: 0; transition: opacity .15s; }
+.cc .row:hover .dev-actions { opacity: 1; }
+.cc .dev-btn { width: 22px; height: 22px; border-radius: 7px; background: none; color: var(--menu-sub); }
+.cc .dev-btn svg.i { width: 13px; height: 13px; }
+.cc .dev-btn:hover { background: var(--menu-strong); color: var(--menu-text); }
+.cc .dev-name {
+  width: 100%; font: inherit; font-size: 12.5px; color: var(--menu-text); background: var(--menu-surface);
+  border: 1px solid var(--menu-accent); border-radius: 6px; padding: 1px 6px; outline: none;
+}
+.cc .dev-toggle {
+  display: flex; align-items: center; gap: 6px; width: 100%; padding: 6px 10px; border: 0; background: none; cursor: pointer;
+  font: inherit; font-size: 11px; color: var(--menu-sub); text-align: left;
+}
+.cc .dev-toggle:hover { color: var(--menu-text); }
+.cc .dev-chev { width: 12px; height: 12px; transition: transform .2s; }
+.cc .dev-hidden.open .dev-chev { transform: rotate(90deg); }
