@@ -1,5 +1,6 @@
-// What the dock shows and in which order. This is the file a user edits
-// (the real shell reads the same shape from ~/.config/smart-shell/config.json).
+// Default configuration: what the dock shows and in which order. The user's
+// ~/.config/smart-shell/config.json (see config/config.example.json) overrides
+// any top-level key; serve.sh links it into assets/local for the prototype.
 //
 // `dock` is a list of groups; a separator is drawn between non-empty groups.
 // Every id must exist in components/registry.js. Widgets can also be switched
@@ -15,4 +16,18 @@ export const config = {
   quick: ['volume', 'network', 'brightness', 'docker'],
 
   pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'] },
+
+  // holiday regions marked on the calendar (see data/holidays.js)
+  holidays: ['br', 'cba', 'us'],
 };
+
+// Merge the user's config over the defaults (top-level keys replace). A missing
+// or broken file leaves the defaults in place.
+export async function loadUserConfig() {
+  try {
+    const res = await fetch('assets/local/config.json');
+    if (res.ok) Object.assign(config, await res.json());
+  } catch (err) {
+    console.warn('[config] ignoring assets/local/config.json:', err);
+  }
+}

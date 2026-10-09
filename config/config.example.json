@@ -1,0 +1,9 @@
+{
+  "quick": ["volume", "network", "brightness", "docker"],
+  "holidays": ["br", "cba", "us"],
+  "events": {
+    "calendars": ["you@example.com", "Family"],
+    "daysBack": 7,
+    "daysAhead": 60
+  }
+}

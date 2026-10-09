@@ -31,8 +31,13 @@ uses a static wallpaper; a local video can be linked into the untracked
 
 ## Making it yours
 
-- `prototype/src/data/config.js` - which widgets the dock shows, their order and
-  grouping, and the items of the quick tile.
+- `~/.config/smart-shell/config.json` - your settings; any top-level key replaces
+  the default in `prototype/src/data/config.js`. Start from
+  [`config/config.example.json`](config/config.example.json):
+  - `dock` / `quick` - which widgets show, their order and grouping
+  - `holidays` - holiday regions on the calendar (`br`, `cba`, `us`)
+  - `events.calendars` - Thunderbird calendars to read (by name, usually the
+    account's e-mail); `daysBack` / `daysAhead` - the window exported
 - `prototype/src/data/snapshot.js` - the machine data the prototype displays
   (the real shell reads it live).
 - Missing backends (no Docker, no hyprsunset, no Bluetooth adapter...) keep
@@ -54,8 +59,9 @@ tools/install-services.sh --uninstall
 tools/thunderbird-events.py --output - # run once, print to stdout
 ```
 
-Thunderbird only keeps a local copy of calendars with **Offline support** enabled
-(calendar properties); other calendars can't be read.
+Pick the calendars in `events.calendars` of the config. Thunderbird only keeps a
+local copy of calendars with **Offline support** enabled (calendar properties);
+a chosen calendar that can't be read is listed in the calendar popover with why.
 
 ## Icons
 
