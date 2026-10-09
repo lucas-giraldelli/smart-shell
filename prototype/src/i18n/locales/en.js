@@ -7,7 +7,7 @@ export default {
 
   widgets: {
     workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Music', weather: 'Weather',
-    system: 'System (RAM/CPU)', bluetooth: 'Bluetooth', quick: 'Quick controls', tray: 'Tray', clock: 'Clock',
+    bluetooth: 'Bluetooth', quick: 'Quick controls', tray: 'Tray', clock: 'Clock',
   },
 
   workspaces: { label: 'Workspace {id} · {windows}', empty: 'empty' },
@@ -17,7 +17,6 @@ export default {
   music: { hint: 'Click: play/pause' },
 
   system: {
-    detail: 'CPU {load}% · die (Tccd1) {temp}°C · {free} GiB free of {total}',
     label: 'System', cpu: 'CPU', memory: 'Memory', temp: 'Die (Tccd1) at {temp}°C',
     free: '{free} GiB', used: '{used} of {total} GiB in use',
   },
