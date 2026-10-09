@@ -1,4 +1,5 @@
-.music { width: 212px; padding-left: 6px; overflow: hidden; cursor: pointer; }
+.music { width: 212px; padding-left: 6px; cursor: pointer; }
+.music .meta-col { overflow: hidden; }
 .music .art {
   width: calc(var(--size) - 12px); height: calc(var(--size) - 12px); border-radius: 9px; flex: none;
   display: grid; place-items: center; color: #fff;

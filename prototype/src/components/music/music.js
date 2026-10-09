@@ -1,9 +1,9 @@
 import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { store, update } from '../../state.js';
-import { t } from '../../i18n/index.js';
 
-// Now playing (MPRIS in the real shell). Click toggles play/pause.
+// Now playing (MPRIS in the real shell). Click toggles play/pause; hovering
+// shows the full title, artist and player.
 class Music extends Component {
   static slices = ['media'];
 
@@ -17,7 +17,7 @@ class Music extends Component {
         <div class="progress"><i></i></div>
       </div>
       <div class="eq"><i></i><i></i><i></i><i></i></div>
-      <span class="label">${t('music.hint')}</span>`;
+      <span class="label"></span>`;
   }
 
   setup() {
@@ -28,6 +28,8 @@ class Music extends Component {
 
   update({ media }) {
     this.classList.toggle('playing', media.playing);
+    // title and artist are cut short in the tile: the tooltip has them in full
+    this.$('.label').textContent = [media.title, media.artist, media.source].filter(Boolean).join(' · ');
     this.$('.progress i').style.width = (media.progress * 100).toFixed(1) + '%';
   }
 }
