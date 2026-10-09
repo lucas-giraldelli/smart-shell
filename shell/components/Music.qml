@@ -102,7 +102,7 @@ Tile {
                     anchors.right: parent.right
                     anchors.rightMargin: 8
                     y: 4
-                    icon: "heart"
+                    icon: Media.liked ? "heart-filled" : "heart"
                     // red when the app says it's liked; a short flash when it can't tell
                     property bool flash: false
                     off: flash || Media.liked

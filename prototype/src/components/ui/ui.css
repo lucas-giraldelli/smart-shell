@@ -59,6 +59,8 @@
 span.ib { cursor: default; }
 span.ib:hover { background: var(--menu-hover); }
 .ib.off { color: var(--crit); background: rgba(251, 113, 133, .14); }
+.ib.liked { color: var(--crit); background: rgba(251, 113, 133, .14); }
+.ib.liked svg { fill: currentColor; }
 
 /* small text button */
 .btn-s {
