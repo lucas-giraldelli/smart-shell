@@ -22,8 +22,9 @@ Singleton {
             monitor: "kitty --class=btop-float -e btop",
             docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'"
         },
-        // tray items left out, matched against their id, title or icon name
-        tray: { hidden: ["blueman", "bluetooth"] },
+        // tray items left out, matched against their id, title or icon name;
+        // fcitx5's menu can quit the input method, which breaks typing
+        tray: { hidden: ["blueman", "bluetooth", "fcitx"] },
         pets: { available: ["cat", "shiba", "fox", "penguin", "bunny", "capy", "frog"] },
         locale: null,
         workspaces: { icons: {} }
