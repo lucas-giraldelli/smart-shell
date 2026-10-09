@@ -53,6 +53,7 @@ The manual way - dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't 
 | `bluez`, `bluez-utils`, `blueman` | Bluetooth tile and its "open manager" row (optional) |
 | `python-bluetooth-battery` (AUR) | headset battery for headsets that don't report it to BlueZ (optional) |
 | `btop`, `lazydocker`, `kitty` | the default commands behind the btop / lazydocker buttons |
+| `cava` | optional: pets dance to the beat |
 
 Run it:
 
@@ -106,8 +107,13 @@ Calendar events need the export timer: `tools/install-services.sh` (see
 - **Pet** - one per dock, picked in the dock settings ("Nenhum" for none). It
   walks on the dock's top edge and follows the CPU load (sleeps under 10%,
   idles, walks, runs over 72%); during a work meeting (an ongoing event in the
-  `work` category, see Clock) it types on a laptop. Hover for its mood, click
-  for a heart. Holds still while a fullscreen window is focused.
+  `work` category, see Clock) it types on a laptop, and while YouTube Music
+  plays (`pets.danceWith`, default `["music.youtube.com"]`, matched against a
+  player's url, identity, desktop entry or command line) it dances its own
+  dance with music notes popping out (a meeting wins over music). With `cava`
+  installed (optional) the dance follows the music's beat and loudness;
+  without it, a fixed ~120 bpm. Hover for its mood, click for a heart. Holds
+  still while a fullscreen window is focused.
 
 - **Workspaces** - Hyprland. `workspaces.style` (also in the dock settings)
   picks how occupied workspaces show: `icons` (default; per workspace id in
