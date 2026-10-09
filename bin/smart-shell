@@ -7,7 +7,7 @@
 #   smart-shell start | restart | stop | log
 #   smart-shell fake-event "<title>" <in-min> <dur-min> [category] | --clear
 #
-# Widgets with extra needs: brightness nightlight docker bluetooth events system.
+# Widgets with extra needs: brightness nightlight docker bluetooth events system pets.
 # Everything else (workspaces, clock, music, weather, tray, network, caps lock)
 # only needs the core packages.
 set -euo pipefail
@@ -17,7 +17,7 @@ SHELL_DIR="$REPO/shell"
 HYPR_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/config.json"
 
-WIDGETS=(brightness nightlight docker bluetooth events system)
+WIDGETS=(brightness nightlight docker bluetooth events system pets)
 
 # packages per widget; core is always installed
 declare -A PKGS=(
@@ -28,6 +28,7 @@ declare -A PKGS=(
   [bluetooth]="bluez bluez-utils blueman python-bluetooth-battery"
   [events]="python"
   [system]="btop kitty"
+  [pets]="cava"
 )
 
 bold() { printf '\033[1m%s\033[0m\n' "$*"; }
@@ -139,6 +140,9 @@ cmd_doctor() {
   bold "system"
   check_pkgs "${PKGS[system]}"
   if grep -qs Tccd1 /sys/class/hwmon/hwmon*/temp*_label; then ok "Tccd1 sensor"; else note "no Tccd1 (non-AMD?) - temperature hidden"; fi
+
+  bold "pets (optional)"
+  if command -v cava >/dev/null; then ok "cava - they dance to the beat"; else note "no cava - they dance at a fixed tempo (smart-shell install pets)"; fi
 }
 
 # --- hyprland ----------------------------------------------------------------
