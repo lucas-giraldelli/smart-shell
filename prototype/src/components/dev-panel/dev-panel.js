@@ -10,7 +10,7 @@ import { t } from '../../i18n/index.js';
 const check = (attr, id, label) => `<label class="check"><input type="checkbox" ${attr}="${id}"> ${label}</label>`;
 
 class DevPanel extends Component {
-  static slices = ['ui', 'system', 'caps', 'network', 'docker', 'tray'];
+  static slices = ['ui', 'system', 'caps', 'network', 'docker', 'tray', 'media'];
 
   render() {
     return `
@@ -31,6 +31,7 @@ class DevPanel extends Component {
         <h2>${t('dev.tuning')}</h2>
         <div class="dp-row"><label>${t('dev.cpuLoad')}</label><input type="range" min="0" max="100" data-set="load"><output data-out="load"></output></div>
         ${check('data-opt', 'cpuAuto', t('dev.cpuAuto'))}
+        ${check('data-opt', 'musicPlaying', t('dev.musicPlaying'))}
         ${check('data-opt', 'liveWallpaper', t('dev.liveWallpaper'))}
         <div class="hint">${t('dev.hint')}<br>${t('dev.keys', { n: themes.length })}</div>
       </aside>`;
@@ -56,7 +57,8 @@ class DevPanel extends Component {
           containers: d.containers.map(c => (c.name === 'qbittorrent' ? { ...c, state: on ? 'restarting' : 'running' } : c)),
         }));
       }
-      if (opt === 'cpuAuto') update('system', { auto: on });
+      if (opt === 'musicPlaying') update('media', { playing: on });
+      else if (opt === 'cpuAuto') update('system', { auto: on });
       else if (opt) update('ui', { [opt]: on });
     });
     this.addEventListener('input', e => {
@@ -72,7 +74,8 @@ class DevPanel extends Component {
     });
   }
 
-  update({ ui, system, caps, network, docker, tray }) {
+  update({ ui, system, caps, network, docker, tray, media }) {
+    this.$('[data-opt="musicPlaying"]').checked = media.playing;
     this.$('[data-fail="trayAttention"]').checked = tray.attention.length > 0;
     this.$('[data-fail="offline"]').checked = !network.online;
     this.$('[data-fail="memHeavy"]').checked = system.memHeavy;

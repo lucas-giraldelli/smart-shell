@@ -127,4 +127,4 @@ export const weather = {
   ].map(([date, min, max, code, precip]) => ({ date, min, max, code, precip })),
 };
 
-export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music' };
+export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music', url: 'https://music.youtube.com/watch?v=dX3k_QDnzHE' };

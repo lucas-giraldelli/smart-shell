@@ -8,7 +8,8 @@
 // A pet reacts to CPU load: sleep (< 10%) · idle (< 40%) · walk (< 72%) · run.
 // While idle it picks weighted actions; each species adds or overrides actions
 // through `acts` and can set speed / hop / waddle / chill (never runs). During
-// a work meeting every pet stops in front of a laptop and types.
+// a work meeting every pet stops in front of a laptop and types; while YouTube
+// Music plays every pet dances its own dance (DANCES below).
 const BASE_ACTS = [
   { name: 'stand', w: 3, dur: [2, 5] },
   { name: 'stroll', w: 4, dur: [3, 7], speed: 26 },
@@ -69,6 +70,7 @@ export function createPet(species, width) {
       if (state === 'sleep') pose = 'lie sleep';
     }
     if (activity === 'work') pose = 'work';
+    else if (activity === 'dance') pose = 'dance';
     if (pose) target = 0;
 
     // ease toward the target speed instead of jumping to it
@@ -82,7 +84,7 @@ export function createPet(species, width) {
     if (x < 14) { x = 14; dir = 1; }
 
     const moving = v > 4;
-    let mood = activity === 'work' ? 'work' : state === 'idle' ? act?.name ?? 'stand' : state;
+    let mood = activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state;
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
       x, dir, moving, fast: v > 90, pose: pose && v < 3 ? pose : '', jump: jumpLeft > 0,
@@ -147,3 +149,18 @@ export function look(species, opts) {
   species.__looks.set(key, url);
   return url;
 }
+
+// --- dancing (pets.css .pet.dance) ---
+// One beat = 0.5 s (~120 bpm). Each species moves the whole sprite its own way:
+// dx / dy in px, rot in degrees around its feet; `beats` is the loop length.
+const tri = p => 1 - Math.abs(1 - 2 * p);           // 0 -> 1 -> 0 over a loop
+const wave = p => Math.sin(p * Math.PI * 2);         // -1 .. 1
+export const DANCES = {
+  cat: { beats: 2, at: p => ({ rot: -8 * Math.cos(p * Math.PI * 2) }) },               // sway
+  shiba: { beats: 1, at: p => ({ dy: -5 * tri(p) }) },                                   // bounce
+  fox: { beats: 2, at: p => ({ dx: -3 * Math.cos(p * Math.PI * 2), rot: -4 * Math.cos(p * Math.PI * 2) }) }, // side-step
+  penguin: { beats: 2, at: p => ({ rot: -12 * Math.cos(p * Math.PI * 2) }) },           // a big waddle
+  bunny: { beats: 1, at: p => ({ dy: p < .4 ? -8 * (p / .4) : -8 * (1 - (p - .4) / .6) }) }, // skip
+  capy: { beats: 4, at: p => ({ rot: -4 * Math.cos(p * Math.PI * 2), dy: -2 * tri(p) }) }, // half-time nod
+  frog: { beats: 2, at: p => ({ dx: -4 * Math.cos(p * Math.PI * 2), dy: -6 * Math.abs(wave(p)) }) }, // side hops
+};

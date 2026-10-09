@@ -6,8 +6,9 @@ import "../lib/pets.mjs" as Engine
 // The pet walking on top of the dock (prototype: components/pets, one per
 // dock, Ui.pet). It reacts to CPU load - sleeps, idles, walks or runs - and
 // during a work meeting (an ongoing event in the "work" category) sits at a
-// laptop and types. Hover shows its name, mood and the load; a click sends up
-// a heart. Holds still while a fullscreen window is focused.
+// laptop and types, and while YouTube Music plays (config.pets.danceWith) it
+// dances its species' dance. Hover shows its name, mood and the load; a click
+// sends up a heart. Holds still while a fullscreen window is focused.
 Item {
     id: root
 
@@ -19,7 +20,58 @@ Item {
     property var s: ({ x: 20, dir: 1, moving: false, fast: false, pose: "", jump: false, step: 0.42, mood: "stand" })
     property real clock: 0                  // seconds, drives the leg / blink / screen cycles
 
+    // a work meeting wins over music, music over the CPU
     readonly property bool working: (Events.ongoing?.category ?? "") === "work"
+    readonly property bool dancing: Media.dancing && !working
+    readonly property var dance: Engine.DANCES[kind] ?? null
+    // where in its dance loop the pet is (one beat = 0.5 s)
+    readonly property real dancePhase: dance ? (clock % (0.5 * dance.beats)) / (0.5 * dance.beats) : 0
+    readonly property var move: {
+        if (!dancing || !dance || s.pose !== "dance")
+            return {};
+        // with cava, the moves get bigger with the music's loudness
+        const m = dance.at(dancePhase), k = Beat.active ? 0.6 + 0.8 * Beat.level : 1;
+        return { dx: (m.dx ?? 0) * k, dy: (m.dy ?? 0) * k, rot: (m.rot ?? 0) * k };
+    }
+
+    // music notes while dancing: bursts of 2-4 every 1.2-1.8 s (or on cava's
+    // beats), staggered 120 ms, drifting up and sideways, gone in 1.5 s; at
+    // most 8 at a time
+    property var notes: []          // [{ born, dx, rot, size, color, glyph }]
+    property var pending: []        // birth times of the notes still to come
+    property real burstAt: 0
+    readonly property var noteColors: [Theme.accent, "#ffffff", Qt.tint(Theme.accent, Qt.rgba(1, 1, 1, 0.4)), Qt.tint(Theme.accent, Qt.rgba(0.94, 0.67, 0.99, 0.3))]
+    function burst() {
+        const n = 2 + Math.floor(Math.random() * 3);
+        pending = pending.concat(Array.from({ length: n }, (_, i) => clock + i * 0.12));
+    }
+    function tickNotes() {
+        if (dancing && s.pose === "dance" && !Beat.active && clock >= burstAt) {
+            burst();
+            burstAt = clock + 1.2 + Math.random() * 0.6;
+        }
+        let live = notes.filter(n => clock - n.born < 1.5);
+        const due = pending.filter(t => t <= clock);
+        for (const t of due) {
+            if (live.length >= 8)
+                break;
+            live.push({
+                born: t, glyph: Math.random() < 0.5 ? "♪" : "♫",
+                dx: (Math.random() * 2 - 1) * 12, rot: (Math.random() * 2 - 1) * 20, size: 10 + Math.random() * 4,
+                color: noteColors[Math.floor(Math.random() * noteColors.length)]
+            });
+        }
+        pending = pending.filter(t => t > clock);
+        if (live.length !== notes.length || due.length)
+            notes = live;
+    }
+    Connections {
+        target: Beat
+        function onBeat() {
+            if (root.dancing && root.s.pose === "dance")
+                root.burst();
+        }
+    }
     readonly property bool lying: s.pose.includes("lie")
     readonly property bool sleeping: s.pose.includes("sleep")
 
@@ -41,7 +93,8 @@ Item {
         onTriggered: {
             const dt = Math.min(frameTime, 0.05);
             root.clock += dt;
-            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : null, root.floor.width);
+            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.dancing ? "dance" : null, root.floor.width);
+            root.tickNotes();
         }
     }
 
@@ -51,9 +104,12 @@ Item {
         const phase = (t % s.step) / s.step;                         // legA / legB cadence
         const blink = (t % 4.5) / 4.5 > 0.94 && (t % 4.5) / 4.5 < 0.99;
         const tongue = s.pose === "tongue" && ((t % 1.1) / 1.1 > 0.55 && (t % 1.1) / 1.1 < 0.8);
-        const croak = s.pose === "croak" ? 1 + 0.7 * (0.5 - 0.5 * Math.cos(t / 0.42 * Math.PI)) : 1;
+        const croak = s.pose === "croak" ? 1 + 0.7 * (0.5 - 0.5 * Math.cos(t / 0.42 * Math.PI))
+            : s.pose === "dance" && root.kind === "frog" ? 1 + 0.7 * (0.5 - 0.5 * Math.cos(t / 0.25 * Math.PI)) : 1;
         return {
-            leg: s.moving && !root.species?.hop ? (phase < 0.25 || phase >= 0.75 ? 1 : -1) : 0,
+            // walking legs follow the stride; dancing ones the beat
+            leg: s.pose === "dance" ? ((t % 0.5) < 0.25 ? 1 : -1)
+                : s.moving && !root.species?.hop ? (phase < 0.25 || phase >= 0.75 ? 1 : -1) : 0,
             lie: root.lying,
             closed: root.sleeping || blink,
             tongue,
@@ -68,14 +124,18 @@ Item {
         width: 46
         height: 36
         // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks it
+        x: root.move.dx ?? 0
         y: {
+            if (root.move.dy !== undefined)
+                return root.move.dy;
             if (root.s.jump)
                 return -16 * Math.sin(Math.min(1, (root.clock % 0.55) / 0.55) * Math.PI);
             if (root.species?.hop && root.s.moving)
                 return -8 * Math.abs(Math.sin(root.clock / (root.s.step * 1.3) * Math.PI));
             return 0;
         }
-        rotation: root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
+        rotation: root.move.rot !== undefined ? root.move.rot
+            : root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
         transformOrigin: Item.Bottom
 
         Image {
@@ -102,6 +162,26 @@ Item {
             text: "z"
             color: Theme.text
             font { family: Theme.font; pixelSize: 11; weight: Font.Bold }
+        }
+    }
+
+    // the notes: rise 24px, drift sideways with a wobble, fade (pets.css .note)
+    Repeater {
+        model: root.notes
+        Text {
+            required property var modelData
+            readonly property real p: Math.min(1, (root.clock - modelData.born) / 1.5)
+            readonly property real e: 1 - Math.pow(1 - p, 2)         // ease-out
+            x: 28 + modelData.dx * e + 3 * Math.sin(p * Math.PI)
+            y: -2 + 4 - 28 * e
+            rotation: modelData.rot * e
+            scale: 0.7 + 0.35 * Math.min(1, p * 2)
+            opacity: p < 0.15 ? p / 0.15 : 1 - (p - 0.15) / 0.85
+            text: modelData.glyph
+            color: modelData.color
+            style: Text.Raised
+            styleColor: Qt.rgba(0, 0, 0, 0.35)
+            font { family: Theme.font; pixelSize: Math.round(modelData.size); weight: Font.Bold }
         }
     }
 

@@ -43,6 +43,12 @@ Singleton {
             ?? null;
     }
 
+    // pets dance while one of config.pets.danceWith plays (YouTube Music, a
+    // Chromium web app: only its command line names music.youtube.com)
+    readonly property var danceWith: (Config.petsConfig?.danceWith ?? []).map(s => String(s).toLowerCase())
+    readonly property bool dancing: Mpris.players.values.some(p => p.isPlaying && danceWith.some(word =>
+        [p.identity, p.desktopEntry, p.metadata?.["xesam:url"], cmdlines[pidOf(p)]].filter(Boolean).join(" ").toLowerCase().includes(word)))
+
     readonly property bool active: player !== null
     readonly property bool playing: player?.isPlaying ?? false
     readonly property string title: player?.trackTitle ?? ""

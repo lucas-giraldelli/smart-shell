@@ -130,7 +130,7 @@ export default {
     moods: {
       sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
       turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando',
-      pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca', work: 'Em reunião',
+      pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca', work: 'Em reunião', dance: 'Dançando',
     },
   },
 
@@ -139,7 +139,7 @@ export default {
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
     offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia', trayAttention: 'Slack com menção',
-    tuning: 'Ajustes', cpuLoad: 'Carga da CPU', cpuAuto: 'CPU simulada (picos estilo X3D)',
+    tuning: 'Ajustes', cpuLoad: 'Carga da CPU', musicPlaying: 'YouTube Music tocando (pets dançam)', cpuAuto: 'CPU simulada (picos estilo X3D)',
     liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
     keys: 'H esconde o painel · 1–{n} troca o tema',

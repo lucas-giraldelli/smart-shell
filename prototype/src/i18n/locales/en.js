@@ -130,7 +130,7 @@ export default {
     moods: {
       sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
       turn: 'Looking around', lie: 'Lying down', nap: 'Napping', zoomies: 'Zoomies!', jump: 'Jumping',
-      pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly', work: 'In a meeting',
+      pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly', work: 'In a meeting', dance: 'Dancing',
     },
   },
 
@@ -139,7 +139,7 @@ export default {
     intro: 'HTML mock-up. The real shell runs on Quickshell (QML) with the same look.',
     backends: 'Installed backends (simulated)', failures: 'Simulate failures',
     offline: 'Network down', dockerDown: 'Docker stopped', containerError: 'Container error', memHeavy: 'RAM almost full', trayAttention: 'Slack mention',
-    tuning: 'Tuning', cpuLoad: 'CPU load', cpuAuto: 'Simulated CPU (X3D-style spikes)',
+    tuning: 'Tuning', cpuLoad: 'CPU load', musicPlaying: 'YouTube Music playing (pets dance)', cpuAuto: 'Simulated CPU (X3D-style spikes)',
     liveWallpaper: 'Animated wallpaper (local video)', auto: 'auto',
     hint: 'Click an app to open it · right-click closes · click the quick tile for the control center (dock settings in its Dock tab) · scroll on volume/brightness · click a pet · Caps Lock lights the indicator.',
     keys: 'H hides the panel · 1–{n} switches theme',

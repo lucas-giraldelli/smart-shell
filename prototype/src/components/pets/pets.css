@@ -66,3 +66,37 @@ ss-pets { display: contents; }
 .pet:hover .bubble { opacity: 1; }
 .pet .heart { position: absolute; left: 50%; top: -4px; color: var(--crit); font-size: 16px; pointer-events: none; animation: heart 1s ease-out forwards; }
 @keyframes heart { from { opacity: 1; transform: translate(-50%, 0) scale(.6); } to { opacity: 0; transform: translate(-50%, -30px) scale(1.3); } }
+
+/* dancing to YouTube Music (~120 bpm): every species its own dance; the
+   legs keep the beat */
+.pet.dance .la { animation: legA .5s ease-in-out infinite; }
+.pet.dance .lb { animation: legB .5s ease-in-out infinite; }
+.pet.dance svg { transform-origin: 50% 100%; }
+@keyframes sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
+@keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes sidestep { 0%, 100% { transform: translateX(-3px) rotate(-4deg); } 50% { transform: translateX(3px) rotate(4deg); } }
+@keyframes rock { 0%, 100% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } }
+@keyframes skip { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-8px); } }
+@keyframes nod { 0%, 100% { transform: rotate(-4deg) translateY(0); } 50% { transform: rotate(4deg) translateY(-2px); } }
+@keyframes sidehop { 0% { transform: translate(-4px, 0); } 25% { transform: translate(0, -6px); } 50% { transform: translate(4px, 0); } 75% { transform: translate(0, -6px); } 100% { transform: translate(-4px, 0); } }
+.pet.dance[data-kind="cat"] svg { animation: sway 1s ease-in-out infinite; }       /* sways, paws going */
+.pet.dance[data-kind="shiba"] svg { animation: bounce .5s ease-in-out infinite; }  /* bounces on the beat */
+.pet.dance[data-kind="fox"] svg { animation: sidestep 1s ease-in-out infinite; }   /* side to side */
+.pet.dance[data-kind="penguin"] svg { animation: rock 1s ease-in-out infinite; }   /* a big waddle */
+.pet.dance[data-kind="bunny"] svg { animation: skip .5s ease-out infinite; }       /* hops in place */
+.pet.dance[data-kind="capy"] svg { animation: nod 2s ease-in-out infinite; }       /* chill: half-time nod */
+.pet.dance[data-kind="frog"] svg { animation: sidehop 1s linear infinite; }        /* hops side to side */
+.pet.dance[data-kind="frog"] .pouch { animation: croak .25s ease-in-out infinite alternate; }
+
+/* the music notes a dancing pet sends up */
+.pet .note {
+  position: absolute; left: 28px; top: -2px; pointer-events: none; font-weight: 700; line-height: 1;
+  font-size: var(--size, 12px); color: var(--note, var(--accent)); text-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+  animation: note 1.5s ease-out forwards;
+}
+@keyframes note {
+  0% { opacity: 0; transform: translate(0, 4px) rotate(0deg) scale(.7); }
+  15% { opacity: 1; }
+  50% { transform: translate(calc(var(--dx) * .5 + 3px), -12px) rotate(calc(var(--rot) * .5)) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx), -24px) rotate(var(--rot)) scale(1.05); }
+}

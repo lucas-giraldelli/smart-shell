@@ -14,6 +14,7 @@ Singleton {
     property bool ddcutil: true
     property bool docker: true
     property bool hyprsunset: true
+    property bool cava: false               // optional: the pets dance to its beat
 
     function has(cap) {
         return !cap || root[cap] === true;
@@ -21,11 +22,11 @@ Singleton {
 
     Process {
         running: true
-        command: ["sh", "-c", "for c in ddcutil docker hyprsunset; do command -v $c >/dev/null && echo $c; done; ls /sys/class/bluetooth 2>/dev/null | grep -q . && echo bluetooth"]
+        command: ["sh", "-c", "for c in ddcutil docker hyprsunset cava; do command -v $c >/dev/null && echo $c; done; ls /sys/class/bluetooth 2>/dev/null | grep -q . && echo bluetooth"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const found = text.split("\n");
-                for (const cap of ["bluetooth", "ddcutil", "docker", "hyprsunset"])
+                for (const cap of ["bluetooth", "ddcutil", "docker", "hyprsunset", "cava"])
                     root[cap] = found.includes(cap);
             }
         }

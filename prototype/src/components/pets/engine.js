@@ -7,7 +7,8 @@ import { t } from '../../i18n/index.js';
 // An action's `pose` becomes a CSS class on the pet while it stands still
 // ('lie', 'sleep', or any species-specific one like the frog's 'croak').
 // Outside activities override all of that: during a work meeting every pet
-// stops in front of a laptop and types.
+// stops in front of a laptop and types; while YouTube Music plays
+// (config pets.danceWith) every pet dances its own dance (pets.css).
 
 const BASE_ACTS = [
   { name: 'stand', w: 3, dur: [2, 5] },
@@ -33,11 +34,13 @@ function actionsFor(species) {
 }
 
 export function createPet(kind, species, host) {
+  // the species name picks its dance in pets.css
   const acts = actionsFor(species);
   const mult = species.speed ?? 1;
   const base = 'pet' + (species.hop ? ' hop' : '') + (species.waddle ? ' waddle' : '');
   const el = document.createElement('div');
   el.className = base;
+  el.dataset.kind = kind;
   el.innerHTML = `<span class="bubble"></span><span class="zzz">z</span><span class="zzz">z</span>
     <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
   host.append(el);
@@ -76,7 +79,32 @@ export function createPet(kind, species, host) {
     setTimeout(() => heart.remove(), 1000);
   });
 
+  // dancing: bursts of 2-4 music notes over the pet's head every 1.2-1.8 s,
+  // staggered 120 ms, each drifting up and sideways and fading in 1.5 s
+  // (at most 8 alive)
+  let burstIn = 0;
+  const NOTE_COLORS = ['var(--accent)', '#ffffff', 'color-mix(in srgb, var(--accent) 60%, #fff)', 'color-mix(in srgb, var(--accent) 70%, #f0abfc)'];
+  function note() {
+    if (el.querySelectorAll('.note').length >= 8) return;
+    const n = document.createElement('span');
+    n.className = 'note';
+    n.textContent = Math.random() < .5 ? '♪' : '♫';
+    n.style.setProperty('--dx', `${(Math.random() * 2 - 1) * 12}px`);
+    n.style.setProperty('--rot', `${(Math.random() * 2 - 1) * 20}deg`);
+    n.style.setProperty('--size', `${10 + Math.random() * 4}px`);
+    n.style.setProperty('--note', NOTE_COLORS[Math.floor(Math.random() * NOTE_COLORS.length)]);
+    el.append(n);
+    setTimeout(() => n.remove(), 1500);
+  }
+  function burst() {
+    const count = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < count; i++) setTimeout(note, i * 120);
+  }
+
   function step(dt, load, activity = null) {
+    if (activity === 'dance') {
+      if ((burstIn -= dt) <= 0) { burst(); burstIn = 1.2 + Math.random() * .6; }
+    } else burstIn = 0;
     const want = loadState(load);
     if (want === state) pending = null;
     else {
@@ -94,6 +122,7 @@ export function createPet(kind, species, host) {
       if (state === 'sleep') pose = 'lie sleep';
     }
     if (activity === 'work') pose = 'work';
+    else if (activity === 'dance') pose = 'dance';
     if (pose) target = 0;
 
     // ease toward the target speed instead of jumping to it
@@ -118,7 +147,7 @@ export function createPet(kind, species, host) {
       if (st !== lastStep) { el.style.setProperty('--step', st); lastStep = st; }
     }
 
-    let mood = t(`pets.moods.${activity === 'work' ? 'work' : state === 'idle' ? act?.name ?? 'stand' : state}`);
+    let mood = t(`pets.moods.${activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state}`);
     if (species.chill && load + jitter >= 72) mood = t('pets.chill');
     const text = t('pets.bubble', { name: t(`pets.names.${kind}`), mood, load: Math.round(load) });
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }

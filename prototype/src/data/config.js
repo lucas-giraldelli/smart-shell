@@ -22,7 +22,9 @@ export const config = {
     docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'",
   },
 
-  pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'] },
+  // pets dance while one of these players plays (substrings of its url,
+  // identity, desktop entry or command line): YouTube Music
+  pets: { available: ['cat', 'shiba', 'fox', 'penguin', 'bunny', 'capy', 'frog'], danceWith: ['music.youtube.com'] },
 
   // UI language (a tag from src/i18n/locales); unset = the browser's language
   locale: null,

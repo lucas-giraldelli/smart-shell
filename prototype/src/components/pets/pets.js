@@ -2,6 +2,12 @@ import { Component, define } from '../../core/component.js';
 import { onFrame } from '../../core/loop.js';
 import { store } from '../../state.js';
 import { createPet } from './engine.js';
+import { config } from '../../data/config.js';
+
+// pets dance while the player in config.pets.danceWith (YouTube Music) plays;
+// the mock's media slice stands in for MPRIS (its `url`, `source`)
+const dancing = media => media.playing
+  && (config.pets?.danceWith ?? []).some(w => `${media.url ?? ''} ${media.source ?? ''}`.toLowerCase().includes(w.toLowerCase()));
 import cat from './species/cat.js';
 import shiba from './species/shiba.js';
 import fox from './species/fox.js';
@@ -22,8 +28,9 @@ class Pets extends Component {
     this.pets = [];
     this.stopLoop = onFrame(dt => {
       const { system, agenda } = store.get();
-      // what the user is busy with right now (only work meetings change the pets so far)
-      const activity = agenda.ongoing?.category ?? null;
+      // what the user is busy with right now: a work meeting wins over music
+      const work = agenda.ongoing?.category === 'work';
+      const activity = work ? 'work' : dancing(store.get().media) ? 'dance' : null;
       for (const pet of this.pets) pet.step(dt, system.load, activity);
     });
   }
