@@ -35,6 +35,10 @@ Tile {
         font { family: Theme.font; pixelSize: 11; weight: Font.Medium }
     }
     FontMetrics {
+        id: timeInk
+        font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold }
+    }
+    FontMetrics {
         id: timeFont
         font { family: Theme.font; pixelSize: 20; weight: Font.DemiBold; features: Theme.tnum }
     }
@@ -87,19 +91,25 @@ Tile {
         width: root.width - 30
         height: 41
 
+        // compact: time centered over the date by their ink, with proportional
+        // digits (a tabular "1" leaves room on its left, so the lines looked
+        // off); the reminder keeps them left-aligned and tabular
         Label {
             id: time
+            readonly property rect ink: timeInk.tightBoundingRect(text)
+            x: root.reminding ? 0 : (parent.width - (ink.width - 0.4 * (text.length - 1))) / 2 - ink.x
+            Behavior on x { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
             text: I18n.formatTime(clock.date)
             size: 20
             weight: Font.DemiBold
             letterSpacing: -0.4
-            tnum: true
+            tnum: root.reminding
             shadow: true
             color: Theme.text
         }
         // the date joins the time while an event takes the second line
         Label {
-            x: time.implicitWidth + 7 - (root.reminding ? 0 : 4)
+            x: time.x + time.implicitWidth + 7 - (root.reminding ? 0 : 4)
             y: 9
             opacity: root.reminding ? 1 : 0
             text: I18n.capitalize(I18n.formatDate(clock.date, "mini"))
@@ -124,7 +134,11 @@ Tile {
 
                 Label {
                     id: dateLine
-                    width: parent.width
+                    // compact: centered by its ink
+                    readonly property rect ink: dateFont.tightBoundingRect(text)
+                    x: root.reminding ? 0 : (parent.width - ink.width) / 2 - ink.x
+                    width: root.reminding ? parent.width : implicitWidth
+                    Behavior on x { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
                     lineHeight: 15
                     elide: Text.ElideRight
                     text: I18n.capitalize(I18n.formatDate(clock.date, "date"))

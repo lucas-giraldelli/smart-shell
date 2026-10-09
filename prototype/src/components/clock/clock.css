@@ -15,6 +15,14 @@
 
 /* the date joins the time on the first line while the event name takes the second */
 .clock.reminding { width: 168px; }
+/* compact: time centered over the date (a tabular "1" leaves room on its
+   left, so left-aligned lines looked off); the reminder keeps them left
+   and tabular */
+.clock:not(.reminding) { align-items: center; }
+/* proportional digits here: centered by its box, the ink lands centered too */
+.clock:not(.reminding) .t-big { font-variant-numeric: normal; }
+.clock:not(.reminding) .mini-date { position: absolute; }
+.clock:not(.reminding) .ticker > * { text-align: center; }
 .clock .clock-top { display: flex; align-items: baseline; gap: 7px; }
 .clock .mini-date { opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
 .clock.reminding .mini-date { opacity: 1; transform: none; }
