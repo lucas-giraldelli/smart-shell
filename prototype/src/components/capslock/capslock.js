@@ -2,13 +2,13 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { toggleCapsLock } from '../../services/keyboard.js';
 
-// Caps Lock indicator for keyboards without an LED: a quiet icon when off,
-// a glowing "CAPS" pill when on.
+// Caps Lock indicator for keyboards without an LED: always visible, white when
+// off and the theme's ok-green when on.
 class CapsLock extends Component {
   static slices = ['keyboard'];
 
   render() {
-    return `${icon('arrow-big-up-dash')}<span class="caps-text">CAPS</span><span class="label"></span>`;
+    return `${icon('arrow-big-up-dash')}<span class="label"></span>`;
   }
 
   setup() {
