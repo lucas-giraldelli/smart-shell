@@ -36,6 +36,7 @@ class Quick extends Component {
     this.items = configuredPanes(config.quick, caps);
     // one slot per mini item: a pane may contribute several
     this.slots = this.items.flatMap(({ pane, available }) => {
+      if (!pane.quick) return []; // tab-only pane (e.g. settings)
       const out = available ? pane.quick(state) : null;
       const count = Array.isArray(out) ? out.length : 1;
       return Array.from({ length: count }, (_, i) => ({ pane, available, i }));

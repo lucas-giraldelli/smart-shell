@@ -32,7 +32,7 @@ class ControlCenter extends Component {
     this.available = new Set(items.filter(i => i.available).map(i => i.pane.id));
     this.innerHTML = `
       <div class="tabs">${items.map(({ pane: p, available }) =>
-        `<button data-tab="${p.id}"${available ? '' : ' class="disabled"'}>${icon(p.icon)}${p.label}</button>`).join('')}</div>
+        `<button data-tab="${p.id}" title="${p.label}"${available ? '' : ' class="disabled"'}>${icon(p.icon)}<span>${p.label}</span></button>`).join('')}</div>
       ${items.map(({ pane: p, available }) =>
         `<div class="pane" data-pane="${p.id}">${available ? p.render() : this.missing(p)}</div>`).join('')}`;
   }
