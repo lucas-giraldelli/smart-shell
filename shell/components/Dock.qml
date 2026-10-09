@@ -15,6 +15,7 @@ Rectangle {
         capslock: capsWidget,
         bluetooth: bluetoothWidget,
         music: musicWidget,
+        apps: appsWidget,
         tray: trayWidget,
         quick: quickWidget,
         weather: weatherWidget,
@@ -24,6 +25,9 @@ Rectangle {
     readonly property var groups: Config.dock
         .map(g => Object.assign({}, g, { widgets: g.widgets.filter(id => widgets[id] && !Ui.hidden.includes(id)) }))
         .filter(g => g.widgets.length)
+
+    // the app row's growing icons reach above the bar; the input mask adds them
+    property Item appsHit: null
 
     implicitWidth: row.implicitWidth + Theme.padX * 2
     implicitHeight: Theme.size + Theme.padTop + Theme.padBottom
@@ -102,6 +106,12 @@ Rectangle {
     Component {
         id: bluetoothWidget
         BluetoothTile {}
+    }
+    Component {
+        id: appsWidget
+        AppRow {
+            Component.onCompleted: root.appsHit = hit
+        }
     }
     Component {
         id: musicWidget

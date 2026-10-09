@@ -39,6 +39,8 @@ Singleton {
                 }
             }
         },
+        // the app row: desktop entry ids, in order (running apps follow)
+        apps: { pinned: ["kitty", "zen", "google-chrome", "code", "io.dbeaver.DBeaver", "slack", "whatsapp", "youtube-music", "org.mozilla.Thunderbird", "steam", "thunar", "vlc"] },
         // MPRIS players the music tile never shows (substrings of identity,
         // desktop entry, title, url or command line)
         music: { ignore: ["whatsapp"] },
@@ -65,6 +67,7 @@ Singleton {
     readonly property var locale: data.locale
     readonly property var weather: data.weather
     readonly property var music: data.music
+    readonly property var apps: data.apps
     readonly property var holidays: data.holidays
     readonly property var events: data.events
     // workspace id -> Lucide icon name

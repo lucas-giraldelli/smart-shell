@@ -28,7 +28,10 @@ ShellRoot {
             WlrLayershell.namespace: "smart-shell"
             WlrLayershell.layer: WlrLayer.Top
 
-            mask: Region { item: dock }
+            mask: Region {
+                item: dock
+                Region { item: dock.appsHit }
+            }
 
             Dock {
                 id: dock
