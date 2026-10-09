@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import Quickshell
 import Quickshell.Services.SystemTray
 import ".."
@@ -9,8 +8,11 @@ import ".."
 // secondary action, scroll goes to the item, right click opens its menu in a
 // popover (TrayMenu). An empty tray hides the tile.
 // Items matching config.tray.hidden (id, title or icon) are left out - Bluetooth
-// has its own widget. Icons are drawn desaturated and dimmed so app colours
-// don't fight the glass, and come back in full on hover.
+// has its own widget, and quitting fcitx5 from here breaks text input. Icons
+// are drawn grey and dimmed so app colours don't fight the glass, except for
+// vivid pixels: status badges like Slack's unread dot keep their colour (Slack
+// never sets NeedsAttention, the dot in its pixmap is the only signal). Hover
+// brings the whole icon back in colour.
 Tile {
     id: root
 
@@ -58,15 +60,17 @@ Tile {
                     smooth: true
                     visible: false
                 }
-                MultiEffect {
+                // greyed and dimmed, badges kept in colour; full colour on hover
+                ShaderEffect {
                     anchors.fill: icon
-                    source: icon
-                    saturation: area.containsMouse ? 0 : -1
-                    opacity: area.containsMouse ? 1 : Theme.sub.a
+                    property var source: icon
+                    property real dim: area.containsMouse ? 1 : Theme.sub.a
+                    property real color: area.containsMouse ? 1 : 0
+                    fragmentShader: Qt.resolvedUrl("../shaders/tray-icon.frag.qsb")
                     scale: area.containsMouse ? 1.2 : 1
                     Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
-                    Behavior on saturation { NumberAnimation { duration: 200 } }
-                    Behavior on opacity { NumberAnimation { duration: 200 } }
+                    Behavior on color { NumberAnimation { duration: 200 } }
+                    Behavior on dim { NumberAnimation { duration: 200 } }
                 }
 
                 MouseArea {
