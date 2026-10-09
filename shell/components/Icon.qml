@@ -10,6 +10,7 @@ Item {
     property string name
     property color color: "white"
     property real size: 16
+    property real strokeWidth: 2
 
     implicitWidth: size
     implicitHeight: size
@@ -32,7 +33,8 @@ Item {
                 return "";
             const hex = "#" + [root.color.r, root.color.g, root.color.b]
                 .map(c => Math.round(c * 255).toString(16).padStart(2, "0")).join("");
-            return "data:image/svg+xml;utf8," + encodeURIComponent(svg.replace(/currentColor/g, hex));
+            return "data:image/svg+xml;utf8," + encodeURIComponent(svg.replace(/currentColor/g, hex)
+                .replace(/stroke-width="2"/, `stroke-width="${root.strokeWidth}"`));
         }
     }
 }
