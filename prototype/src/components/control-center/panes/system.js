@@ -54,9 +54,10 @@ export default {
   // one pane, two mini items
   quick: ({ system: s }) => [
     { icon: 'memory-stick', text: `${Math.round(s.memFree)} GiB`, width: '6ch', status: memStatus(s) === 'ok' ? null : memStatus(s) },
-    // load and temperature in fixed slots exactly as wide as "100%" and "100°"
-    // (tabular 11.5px Inter), so neither moves the other
-    { icon: 'cpu', parts: [[`${Math.round(s.load)}%`, '4.55ch', 'right'], [`${s.temp}°`, '3.72ch', 'left']], width: '8.8ch', status: tempStatus(s) === 'ok' ? null : tempStatus(s) },
+    // load and temperature left-aligned in fixed slots exactly as wide as "100%"
+    // and "100°" (tabular 11.5px Inter), 5px apart like icon and text: the
+    // temperature always starts at the same x
+    { icon: 'cpu', parts: [[`${Math.round(s.load)}%`, '4.55ch'], [`${s.temp}°`, '3.72ch']], width: '8.95ch', status: tempStatus(s) === 'ok' ? null : tempStatus(s) },
   ],
 
   render: () => `

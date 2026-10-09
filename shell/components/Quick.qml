@@ -78,14 +78,13 @@ Tile {
                 Row {
                     x: 19
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 4
+                    spacing: 5           // the icon's gap
                     Repeater {
                         // one fixed slot per live value (a plain text is one part)
                         model: slot.modelData.parts ?? [[slot.modelData.text, slot.modelData.width]]
                         Label {
                             required property var modelData
                             width: root.ch * modelData[1]
-                            horizontalAlignment: modelData[2] === "right" ? Text.AlignRight : Text.AlignLeft
                             shadow: true
                             text: modelData[0]
                             color: slot.alarm ? slot.statusColor : Theme.text
