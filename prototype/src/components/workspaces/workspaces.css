@@ -18,3 +18,15 @@
 }
 .ws.icons button.has:not(.on):hover { opacity: 1; transform: scale(1.12); }
 .ws.icons button.has:not(.on) .g { display: block; }
+
+/* numbers mode: the same footprint as the icon dots, holding the workspace's
+   number (tabular, so 1 and 10 share a width); the pill shows its number too */
+.ws button .num { display: none; font-size: 11px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; color: var(--text); }
+.ws.numbers button.has:not(.on) {
+  width: 21px; height: 21px; opacity: .92;
+  background: var(--tile-bg); border-color: var(--tile-border);
+}
+.ws.numbers button.has:not(.on):hover { opacity: 1; transform: scale(1.12); }
+.ws.numbers button.on { height: 21px; }
+.ws.numbers button.has .num, .ws.numbers button.on .num { display: block; }
+.ws.numbers button.on .num { color: var(--on-accent); }

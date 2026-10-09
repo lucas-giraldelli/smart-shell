@@ -14,7 +14,10 @@ Singleton {
     // persisted preferences
     readonly property string theme: Config.theme     // saved in config.json
     property alias hidden: prefs.hidden      // widget ids switched off
-    property alias wsIcons: prefs.wsIcons
+    // workspaces: "icons" | "numbers" | "dots", saved as workspaces.style in
+    // config.json; until it's set there, the old on/off switch decides
+    readonly property string wsStyle: ["icons", "numbers", "dots"].includes(Config.workspaceStyle)
+        ? Config.workspaceStyle : prefs.wsIcons ? "icons" : "dots"
     property alias pet: prefs.pet            // one pet per dock, "" = none
     property alias size: prefs.size
     property alias magnify: prefs.magnify
@@ -35,6 +38,10 @@ Singleton {
 
     function closePopover() {
         popover = "";
+    }
+
+    function setWsStyle(style) {
+        Config.set("workspaces.style", style);
     }
 
     function setTheme(id) {

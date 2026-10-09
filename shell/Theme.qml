@@ -28,7 +28,7 @@ Singleton {
         // --shadow: 0 18px 50px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .25)
         dockShadow: [0, 0, 0, 0.35], dockShadowY: 18, dockShadowBlur: 50, dockInset: [255, 255, 255, 0.25],
         tileBg: [255, 255, 255, 0.12], tileBorder: [255, 255, 255, 0.14],
-        text: "#ffffff", sub: [255, 255, 255, 0.72], accent: "#7dd3fc", dot: [255, 255, 255, 0.9],
+        text: "#ffffff", sub: [255, 255, 255, 0.72], accent: "#7dd3fc", onAccent: "#0f172a", dot: [255, 255, 255, 0.9],
         sep: [255, 255, 255, 0.22], ringTrack: [255, 255, 255, 0.16],
         // a faint shadow under dock text and icons, for light wallpapers
         // (--text-shadow 0 1px 2px / --icon-shadow 0 1px 1px, both .25)
@@ -70,7 +70,7 @@ Singleton {
         paper: {
             dockBg: [248, 243, 232, 0.97], dockBorder: "#ddd2bd", dockShadow: [70, 50, 20, 0.28], dockShadowY: 14, dockShadowBlur: 34,
             dockInset: "#ffffff",
-            tileBg: "#fffdf8", tileBorder: "#e6dccb", text: "#2b2620", sub: "#6f6555", accent: "#c2410c", dot: "#2b2620",
+            tileBg: "#fffdf8", tileBorder: "#e6dccb", text: "#2b2620", sub: "#6f6555", accent: "#c2410c", onAccent: "#ffffff", dot: "#2b2620",
             textShadow: [0, 0, 0, 0], sep: "#d9ceb8", reflection: 0, radius: 18, labelBg: [43, 38, 32, 0.9], ringTrack: "#ece3d2",
             menuBg: [251, 247, 238, 0.98], menuLine: "#ddd2bd", menuText: "#2b2620", menuSub: "#6f6555", menuFaint: "#776e5f",
             menuSurface: [43, 38, 32, 0.05], menuHover: [43, 38, 32, 0.08], menuStrong: [43, 38, 32, 0.14],
@@ -131,6 +131,7 @@ Singleton {
     readonly property color text: c("text")
     readonly property color sub: c("sub")
     readonly property color accent: c("accent")
+    readonly property color onAccent: c("onAccent")       // text on the accent
     readonly property color sep: c("sep")
     readonly property color dot: c("dot")                   // running app indicator
     readonly property real reflection: v("reflection")      // app icons' mirror (--refl)

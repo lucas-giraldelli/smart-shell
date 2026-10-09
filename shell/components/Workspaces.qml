@@ -3,8 +3,9 @@ import Quickshell.Hyprland
 import ".."
 
 // Workspace switcher (prototype: components/workspaces). The active workspace
-// is an accent pill; occupied ones are small circles holding their icon from
-// config.workspaces.icons; empty ones are plain dots. Click switches.
+// is an accent pill; occupied ones follow Ui.wsStyle: small circles holding
+// their icon from config.workspaces.icons, or their number (the pill shows
+// its number too), or plain dots like the empty ones. Click switches.
 Row {
     id: root
 
@@ -26,7 +27,10 @@ Row {
             readonly property bool active: modelData.id === root.activeId
             readonly property bool occupied: modelData.toplevels.values.length > 0
             readonly property string iconName: Config.workspaceIcons[String(modelData.id)] ?? ""
-            readonly property bool showIcon: Ui.wsIcons && occupied && !active && iconName !== ""
+            readonly property bool showIcon: Ui.wsStyle === "icons" && occupied && !active && iconName !== ""
+            // numbers: occupied ones show their id in the icon dot's footprint, the pill too
+            readonly property bool showNumber: Ui.wsStyle === "numbers" && (occupied || active)
+            readonly property bool big: showIcon || (showNumber && !active)
 
             width: dot.width
             height: Theme.size
@@ -35,17 +39,30 @@ Row {
             Rectangle {
                 id: dot
                 anchors.centerIn: parent
-                width: slot.active ? 28 : slot.showIcon ? 21 : 9
-                height: slot.showIcon ? 21 : 9
+                width: slot.active ? 28 : slot.big ? 21 : 9
+                height: slot.big || (slot.active && slot.showNumber) ? 21 : 9
                 radius: height / 2
-                color: slot.active ? Theme.accent : slot.showIcon ? Theme.tileBg : Theme.sub
-                opacity: slot.active || slot.showIcon ? 1 : 0.45
-                border.width: slot.showIcon ? 1 : 0
+                color: slot.active ? Theme.accent : slot.big ? Theme.tileBg : Theme.sub
+                opacity: slot.active || slot.big ? 1 : 0.45
+                border.width: slot.big ? 1 : 0
                 border.color: Theme.tileBorder
 
                 Behavior on width { NumberAnimation { duration: 350; easing.type: Easing.OutBack } }
                 Behavior on height { NumberAnimation { duration: 350; easing.type: Easing.OutBack } }
                 Behavior on color { ColorAnimation { duration: 300 } }
+
+                // 600 11px tabular, so 1 and 10 share a width
+                Label {
+                    anchors.centerIn: parent
+                    visible: slot.showNumber
+                    text: slot.modelData.id
+                    size: 11
+                    weight: Font.DemiBold
+                    tnum: true
+                    lineHeight: 11
+                    shadow: !slot.active
+                    color: slot.active ? Theme.onAccent : Theme.text
+                }
 
                 Icon {
                     shadow: true

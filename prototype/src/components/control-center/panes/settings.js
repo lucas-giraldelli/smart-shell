@@ -4,7 +4,7 @@ import { store, update } from '../../../state.js';
 import { themes } from '../../../data/themes.js';
 import { widgets } from '../../registry.js';
 import { species } from '../../pets/pets.js';
-import { slider, setSlider, row, toggle, setHTML } from '../../ui/ui.js';
+import { slider, setSlider, setHTML } from '../../ui/ui.js';
 import { t, locale, locales } from '../../../i18n/index.js';
 
 // The dock's own settings: look, which widgets and pets show, language.
@@ -34,7 +34,8 @@ export default {
       </div>
       ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
       ${slider({ key: 'magnify', label: t('settings.magnify'), iconName: 'sliders-horizontal', min: 100, max: 220 })}
-      <div data-ws-icons></div>
+      <div class="ws-style"><span class="grow">${t('settings.wsStyle')}</span><span class="seg">${
+        ['icons', 'numbers', 'dots'].map(s => `<button data-ws-style="${s}">${t(`settings.wsStyles.${s}`)}</button>`).join('')}</span></div>
 
       <div class="sec">${t('settings.widgets')}</div>
       <div class="checks">${TOGGLEABLE.map(id => `<label class="check-row" data-widget="${id}"><span data-box></span>${t(`widgets.${id}`)}</label>`).join('')}</div>
@@ -57,7 +58,7 @@ export default {
     root.querySelectorAll('[data-theme-id]').forEach(b => b.classList.toggle('on', b.dataset.themeId === ui.theme));
     setSlider(root, 'size', ui.size, `${ui.size}px`);
     setSlider(root, 'magnify', Math.round(ui.magnify * 100), `${ui.magnify.toFixed(2)}×`);
-    setHTML(root.querySelector('[data-ws-icons]'), row({ title: t('settings.wsIcons'), trailing: toggle(ui.wsIcons), attrs: 'data-toggle="wsIcons"' }));
+    root.querySelectorAll('[data-ws-style]').forEach(b => b.classList.toggle('on', b.dataset.wsStyle === ui.wsStyle));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
     setHTML(root.querySelector('[data-ps-current]'), `${sprite(ui.pet)}<span class="grow">${petName(ui.pet)}</span>`);
     root.querySelectorAll('.ps-opt').forEach(el => el.classList.toggle('on', (ui.pet ?? 'none') === el.dataset.pet));
@@ -68,7 +69,8 @@ export default {
     const ui = store.get().ui;
     const theme = target.closest('[data-theme-id]');
     if (theme) return update('ui', { theme: theme.dataset.themeId });
-    if (target.closest('[data-toggle="wsIcons"]')) return update('ui', { wsIcons: !ui.wsIcons });
+    const wsStyle = target.closest('[data-ws-style]');
+    if (wsStyle) return update('ui', { wsStyle: wsStyle.dataset.wsStyle });
     const widget = target.closest('[data-widget]');
     if (widget) {
       const id = widget.dataset.widget;

@@ -79,6 +79,8 @@ Singleton {
     readonly property var apps: data.apps
     readonly property var holidays: data.holidays
     readonly property var events: data.events
+    // "icons" | "numbers" | "dots", or undefined (Ui falls back to its old switch)
+    readonly property var workspaceStyle: data.workspaces?.style
     // workspace id -> Lucide icon name
     readonly property var workspaceIcons: data.workspaces?.icons ?? ({})
 
@@ -96,8 +98,8 @@ Singleton {
         return target;
     }
 
-    // change one top-level key of the user's file (the dock settings' theme);
-    // the rest of the file is kept, reformatted as JSON
+    // change one key of the user's file ("theme", "workspaces.style" - the
+    // dock settings); the rest of the file is kept, reformatted as JSON
     function set(key, value) {
         let user = {};
         try {
@@ -106,7 +108,14 @@ Singleton {
             console.warn("[config] not saving", key, "- the file isn't valid JSON:", e);
             return;
         }
-        user[key] = value;
+        const path = key.split(".");
+        let node = user;
+        for (const part of path.slice(0, -1)) {
+            if (!isObject(node[part]))
+                node[part] = {};
+            node = node[part];
+        }
+        node[path[path.length - 1]] = value;
         file.setText(JSON.stringify(user, null, 2) + "\n");
     }
 

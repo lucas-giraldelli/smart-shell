@@ -70,9 +70,9 @@ general {
 Configuration lives in `~/.config/smart-shell/config.json` (start from
 [`config/config.example.json`](config/config.example.json); it reloads live).
 The theme picked in the dock settings tab is written back to it (`theme`; the
-file is re-saved as formatted JSON). The tab's other settings (size,
-magnification, workspace icons, which widgets show, pet, language) are saved
-in Quickshell's state file instead.
+file is re-saved as formatted JSON). So is the workspaces style
+(`workspaces.style`). The tab's other settings (size, magnification, which
+widgets show, pet, language) are saved in Quickshell's state file instead.
 
 Calendar events need the export timer: `tools/install-services.sh` (see
 [Calendar events](#calendar-events)).
@@ -92,8 +92,10 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   `work` category, see Clock) it types on a laptop. Hover for its mood, click
   for a heart. Holds still while a fullscreen window is focused.
 
-- **Workspaces** - Hyprland. Icons per workspace id in `workspaces.icons`
-  (Lucide names).
+- **Workspaces** - Hyprland. `workspaces.style` (also in the dock settings)
+  picks how occupied workspaces show: `icons` (default; per workspace id in
+  `workspaces.icons`, Lucide names), `numbers` (their id; the active pill shows
+  its number too) or `dots`.
 - **Caps Lock** - reads `/sys/class/leds/*::capslock` (no setup).
 - **Apps** - the pinned apps in `apps.pinned`: desktop entry ids, or
   `{ "id", "name", "icon" }` to override the entry; only pinned apps show,

@@ -3,7 +3,7 @@ body[data-theme="paper"] {
   --shadow: 0 14px 34px rgba(70, 50, 20, .28), inset 0 1px 0 #fff;
   --tile-bg: #fffdf8; --tile-border: #e6dccb;
   --text: #2b2620; --sub: #6f6555; --accent: #c2410c; --dot: #2b2620;
-  --text-shadow: none; --icon-shadow: none;
+  --text-shadow: none; --icon-shadow: none; --on-accent: #fff;
   --sep: #d9ceb8; --refl: 0; --radius: 18px; --label-bg: rgba(43, 38, 32, .9); --ring-track: #ece3d2;
   --menu-bg: rgba(251, 247, 238, .98); --menu-line: #ddd2bd;
   --menu-text: #2b2620; --menu-sub: #6f6555; --menu-faint: #776e5f;

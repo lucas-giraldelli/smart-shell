@@ -86,10 +86,61 @@ PaneScroll {
         valueText: `${Ui.magnify.toFixed(2)}×`
         onMoved: v => Ui.magnify = v / 100
     }
-    MenuRow {
-        title: I18n.t("settings.wsIcons")
-        onClicked: Ui.wsIcons = !Ui.wsIcons
-        Switch { on: Ui.wsIcons }
+    // workspaces style: a segmented control, styled like the tab bar
+    // (.ws-style: padding 6px 10px, gap 10)
+    Item {
+        width: parent.width
+        height: 6 + seg.height + 6
+        Label {
+            x: 10
+            anchors.verticalCenter: parent.verticalCenter
+            size: 12.5
+            color: Theme.menuText
+            text: I18n.t("settings.wsStyle")
+        }
+        Rectangle {
+            id: seg
+            anchors.right: parent.right
+            anchors.rightMargin: 10
+            anchors.verticalCenter: parent.verticalCenter
+            width: segRow.width + 4
+            height: segRow.height + 4
+            radius: 9
+            color: Theme.menuSurface
+            Row {
+                id: segRow
+                x: 2
+                y: 2
+                spacing: 2
+                Repeater {
+                    model: ["icons", "numbers", "dots"]
+                    Rectangle {
+                        id: option
+                        required property string modelData
+                        readonly property bool on: Ui.wsStyle === modelData
+                        width: optLabel.implicitWidth + 20
+                        height: optLabel.implicitHeight + 8
+                        radius: 7
+                        color: on ? Theme.menuStrong : "transparent"
+                        Behavior on color { ColorAnimation { duration: 150 } }
+                        Label {
+                            id: optLabel
+                            anchors.centerIn: parent
+                            size: 11.5
+                            color: option.on || optArea.containsMouse ? Theme.menuText : Theme.menuSub
+                            text: I18n.t(`settings.wsStyles.${option.modelData}`)
+                        }
+                        MouseArea {
+                            id: optArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: Ui.setWsStyle(option.modelData)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     Section { text: I18n.t("settings.widgets") }
