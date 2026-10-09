@@ -8,7 +8,7 @@ import ".."
 // Now playing (prototype: components/music): cover tile, title, artist ·
 // player, progress and a little equaliser that dances while playing. Click
 // toggles play/pause, right click opens the YouTube Music app's volume;
-// hovering shows the full title, artist and player.
+// hovering shows the full title and artist.
 // Hidden while no MPRIS player is around.
 Tile {
     id: root
@@ -19,9 +19,10 @@ Tile {
     open: volume.open
 
     // title and artist are cut short in the tile: the tooltip has them in full
+    // (no player name: it's only ever "Chromium" / "Mozilla Zen")
     Tip {
         target: root
-        text: [Media.title, Media.artist, Media.source].filter(Boolean).join(" · ")
+        text: [Media.title, Media.artist].filter(Boolean).join(" · ")
         shown: root.hovered
     }
 

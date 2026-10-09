@@ -133,7 +133,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
 - **Music** - any MPRIS player. The playing one wins, then the one that
   played last; `music.ignore` (default `["whatsapp"]`) lists substrings of a
   player's identity, desktop entry, title, url or command line to never show.
-  Hover shows the full title, artist and player; the progress bar follows
+  Hover shows the full title and artist; the progress bar follows
   the position once a second.
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed

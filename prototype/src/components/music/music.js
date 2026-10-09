@@ -10,7 +10,7 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { slider, setSlider, setHTML } from '../ui/ui.js';
 
 // Now playing (MPRIS in the real shell). Click toggles play/pause; hovering
-// shows the full title, artist and player; the tile itself names only the
+// shows the full title and artist; the tile itself names only the
 // artist (or the album).
 class Music extends Component {
   static slices = ['media', 'ui'];
@@ -65,7 +65,8 @@ class Music extends Component {
     mute.classList.toggle('off', media.muted);
     this.classList.toggle('playing', media.playing);
     // title and artist are cut short in the tile: the tooltip has them in full
-    this.$('.label').textContent = [media.title, media.artist, media.source].filter(Boolean).join(' · ');
+    // (no player name: it's only ever "Chromium" / "Mozilla Zen")
+    this.$('.label').textContent = [media.title, media.artist].filter(Boolean).join(' · ');
     this.$('.progress i').style.width = (media.progress * 100).toFixed(1) + '%';
   }
 }
