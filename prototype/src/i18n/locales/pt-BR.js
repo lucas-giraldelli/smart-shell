@@ -14,6 +14,8 @@ export default {
 
   music: { volume: 'Volume do YouTube Music', notPlaying: 'YouTube Music não está aberto' },
 
+  keyboard: { resize: 'Modo redimensionar · Esc sai' },
+
   capslock: { on: 'Caps Lock ligado', off: 'Caps Lock desligado' },
 
 
@@ -142,7 +144,7 @@ export default {
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
     offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia', trayAttention: 'Slack com menção',
-    tuning: 'Ajustes', cpuLoad: 'Carga da CPU', musicPlaying: 'YouTube Music tocando (pets dançam)', cpuAuto: 'CPU simulada (picos estilo X3D)',
+    tuning: 'Ajustes', cpuLoad: 'Carga da CPU', resizeSubmap: 'Submap resize (Alt+R)', musicPlaying: 'YouTube Music tocando (pets dançam)', cpuAuto: 'CPU simulada (picos estilo X3D)',
     liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
     keys: 'H esconde o painel · 1–{n} troca o tema',

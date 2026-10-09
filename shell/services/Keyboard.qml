@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 // Caps Lock state - the prototype's `keyboard` slice
 // (prototype/src/services/keyboard.js): the keyboards' capslock LEDs in
@@ -12,6 +13,16 @@ Singleton {
     id: root
 
     property bool capsLock: false
+    // Hyprland's current submap ("" = none): Alt+R enters "resize"
+    property string submap: ""
+
+    Connections {
+        target: Hyprland
+        function onRawEvent(event) {
+            if (event.name === "submap")
+                root.submap = event.data === "reset" ? "" : event.data;
+        }
+    }
     property var paths: []
 
     Process {

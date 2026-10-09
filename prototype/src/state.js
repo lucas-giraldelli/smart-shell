@@ -32,7 +32,8 @@ export const store = createStore({
     bootedAt: new Date(snap.bootedAt),
     top: snap.processes,         // memory users by executable, biggest first
   },
-  keyboard: { capsLock: false },
+  // submap: Hyprland's current submap ('' = none; Alt+R enters 'resize')
+  keyboard: { capsLock: false, submap: '' },
   tray: { attention: [] },    // tray items needing attention (bounce)
   bluetooth: { on: snap.bluetooth.on, busy: null, devices: snap.bluetooth.devices },
   audio: {

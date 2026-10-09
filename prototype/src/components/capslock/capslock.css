@@ -23,3 +23,15 @@
 @media (prefers-reduced-motion: reduce) {
   .caps.on svg.i { animation: none; }
 }
+
+/* the resize submap (Alt+R): an accent indicator to the right, shown only
+   while it's on; the caps lock makes room for it */
+.caps { transition: color .1s, filter .1s, margin-right .25s ease; }
+.caps.resizing { margin-right: 30px; }
+.caps .resize {
+  position: absolute; left: 30px; top: 0; width: 24px; height: 24px; display: grid; place-items: center;
+  color: var(--accent); filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent) 60%, transparent));
+  opacity: 0; transform: scale(.6); pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1);
+}
+.caps.resizing .resize { opacity: 1; transform: none; pointer-events: auto; }
+.caps .resize .label { bottom: calc(100% + 14px); }
