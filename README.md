@@ -183,7 +183,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   calendars + the export timer). The tile turns orange `events.remindMinutes`
   before an event and green during it; `events.categories` picks its icon.
   To test the reminder without touching Thunderbird or `events.json`,
-  `smart-shell fake-event "Reunião teste" 2 15 work [meet-url]` adds an event
+  `smart-shell fake-event "TEST smart-shell" 2 15 work [meet-url]` adds an event
   in memory (starting in 2 minutes, 15 long, category `work`, optionally with
   a Meet link) and `smart-shell fake-event --clear` removes it - the same as
   `qs ipc -p <shell> call events fake ...` / `clearFake`.

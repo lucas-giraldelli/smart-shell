@@ -169,7 +169,7 @@ Tile {
                         color: root.tint
                     }
                     Label {
-                        width: parent.width - 17
+                        width: parent.width - 17 - (root.event?.meet ? 17 : 0)
                         lineHeight: 15
                         elide: Text.ElideRight
                         text: root.eventTitle
@@ -177,6 +177,15 @@ Tile {
                         weight: Font.DemiBold
                         shadow: true
                         color: Theme.text
+                    }
+                    // a Meet link: clicking this line joins the call
+                    Icon {
+                        visible: !!root.event?.meet
+                        anchors.verticalCenter: parent.verticalCenter
+                        name: "video"
+                        size: 12
+                        shadow: true
+                        color: root.tint
                     }
                 }
             }

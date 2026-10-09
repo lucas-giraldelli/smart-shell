@@ -18,7 +18,7 @@ class Clock extends Component {
       <div class="clock-top"><span class="t-big" data-time></span><span class="t-sub mini-date" data-mini></span></div>
       <div class="sub-line"><div class="ticker">
         <div class="t-sub" data-date></div>
-        <div class="t-sub remind"><span class="cat"></span><span class="rtext"></span></div>
+        <div class="t-sub remind"><span class="cat"></span><span class="rtext"></span><span class="meet-ic">${icon('video')}</span></div>
       </div></div>
       <span class="label"></span>
       <ss-calendar></ss-calendar>`;

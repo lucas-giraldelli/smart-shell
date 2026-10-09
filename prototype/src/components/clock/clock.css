@@ -110,3 +110,6 @@
 .cal .evt .meet { width: 22px; height: 22px; border-radius: 7px; background: none; color: var(--menu-sub); }
 .cal .evt .meet svg.i { width: 13px; height: 13px; }
 .cal .evt .meet:hover { background: var(--menu-strong); color: var(--menu-text); }
+.clock .remind .meet-ic { display: none; color: var(--status); }
+.clock .remind .meet-ic svg.i { width: 12px; height: 12px; }
+.clock.has-meet .remind .meet-ic { display: grid; }
