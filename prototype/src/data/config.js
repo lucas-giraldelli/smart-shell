@@ -41,7 +41,7 @@ export const config = {
   //     reddish pet with heat waves; with `roomTemp` set, warn / crit are
   //     degrees over that room temperature instead
   thresholds: {
-    cpu: { sleep: 10, idle: 40, walk: 72 },
+    cpu: { sleep: 15, idle: 50, walk: 85 },
     memFreeGiB: { warn: 8, crit: 4 },
     tempC: { warn: 80, crit: 87, roomTemp: null },
   },

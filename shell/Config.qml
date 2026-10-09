@@ -59,7 +59,7 @@ Singleton {
         // die temperature (Tccd1) - warn colours, a reddish pet; with
         // roomTemp set, warn / crit are degrees over it
         thresholds: {
-            cpu: { sleep: 10, idle: 40, walk: 72 },
+            cpu: { sleep: 15, idle: 50, walk: 85 },
             memFreeGiB: { warn: 8, crit: 4 },
             tempC: { warn: 80, crit: 87, roomTemp: null }
         },
