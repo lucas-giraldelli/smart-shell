@@ -7,7 +7,7 @@ import { update as updateStore } from '../../state.js';
 import { savePref } from '../../core/prefs.js';
 import { prStatus, worst, byRepo } from '../../data/prs.js';
 
-// The user's open pull requests (`gh`, every 20 min or on refresh). The tile
+// The user's open pull requests (`gh`, every hour or on refresh). The tile
 // shows how many and the worst state; click lists them, title only.
 const LOOK = {
   failing: { icon: 'circle-x', color: 'var(--crit)' },
