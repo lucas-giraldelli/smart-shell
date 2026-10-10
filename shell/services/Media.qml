@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Mpris
 import ".."
+import "../lib/rules.mjs" as Rules
 
 // Now playing - the prototype's `media` slice, from MPRIS. Which player:
 //   - never one matching config.music.ignore (substrings of its identity,
@@ -56,8 +57,11 @@ Singleton {
 
     readonly property bool active: player !== null
     readonly property bool playing: player?.isPlaying ?? false
-    readonly property string title: player?.trackTitle ?? ""
-    readonly property string artist: player?.trackArtist ?? ""
+    // a site with no media metadata (Reddit) reports its page title: shown
+    // as the site and where on it (Rules.webTrack)
+    readonly property var web: Rules.webTrack(player?.trackTitle ?? "", player?.trackArtist ?? "", player?.metadata?.["xesam:url"] ?? "")
+    readonly property string title: web.title
+    readonly property string artist: web.artist
     // the cover: Chromium writes it to an extension-less file in /tmp that it
     // rewrites under the same name for the next track, so the track is added
     // to the URL (ignored for a local file) to make the image load again

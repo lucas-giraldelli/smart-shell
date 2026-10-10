@@ -112,7 +112,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   | When | The pet | Config |
   |---|---|---|
   | a work meeting is on (an event in the `work` category, see Clock) | types on a laptop | `events.categories` |
-  | YouTube Music plays | dances its own dance with music notes, taking a few steps every 8-14 s (with `cava` installed, to the beat) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
+  | YouTube Music plays | dances its own dance with music notes, every 1.5-4 s turning around or taking a few steps (with `cava` installed, to the beat) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
   | CPU below 10% / 40% / 72% / above | sleeps / idles and strolls / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
   | free RAM below 8 GiB / 4 GiB | heavy: 0.6x speed, lower hops, squashed; at 4 GiB a sweat drop | `thresholds.memFreeGiB.warn` / `.crit` |
   | die temperature (Tccd1) from 85 °C / 99 °C, while it walks or runs | reddish; at 99 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
@@ -133,6 +133,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
 - **Music** - any MPRIS player. The playing one wins, then the one that
   played last; `music.ignore` (default `["whatsapp"]`) lists substrings of a
   player's identity, desktop entry, title, url or command line to never show.
+  A browser tab with no media metadata (Reddit) shows the site and where on
+  it (r/subreddit) instead of the page title.
   Hover shows the full title and artist; the progress bar follows
   the position once a second. Right-click focuses the player's window, or,
   for YouTube Music, opens its volume, controls and like. The heart turns red

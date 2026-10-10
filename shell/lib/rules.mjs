@@ -186,3 +186,23 @@ export const capabilities = {
 };
 export const missingText = (i18n, cap) => (capabilities[cap] ? i18n.t(`capabilities.${cap}`) : i18n.t('capabilities.unknown', { name: cap }));
 export const installHint = cap => capabilities[cap]?.install;
+
+// --- browser media (Media.qml) ---
+// A site that sets no media metadata (Reddit) leaves the browser to report
+// the page title: "Reddit - The heart of the internet", no artist. Then the
+// site's name is the title and the artist is where on it (r/subreddit, else
+// the host); a "Video - Site" title loses the site suffix to the artist.
+export function webTrack(title, artist, url) {
+  if (artist || !url) return { title, artist };
+  const m = url.match(/^[a-z]+:\/\/([^/?#]+)([^?#]*)/i);
+  if (!m) return { title, artist };
+  const host = m[1].replace(/^www\./, ''), path = m[2];
+  const label = host.split('.')[0];
+  const site = { youtube: 'YouTube', tiktok: 'TikTok' }[label] ?? label.charAt(0).toUpperCase() + label.slice(1);
+  const where = (path.match(/^\/(r|u|user)\/([^/]+)/) ?? []).slice(1).join('/') || host;
+  const parts = title.split(' - ');
+  const isSite = p => p.trim().toLowerCase() === label;
+  if (isSite(parts[0])) return { title: site, artist: where };
+  if (parts.length > 1 && isSite(parts[parts.length - 1])) return { title: parts.slice(0, -1).join(' - '), artist: where === host ? site : where };
+  return { title, artist: where === host ? site : where };
+}

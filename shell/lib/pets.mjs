@@ -48,11 +48,9 @@ export function createPet(species, width) {
     return 'run';
   }
 
-  // dancing, it now and then takes a few steps (every 8-14 s, for 1.5-3 s)
-  // still moving to the music, then dances in place again
-  let danceWalkIn = 8 + Math.random() * 6, danceWalkLeft = 0;
-  // dancing in place, it turns around now and then (every 1.5-4 s)
-  let danceFlipIn = 1.5 + Math.random() * 2.5;
+  // dancing, every 1.5-4 s it does something: turns around (half the time),
+  // takes a few steps (a third) or just keeps dancing
+  let danceNextIn = 1.5 + Math.random() * 2.5, danceWalkLeft = 0;
 
   function pickAct() {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
@@ -87,13 +85,14 @@ export function createPet(species, width) {
       if (danceWalkLeft > 0) {
         danceWalkLeft -= dt;
         target = 30;
-      } else if ((danceWalkIn -= dt) <= 0) {
-        danceWalkIn = 8 + Math.random() * 6;
-        danceWalkLeft = 1.5 + Math.random() * 1.5;
-        if (Math.random() < .5) dir = -dir;
-      } else if ((danceFlipIn -= dt) <= 0) {
-        danceFlipIn = 1.5 + Math.random() * 2.5;
-        dir = -dir;
+      } else if ((danceNextIn -= dt) <= 0) {
+        danceNextIn = 1.5 + Math.random() * 2.5;
+        const r = Math.random();
+        if (r < .5) dir = -dir;
+        else if (r < .83) {
+          if (Math.random() < .5) dir = -dir;
+          danceWalkLeft = .6 + Math.random() * .9;
+        }
       }
     }
 
