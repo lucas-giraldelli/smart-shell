@@ -25,7 +25,7 @@ export default {
       <ellipse class="eye" cx="28.3" cy="12.6" rx="1.4" ry="1.8" fill="#1c1917"/><ellipse class="eye" cx="36.3" cy="12.6" rx="1.4" ry="1.8" fill="#1c1917"/>
       <path class="closed" d="M25.2 12.8 q2.4 1.6 4.8 0 M33.2 12.8 q2.4 1.6 4.8 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <circle cx="31" cy="19" r="1.4" fill="#fb7185" opacity=".55"/>
-      <path d="M30 21 q4.5 2.4 8.5 -.8" stroke="#2e7d32" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M29.5 21 q3.2 2.2 6.6 -.4" stroke="#2e7d32" stroke-width="1.2" fill="none" stroke-linecap="round"/>
       <path class="tongue" d="M37.5 20.6 L46 18.5" stroke="#f472b6" stroke-width="1.8" stroke-linecap="round"/>
       <circle class="tongue fly-tip" cx="46.2" cy="18.4" r="1.4" fill="#f472b6"/>
     </g>`,
