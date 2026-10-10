@@ -220,15 +220,26 @@ Item {
     // a pose's prop (the frog's fly): drawn on its own, not turned or moved
     // with the sprite; mirrored only to the side the pet faces
     readonly property var prop: poseDef?.prop ? poseDef.prop.at(s.poseT) : null
+    // an emoji prop (an SVG <text>, as in poses.js emoji()): Qt's SVG renderer
+    // draws no emoji, so it's drawn as text; anything else as an image
+    readonly property var propText: poseDef?.prop ? poseDef.prop.svg.match(/<text[^>]*font-size="([\d.]+)"[^>]*>([^<]+)<\/text>/) : null
+    Text {
+        visible: !!root.prop && !!root.propText
+        text: root.propText ? root.propText[2] : ""
+        font.pixelSize: root.propText ? Math.round(Number(root.propText[1]) * 1.1) : 12
+        x: (root.face < 0 ? 46 - (root.prop?.x ?? 0) : (root.prop?.x ?? 0)) - width / 2
+        y: (root.prop?.y ?? 0) - height / 2
+        scale: root.prop?.s ?? 1
+    }
     Image {
-        visible: !!root.prop
+        visible: !!root.prop && !root.propText
         width: 18
         height: 18
         x: (root.face < 0 ? 46 - (root.prop?.x ?? 0) : (root.prop?.x ?? 0)) - 9
         y: (root.prop?.y ?? 0) - 9
         scale: root.prop?.s ?? 1
         sourceSize: Qt.size(72, 72)
-        source: root.poseDef?.prop ? "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 -9 18 18">${root.poseDef.prop.svg}</svg>`) : ""
+        source: root.poseDef?.prop && !root.propText ? "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 -9 18 18">${root.poseDef.prop.svg}</svg>`) : ""
     }
 
     // a word over its head (an action's `say`, under pets.says): white

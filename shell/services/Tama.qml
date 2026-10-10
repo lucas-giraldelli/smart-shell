@@ -74,6 +74,15 @@ Singleton {
         }
     }
 
+    // `qs ipc call pet care feed` (pet, feed, play, clean, medicine, sleep)
+    IpcHandler {
+        target: "pet"
+        function care(action: string): void {
+            if (root.on)
+                root.care(action);
+        }
+    }
+
     FileView {
         path: Quickshell.statePath("tama.json")
         onAdapterUpdated: writeAdapter()
