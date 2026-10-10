@@ -77,15 +77,6 @@ PaneScroll {
         valueText: `${Ui.size}px`
         onMoved: v => Ui.size = v
     }
-    Slider {
-        icon: "sliders-horizontal"
-        label: I18n.t("settings.magnify")
-        from: 100
-        to: 220
-        value: Math.round(Ui.magnify * 100)
-        valueText: `${Ui.magnify.toFixed(2)}×`
-        onMoved: v => Ui.magnify = v / 100
-    }
     // workspaces style
     SegmentedRow {
         label: I18n.t("settings.wsStyle")

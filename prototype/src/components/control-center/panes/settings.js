@@ -33,7 +33,6 @@ export default {
         </button>`).join('')}
       </div>
       ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
-      ${slider({ key: 'magnify', label: t('settings.magnify'), iconName: 'sliders-horizontal', min: 100, max: 220 })}
       <div class="seg-row"><span class="grow">${t('settings.wsStyle')}</span><span class="seg">${
         ['icons', 'numbers', 'dots'].map(s => `<button data-ws-style="${s}">${t(`settings.wsStyles.${s}`)}</button>`).join('')}</span></div>
 
@@ -59,7 +58,6 @@ export default {
   update(root, { ui }) {
     root.querySelectorAll('[data-theme-id]').forEach(b => b.classList.toggle('on', b.dataset.themeId === ui.theme));
     setSlider(root, 'size', ui.size, `${ui.size}px`);
-    setSlider(root, 'magnify', Math.round(ui.magnify * 100), `${ui.magnify.toFixed(2)}×`);
     root.querySelectorAll('[data-ws-style]').forEach(b => b.classList.toggle('on', b.dataset.wsStyle === ui.wsStyle));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
     setHTML(root.querySelector('[data-ps-current]'), `${sprite(ui.pet)}<span class="grow">${petName(ui.pet)}</span>`);
@@ -100,6 +98,5 @@ export default {
 
   input(key, value) {
     if (key === 'size') update('ui', { size: value });
-    if (key === 'magnify') update('ui', { magnify: value / 100 });
   },
 };
