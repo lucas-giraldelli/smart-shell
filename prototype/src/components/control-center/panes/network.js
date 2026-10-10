@@ -43,8 +43,8 @@ export default {
     const online = root.querySelector('[data-online]');
     online.dataset.status = n.online ? 'ok' : 'crit';
     setHTML(online, `<span class="big">${icon('network')}</span><span class="grow">
-      <b>${n.online ? t('network.connected', { kind: n.kind }) : t('network.offline')}</b>
-      <div class="meta">${n.iface} · ${n.speed} · ${t(n.online ? 'network.internetOk' : 'network.noPing')}</div></span>`);
+      <b>${t(n.online ? 'network.connected' : 'network.offline')}</b>
+      <div class="meta">${n.kind} · ${n.speed}</div></span>`);
     for (const key of ['down', 'up']) {
       root.querySelector(`[data-rate="${key}"]`).textContent = fmtRate(n[key].at(-1));
       root.querySelector(`[data-line="${key}"]`).setAttribute('points', points(n[key]));

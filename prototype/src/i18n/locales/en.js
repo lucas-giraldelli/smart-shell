@@ -56,8 +56,7 @@ export default {
   },
 
   network: {
-    label: 'Network', connected: '{kind} connected', offline: 'No internet',
-    internetOk: 'internet ok', noPing: 'ping gets no reply',
+    label: 'Network', connected: 'Connected', offline: 'No internet',
     ip: 'IP', gateway: 'Gateway', dockerNet: 'Docker network',
     download: 'Download', upload: 'Upload', connections: 'Connections', vpn: 'VPN', vpnStates: { off: 'Off', authenticating: 'Approve in the browser', connecting: 'Connecting…', on: 'On · {server}', error: 'Couldn\'t connect' }, vpnOnTip: 'VPN · {server}', profile: 'Profile', copyIp: 'Copy IP',
   },

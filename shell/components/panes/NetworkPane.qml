@@ -38,7 +38,7 @@ PaneScroll {
             anchors.verticalCenter: big.verticalCenter
             width: parent.width - x - 8
             Label {
-                text: Network.online ? I18n.t("network.connected", { kind: Network.kind }) : I18n.t("network.offline")
+                text: I18n.t(Network.online ? "network.connected" : "network.offline")
                 size: 13
                 weight: Font.Bold
                 lineHeight: 16
@@ -47,7 +47,7 @@ PaneScroll {
             Label {
                 width: parent.width
                 elide: Text.ElideRight
-                text: `${Network.iface} · ${Network.speed} · ${I18n.t(Network.online ? "network.internetOk" : "network.noPing")}`
+                text: `${Network.kind} · ${Network.speed}`
                 size: 11
                 color: Theme.menuSub
             }
