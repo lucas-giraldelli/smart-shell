@@ -187,8 +187,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   `thresholds.tempC.roomTemp` set (e.g. 30), warn / crit become degrees over
   that room temperature.
 
-  **Tamagotchi mode** (prototype only for now; the switch beside the pet
-  picker, off by default): a click on the pet opens its care menu - Pet,
+  **Care** (the switch beside the pet picker, off by default): the pet
+  becomes a little virtual pet, Tamagotchi style. A click on it opens its
+  care menu - Pet,
   Feed, Play, Clean, Medicine and Sleep - with bars for food, fun, hygiene,
   energy and health. The needs run down over hours, each species at its own
   pace (the panda gets hungry sooner, the corgi and shiba tire and get bored
@@ -206,7 +207,10 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   the shiba plays fetch, the capybara eats the orange off its head, the owl
   sleeps with one eye open... It's a baby (drawn smaller) the first day; at
   zero health it runs away and comes back as the ghost. The prototype's dev
-  panel can speed time up (60x, 600x) and reset it.
+  panel can speed time up (60x, 600x) and reset it. The rules live in
+  `prototype/src/components/pets/tama-rules.js`, shared by the prototype and
+  the shell (`services/Tama.qml`, which saves the state to the shell's state
+  file).
 - **Workspaces** - Hyprland. `workspaces.style` (also in the dock settings)
   picks how occupied workspaces show: `icons` (default; per workspace id in
   `workspaces.icons`, Lucide names), `numbers` (their id; the active pill shows
@@ -307,7 +311,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     processes are protected). `commands.monitor` is the btop button and `commands.docker` the lazydocker one; both open in kitty by default, so set them to your terminal (e.g. `foot -e btop`).
 - **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
   (`weather.city` is only shown), refreshed every 10 minutes. **Weather in
-  the dock** (prototype only for now; a dock setting, off by default) draws
+  the dock** (a dock setting, off by default) draws
   the current weather inside the dock: rain, heavy rain and drizzle splashing
   on its floor, storms with lightning, fog and clouds drifting, snow, a warm
   glow on a clear day and stars on a clear night. A theme with its own
@@ -383,7 +387,7 @@ prototype and the shell. It exports:
   pose replaces the plain lying down (the fox curls up in its tail).
 - `mouth: [x, y]` - where it opens its mouth to yawn and eat; `click` - the
   word it says when clicked (else its first talking action's).
-- `care` - its animation for each Tamagotchi care action (`pet`, `feed`,
+- `care` - its animation for each care action (`pet`, `feed`,
   `play`, `clean`, `medicine`): `{ dur, say, def }` with `def` a pose as
   above, or `{ pose: 'mud', def }` to borrow one of its poses and add to it,
   or `name: 'wash'` to borrow the plain bath's bubbles. Without one, a plain
@@ -396,13 +400,13 @@ change, `smart-shell restart` and check `qs log` and
 `~/.cache/quickshell/crashes/`.
 
 - `food` (an emoji), `pace` (how fast each need runs down against 1, e.g.
-  `{ food: 1.5 }`) and `bath` (1 loves one, -1 sulks) for Tamagotchi mode.
+  `{ food: 1.5 }`) and `bath` (1 loves one, -1 sulks) for care mode.
 
 Then register it: one line in `prototype/src/components/pets/species/index.js`
 (the shell and the prototype both read that list; `shell/lib/pets` links to
 the folder), its name, moods and words in `prototype/src/i18n/locales/`, and,
 optionally, its dance in `DANCES` (`shell/lib/pets.mjs`) and `pets.css`.
-Everything else - walking, tricks, dancing, yawning, Tamagotchi care - comes
+Everything else - walking, tricks, dancing, yawning, care - comes
 from the shared engine.
 
 ## Calendar events

@@ -4,7 +4,7 @@
 // (legs swung, lying down, eyes closed, at the laptop...) is baked into its own
 // SVG string, and the shell swaps images.
 
-import { partsFor, poseOf, yawnPart } from './poses.mjs';
+import { partsFor, poseOf, yawnPart, carePose } from './poses.mjs';
 export { frameAt, moveAt, poseOf } from './poses.mjs';
 
 // --- behaviour (engine.js) ---
@@ -27,8 +27,9 @@ function actionsFor(species) {
   return [...byName.values()];
 }
 
-// step(dt, load, activity, width, opts) -> { x, dir, moving, fast, pose, own, poseT, say, jump, step, mood }
-// (own: the species' own pose playing, poseT seconds in; say: a pets.says key)
+// step(dt, load, activity, width, opts) -> { x, dir, moving, fast, pose, own, poseT, def, say, jump, step, mood }
+// (own: the species' own pose playing, poseT seconds in, def: a care animation's
+// pose when one plays; say: a pets.says key). opts.hold: stand still
 // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit: slower),
 //         groove: 0..1 while dancing }
 // (`mood` is a translation key under pets.moods, or 'chill')
@@ -44,6 +45,8 @@ export function createPet(species, width) {
   // walking, it stops every 6-14 s for one of its tricks (an action with a pose or a word)
   const tricks = acts.filter(a => (a.pose && a.pose !== 'lie' && a.pose !== 'sleep') || a.say);
   let trick = null, trickLeft = 0, trickT = 0, trickIn = 6 + Math.random() * 8;
+  // a care animation playing (Tamagotchi mode): { name, def, t, left }
+  let forced = null;
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
   // below `walk` it walks, above it runs
@@ -118,13 +121,18 @@ export function createPet(species, width) {
     const cur = state === 'idle' ? act : trick, curT = state === 'idle' ? actT : trickT;
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
+    // a care animation wins over everything while it plays
+    if (forced && (forced.left -= dt) <= 0) forced = null;
+    else if (forced) forced.t += dt;
+    if (forced) pose = forced.name;
     // the species' own pose (poses.js); one with a speed moves while it plays.
     // Its `sleep` pose, if any, replaces the plain lying down
-    const own = cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
+    const own = forced ? forced.name : cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
       : state === 'sleep' && !activity && yawnLeft > 0 ? 'yawn'
       : state === 'sleep' && !activity && poseOf(species, 'sleep') ? 'sleep' : '';
     if (own === 'yawn') pose = 'yawn';
-    if (pose && !(own && act?.speed)) target = 0;
+    if (pose && !(own && (forced ? forced.def.speed : act?.speed))) target = 0;
+    if (opts.hold) target = 0;   // its Tamagotchi menu is open
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = cur && !activity && cur.say ? cur.say : '';
     if (activity === 'listen') {
@@ -164,14 +172,23 @@ export function createPet(species, width) {
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
       x, dir, moving, fast: v > 90, pose: pose === 'dance' || own || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
-      own, poseT: own === 'yawn' ? 1.6 - yawnLeft : own ? curT : 0, say,
+      own, poseT: forced ? forced.t : own === 'yawn' ? 1.6 - yawnLeft : own ? curT : 0, say,
+      def: forced ? forced.def : null,
       // legs keep pace with the body: faster walk, shorter step
       step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
       mood,
     };
   }
 
-  return { step };
+  // play a care action's animation (Tamagotchi mode); its word, if any
+  function perform(action, glyph) {
+    const c = carePose(species, action, glyph);
+    if (!c) return '';
+    forced = { name: c.name, def: c.def, t: 0, left: c.dur };
+    return c.say || '';
+  }
+
+  return { step, perform };
 }
 
 // --- drawing (pets.css) ---

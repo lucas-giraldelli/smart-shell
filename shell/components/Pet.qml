@@ -11,7 +11,8 @@ import "../lib/rules.mjs" as Rules
 // during a work meeting (an ongoing event in the "work" category) sits at a
 // laptop and types, and while YouTube Music plays (config.pets.danceWith) it
 // dances its species' dance. Hover shows its name, mood and the load; a click
-// sends up a heart. Holds still while a fullscreen window is focused.
+// sends up a heart - or, in pet care mode (services/Tama.qml), opens its care
+// menu. Holds still while a fullscreen window is focused.
 Item {
     id: root
 
@@ -96,11 +97,14 @@ Item {
             notes = live;
     }
     // the species' own pose (lib/poses.mjs): its frame and its motion
-    readonly property var poseDef: s.own && species ? Engine.poseOf(species, s.own) : null
+    // (a care animation brings its own pose: s.def)
+    readonly property var poseDef: s.def ?? (s.own && species ? Engine.poseOf(species, s.own) : null)
     readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
     readonly property var poseMove: poseDef ? Engine.moveAt(poseDef, s.poseT) : ({})
     readonly property bool lying: s.pose.includes("lie") || (poseDef?.low ?? false)
     readonly property bool sleeping: s.pose.includes("sleep")
+    // pet care: sick shows greenish
+    readonly property bool sick: Tama.on && Tama.s.sick
 
     visible: species !== null
     width: 46
@@ -124,8 +128,10 @@ Item {
             root.clock += dt;
             root.tickGroove(dt);
             root.danceClock += dt * (0.3 + 1.2 * root.groove);
-            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.listening ? "listen" : root.grooving ? "dance" : null, root.floor.width,
-                { cpu: Config.thresholds.cpu, heavy: root.heavy, groove: root.groove });
+            // pet care: put to bed, it sleeps whatever the CPU does; its menu holds it still
+            const load = Tama.on && Tama.s.napping ? 0 : SystemStats.load;
+            root.s = root.engine.step(dt, load, root.working ? "work" : root.listening ? "listen" : root.grooving ? "dance" : null, root.floor.width,
+                { cpu: Config.thresholds.cpu, heavy: root.heavy, groove: root.groove, hold: Ui.popover === "tama" });
             root.tickNotes();
         }
     }
@@ -159,6 +165,8 @@ Item {
         id: sprite
         width: 46
         height: 36
+        // pet care: a baby the first day, drawn smaller
+        scale: Tama.on && Tama.stage === "baby" ? 0.78 : 1
         // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks
         // it; float (ghost) bobs it in the air
         x: root.move.dx ?? root.poseMove.dx ?? 0
@@ -190,7 +198,7 @@ Item {
             // laptop in front of it isn't cut
             width: 56
             height: 36
-            visible: root.hot === 0
+            visible: root.hot === 0 && !root.sick
             sourceSize: Qt.size(112, 72)
             smooth: true
             source: root.species ? Engine.look(root.species, root.lookOpts) : ""
@@ -199,12 +207,12 @@ Item {
         }
         // heat: reddish from warn, more at crit
         MultiEffect {
-            visible: root.hot > 0
+            visible: root.hot > 0 || root.sick
             anchors.fill: spriteImage
             source: spriteImage
             transform: Scale { origin.x: 23; xScale: root.face < 0 ? -1 : 1 }
-            colorization: root.hot === 2 ? 0.45 : 0.25
-            colorizationColor: "#f97316"
+            colorization: root.sick ? 0.4 : root.hot === 2 ? 0.45 : 0.25
+            colorizationColor: root.sick ? "#65a30d" : "#f97316"
         }
     }
 
@@ -340,7 +348,7 @@ Item {
         color: Theme.crit
         font.pixelSize: 16
         ParallelAnimation {
-            id: love
+            id: loveAnim
             NumberAnimation { target: heart; property: "opacity"; from: 1; to: 0; duration: 1000; easing.type: Easing.OutQuad }
             NumberAnimation { target: heart; property: "y"; from: -4; to: -34; duration: 1000; easing.type: Easing.OutQuad }
             NumberAnimation { target: heart; property: "scale"; from: 0.6; to: 1.3; duration: 1000; easing.type: Easing.OutQuad }
@@ -350,10 +358,194 @@ Item {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            love.restart();
-            // and says its word (species.click, else its talk action's)
-            root.clickSay = root.species?.click ?? root.species?.acts?.find(a => a.say)?.say ?? "";
-            clickTimer.restart();
+            if (Tama.on)
+                return Ui.popover === "tama" ? Ui.closePopover() : Ui.openPopover("tama");
+            root.love();
         }
     }
+
+    // a heart, and its word (species.click, else its talk action's)
+    function love() {
+        heart.y = -4;
+        loveAnim.restart();
+        say(root.species?.click ?? root.species?.acts?.find(a => a.say)?.say ?? "");
+    }
+    function say(word) {
+        if (!word)
+            return;
+        root.clickSay = word;
+        clickTimer.restart();
+    }
+
+    // pet care: act out what the care menu did - a word, a care animation
+    Connections {
+        target: Tama
+        function onActed(word, effect) {
+            root.say(word);
+            if (!effect || !root.engine)
+                return;
+            if (effect === "pet")
+                root.love();
+            root.say(root.engine.perform(effect, Tama.food));
+        }
+    }
+
+    // pet care: the sign of its most urgent need, bobbing over its head
+    Text {
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: -22 - 3 * Math.abs(Math.sin(root.clock * 2))
+        visible: Tama.need !== "" && Ui.popover !== "tama"
+        text: Tama.need === "food" ? Tama.food : ({ fun: "🎾", clean: "🧼", energy: "💤", sick: "🤒" })[Tama.need] ?? ""
+        font.pixelSize: 13
+    }
+
+    // pet care: its droppings on the dock's floor; a click cleans one
+    Repeater {
+        model: Tama.on ? Tama.s.poops : []
+        Text {
+            required property real modelData
+            x: root.floor.x + 30 + modelData * (root.floor.width - 90) - root.x
+            y: root.height - 3 - height + 1
+            text: "💩"
+            font.pixelSize: 13
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Tama.care("poop")
+            }
+        }
+    }
+
+    // pet care: its care menu (prototype: pets/tama.js menuHTML)
+    Popover {
+        owner: root
+        name: "tama"
+        bubbleWidth: 230
+
+        Column {
+            width: 218
+            spacing: 2
+            // name, stage and age; sick on the right
+            Item {
+                width: parent.width
+                height: 28
+                Row {
+                    x: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 8
+                    Label {
+                        size: 13
+                        weight: Font.Bold
+                        color: Theme.menuText
+                        text: root.kind ? I18n.t(`pets.names.${root.kind}`) : ""
+                    }
+                    Label {
+                        anchors.bottom: parent.bottom
+                        size: 11
+                        color: Theme.menuSub
+                        text: `${I18n.t(`tama.${Tama.stage}`)} · ${Tama.ageText()}`
+                    }
+                }
+                Label {
+                    anchors.right: parent.right
+                    anchors.rightMargin: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: Tama.s.sick
+                    size: 11
+                    weight: Font.DemiBold
+                    color: Theme.crit
+                    text: I18n.t("tama.sick")
+                }
+            }
+            // the needs as bars
+            Repeater {
+                model: ["food", "fun", "clean", "energy", "health"]
+                Item {
+                    required property string modelData
+                    readonly property real v: Math.round(Tama.s[modelData] ?? 0)
+                    width: parent.width
+                    height: 20
+                    Label {
+                        x: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        size: 11.5
+                        color: Theme.menuText
+                        text: I18n.t(`tama.${modelData}`)
+                    }
+                    Rectangle {
+                        x: 90
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: parent.width - 90 - 36
+                        height: 6
+                        radius: 3
+                        color: Theme.menuHover
+                        Rectangle {
+                            width: parent.width * v / 100
+                            height: parent.height
+                            radius: 3
+                            color: v < 25 ? Theme.crit : v < 50 ? Theme.warn : Theme.ok
+                            Behavior on width { NumberAnimation { duration: 400 } }
+                        }
+                    }
+                    Label {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        size: 11.5
+                        tnum: true
+                        color: Theme.menuSub
+                        text: String(v)
+                    }
+                }
+            }
+            Item { width: 1; height: 4 }
+            // the actions, three to a row
+            Grid {
+                x: 4
+                columns: 3
+                spacing: 4
+                Repeater {
+                    model: [
+                        { action: "pet", glyph: "💗", label: "tama.pet" },
+                        { action: "feed", glyph: Tama.food, label: "tama.feed" },
+                        { action: "play", glyph: "🎾", label: "tama.play" },
+                        { action: "clean", glyph: "🧼", label: "tama.wash" },
+                        { action: "medicine", glyph: "💊", label: "tama.medicine", off: !Tama.s.sick },
+                        { action: "sleep", glyph: Tama.s.napping ? "☀️" : "🌙", label: Tama.s.napping ? "tama.wake" : "tama.sleep" }
+                    ]
+                    Rectangle {
+                        required property var modelData
+                        width: (210 - 8) / 3
+                        height: 48
+                        radius: 9
+                        opacity: modelData.off ? 0.4 : 1
+                        color: careArea.containsMouse && !modelData.off ? Theme.menuStrong : Theme.menuHover
+                        Column {
+                            anchors.centerIn: parent
+                            spacing: 2
+                            Text {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                text: modelData.glyph
+                                font.pixelSize: 16
+                            }
+                            Label {
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                size: 11
+                                color: Theme.menuText
+                                text: I18n.t(modelData.label)
+                            }
+                        }
+                        MouseArea {
+                            id: careArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: modelData.off ? Qt.ArrowCursor : Qt.PointingHandCursor
+                            onClicked: if (!modelData.off) Tama.care(modelData.action)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -25,6 +25,8 @@ Singleton {
     property alias prsHidden: prefs.prsHidden    // repos left out of the PR widget
     property alias prsMerged: prefs.prsMerged    // merged PRs kept until dismissed
     property alias dnd: prefs.dnd                // do not disturb: only rules with `dnd: true` pop up
+    property alias weatherFx: prefs.weatherFx    // the current weather drawn inside the dock
+    property alias tamaOn: prefs.tamaOn          // Tamagotchi mode: the pet has needs (services/Tama.qml)
 
     // transient
     // a fullscreen window is focused: pets and effects hold still
@@ -103,6 +105,8 @@ Singleton {
             property var prsHidden: []
             property var prsMerged: []
             property bool dnd: false
+            property bool weatherFx: false
+            property bool tamaOn: false
         }
     }
 }

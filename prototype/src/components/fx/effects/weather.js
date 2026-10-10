@@ -1,8 +1,11 @@
 // The current weather, live inside the dock (ui.weatherFx): rain, drizzle and
 // storms streak down and splash on the dock's floor, fog and clouds drift
 // across, a clear day glows and floats a few motes, a clear night twinkles.
-// Snow reuses the theme's snow effect (snow.js).
+// Snow reuses the theme's snow effect (snow.js). Shared with the shell
+// (lib/weather-fx.mjs links here): `canvas` only needs width and height, there
+// is no devicePixelRatio in QML, and no spread or browser-only Canvas calls.
 const rnd = (a, b) => a + Math.random() * (b - a);
+const ratio = () => (typeof devicePixelRatio === 'number' ? devicePixelRatio : 1);
 
 // WMO code (Open-Meteo) -> effect id, or null for nothing
 export function weatherFx(code, isDay = true) {
@@ -18,7 +21,7 @@ export function weatherFx(code, isDay = true) {
 
 // streaks falling a little slanted; each one splashes where it lands
 function falling(canvas, count, { speed, len, alpha, width, flash = false }) {
-  const dpr = devicePixelRatio;
+  const dpr = ratio();
   const drop = top => ({ x: rnd(-20, canvas.width), y: top ? rnd(-40, 0) : rnd(0, canvas.height), v: rnd(.8, 1.2) });
   const drops = Array.from({ length: count }, () => drop(false));
   const splashes = [];
@@ -77,7 +80,7 @@ function drifting(canvas, { n, make, paint }) {
   const items = Array.from({ length: n }, (_, i) => make(i / n));
   return function draw(ctx, dt) {
     for (const it of items) {
-      it.x += it.vx * devicePixelRatio * dt * 60;
+      it.x += it.vx * ratio() * dt * 60;
       if (it.x - it.w > canvas.width) Object.assign(it, make(0), { x: -it.w });
       paint(ctx, it);
     }
@@ -92,9 +95,14 @@ export const fog = canvas => drifting(canvas, {
     g.addColorStop(0, `rgba(226, 232, 240, ${b.a})`);
     g.addColorStop(1, 'rgba(226, 232, 240, 0)');
     ctx.fillStyle = g;
+    // an ellipse as a scaled circle (QML's Canvas has no browser-style ellipse())
+    ctx.save();
+    ctx.translate(b.x, b.y);
+    ctx.scale(1, b.h / (b.w / 2));
     ctx.beginPath();
-    ctx.ellipse(b.x, b.y, b.w / 2, b.h, 0, 0, Math.PI * 2);
+    ctx.arc(0, 0, b.w / 2, 0, Math.PI * 2);
     ctx.fill();
+    ctx.restore();
   },
 });
 
@@ -120,7 +128,7 @@ export const clouds = canvas => drifting(canvas, {
 export function sun(canvas) {
   const motes = Array.from({ length: 14 }, () => ({ x: rnd(0, canvas.width), y: rnd(0, canvas.height), v: rnd(.1, .3), ph: rnd(0, 6.28) }));
   return function draw(ctx, dt, t) {
-    const dpr = devicePixelRatio;
+    const dpr = ratio();
     const cx = (Math.sin(t * .002) * .4 + .5) * canvas.width;
     const g = ctx.createRadialGradient(cx, -canvas.height * .3, 0, cx, -canvas.height * .3, canvas.height * 2.2);
     g.addColorStop(0, 'rgba(253, 224, 71, .22)');
@@ -144,7 +152,7 @@ export function sun(canvas) {
 export function stars(canvas) {
   const sky = Array.from({ length: Math.round(canvas.width / 18) }, () => ({ x: rnd(0, canvas.width), y: rnd(0, canvas.height), r: rnd(.5, 1.4), ph: rnd(0, 6.28), f: rnd(.02, .06) }));
   return function draw(ctx, dt, t) {
-    const dpr = devicePixelRatio;
+    const dpr = ratio();
     for (const s of sky) {
       ctx.fillStyle = `rgba(248, 250, 252, ${.25 + .55 * (.5 + .5 * Math.sin(t * s.f + s.ph))})`;
       ctx.beginPath();

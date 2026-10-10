@@ -84,6 +84,40 @@ PaneScroll {
         current: Ui.wsStyle
         onPicked: value => Ui.setWsStyle(value)
     }
+    // the current weather drawn inside the dock
+    Item {
+        width: parent.width
+        height: 29
+        Rectangle {
+            x: 8
+            width: (404 - 16 - 10) / 2
+            height: 29
+            radius: 8
+            color: wxArea.containsMouse ? Theme.menuHover : "transparent"
+            Row {
+                x: 4
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 9
+                Check {
+                    anchors.verticalCenter: parent.verticalCenter
+                    on: Ui.weatherFx
+                }
+                Label {
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: 12.5
+                    color: Theme.menuText
+                    text: I18n.t("settings.weatherFx")
+                }
+            }
+            MouseArea {
+                id: wxArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Ui.weatherFx = !Ui.weatherFx
+            }
+        }
+    }
 
     Section { text: I18n.t("settings.widgets") }
     // .checks: 2 columns, gap 2px 10px, padding 0 8px
@@ -134,14 +168,45 @@ PaneScroll {
 
     Section { text: I18n.t("settings.pets") }
     // .pet-select: a dropdown whose list opens in the flow; its 2px / 4px
-    // margins collapse into the headings' around it
+    // margins collapse into the headings' around it. Beside it, half and
+    // half, the Tamagotchi switch (.pet-row)
     Item {
         width: parent.width
         height: select.height
         Rectangle {
+            x: select.x + select.width + 8
+            width: select.width
+            height: 41
+            radius: 11
+            color: tamaArea.containsMouse ? Theme.menuHover : Theme.menuSurface
+            border.color: Theme.menuStrong
+            Row {
+                x: 10
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 9
+                Check {
+                    anchors.verticalCenter: parent.verticalCenter
+                    on: Ui.tamaOn
+                }
+                Label {
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: 12.5
+                    color: Theme.menuText
+                    text: I18n.t("settings.tama")
+                }
+            }
+            MouseArea {
+                id: tamaArea
+                anchors.fill: parent
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: Ui.tamaOn = !Ui.tamaOn
+            }
+        }
+        Rectangle {
             id: select
             x: 8
-            width: parent.width - 16
+            width: (parent.width - 16 - 8) / 2
             height: 2 + 39 + list.height
             radius: 11
             color: Theme.menuSurface

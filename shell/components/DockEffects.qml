@@ -2,18 +2,26 @@ import QtQuick
 import QtQuick.Effects
 import ".."
 import "../lib/fx.mjs" as Fx
+import "../lib/weather-fx.mjs" as Wx
+import "../services"
 
 // The theme's tint and particles, confined to the dock (prototype:
 // components/fx): drawn behind the dock's content and clipped to its rounded
-// rectangle - snow drifting through it, or bats. Nothing is drawn outside the
-// dock. 30 fps, paused while a fullscreen window is focused.
+// rectangle - snow drifting through it, or bats; else, with the weather in the
+// dock on (Ui.weatherFx), the current weather (lib/weather-fx.mjs: rain,
+// storms, fog, clouds, sun, stars; snow is the theme's). Nothing is drawn
+// outside the dock. 30 fps, paused while a fullscreen window is focused.
 Item {
     id: root
 
     property real radius: 0
-    readonly property bool active: Theme.fx !== "" && visible && !Ui.calm
+    // the theme's effect wins; else the weather's
+    readonly property string effect: Theme.fx !== "" ? Theme.fx
+        : Ui.weatherFx ? Wx.weatherFx(Weather.current.code, Weather.current.isDay) ?? "" : ""
+    readonly property bool active: effect !== "" && visible && !Ui.calm
+    onEffectChanged: canvas.start()
 
-    layer.enabled: Theme.tint.a > 0 || Theme.fx !== ""
+    layer.enabled: Theme.tint.a > 0 || effect !== ""
     layer.effect: MultiEffect {
         maskEnabled: true
         maskSource: shape
@@ -38,7 +46,7 @@ Item {
     Canvas {
         id: canvas
         anchors.fill: parent
-        visible: Theme.fx !== ""
+        visible: root.effect !== ""
         renderStrategy: Canvas.Cooperative
 
         property var draw: null
@@ -48,7 +56,8 @@ Item {
         function start() {
             // the full-screen effect's density, over the dock's area
             const count = Math.max(12, Math.round(width * height / 4000));
-            draw = width > 0 && height > 0 && Fx.effects[Theme.fx] ? Fx.effects[Theme.fx]({ width, height }, count) : null;
+            const make = Fx.effects[root.effect] ?? Wx[root.effect] ?? null;
+            draw = width > 0 && height > 0 && make ? make({ width, height }, count) : null;
             last = 0;
             requestPaint();
         }
