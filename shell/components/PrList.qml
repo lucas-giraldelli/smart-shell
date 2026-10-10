@@ -230,7 +230,7 @@ Popover {
                                 }
                                 Label {
                                     x: 34
-                                    width: parent.width - x - 8
+                                    width: parent.width - x - (pr.modelData.merged ? 38 : 8)
                                     anchors.verticalCenter: parent.verticalCenter
                                     elide: Text.ElideRight
                                     size: 12.5
@@ -249,6 +249,20 @@ Popover {
                                         Qt.openUrlExternally(pr.modelData.url);
                                         Ui.closePopover();
                                     }
+                                }
+                                // merged is the past: dismiss it from the list
+                                IconButton {
+                                    visible: pr.modelData.merged
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: 4
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    implicitWidth: 24
+                                    implicitHeight: 24
+                                    radius: 6
+                                    flat: true
+                                    icon: "x"
+                                    iconSize: 14
+                                    onClicked: Prs.dismiss(pr.modelData.url)
                                 }
                             }
                         }

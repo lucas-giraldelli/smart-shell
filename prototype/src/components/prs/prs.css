@@ -32,3 +32,6 @@
 .pr-hidden-toggle { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 2px; padding: 8px; border: 0; border-radius: 9px; background: none; font: inherit; font-size: 11px; color: var(--menu-sub); cursor: pointer; }
 .pr-hidden-toggle:hover { background: var(--menu-surface); }
 .pr-hidden-toggle svg.i { width: 13px; height: 13px; }
+.pr-dismiss { display: inline-grid; place-items: center; flex: none; width: 24px; height: 24px; border: 0; border-radius: 6px; background: none; color: var(--menu-sub); cursor: pointer; }
+.pr-dismiss:hover { background: var(--menu-strong); }
+.pr-dismiss svg.i { width: 14px; height: 14px; }

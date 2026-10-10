@@ -23,6 +23,7 @@ Singleton {
     property alias magnify: prefs.magnify
     property alias locale: prefs.locale      // "" = config.locale, then the system's
     property alias prsHidden: prefs.prsHidden    // repos left out of the PR widget
+    property alias prsMerged: prefs.prsMerged    // merged PRs kept until dismissed
 
     // transient
     // a fullscreen window is focused: pets and effects hold still
@@ -99,6 +100,7 @@ Singleton {
             property real magnify: 1.75
             property string locale: ""
             property var prsHidden: []
+            property var prsMerged: []
         }
     }
 }

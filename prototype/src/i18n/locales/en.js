@@ -76,7 +76,7 @@ export default {
 
   prs: {
     title: 'Pull requests', tile: '{n} open PRs', refresh: 'Refresh', none: 'No open PRs',
-    hide: 'Hide this repo', unhide: 'Show this repo again',
+    hide: 'Hide this repo', dismiss: 'Dismiss', unhide: 'Show this repo again',
     showHidden: 'Show hidden ({n})', hideHidden: 'Hide hidden ({n})',
     updated: 'updated at {time}', sample: 'sample',
     status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',

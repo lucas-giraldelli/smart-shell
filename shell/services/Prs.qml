@@ -2,15 +2,20 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import ".."
 
 // The user's open pull requests, from any repo (`gh api graphql`, with the
 // gh CLI's own login). Read every 20 minutes or on refresh. A PR that leaves
-// the open list was merged or closed: merged ones stay listed until the next
-// read and raise a notification.
+// the open list was merged or closed: merged ones raise a notification and
+// stay listed (saved) until the user dismisses them; closed ones just go.
 Singleton {
     id: root
 
-    property var list: []               // [{ repo, number, title, url, checks, mergeState, review, merged }]
+    property var open: []               // [{ repo, number, title, url, checks, mergeState, review, merged }]
+    readonly property var list: open.concat(Ui.prsMerged)
+    function dismiss(url) {
+        Ui.prsMerged = Ui.prsMerged.filter(p => p.url !== url);
+    }
     property bool loading: false
     property bool loaded: false
     property date updatedAt: new Date(0)
@@ -49,8 +54,8 @@ Singleton {
                     checks: n.commits.nodes[0]?.commit.statusCheckRollup?.state ?? null,
                     mergeState: n.mergeStateStatus, review: n.reviewDecision, merged: false
                 }));
-                const gone = root.loaded ? root.list.filter(p => !p.merged && !open.some(o => o.url === p.url)) : [];
-                root.list = open;
+                const gone = root.loaded ? root.open.filter(p => !open.some(o => o.url === p.url)) : [];
+                root.open = open;
                 root.updatedAt = new Date();
                 root.loaded = true;
                 for (const p of gone)
@@ -60,8 +65,8 @@ Singleton {
         onExited: root.loading = false
     }
 
-    // a PR that left the open list: merged (listed until the next read, and
-    // a notification) or just closed (dropped)
+    // a PR that left the open list: merged (a notification, listed until
+    // dismissed) or just closed (dropped)
     Component {
         id: check
         Process {
@@ -71,7 +76,8 @@ Singleton {
             stdout: StdioCollector {
                 onStreamFinished: {
                     if (text.trim() === "MERGED") {
-                        root.list = root.list.concat([Object.assign({}, pr, { merged: true })]);
+                        if (!Ui.prsMerged.some(p => p.url === pr.url))
+                            Ui.prsMerged = Ui.prsMerged.concat([Object.assign({}, pr, { merged: true })]);
                         Quickshell.execDetached(["notify-send", "-a", "smart-shell", "-i", "git-merge", "PR merged", `${pr.repo}#${pr.number} ${pr.title}`]);
                     }
                 }

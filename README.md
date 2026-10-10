@@ -148,7 +148,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   default browser. States: pipeline failed or conflict (red), behind the base
   branch (yellow), checks running, pipeline green (one tick), green and
   approved (two ticks), merged
-  (kept until the next read, with a notification). The eye on a repo hides
+  (a notification, then listed until dismissed with its ×). The eye on a repo hides
   it from the list and the count (saved); "Show hidden" lists them again.
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed

@@ -39,6 +39,12 @@ class PrList extends Component {
         setTimeout(() => updateStore('prs', { loading: false, updatedAt: new Date() }), 700);
         return;
       }
+      const dismiss = e.target.closest('[data-dismiss]');
+      if (dismiss) {
+        // merged is the past: gone from the list (saved as dismissed in the shell)
+        updateStore('prs', p => ({ list: p.list.filter(pr => pr.url !== dismiss.dataset.dismiss) }));
+        return;
+      }
       const hide = e.target.closest('[data-hide]');
       if (hide) {
         updateStore('prs', p => {
@@ -85,6 +91,7 @@ class PrList extends Component {
             return `<div class="row pr" data-url="${pr.url}" title="#${pr.number} · ${t(`prs.status.${s}`)}">
               <span class="pr-ic" style="color:${l.color}">${icon(l.icon)}</span>
               <span class="grow pr-title">${pr.title}</span>
+              ${pr.merged ? `<button class="pr-dismiss" data-dismiss="${pr.url}" title="${t('prs.dismiss')}">${icon('x')}</button>` : ''}
             </div>`;
           }).join('')}</div></div>
         </div>`;
