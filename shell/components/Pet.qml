@@ -98,7 +98,9 @@ Item {
     function hatch() {
         engine = species ? Engine.createPet(species, floor.width) : null;
     }
-    onKindChanged: hatch()
+    // on the species, not the kind: onKindChanged runs before `species`
+    // follows, and would hatch the previous one (or none)
+    onSpeciesChanged: hatch()
     Component.onCompleted: hatch()
 
     FrameAnimation {
