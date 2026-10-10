@@ -123,27 +123,32 @@
 .cc .pet-select .ps-chev { width: 16px; height: 16px; color: var(--menu-sub); transition: transform .2s; }
 .cc .pet-select.open .ps-chev { transform: rotate(180deg); }
 .cc .pet-select .ps-trigger { border-radius: 10px; }
-/* the list floats over the pane (it neither pushes the content nor scrolls
-   it): below the picker, or above when there's no room below; as wide as
-   the pet row */
-.cc .pet-select .ps-list {
-  position: absolute; left: -1px; top: calc(100% + 4px); z-index: 30; width: calc(200% + 10px);
-  max-height: 214px; overflow-y: auto; border-radius: 11px; border: 1px solid var(--menu-strong);
+.cc .pet-select .ps-list { display: none; }   /* the template; settings.js floats a copy (.ps-float) */
+/* the floating pet list, on <body> while open */
+.ps-float {
+  position: fixed; z-index: 100; max-height: 214px; overflow-y: auto; border-radius: 11px;
+  border: 1px solid var(--menu-strong); color: var(--menu-text);
   background: linear-gradient(var(--menu-surface), var(--menu-surface)), linear-gradient(var(--menu-bg), var(--menu-bg)), var(--menu-bg);
   backdrop-filter: blur(var(--blur)) saturate(var(--sat)); box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
-  opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .16s, transform .16s;
   scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent;
 }
-.cc .pet-select.up .ps-list { top: auto; bottom: calc(100% + 4px); transform: translateY(4px); }
-.cc .pet-select.open .ps-list { opacity: 1; transform: none; pointer-events: auto; }
+.ps-float .ps-opt {
+  width: 100%; display: flex; align-items: center; gap: 10px; padding: 5px 10px; cursor: pointer;
+  font: inherit; font-size: 12.5px; color: var(--menu-text); background: none; border: 0; text-align: left;
+}
+.ps-float .ps-opt:hover { background: var(--menu-hover); }
+.ps-float .ps-check { display: grid; color: var(--menu-accent); opacity: 0; }
+.ps-float .ps-check svg.i { width: 14px; height: 14px; stroke-width: 3; }
+.ps-float .ps-opt.on { background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
+.ps-float .ps-opt.on .ps-check { opacity: 1; }
 .cc .pet-select .ps-check { display: grid; color: var(--menu-accent); opacity: 0; }
 .cc .pet-select .ps-check svg.i { width: 14px; height: 14px; stroke-width: 3; }
 .cc .pet-select .ps-opt.on { background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
 .cc .pet-select .ps-opt.on .ps-check { opacity: 1; }
 /* the sprite at rest: no closed eyes, no tongue */
-.cc .pet-mini { flex: none; width: 38px; height: 29px; display: grid; place-items: center; }
-.cc .pet-mini svg { width: 100%; height: 100%; overflow: visible; }
-.cc .pet-mini .closed, .cc .pet-mini .tongue { display: none; }
+.cc .pet-mini, .ps-float .pet-mini { flex: none; width: 38px; height: 29px; display: grid; place-items: center; }
+.cc .pet-mini svg, .ps-float .pet-mini svg { width: 100%; height: 100%; overflow: visible; }
+.cc .pet-mini .closed, .cc .pet-mini .tongue, .ps-float .pet-mini .closed, .ps-float .pet-mini .tongue { display: none; }
 .cc .pet-mini.empty { border: 1.5px dashed var(--menu-faint); border-radius: 8px; width: 30px; height: 24px; margin: 0 4px; }
 .cc .set .langs { display: flex; gap: 6px; padding: 2px 8px 4px; }
 /* segmented controls (workspaces style, clock format), styled like the tab bar */

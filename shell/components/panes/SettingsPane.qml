@@ -1,4 +1,5 @@
 import QtQuick
+import Quickshell
 import "../.."
 import "../ui"
 import ".."
@@ -168,18 +169,12 @@ PaneScroll {
 
     Section { text: I18n.t("settings.pets") }
     // .pet-select: the pet picker, and beside it, half and half, the care
-    // switch (.pet-row). The list floats over the pane - it neither pushes
-    // the content nor scrolls it - below the picker, or above when there's
-    // no room below, as wide as the row
+    // switch (.pet-row)
     Item {
         id: petRow
         width: parent.width
         height: select.height
         z: 10
-        readonly property bool up: {
-            root.contentY;   // re-evaluate as the pane scrolls
-            return root.height - (petRow.mapToItem(root, 0, 0).y + select.height) < 230;
-        }
 
         Rectangle {
             x: select.x + select.width + 8
@@ -232,41 +227,53 @@ PaneScroll {
             }
         }
 
-        Rectangle {
-            x: 8
-            y: petRow.up ? -height - 4 : select.height + 4
-            width: parent.width - 16
-            height: Math.min(214, opts.height + 2)
-            radius: 11
-            color: Qt.rgba(Theme.menuBg.r, Theme.menuBg.g, Theme.menuBg.b, 0.97)
-            border.color: Theme.menuStrong
-            clip: true
-            visible: opacity > 0
-            opacity: root.petOpen ? 1 : 0
-            Behavior on opacity { NumberAnimation { duration: 160 } }
+        // the list: a window of its own, floating out of the popover (it
+        // neither pushes nor scrolls the pane), below the picker or, without
+        // room, above; as wide as the row
+        PopupWindow {
+            id: petList
+            visible: root.petOpen
+            anchor.item: select
+            anchor.rect.x: 0
+            anchor.rect.y: select.height + 4
+            anchor.edges: Edges.Top | Edges.Left
+            anchor.gravity: Edges.Bottom | Edges.Right
+            anchor.adjustment: PopupAdjustment.FlipY
+            implicitWidth: petRow.width - 16
+            implicitHeight: Math.min(214, opts.height + 2)
+            color: "transparent"
+            onVisibleChanged: Ui.popoverExtras = visible ? [petList] : []
 
-            Flickable {
-                x: 1
-                y: 1
-                width: parent.width - 2
-                height: parent.height - 2
-                contentHeight: opts.height
+            Rectangle {
+                anchors.fill: parent
+                radius: 11
+                color: Qt.rgba(Theme.menuBg.r, Theme.menuBg.g, Theme.menuBg.b, 0.97)
+                border.color: Theme.menuStrong
                 clip: true
-                boundsBehavior: Flickable.StopAtBounds
-                Column {
-                    id: opts
-                    width: parent.width
-                    Repeater {
-                        model: [...Pets.names, "none"]
-                        PetOption {
-                            required property string modelData
-                            width: opts.width
-                            pet: modelData === "none" ? "" : modelData
-                            label: root.petName(pet)
-                            selected: (Ui.pet || "") === pet
-                            onClicked: {
-                                root.petOpen = false;
-                                Ui.pet = pet;
+
+                Flickable {
+                    x: 1
+                    y: 1
+                    width: parent.width - 2
+                    height: parent.height - 2
+                    contentHeight: opts.height
+                    clip: true
+                    boundsBehavior: Flickable.StopAtBounds
+                    Column {
+                        id: opts
+                        width: parent.width
+                        Repeater {
+                            model: [...Pets.names, "none"]
+                            PetOption {
+                                required property string modelData
+                                width: opts.width
+                                pet: modelData === "none" ? "" : modelData
+                                label: root.petName(pet)
+                                selected: (Ui.pet || "") === pet
+                                onClicked: {
+                                    root.petOpen = false;
+                                    Ui.pet = pet;
+                                }
                             }
                         }
                     }

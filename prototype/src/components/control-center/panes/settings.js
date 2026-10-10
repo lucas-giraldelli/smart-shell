@@ -19,6 +19,38 @@ const sprite = k => (species[k]
   : '<span class="pet-mini empty"></span>');
 const petName = k => t(k && species[k] ? `pets.names.${k}` : 'settings.noPet');
 
+// The pet list floats out of the popover: moved to <body> while open (the
+// pane scrolls and clips, and the dock is transformed), placed under the
+// picker - or above it without room below - as wide as the pet row. A click
+// on a pet picks it; any other click closes it.
+let floating = null;
+function closePetList() {
+  floating?.list.remove();
+  floating?.select.classList.remove('open');
+  removeEventListener('pointerdown', floating?.outside, true);
+  floating = null;
+}
+function togglePetList(select) {
+  if (floating) return closePetList();
+  const list = select.querySelector('.ps-list').cloneNode(true);
+  list.classList.add('ps-float');
+  const row = select.closest('.pet-row').getBoundingClientRect(), r = select.getBoundingClientRect();
+  const up = innerHeight - r.bottom < 230;
+  Object.assign(list.style, { left: `${row.left}px`, width: `${row.width}px`, [up ? 'bottom' : 'top']: up ? `${innerHeight - r.top + 4}px` : `${r.bottom + 4}px` });
+  list.addEventListener('click', e => {
+    const pet = e.target.closest('[data-pet]');
+    if (!pet) return;
+    closePetList();
+    // one pet per dock: picking one replaces the current
+    update('ui', { pet: pet.dataset.pet === 'none' ? null : pet.dataset.pet });
+  });
+  const outside = e => { if (!list.contains(e.target) && !select.contains(e.target)) closePetList(); };
+  addEventListener('pointerdown', outside, true);
+  document.body.append(list);
+  select.classList.add('open');
+  floating = { list, select, outside };
+}
+
 export default {
   id: 'settings',
   get label() { return t('settings.label'); },
@@ -87,23 +119,8 @@ export default {
       return update('ui', { hidden: ui.hidden.includes(id) ? ui.hidden.filter(h => h !== id) : [...ui.hidden, id] });
     }
     const select = target.closest('[data-pet-select]');
-    if (target.closest('[data-ps-toggle]')) {
-      // opens downward, or upward when the pane has no room below
-      const pane = select.closest('.cc');
-      const room = pane ? pane.getBoundingClientRect().bottom - select.getBoundingClientRect().bottom : 999;
-      select.classList.toggle('up', room < 230);
-      select.classList.toggle('open');
-      return;
-    }
-    // a click anywhere else closes the pet list
-    const openList = target.closest('.set')?.querySelector('[data-pet-select].open');
-    if (!select && openList) openList.classList.remove('open');
-    const pet = target.closest('[data-pet]');
-    if (pet) {
-      select.classList.remove('open');
-      // one pet per dock: picking one replaces the current
-      return update('ui', { pet: pet.dataset.pet === 'none' ? null : pet.dataset.pet });
-    }
+    if (target.closest('[data-ps-toggle]')) return togglePetList(select);
+
     const lang = target.closest('[data-locale]');
     // the UI is rendered once per page load, so a new language means a reload
     if (lang && lang.dataset.locale !== locale()) { savePref('locale', lang.dataset.locale); location.reload(); }
