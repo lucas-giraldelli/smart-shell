@@ -48,7 +48,8 @@ export const store = createStore({
   docker: snap.docker,
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
   // the user's open PRs (gh); `merged` ones linger until the next look
-  prs: { list: snap.prs, updatedAt: null, loading: false },
+  // `hidden`: repos the user hid (saved); `showHidden`: the popover lists them too
+  prs: { list: snap.prs, updatedAt: null, loading: false, hidden: loadPref('prsHidden', []), showHidden: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   agenda: { ongoing: null, upcoming: null, minutes: null },
   // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)

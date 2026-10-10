@@ -21,3 +21,14 @@
 .pr-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
 .pr-group.open .pr-body { grid-template-rows: 1fr; }
 .pr-body > div { overflow: hidden; min-height: 0; padding-left: 14px; }
+
+/* hiding a repo: the eye shows on hover; hidden ones (when listed) are dimmed */
+.pr-hide { display: inline-grid; place-items: center; width: 22px; height: 22px; border: 0; border-radius: 6px; background: none; color: var(--menu-sub); cursor: pointer; opacity: 0; }
+.pr-repo:hover .pr-hide { opacity: 1; }
+.pr-hide:hover { background: var(--menu-strong); }
+.pr-hide svg.i { width: 14px; height: 14px; }
+.pr-group.hidden-repo { opacity: .5; }
+.pr-group.hidden-repo .pr-hide { opacity: 1; }
+.pr-hidden-toggle { display: flex; align-items: center; gap: 8px; width: 100%; margin-top: 2px; padding: 8px; border: 0; border-radius: 9px; background: none; font: inherit; font-size: 11px; color: var(--menu-sub); cursor: pointer; }
+.pr-hidden-toggle:hover { background: var(--menu-surface); }
+.pr-hidden-toggle svg.i { width: 13px; height: 13px; }

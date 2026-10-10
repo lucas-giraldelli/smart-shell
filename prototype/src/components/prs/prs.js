@@ -4,6 +4,7 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { setHTML } from '../ui/ui.js';
 import { t, formatTime } from '../../i18n/index.js';
 import { update as updateStore } from '../../state.js';
+import { savePref } from '../../core/prefs.js';
 import { prStatus, worst, byRepo } from '../../data/prs.js';
 
 // The user's open pull requests (`gh`, every 20 min or on refresh). The tile
@@ -17,6 +18,9 @@ const LOOK = {
   ready: { icon: 'circle-check', color: 'var(--ok)' },
   merged: { icon: 'git-merge', color: '#a78bfa' },
 };
+
+// hidden repos leave the list and the count, unless the user asks to see them
+const visible = prs => prs.list.filter(pr => prs.showHidden || !prs.hidden.includes(pr.repo));
 
 // which repos are open: the user's choice, else open when one needs action
 const expanded = new Map();
@@ -35,6 +39,17 @@ class PrList extends Component {
         setTimeout(() => updateStore('prs', { loading: false, updatedAt: new Date() }), 700);
         return;
       }
+      const hide = e.target.closest('[data-hide]');
+      if (hide) {
+        updateStore('prs', p => {
+          const repo = hide.dataset.hide;
+          const hidden = p.hidden.includes(repo) ? p.hidden.filter(r => r !== repo) : [...p.hidden, repo];
+          savePref('prsHidden', hidden);
+          return { hidden };
+        });
+        return;
+      }
+      if (e.target.closest('[data-show-hidden]')) { updateStore('prs', p => ({ showHidden: !p.showHidden })); return; }
       const head = e.target.closest('.pr-repo');
       if (head) {
         // toggled in place, so the body animates open / shut
@@ -55,13 +70,14 @@ class PrList extends Component {
         <span class="meta">${updated}</span>
         <button class="ib${prs.loading ? ' spinning' : ''}" data-refresh title="${t('prs.refresh')}">${icon('refresh-cw')}</button>
       </div>
-      ${prs.list.length ? byRepo(prs.list).map(g => {
+      ${visible(prs).length ? byRepo(visible(prs)).map(g => {
         const status = worst(g.prs), look = LOOK[status];
         return `
-        <div class="pr-group${isExpanded(g.repo, status) ? ' open' : ''}" data-repo="${g.repo}">
+        <div class="pr-group${isExpanded(g.repo, status) ? ' open' : ''}${prs.hidden.includes(g.repo) ? ' hidden-repo' : ''}" data-repo="${g.repo}">
           <div class="pr-repo" title="${g.repo}">${icon('chevron-right', 'pr-chev')}
             <span class="pr-ic" style="color:${look.color}">${icon(look.icon)}</span>
             <span class="grow">${g.repo.split('/')[1]}</span>
+            <button class="pr-hide" data-hide="${g.repo}" title="${t(prs.hidden.includes(g.repo) ? 'prs.unhide' : 'prs.hide')}">${icon(prs.hidden.includes(g.repo) ? 'eye' : 'eye-off')}</button>
             <span class="pr-count">${g.prs.length}</span>
           </div>
           <div class="pr-body"><div>${g.prs.map(pr => {
@@ -72,7 +88,8 @@ class PrList extends Component {
             </div>`;
           }).join('')}</div></div>
         </div>`;
-      }).join('') : `<div class="meta prs-empty">${t('prs.none')}</div>`}`);
+      }).join('') : `<div class="meta prs-empty">${t('prs.none')}</div>`}
+      ${prs.hidden.length ? `<button class="pr-hidden-toggle" data-show-hidden>${icon(prs.showHidden ? 'eye-off' : 'eye')}${t(prs.showHidden ? 'prs.hideHidden' : 'prs.showHidden', { n: prs.hidden.length })}</button>` : ''}`);
   }
 }
 define('ss-pr-list', PrList);
@@ -95,8 +112,9 @@ class Prs extends Component {
   }
 
   update({ prs, ui }) {
-    const open = prs.list.filter(p => !p.merged);
-    const w = worst(prs.list);
+    const shown = prs.list.filter(p => !prs.hidden.includes(p.repo));
+    const open = shown.filter(p => !p.merged);
+    const w = worst(shown);
     this.toggleAttribute('data-open', ui.popover === 'prs');
     this.style.setProperty('--pr', w ? LOOK[w].color : 'var(--menu-sub)');
     this.$('[data-count]').textContent = open.length;

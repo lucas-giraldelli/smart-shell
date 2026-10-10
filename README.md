@@ -147,7 +147,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   them by repo (open when one needs action) and a click opens the PR in the
   default browser. States: pipeline failed or conflict (red), behind the base
   branch (yellow), checks running, waiting for review, ready (green), merged
-  (kept until the next read, with a notification).
+  (kept until the next read, with a notification). The eye on a repo hides
+  it from the list and the count (saved); "Show hidden" lists them again.
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed
   except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 2 s

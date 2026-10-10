@@ -10,8 +10,9 @@ Tile {
     id: root
 
     readonly property bool shown: Prs.loaded
-    readonly property int count: Prs.list.filter(p => !p.merged).length
-    readonly property string worst: PrRules.worst(Prs.list) ?? ""
+    readonly property var shownPrs: Prs.list.filter(p => !Ui.prsHidden.includes(p.repo))
+    readonly property int count: shownPrs.filter(p => !p.merged).length
+    readonly property string worst: PrRules.worst(shownPrs) ?? ""
 
     // padding 0 11px (+ border), the 22px icon, gap 8, the count
     implicitWidth: 1 + 11 + 22 + 8 + num.implicitWidth + 11 + 1
