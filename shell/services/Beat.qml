@@ -7,7 +7,7 @@ import Quickshell.Io
 // The music, from cava when it's installed (optional): while anything plays,
 // cava runs with 4 bars at 30 fps in raw ascii mode. `bars` (0..1, bass to
 // treble) drive the player's eq; `level` is their mean and a sharp rise of it
-// is a `beat()`, both for the dancing pets (`active`: only for a music app).
+// is a `beat()`, for the dancing pets (`active`: only for a music app).
 // Without cava the eq and the pets keep their own fixed motion.
 Singleton {
     id: root

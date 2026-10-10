@@ -65,9 +65,8 @@ Item {
         return { dx: (m.dx ?? 0) * k, dy: (m.dy ?? 0) * k, rot: (m.rot ?? 0) * k };
     }
 
-    // music notes while dancing: bursts of 2-4 every 1.2-1.8 s (or on cava's
-    // beats), staggered 120 ms, drifting up and sideways, gone in 1.5 s; at
-    // most 8 at a time
+    // music notes while dancing: bursts of 2-4 every 1.2-1.8 s, staggered
+    // 120 ms, drifting up and sideways, gone in 1.5 s; at most 8 at a time
     property var notes: []          // [{ born, dx, rot, size, color, glyph }]
     property var pending: []        // birth times of the notes still to come
     property real burstAt: 0
@@ -77,7 +76,7 @@ Item {
         pending = pending.concat(Array.from({ length: n }, (_, i) => clock + i * 0.12));
     }
     function tickNotes() {
-        if (dancing && s.pose === "dance" && !Beat.active && clock >= burstAt) {
+        if (dancing && s.pose === "dance" && clock >= burstAt) {
             burst();
             burstAt = clock + 1.2 + Math.random() * 0.6;
         }
@@ -95,13 +94,6 @@ Item {
         pending = pending.filter(t => t > clock);
         if (live.length !== notes.length || due.length)
             notes = live;
-    }
-    Connections {
-        target: Beat
-        function onBeat() {
-            if (root.dancing && root.s.pose === "dance")
-                root.burst();
-        }
     }
     readonly property bool lying: s.pose.includes("lie")
     readonly property bool sleeping: s.pose.includes("sleep")
