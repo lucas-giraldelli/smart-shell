@@ -18,6 +18,7 @@ class Tray extends Component {
   }
 
   update({ tray: t }) {
+    this.toggleAttribute('data-single', this.querySelectorAll('[data-item]').length === 1);
     this.querySelectorAll('[data-item]').forEach(img => {
       img.classList.toggle('attention', t.attention.includes(img.dataset.item));
       img.classList.toggle('mention', img.dataset.item === 'slack' && t.attention.includes('slack'));

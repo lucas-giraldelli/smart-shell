@@ -36,11 +36,12 @@ Tile {
     implicitWidth: 18 * 2 + 4 + 9 * 2 + 2
     open: menu.open
 
+    // a lone item sits in the middle of the tile
     Grid {
         id: grid
-        x: 10
+        x: root.items.length === 1 ? (root.width - 18) / 2 : 10
         y: 1
-        columns: 2
+        columns: root.items.length === 1 ? 1 : 2
         columnSpacing: 4
         rowSpacing: 4
 

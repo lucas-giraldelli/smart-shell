@@ -18,3 +18,5 @@
   12% { translate: 0 -2.5px; }
   22.4% { translate: 0 .5px; }
 }
+/* a lone item sits in the middle of the tile */
+.tray[data-single] { grid-template-columns: 1fr; justify-items: center; }
