@@ -1,4 +1,5 @@
 import { Component, define } from '../../core/component.js';
+import { notify, samples } from '../notifications/notifications.js';
 import { store, update } from '../../state.js';
 import { themes } from '../../data/themes.js';
 import { capabilities } from '../../data/capabilities.js';
@@ -34,6 +35,8 @@ class DevPanel extends Component {
         ${check('data-opt', 'musicPlaying', t('dev.musicPlaying'))}
         ${check('data-opt', 'resizeSubmap', t('dev.resizeSubmap'))}
         ${check('data-opt', 'liveWallpaper', t('dev.liveWallpaper'))}
+        <h2>${t('dev.notify')}</h2>
+        <div class="dp-btns">${Object.keys(samples).map(k => `<button class="btn-s" data-notify="${k}">${k}</button>`).join('')}</div>
         <div class="hint">${t('dev.hint')}<br>${t('dev.keys', { n: themes.length })}</div>
       </aside>`;
   }
@@ -43,6 +46,10 @@ class DevPanel extends Component {
     const panel = this.$('.dp');
     const togglePanel = () => panel.classList.toggle('hidden');
     this.$('.dp-toggle').addEventListener('click', togglePanel);
+    this.addEventListener('click', e => {
+      const k = e.target.closest('[data-notify]')?.dataset.notify;
+      if (k) notify(samples[k]);
+    });
 
     this.addEventListener('change', e => {
       const { cap, opt, fail } = e.target.dataset;

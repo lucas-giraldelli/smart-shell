@@ -70,7 +70,12 @@ Singleton {
         clock: { format: "24h" },
         // the forecast's place (Open-Meteo); the city is only shown
         weather: { city: "Cuiabá", lat: -15.6, lon: -56.1 },
-        workspaces: { icons: {} }
+        workspaces: { icons: {} },
+        // notification popups: rules restyle some, matched (substring, any
+        // case) on appName / summary / body - `title` replaces the summary,
+        // `app` the app's name, `style: "love"` the wine look, `timeout` in ms
+        // (0 = until closed)
+        notifications: { rules: [] }
     })
 
     readonly property var data: {
@@ -101,6 +106,7 @@ Singleton {
     readonly property var apps: data.apps
     readonly property var holidays: data.holidays
     readonly property var events: data.events
+    readonly property var notificationRules: data.notifications?.rules ?? []
     // "icons" | "numbers" | "dots", or undefined (Ui falls back to its old switch)
     readonly property var workspaceStyle: data.workspaces?.style
     readonly property string clockFormat: data.clock?.format === "12h" ? "12h" : "24h"

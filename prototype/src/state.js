@@ -51,6 +51,7 @@ export const store = createStore({
   // `hidden`: repos the user hid (saved); `showHidden`: the popover lists them too
   prs: { list: snap.prs, updatedAt: null, loading: false, hidden: loadPref('prsHidden', []), showHidden: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
+  notifications: { list: [] },   // popups on screen, oldest first
   agenda: { ongoing: null, upcoming: null, minutes: null },
   // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)
   // `art`: the cover (mpris:artUrl), none in the snapshot

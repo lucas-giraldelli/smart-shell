@@ -50,6 +50,13 @@ export const config = {
   holidays: ['br', 'cba', 'us'],
 
   // calendar events (exported from Thunderbird); categories drive icons and pets
+  // notification popups: rules restyle some, matched (substring, any case) on
+  // appName / summary / body - `title` replaces the summary, `app` the app's
+  // name, `style: "love"`
+  // is the wine look, `timeout` in ms (0 = until closed)
+  notifications: {
+    rules: [],
+  },
   events: {
     remindMinutes: 10,
     categories: {

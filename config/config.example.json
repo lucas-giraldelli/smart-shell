@@ -32,5 +32,10 @@
       "calendars": { "you@work.example": "work" },
       "keywords": { "health": ["consulta", "médico", "dentista"] }
     }
+  },
+  "notifications": {
+    "rules": [
+      { "match": { "appName": "Chromium", "summary": "Someone special" }, "app": "WhatsApp", "style": "love", "timeout": 10000 }
+    ]
   }
 }

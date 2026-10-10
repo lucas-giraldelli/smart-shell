@@ -74,6 +74,7 @@ export default {
     unknown: '{name} unavailable', install: 'Install the {pkg} package to use it.',
   },
 
+  notifications: { close: 'Close' },
   prs: {
     title: 'Pull requests', tile: '{n} open PRs', refresh: 'Refresh', none: 'No open PRs',
     hide: 'Hide this repo', dismiss: 'Dismiss', unhide: 'Show this repo again',
@@ -148,6 +149,7 @@ export default {
   },
 
   dev: {
+    notify: 'Simulate a notification',
     show: 'Show panel (H)', title: 'smart-shell · prototype',
     intro: 'HTML mock-up. The real shell runs on Quickshell (QML) with the same look.',
     backends: 'Installed backends (simulated)', failures: 'Simulate failures',

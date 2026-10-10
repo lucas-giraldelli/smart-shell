@@ -151,6 +151,15 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   approved (two ticks), merged
   (a notification, then listed until dismissed with its ×). The eye on a repo hides
   it from the list and the count (saved); "Show hidden" lists them again.
+- **Notifications** - the shell is the notification server (replaces mako;
+  drop its `exec-once`). Popups stack above the dock's right end in the dock's
+  glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,
+  or the app's icon, or a bell; the title, the message in up to 2 lines and the
+  actions. They last 5 s (3 s low, critical until closed); hover holds them and
+  shows ×; a click runs the default action. `notifications.rules` restyle some,
+  matched as substrings on `appName` / `summary` / `body`: `title`, `app`,
+  `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
+  closed).
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed
   except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 2 s
