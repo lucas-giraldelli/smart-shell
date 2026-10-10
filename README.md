@@ -33,7 +33,7 @@ paru -S ddcutil                  # brightness (also: sudo modprobe i2c-dev, user
 paru -S hyprsunset               # night light
 paru -S docker lazydocker        # Docker tab (also: systemctl enable --now docker, user in the docker group)
 paru -S bluez bluez-utils blueman python-bluetooth-battery  # Bluetooth tile, headset battery
-paru -S btop kitty               # System tab's btop button
+paru -S btop                     # System tab's btop button (opens in kitty; `commands.monitor` picks the terminal)
 paru -S openvpn3                 # VPN switch
 paru -S github-cli               # pull requests (then: gh auth login)
 paru -S nodejs                   # YouTube Music's like state
@@ -49,7 +49,7 @@ sudo dnf install quickshell rsms-inter-fonts papirus-icon-theme qt6-qt5compat Ne
 sudo dnf install ddcutil         # brightness
 sudo dnf install moby-engine     # Docker tab (lazydocker: see its README)
 sudo dnf install bluez blueman   # Bluetooth tile
-sudo dnf install btop kitty      # System tab's btop button
+sudo dnf install btop            # System tab's btop button
 sudo dnf install gh              # pull requests (then: gh auth login)
 sudo dnf install nodejs          # YouTube Music's like state
 sudo dnf install cava            # pets dance to the music, the player's eq follows it
@@ -65,7 +65,7 @@ sudo apt install fonts-inter papirus-icon-theme qml6-module-qt5compat-graphicale
 sudo apt install ddcutil         # brightness
 sudo apt install docker.io       # Docker tab (lazydocker: see its README)
 sudo apt install bluez blueman   # Bluetooth tile
-sudo apt install btop kitty      # System tab's btop button
+sudo apt install btop            # System tab's btop button
 sudo apt install gh              # pull requests (then: gh auth login)
 sudo apt install nodejs          # YouTube Music's like state
 sudo apt install cava            # pets dance to the music, the player's eq follows it
@@ -256,7 +256,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     network item turns into a green shield "VPN".
   - System: `/proc` and the k10temp `Tccd1` sensor (AMD; the real die
     temperature). Lists the top memory users with a two-step kill (session
-    processes are protected). `commands.monitor` is the btop button.
+    processes are protected). `commands.monitor` is the btop button and `commands.docker` the lazydocker one; both open in kitty by default, so set them to your terminal (e.g. `foot -e btop`).
 - **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
   (`weather.city` is only shown), refreshed every 10 minutes.
 - **Clock** - `clock.format` (also in the dock settings): `24h` (default, any
