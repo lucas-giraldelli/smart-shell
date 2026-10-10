@@ -164,7 +164,6 @@ ss-pets { display: contents; }
 }
 @keyframes need { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
 .pet.sick svg { filter: hue-rotate(65deg) saturate(.55) brightness(.92); }
-.pet.baby svg { scale: .78; }
 .tama-poops { position: absolute; left: 30px; right: 60px; bottom: calc(100% - 4px); height: 0; pointer-events: none; }
 .tama-poops .poop {
   position: absolute; bottom: 0; translate: -50% 0; padding: 0; border: 0; background: none; cursor: pointer;

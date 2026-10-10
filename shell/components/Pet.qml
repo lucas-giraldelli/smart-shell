@@ -165,8 +165,6 @@ Item {
         id: sprite
         width: 46
         height: 36
-        // pet care: a baby the first day, drawn smaller
-        scale: Tama.on && Tama.stage === "baby" ? 0.78 : 1
         // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks
         // it; float (ghost) bobs it in the air
         x: root.move.dx ?? root.poseMove.dx ?? 0
@@ -425,7 +423,7 @@ Item {
         Column {
             width: 218
             spacing: 2
-            // name, stage and age; sick on the right
+            // name and age; sick on the right
             Item {
                 width: parent.width
                 height: 28
@@ -443,7 +441,7 @@ Item {
                         anchors.bottom: parent.bottom
                         size: 11
                         color: Theme.menuSub
-                        text: `${I18n.t(`tama.${Tama.stage}`)} · ${Tama.ageText()}`
+                        text: Tama.ageText()
                     }
                 }
                 Label {

@@ -22,7 +22,6 @@ Singleton {
     readonly property string kind: Ui.pet
     readonly property var species: Pets.species[kind] ?? null
     readonly property bool on: Ui.tamaOn && species !== null
-    readonly property string stage: Rules.stage(s, Date.now(), 1)
     readonly property string need: on ? Rules.urgent(s, Date.now()) : ""
     readonly property string food: Rules.foodOf(species)
 

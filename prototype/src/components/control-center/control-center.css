@@ -113,7 +113,7 @@
 .cc .set .chk.on { background: var(--menu-accent); border-color: var(--menu-accent); color: var(--menu-bg); }
 /* pet picker: a dropdown whose list opens in the flow (the pane scrolls, so a
    floating list would be clipped) */
-.cc .pet-select { margin: 2px 8px 4px; border-radius: 11px; border: 1px solid var(--menu-strong); background: var(--menu-surface); overflow: hidden; }
+.cc .pet-select { position: relative; margin: 2px 8px 4px; border-radius: 11px; border: 1px solid var(--menu-strong); background: var(--menu-surface); }
 .cc .pet-select .ps-trigger, .cc .pet-select .ps-opt {
   width: 100%; display: flex; align-items: center; gap: 10px; padding: 5px 10px; cursor: pointer;
   font: inherit; font-size: 12.5px; color: var(--menu-text); background: none; border: 0; text-align: left;
@@ -122,8 +122,20 @@
 .cc .pet-select .ps-trigger:hover, .cc .pet-select .ps-opt:hover { background: var(--menu-hover); }
 .cc .pet-select .ps-chev { width: 16px; height: 16px; color: var(--menu-sub); transition: transform .2s; }
 .cc .pet-select.open .ps-chev { transform: rotate(180deg); }
-.cc .pet-select .ps-list { max-height: 0; overflow-y: auto; transition: max-height .25s ease; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
-.cc .pet-select.open .ps-list { max-height: 214px; border-top: 1px solid var(--menu-strong); }
+.cc .pet-select .ps-trigger { border-radius: 10px; }
+/* the list floats over the pane (it neither pushes the content nor scrolls
+   it): below the picker, or above when there's no room below; as wide as
+   the pet row */
+.cc .pet-select .ps-list {
+  position: absolute; left: -1px; top: calc(100% + 4px); z-index: 30; width: calc(200% + 10px);
+  max-height: 214px; overflow-y: auto; border-radius: 11px; border: 1px solid var(--menu-strong);
+  background: linear-gradient(var(--menu-surface), var(--menu-surface)), linear-gradient(var(--menu-bg), var(--menu-bg)), var(--menu-bg);
+  backdrop-filter: blur(var(--blur)) saturate(var(--sat)); box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
+  opacity: 0; transform: translateY(-4px); pointer-events: none; transition: opacity .16s, transform .16s;
+  scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent;
+}
+.cc .pet-select.up .ps-list { top: auto; bottom: calc(100% + 4px); transform: translateY(4px); }
+.cc .pet-select.open .ps-list { opacity: 1; transform: none; pointer-events: auto; }
 .cc .pet-select .ps-check { display: grid; color: var(--menu-accent); opacity: 0; }
 .cc .pet-select .ps-check svg.i { width: 14px; height: 14px; stroke-width: 3; }
 .cc .pet-select .ps-opt.on { background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }

@@ -11,7 +11,6 @@ import * as rules from './tama-rules.js';
 export const { NEEDS, SIGN } = rules;
 export const foodOf = kind => rules.foodOf(species[kind]);
 const speed = () => store.get().tama.speed || 1;
-export const stage = s => rules.stage(s, Date.now(), speed());
 export const urgent = s => rules.urgent(s, Date.now());
 const ageDays = s => rules.ageDays(s, Date.now(), speed());
 // recent pets (ms), for the diminishing returns; session only
@@ -62,7 +61,7 @@ export function menuHTML(kind, s) {
   };
   const btn = (action, emoji, label, off = false) => `<button class="tm-act" data-care="${action}"${off ? ' disabled' : ''}><span>${emoji}</span>${label}</button>`;
   return `
-    <div class="tm-head"><b>${t(`pets.names.${kind}`)}</b><span class="meta">${t(`tama.${stage(s)}`)} · ${age}</span>${s.sick ? `<span class="tm-sick">${t('tama.sick')}</span>` : ''}</div>
+    <div class="tm-head"><b>${t(`pets.names.${kind}`)}</b><span class="meta">${age}</span>${s.sick ? `<span class="tm-sick">${t('tama.sick')}</span>` : ''}</div>
     ${NEEDS.map(bar).join('')}
     <div class="tm-acts">
       ${btn('pet', '💗', t('tama.pet'))}

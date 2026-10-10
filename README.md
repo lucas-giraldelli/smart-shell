@@ -205,9 +205,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   it less each time, and a cat ends up hissing. Every species has its own
   animation for each action - the frog snaps its fly and bathes in the rain,
   the shiba plays fetch, the capybara eats the orange off its head, the owl
-  sleeps with one eye open... It's a baby (drawn smaller) the first day; at
-  zero health it runs away and comes back as the ghost. The prototype's dev
-  panel can speed time up (60x, 600x) and reset it. The rules live in
+  sleeps with one eye open... At zero health it runs away and comes
+  back as the ghost. The prototype's dev panel can speed time up (60x, 600x) and reset it. The rules live in
   `prototype/src/components/pets/tama-rules.js`, shared by the prototype and
   the shell (`services/Tama.qml`, which saves the state to the shell's state
   file).

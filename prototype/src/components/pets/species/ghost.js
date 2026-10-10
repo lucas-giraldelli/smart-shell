@@ -20,10 +20,10 @@ export default {
   care: {
     // blushes pink, pulsing
     pet: { dur: 2, def: { frames: ['a', 'b'], every: .35 } },
-    // the candy goes right through it
-    feed: { dur: 2.2, def: {
+    // floats down to its candy and eats it, a bite at a time
+    feed: { dur: 2.4, def: {
       frames: ['o', 'm'], every: .2,
-      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍬</text>', at: t => ({ x: 50 - t * 26, y: 19 }) },
+      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🍬</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 30, y: 21, s } : null; } },
     } },
     // hide and seek: vanishes, comes back on the other side
     play: { dur: 3, def: {

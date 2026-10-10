@@ -7,7 +7,7 @@ import { config } from '../../data/config.js';
 import { memStatus, tempStatus } from '../control-center/panes/system.js';
 import { openPopover, closePopover, isOpen } from '../../core/popover.js';
 import { setHTML } from '../ui/ui.js';
-import { tick, care, menuHTML, urgent, stage, foodOf, SIGN } from './tama.js';
+import { tick, care, menuHTML, urgent, foodOf, SIGN } from './tama.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
@@ -82,7 +82,7 @@ class Pets extends Component {
     // baby looks, and its droppings on the dock
     for (const pet of this.pets) {
       const { el } = pet;
-      pet.setFlags([ui.tamaOn && 'tama', ui.tamaOn && tama.sick && 'sick', ui.tamaOn && stage(tama) === 'baby' && 'baby'].filter(Boolean).join(' '));
+      pet.setFlags([ui.tamaOn && 'tama', ui.tamaOn && tama.sick && 'sick'].filter(Boolean).join(' '));
       el.toggleAttribute('data-open', ui.tamaOn && ui.popover === 'tama');
       const need = ui.tamaOn ? urgent(tama) : '';
       el.querySelector('.need').textContent = need === 'food' ? foodOf(pet.kind) : SIGN[need] ?? '';

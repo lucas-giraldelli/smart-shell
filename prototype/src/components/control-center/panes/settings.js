@@ -88,10 +88,16 @@ export default {
     }
     const select = target.closest('[data-pet-select]');
     if (target.closest('[data-ps-toggle]')) {
+      // opens downward, or upward when the pane has no room below
+      const pane = select.closest('.cc');
+      const room = pane ? pane.getBoundingClientRect().bottom - select.getBoundingClientRect().bottom : 999;
+      select.classList.toggle('up', room < 230);
       select.classList.toggle('open');
-      if (select.classList.contains('open')) select.querySelector('.ps-list').scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       return;
     }
+    // a click anywhere else closes the pet list
+    const openList = target.closest('.set')?.querySelector('[data-pet-select].open');
+    if (!select && openList) openList.classList.remove('open');
     const pet = target.closest('[data-pet]');
     if (pet) {
       select.classList.remove('open');

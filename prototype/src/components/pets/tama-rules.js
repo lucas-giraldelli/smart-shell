@@ -11,8 +11,7 @@
 //   health  falls while it's sick or a need is nearly empty, recovers when fed
 //           and happy; at 0 the pet runs away (and comes back as the ghost)
 // It drops one every 2.5-4.5 h while fed; dirt, droppings or a hot PC can make
-// it sick (Medicine cures it). It grows: a baby the first day (drawn smaller),
-// young up to 3 days, then adult. Each species has its own pace (`pace`) and
+// it sick (Medicine cures it). Each species has its own pace (`pace`) and
 // taste for baths (`bath`); a busy CPU tires it a little, a hot one tires it
 // and makes it sweat (and can make it sick), a work meeting bores it a little,
 // music cheers it up, and at night (22-6 h) it tires faster and asks for bed
@@ -36,7 +35,6 @@ export const foodOf = sp => (sp && sp.food) || '🍖';
 
 // `speed` speeds time up (the prototype's dev panel); 1 is real time
 export const ageDays = (s, now, speed) => (now - s.bornAt) * (speed || 1) / 864e5;
-export const stage = (s, now, speed) => { const d = ageDays(s, now, speed); return d < 1 ? 'baby' : d < 3 ? 'young' : 'adult'; };
 
 // the most urgent need, for the sign over its head ('' = all fine)
 export function urgent(s, now) {

@@ -167,12 +167,20 @@ PaneScroll {
     }
 
     Section { text: I18n.t("settings.pets") }
-    // .pet-select: a dropdown whose list opens in the flow; its 2px / 4px
-    // margins collapse into the headings' around it. Beside it, half and
-    // half, the Tamagotchi switch (.pet-row)
+    // .pet-select: the pet picker, and beside it, half and half, the care
+    // switch (.pet-row). The list floats over the pane - it neither pushes
+    // the content nor scrolls it - below the picker, or above when there's
+    // no room below, as wide as the row
     Item {
+        id: petRow
         width: parent.width
         height: select.height
+        z: 10
+        readonly property bool up: {
+            root.contentY;   // re-evaluate as the pane scrolls
+            return root.height - (petRow.mapToItem(root, 0, 0).y + select.height) < 230;
+        }
+
         Rectangle {
             x: select.x + select.width + 8
             width: select.width
@@ -207,11 +215,10 @@ PaneScroll {
             id: select
             x: 8
             width: (parent.width - 16 - 8) / 2
-            height: 2 + 39 + list.height
+            height: 41
             radius: 11
             color: Theme.menuSurface
             border.color: Theme.menuStrong
-            clip: true
 
             PetOption {
                 x: 1
@@ -223,27 +230,31 @@ PaneScroll {
                 open: root.petOpen
                 onClicked: root.petOpen = !root.petOpen
             }
+        }
+
+        Rectangle {
+            x: 8
+            y: petRow.up ? -height - 4 : select.height + 4
+            width: parent.width - 16
+            height: Math.min(214, opts.height + 2)
+            radius: 11
+            color: Qt.rgba(Theme.menuBg.r, Theme.menuBg.g, Theme.menuBg.b, 0.97)
+            border.color: Theme.menuStrong
+            clip: true
+            visible: opacity > 0
+            opacity: root.petOpen ? 1 : 0
+            Behavior on opacity { NumberAnimation { duration: 160 } }
 
             Flickable {
-                id: list
                 x: 1
-                y: 40
+                y: 1
                 width: parent.width - 2
-                height: root.petOpen ? Math.min(214, opts.height + 1) : 0
-                contentHeight: opts.height + 1
+                height: parent.height - 2
+                contentHeight: opts.height
                 clip: true
                 boundsBehavior: Flickable.StopAtBounds
-                Behavior on height { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
-                onHeightChanged: if (root.petOpen && height > 0) root.contentY = Math.max(root.contentY, Math.min(select.parent.y + select.y + select.height + 6 - root.height, root.contentHeight - root.height))
-
-                Rectangle {
-                    width: parent.width
-                    height: 1
-                    color: Theme.menuStrong
-                }
                 Column {
                     id: opts
-                    y: 1
                     width: parent.width
                     Repeater {
                         model: [...Pets.names, "none"]
