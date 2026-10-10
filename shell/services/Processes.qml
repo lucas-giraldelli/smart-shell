@@ -5,10 +5,11 @@ import Quickshell
 import Quickshell.Io
 import "../lib/rules.mjs" as Rules
 
-// The user's biggest memory users, grouped by executable - the prototype's
+// The user's biggest memory users, grouped by executable (a web app by its
+// own name, see Rules.topProcesses) - the prototype's
 // `system.top` (prototype/src/data/snapshot.js). Polled every 3 s, only while
-// something shows it (`watchers`): `ps` gives each process's RSS and
-// /proc/<pid>/exe its executable.
+// something shows it (`watchers`): `ps` gives each process's RSS, parent and
+// command line, and /proc/<pid>/exe its executable.
 Singleton {
     id: root
 
@@ -36,7 +37,7 @@ Singleton {
 
     Process {
         id: poll
-        command: ["sh", "-c", "ps -u \"$(id -u)\" -o pid=,rss=; echo --exe; "
+        command: ["sh", "-c", "ps -u \"$(id -u)\" -ww -o pid=,ppid=,rss=,args=; echo --exe; "
             + "find /proc -maxdepth 2 -name exe -user \"$(id -u)\" -printf '%h %l\\n' 2>/dev/null"]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -46,8 +47,8 @@ Singleton {
                     const i = line.indexOf(" ");
                     exe[line.slice(6, i)] = line.slice(i + 1);  // "/proc/<pid> <target>"
                 }
-                const rows = ps.split("\n").map(l => l.trim().split(/\s+/)).filter(f => exe[f[0]])
-                    .map(([pid, rss]) => ({ pid: Number(pid), rssKiB: Number(rss), exe: exe[pid] }));
+                const rows = ps.split("\n").map(l => l.trim().match(/^(\d+)\s+(\d+)\s+(\d+)\s(.*)$/)).filter(m => m && exe[m[1]])
+                    .map(m => ({ pid: Number(m[1]), ppid: Number(m[2]), rssKiB: Number(m[3]), args: " " + m[4], exe: exe[m[1]] }));
                 root.top = Rules.topProcesses(rows, 5);
             }
         }

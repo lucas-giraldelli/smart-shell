@@ -281,7 +281,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     the OpenVPN Connect app isn't needed. While a VPN is on, the quick tile's
     network item turns into a green shield "VPN".
   - System: `/proc` and the k10temp `Tccd1` sensor (AMD; the real die
-    temperature). Lists the top memory users with a two-step kill (session
+    temperature). Lists the top memory users (a web app such as WhatsApp under its
+    own name, not as chromium) with a two-step kill (session
     processes are protected). `commands.monitor` is the btop button and `commands.docker` the lazydocker one; both open in kitty by default, so set them to your terminal (e.g. `foot -e btop`).
 - **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
   (`weather.city` is only shown), refreshed every 10 minutes.

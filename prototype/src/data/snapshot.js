@@ -51,7 +51,8 @@ export const memory = { totalGiB: 47, freeGiB: 26.4 };
 // only drives the mock: it ignores SIGTERM, so the force step shows.
 export const processes = [
   { name: 'zen', count: 31, memMiB: 4210 },
-  { name: 'chromium', count: 23, memMiB: 2875 },
+  { name: 'whatsapp', count: 13, memMiB: 1980 },   // web apps count as themselves, not as chromium
+  { name: 'youtube-music', count: 12, memMiB: 1490 },
   { name: 'slack', count: 9, memMiB: 1104 },
   { name: 'code', count: 14, memMiB: 980, stubborn: true },
   { name: 'Hyprland', count: 1, memMiB: 412 },

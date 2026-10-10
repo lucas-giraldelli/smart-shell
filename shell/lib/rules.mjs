@@ -36,10 +36,26 @@ export const isProtected = name => /^(Hyprland|qs|quickshell|systemd.*|\(sd-pam\
 
 // [{ pid, rssKiB, exe }] -> [{ name, count, memMiB, pids }], grouped by
 // executable (a browser's many processes are one), biggest first
+// A web app (a browser started with --class=whatsapp or --app=<url>) counts
+// as itself, with every process it spawned (found up the ppid chain), not as
+// one more "chromium".
+function appName(args = '') {
+  if (/ --type=/.test(args)) return '';
+  const cls = args.match(/ --class=(\S+)/), app = args.match(/ --app=https?:\/\/(?:www\.|web\.|music\.)?([^/.\s]+)/);
+  return cls?.[1] ?? app?.[1] ?? '';
+}
 export function topProcesses(rows, n = 5) {
+  const byPid = new Map(rows.map(r => [r.pid, r]));
+  const appOf = (r, depth = 0) => {
+    const own = appName(r.args);
+    if (own || depth > 6) return own;
+    const parent = byPid.get(r.ppid);
+    return parent && parent.exe === r.exe ? appOf(parent, depth + 1) : '';
+  };
   const byName = new Map();
-  for (const { pid, rssKiB, exe } of rows) {
-    const name = exe.split('/').pop().replace(/ \(deleted\)$/, '').replace(/-bin$/, '');
+  for (const r of rows) {
+    const { pid, rssKiB, exe } = r;
+    const name = appOf(r) || exe.split('/').pop().replace(/ \(deleted\)$/, '').replace(/-bin$/, '');
     const g = byName.get(name) ?? { name, count: 0, memMiB: 0, pids: [] };
     g.count++;
     g.memMiB += rssKiB / 1024;
