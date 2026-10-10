@@ -22,8 +22,6 @@ export default {
     feed: { dur: 2.6, def: { frames: ['o', 'c'], every: .1, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🥕</text>', at: t => { const s = 1 - Math.floor(t / 0.8) * .34; return s > .05 ? { x: 45.6, y: 18.6, s } : null; } } } },
     // a double binky
     play: { pose: 'binky', dur: 2.3 },
-    // washes its ears with its paws
-    clean: { dur: 2.4, def: { frames: ['a', 'b'], every: .25, shut: true, move: () => ({ rot: -4 }) } },
     // chews the pill, nose going
     medicine: { pose: 'nose', dur: 2.2, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 42.6 + 8 - t * 7, y: 18.4 - 6 + t * 7 }) } } },
   },

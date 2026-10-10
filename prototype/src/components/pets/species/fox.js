@@ -24,8 +24,6 @@ export default {
     feed: { pose: 'dive', dur: 3, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍗</text>', at: t => (t > 2.6 ? null : { x: 50, y: 31.5, s: t < 1.4 ? 1 : 1 - (t - 1.4) / 1.3 }) } } },
     // chases its own tail, round and round
     play: { dur: 2.4, def: { tailFast: true, move: t => ({ flip: Math.floor(t / .22) % 2 === 1, dy: -2 * Math.abs(Math.sin(t * 14)) }) } },
-    // licks the white tip of its tail
-    clean: { dur: 2.4, def: { frames: ['a', 'b'], every: .28, shut: true } },
     // swallows the pill, then sneezes
     medicine: { dur: 2.4, def: {
       frames: ['o', 'o', 'c', 's', 'c'], every: [.5, .3, .6, .3, .7], once: true,

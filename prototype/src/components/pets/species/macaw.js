@@ -22,8 +22,6 @@ export default {
     feed: { dur: 2.6, def: { move: t => ({ dy: Math.abs(Math.sin(t * 9)) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🌰</text>', at: t => { const s = 1 - Math.floor(t / 0.75) * .34; return s > .05 ? { x: 41.6, y: 16.6, s } : null; } } } },
     // hangs upside down from a branch, swinging
     play: { pose: 'hang', dur: 3 },
-    // a rain shower, wings spread
-    clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .3, shut: true } },
     // "curupaco!", and down the pill goes
     medicine: { dur: 2, say: 'hello', def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .9 ? null : { x: 46 - t * 6, y: 8 + t * 7 }) } } },
   },

@@ -29,8 +29,6 @@ export default {
     play: { dur: 3, def: {
       move: t => (t < .6 ? { opacity: 1 - t / .6 } : t < 1.4 ? { opacity: 0, dx: -12 } : t < 2 ? { opacity: (t - 1.4) / .6, dx: -12, flip: true } : { dx: -12 * (1 - (t - 2)), flip: true }),
     } },
-    // sparkling clean
-    clean: { dur: 2.2, def: { frames: ['a', 'b'], every: .25 } },
     // boo! the pill bounces off
     medicine: { dur: 1.8, say: 'boo', def: {
       frames: ['o', 'm'], every: .18,

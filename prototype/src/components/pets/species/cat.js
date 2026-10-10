@@ -27,8 +27,6 @@ export default {
       move: t => (t < 1 ? { dy: 1.5, rot: -4, dx: .6 * Math.sin(t * 30) } : t < 1.6 ? { dy: -10 * Math.sin((t - 1) / .6 * Math.PI), dx: 6 * (t - 1) / .6, rot: 8 * (t - 1) / .6 } : { dx: 6, rot: 4 }),
       prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🧶</text>', at: t => ({ x: Math.max(48, 56 - t * 6), y: 31.5 }) },
     } },
-    // grooms itself: licks a paw and washes its face
-    clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .28, shut: true, move: t => ({ rot: -1.5 * Math.sin(t * 11) }) } },
     // the pill hidden in a fish
     medicine: { dur: 2.4, def: {
       frames: ['o', 'c'], every: .3,

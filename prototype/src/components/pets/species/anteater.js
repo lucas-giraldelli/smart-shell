@@ -21,8 +21,6 @@ export default {
     feed: { pose: 'ants', dur: 3 },
     // digs in the dirt
     play: { dur: 2.6, def: { frames: ['a', 'b'], every: .15, move: t => ({ rot: 8, dx: .8 * Math.sin(t * 30) }) } },
-    // licks its fur clean
-    clean: { dur: 2.4, def: { frames: ['a', 'b'], every: .25, shut: true, move: () => ({ rot: -4 }) } },
     // the tongue snaps up the pill
     medicine: { pose: 'ants', dur: 2.2, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > 1.1 ? null : { x: 52.5, y: 32 }) } } },
   },

@@ -21,8 +21,6 @@ export default {
     feed: { dur: 3.2, def: { frames: ['o', 'c'], every: .5, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🥬</text>', at: t => { const s = 1 - Math.floor(t / 1) * .34; return s > .05 ? { x: 50, y: 22.6, s } : null; } } } },
     // ambles round in a slow circle
     play: { dur: 3.6, def: { move: t => ({ dx: 6 * Math.sin(t * 1.4), flip: Math.cos(t * 1.4) < 0 }) } },
-    // hides in its shell for a bubble bath
-    clean: { pose: 'hide', dur: 3, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🫧</text>', at: t => ({ x: 22, y: 20 - (t % 1) * 14, s: .6 + (t % 1) * .6 }) } } },
     // ducks into its shell with the pill, then peeks out
     medicine: { pose: 'hide', dur: 3, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 50 - t * 8, y: 14 + t * 8 }) } } },
   },

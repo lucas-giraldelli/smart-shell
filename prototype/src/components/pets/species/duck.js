@@ -23,8 +23,6 @@ export default {
     feed: { dur: 2.6, def: { move: t => ({ rot: 22 * Math.abs(Math.sin(t * 6)) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍞</text>', at: t => { const s = 1 - Math.floor(t / .8) * .3; return s > .05 ? { x: 47, y: 31.5, s } : null; } } } },
     // paddles around a little pond
     play: { dur: 3, def: { frames: ['a', 'b'], every: .4, low: true, move: t => ({ dy: Math.sin(t * 4), dx: 3 * Math.sin(t * 1.2), flip: Math.cos(t * 1.2) < 0 }) } },
-    // splashes in a puddle, flapping
-    clean: { dur: 2.4, def: { frames: ['a', 'b'], every: .16, move: t => ({ dy: -1.5 * Math.abs(Math.sin(t * 19.6)) }) } },
     // pecks the pill up like bread
     medicine: { dur: 2, def: { move: t => (t < 1 ? { rot: 22 * Math.abs(Math.sin(t * 6)) } : { dy: -2 * Math.abs(Math.sin(t * 8)) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > 1 ? null : { x: 47, y: 32 }) } } },
   },

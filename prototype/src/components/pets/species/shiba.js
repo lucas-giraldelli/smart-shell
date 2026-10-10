@@ -28,8 +28,6 @@ export default {
       move: t => (t < .9 ? {} : t < 2 ? { dx: 14 * (t - .9) / 1.1, dy: -3 * Math.abs(Math.sin(t * 10)) } : { dx: 14 * (1 - (t - 2) / 1.4), flip: true, dy: -2 * Math.abs(Math.sin(t * 10)) }),
       prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => (t < .9 ? { x: 44 + t * 14, y: 16 - 14 * Math.sin(t / .9 * Math.PI) } : t < 2 ? null : { x: 46 + 14 * (1 - (t - 2) / 1.4), y: 18.5 }) },
     } },
-    // bubbles, then a big shake, water flying
-    clean: { name: 'wash', dur: 2.8, def: { frames: ['a', 'b', 'a', 'b', 'a', 'b', 'd', 'e'], every: .32, once: true, shut: true, move: t => (t < 1.9 ? {} : { dx: 2 * Math.sin(t * 60), rot: 5 * Math.sin(t * 60) }) } },
     // sits back, eyes shut ("hmph"), takes the pill
     medicine: { dur: 2.2, def: {
       shut: true, move: () => ({ rot: -12, dy: 1 }),

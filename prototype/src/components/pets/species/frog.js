@@ -47,8 +47,6 @@ export default {
     } },
     // its throat puffs up with joy, eyes shut
     pet: { dur: 1.8, def: { frames: ['a', 'b'], every: .3, shut: true } },
-    // a rain shower, eyes shut, smiling
-    clean: { dur: 2.6, def: { frames: ['a', 'b', 'c'], every: .18, shut: true } },
     // the tongue snaps the pill out of the air
     medicine: { dur: 2.2, def: {
       frames: ['w', 't', 'g'], every: [.9, .35, .95], once: true,

@@ -24,8 +24,6 @@ export default {
       prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🦐</text>', at: t => (t < .9 ? { x: 46, y: 10 } : t < 1.8 ? { x: 46 - (t - .9) * 22, y: 10 + (t - .9) * 9, s: 1 - (t - .9) * .6 } : null) } } },
     // juggles three balls
     play: { dur: 3, def: { frames: ['a', 'b', 'c'], every: .2 } },
-    // blows bubbles
-    clean: { name: 'wash', dur: 2.6, def: { frames: ['a', 'b'], every: .3, shut: true } },
     // changes colour as it swallows the pill
     medicine: { pose: 'camo', dur: 2.4, def: { frames: ['a', 'b', 'c'], every: .4, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 23.3 + 8 - t * 7, y: 19.6 - 6 + t * 7 }) } } },
   },

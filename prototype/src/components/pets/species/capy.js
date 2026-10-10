@@ -24,8 +24,6 @@ export default {
     } },
     // a little bird hops along its back
     play: { dur: 3, def: { shut: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐤</text>', at: t => ({ x: 12 + 18 * (t / 3), y: 7 - 4 * Math.abs(Math.sin(t * 6)) }) } } },
-    // a soak in the hot spring
-    clean: { pose: 'bath', dur: 3.4 },
     // "ok I pull up", and down the pill goes
     medicine: { dur: 2.2, say: 'pullup', def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.4], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 42.2 + 8 - t * 7, y: 18.4 - 6 + t * 7 }) } } },
   },

@@ -27,8 +27,6 @@ export default {
       move: t => ({ dy: -3 * Math.abs(Math.sin(t * 7)), flip: Math.cos(t * 2.4) < 0 }),
       prop: { svg: '<circle r="2" fill="#ef4444" opacity=".35"/><circle r="1" fill="#f87171"/>', at: t => ({ x: 23 + 22 * Math.sin(t * 2.4), y: 34.5 }) },
     } },
-    // grooms itself, then shivers its fur back down
-    clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .28, shut: true, move: t => (t < 1.9 ? { rot: -1.5 * Math.sin(t * 11) } : { dx: .8 * Math.sin(t * 70) }) } },
     // a hiss at the pill, then down it goes
     medicine: { dur: 2.2, say: 'hiss', def: {
       frames: ['c', 'o', 'c'], every: [.9, .5, .8], once: true,

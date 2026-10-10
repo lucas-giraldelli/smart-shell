@@ -27,8 +27,6 @@ export default {
       move: t => ({ dx: 4 * Math.sin(t * 2), rot: 6 * Math.sin(t * 4) }),
       prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">⚽</text>', at: t => ({ x: 50 + 4 * Math.sin(t * 2), y: 27, s: 1.5 }) },
     } },
-    // a dust bath, scratching
-    clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .2, shut: true, move: t => ({ rot: 4 * Math.sin(t * 8) }) } },
     // swallows the pill, then rolls over
     medicine: { dur: 2.4, def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.6], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 37.2 + 8 - t * 7, y: 18.8 - 6 + t * 7 }) }, move: t => (t > 1 ? { rot: 18 * Math.sin((t - 1) * 4) } : {}) } },
   },

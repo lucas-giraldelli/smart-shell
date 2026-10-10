@@ -23,8 +23,6 @@ export default {
     feed: { dur: 2.2, def: { move: t => ({ rot: -10 * Math.min(1, t / .4) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => (t > 1.5 ? null : { x: 36 - t * 2, y: 10 + t * 3, s: 1 - t / 1.8 }) } } },
     // slides on its belly after a ball
     play: { pose: 'slide', dur: 2.4, def: { speed: 50, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => ({ x: 54, y: 31 - 6 * Math.abs(Math.sin(t * 6)) }) } } },
-    // shakes the water off and smooths its feathers
-    clean: { name: 'wash', dur: 2.6, def: { frames: ['a', 'b', 'a', 'b', 'a', 'b', 'c'], every: .3, once: true, shut: true, move: t => (t < 1.8 ? {} : { dx: 1.5 * Math.sin(t * 60) }) } },
     // swallows the pill, then slides off
     medicine: { dur: 2.2, def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.4], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 34.4 + 8 - t * 7, y: 14.4 - 6 + t * 7 }) }, move: t => (t > 1 ? { rot: 80 * Math.min(1, (t - 1) / .3), dy: -8 * Math.min(1, (t - 1) / .3) } : {}) } },
   },
