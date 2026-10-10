@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Shapes
 import ".."
 
 // The dock bar (prototype: components/dock). Its content is built from
@@ -32,15 +33,34 @@ Rectangle {
     implicitWidth: row.implicitWidth + Theme.padX * 2
     implicitHeight: Theme.size + Theme.padTop + Theme.padBottom
     radius: Theme.radius
-    color: Theme.dockBg
+    color: Theme.dockGradient ? "transparent" : Theme.dockBg
     border.color: Theme.dockBorder
-    // canarinho: a diagonal gradient (drawn left to right here)
-    gradient: Theme.dockGradient ? dockGradient : null
-    Gradient {
-        id: dockGradient
-        orientation: Gradient.Horizontal
-        GradientStop { position: 0; color: Theme.dockGradient?.[0] ?? "transparent" }
-        GradientStop { position: 1; color: Theme.dockGradient?.[1] ?? "transparent" }
+    // canarinho: linear-gradient(135deg, ...) like CSS - along the diagonal
+    // through the centre, as long as the box's projection on it
+    Shape {
+        id: gradShape
+        visible: Theme.dockGradient !== null
+        anchors.fill: parent
+        z: -1
+        preferredRendererType: Shape.CurveRenderer
+        readonly property real half: (width + height) * Math.SQRT1_2 / 2
+        ShapePath {
+            strokeWidth: 0
+            strokeColor: "transparent"
+            fillGradient: LinearGradient {
+                x1: root.width / 2 - gradShape.half * Math.SQRT1_2
+                y1: root.height / 2 - gradShape.half * Math.SQRT1_2
+                x2: root.width / 2 + gradShape.half * Math.SQRT1_2
+                y2: root.height / 2 + gradShape.half * Math.SQRT1_2
+                GradientStop { position: 0; color: Theme.dockGradient?.[0] ?? "transparent" }
+                GradientStop { position: 1; color: Theme.dockGradient?.[1] ?? "transparent" }
+            }
+            PathRectangle {
+                width: root.width
+                height: root.height
+                radius: root.radius
+            }
+        }
     }
 
     // --shadow: the theme's outer shadow and a 1px inner highlight on top
