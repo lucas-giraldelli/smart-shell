@@ -2,7 +2,11 @@
 export default {
   color: '#f59e42',
   speed: 1.2,
-  acts: [{ name: 'zoomies', w: 1.4, dur: [1.2, 2.2], speed: 150 }],
+  acts: [{ name: 'zoomies', w: 1.4, dur: [1.2, 2.2], speed: 150 }, { name: 'chase', w: 1, dur: [1.6, 2.6], pose: 'chase' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'woof' }],
+  poses: {
+    // chases its own tail: spins and hops
+    chase: { move: t => ({ flip: Math.floor(t / .2) % 2 === 1, dy: -3 * Math.abs(Math.sin(t * 15.7)) }) },
+  },
   svg: `
     <g class="legs" fill="#e07f24">
       <rect class="la" x="12" y="26" width="4.5" height="7" rx="2"/><rect class="lb" x="17" y="26" width="4.5" height="7" rx="2"/>

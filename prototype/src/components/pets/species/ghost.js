@@ -4,7 +4,11 @@ export default {
   speed: .7,
   float: true,
   snore: 'boo',            // what floats up while it sleeps (default z)
-  acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }],
+  acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'fade', w: 1, dur: [2.4, 3.6], pose: 'fade' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'boo' }],
+  poses: {
+    // fades nearly out and back
+    fade: { move: t => ({ opacity: .15 + .85 * Math.abs(Math.cos(t * 1.4)) }) },
+  },
   svg: `
     <g class="body-g" opacity=".92">
       <path d="M11 30 V16 q0 -12 12 -12 q12 0 12 12 V30 l-3 -2.5 l-3 2.5 l-3 -2.5 l-3 2.5 l-3 -2.5 l-3 2.5 l-3 -2.5z" fill="#f8fafc"/>

@@ -3,7 +3,13 @@ export default {
   color: '#e2e8f0',
   speed: 1.1,
   hop: true,
-  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }],
+  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }, { name: 'binky', w: 1, dur: [1.2, 2.2], pose: 'binky' }, { name: 'nose', w: 1, dur: [1.5, 3], pose: 'nose' }],
+  poses: {
+    // a happy twisting hop
+    binky: { move: t => { const q = (t % 1.1) / 1.1; return q < .5 ? { dy: -13 * Math.sin(q * 2 * Math.PI), rot: 22 * Math.sin(q * 4 * Math.PI) } : {}; } },
+    // the nose twitches
+    nose: { frames: ['a', 'b'], every: .14 },
+  },
   svg: `
     <g class="legs" fill="#e2e8f0">
       <rect class="la" x="13" y="27" width="5" height="6" rx="2.5"/><rect class="lb" x="18" y="27" width="5" height="6" rx="2.5"/>
@@ -19,8 +25,9 @@ export default {
       <circle cx="36" cy="15" r="7.5" fill="#f1f5f9"/>
       <ellipse class="eye" cx="33.8" cy="14" rx="1.5" ry="2" fill="#1c1917"/><ellipse class="eye" cx="39" cy="14" rx="1.5" ry="2" fill="#1c1917"/><circle class="eye" cx="34.3" cy="13.2" r=".55" fill="#ffffff"/><circle class="eye" cx="39.5" cy="13.2" r=".55" fill="#ffffff"/>
       <path class="closed" d="M32.1 14.4 q1.7 1.3 3.4 0 M37.3 14.4 q1.7 1.3 3.4 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-      <circle cx="42.6" cy="16.5" r="1" fill="#f472b6"/>
+      <circle cx="42.6" cy="16.5" r="1" fill="#f472b6" data-hide="nose"/><circle data-pose="nose:a" cx="42.6" cy="16.5" r="1" fill="#f472b6"/>
       <path d="M41.6 17.7 q.5 .7 1 0 q.5 .7 1 0" stroke="#1c1917" stroke-width=".7" fill="none" stroke-linecap="round"/>
       <circle cx="32.6" cy="17.6" r="1.3" fill="#f9a8d4" opacity=".65"/>
+      <circle data-pose="nose:b" cx="42.6" cy="15.8" r="1.1" fill="#f472b6"/>
     </g>`,
 };

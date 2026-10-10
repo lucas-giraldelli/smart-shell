@@ -2,7 +2,16 @@
 export default {
   color: '#f97316',
   speed: 1.3,
-  acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }],
+  acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'dive', w: 1, dur: [2.6, 3], pose: 'dive' }],
+  poses: {
+    // a mousing dive: crouch, a high arc, nose buried in the snow
+    dive: {
+      frames: ['a', 'b', 'c'], every: [.45, .6, 2], once: true,
+      move: t => (t < .45 ? { dy: 2, rot: -6 }
+        : t < 1.05 ? { dy: -14 * Math.sin((t - .45) / .6 * Math.PI), rot: 35 * (t - .45) / .6 }
+        : { rot: 35 }),
+    },
+  },
   svg: `
     <g class="legs" fill="#3b2618">
       <rect class="la" x="13" y="24" width="3.5" height="9" rx="1.7"/><rect class="lb" x="18" y="24" width="3.5" height="9" rx="1.7"/>
@@ -25,5 +34,7 @@ export default {
       <circle cx="46" cy="15" r="1.1" fill="#1c1917"/>
       <path d="M41.6 17.4 q1.5 1.3 3 0" stroke="#3b2618" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="33" cy="15.2" r="1.2" fill="#f9a8d4" opacity=".65"/>
+      <path data-pose="dive:c" transform="translate(1 -5)" d="M33 21 q2 -6 6 -5 q2 -4 6 -1 q4 0 3 5 q2 3 -1 5 h-13 q-3 -2 -1 -4z" fill="#f8fafc"/>
+      <circle data-pose="dive:c" cx="39" cy="8.5" r="1" fill="#f8fafc"/><circle data-pose="dive:c" cx="46" cy="7" r=".8" fill="#f8fafc"/>
     </g>`,
 };

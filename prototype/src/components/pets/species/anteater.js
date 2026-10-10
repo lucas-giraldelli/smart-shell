@@ -2,7 +2,11 @@
 export default {
   color: '#78716c',
   speed: .7,
-  acts: [{ name: 'stroll', w: 5, dur: [4, 8], speed: 22 }],
+  acts: [{ name: 'stroll', w: 5, dur: [4, 8], speed: 22 }, { name: 'ants', w: 1.4, dur: [2.4, 3.6], pose: 'ants' }, { name: 'talk', w: .6, dur: [1.4, 2], say: 'hug' }],
+  poses: {
+    // snout down, its long tongue flicking at ants
+    ants: { frames: ['a', 'b'], every: .22, move: () => ({ rot: 6 }) },
+  },
   svg: `
     <g class="legs" fill="#57534e">
       <rect class="la" x="13" y="24" width="4" height="9" rx="2"/><rect class="lb" x="18" y="24" width="4" height="9" rx="2"/>
@@ -20,5 +24,8 @@ export default {
       <path class="closed" d="M35.9 15.6 q1.5 1.3 3.0 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <circle cx="36.4" cy="18.8" r="1.2" fill="#fb7185" opacity=".5"/>
       <circle cx="45.8" cy="21.4" r=".9" fill="#1c1917"/>
+      <path data-pose="ants:a" d="M46 21.6 Q50 25 52.5 32.4" stroke="#f472b6" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <path data-pose="ants:b" d="M46 21.6 Q48 24 48.6 26.6" stroke="#f472b6" stroke-width="1" fill="none" stroke-linecap="round"/>
+      <g data-pose="ants" fill="#1c1917"><circle cx="50.5" cy="33" r=".7"/><circle cx="51.6" cy="33" r=".5"/><circle cx="54" cy="33.2" r=".7"/><circle cx="55.1" cy="33.2" r=".5"/></g>
     </g>`,
 };

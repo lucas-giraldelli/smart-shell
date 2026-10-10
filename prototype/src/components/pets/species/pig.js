@@ -2,7 +2,11 @@
 export default {
   color: '#f9a8c0',
   speed: .8,
-  acts: [{ name: 'lie', w: 1.6, dur: [4, 9], pose: 'lie' }, { name: 'sniff', w: 1.4, dur: [1.5, 3], speed: 10 }],
+  acts: [{ name: 'lie', w: 1.6, dur: [4, 9], pose: 'lie' }, { name: 'sniff', w: 1.4, dur: [1.5, 3], speed: 10 }, { name: 'mud', w: 1.4, dur: [4, 7], pose: 'mud' }, { name: 'talk', w: .7, dur: [1.2, 1.8], say: 'oink' }],
+  poses: {
+    // rolls in the mud: a puddle, muddy spots, rocking happily
+    mud: { frames: ['a', 'b'], every: [.8, 9], once: true, low: true, shut: true, move: t => ({ rot: 6 * Math.sin(t * 5) }) },
+  },
   svg: `
     <g class="legs" fill="#e88aa8">
       <rect class="la" x="12" y="25" width="4.5" height="8" rx="2"/><rect class="lb" x="17" y="25" width="4.5" height="8" rx="2"/>
@@ -20,5 +24,7 @@ export default {
       <path class="closed" d="M34.2 13.6 q1.6 1.3 3.2 0 M38.8 13.4 q1.6 1.3 3.2 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <path d="M41.2 20.6 q1.6 1.1 3.2 0" stroke="#9d4b67" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="33.8" cy="17.4" r="1.4" fill="#f472b6" opacity=".7"/>
+      <g data-pose="mud:b" fill="#78350f" opacity=".75"><ellipse cx="17" cy="16" rx="3" ry="2"/><ellipse cx="26" cy="22" rx="3.6" ry="2.2"/><ellipse cx="13" cy="23" rx="2" ry="1.4"/><circle cx="40" cy="20.6" r="1.4"/></g>
+      <path data-pose="mud" d="M4 24 q8 -3.5 18 -1.5 q10 -2.5 22 0.5 q4 2 0 4.5 q-20 2 -38 0 q-4 -2 -2 -3.5z" fill="#92400e"/>
     </g>`,
 };

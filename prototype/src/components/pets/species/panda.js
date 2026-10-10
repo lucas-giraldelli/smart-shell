@@ -2,7 +2,11 @@
 export default {
   color: '#f4f4f5',
   speed: .65,
-  acts: [{ name: 'lie', w: 2, dur: [5, 9], pose: 'lie' }, { name: 'nap', w: 2, dur: [7, 14], pose: 'sleep' }],
+  acts: [{ name: 'lie', w: 2, dur: [5, 9], pose: 'lie' }, { name: 'nap', w: 2, dur: [7, 14], pose: 'sleep' }, { name: 'bamboo', w: 1.4, dur: [3, 5], pose: 'bamboo' }, { name: 'talk', w: .5, dur: [1.4, 2], say: 'munch' }],
+  poses: {
+    // munches a bamboo stalk
+    bamboo: { frames: ['a', 'b'], every: .3 },
+  },
   svg: `
     <g class="legs" fill="#18181b">
       <rect class="la" x="12" y="24" width="5.5" height="9" rx="2.5"/><rect class="lb" x="18" y="24" width="5.5" height="9" rx="2.5"/>
@@ -22,5 +26,10 @@ export default {
       <ellipse cx="37.2" cy="16.4" rx="1.4" ry="1" fill="#18181b"/>
       <path d="M36 18 q1.2 1 2.4 0" stroke="#18181b" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="32.4" cy="16.4" r="1.2" fill="#f9a8d4" opacity=".6"/><circle cx="42" cy="16.4" r="1.2" fill="#f9a8d4" opacity=".6"/>
+      <path data-pose="bamboo:a" d="M37.5 27 L46 13" stroke="#65a30d" stroke-width="2.2" stroke-linecap="round"/>
+      <path data-pose="bamboo:b" d="M37.5 27.6 L45.6 14.2" stroke="#65a30d" stroke-width="2.2" stroke-linecap="round"/>
+      <path data-pose="bamboo" d="M42.5 19 q3 -1 4.5 -4 M44 16 q-.5 -3 1.5 -5" stroke="#4ade80" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <ellipse data-pose="bamboo" cx="39" cy="22" rx="2.4" ry="2.2" fill="#18181b"/>
+      <ellipse data-pose="bamboo:b" cx="37.4" cy="18.6" rx="1.2" ry=".9" fill="#18181b"/>
     </g>`,
 };

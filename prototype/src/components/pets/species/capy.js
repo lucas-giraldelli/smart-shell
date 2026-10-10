@@ -3,7 +3,11 @@ export default {
   color: '#a0703f',
   speed: .55,
   chill: true,
-  acts: [{ name: 'lie', w: 4, dur: [6, 14], pose: 'lie' }, { name: 'nap', w: 2, dur: [8, 16], pose: 'sleep' }],
+  acts: [{ name: 'lie', w: 4, dur: [6, 14], pose: 'lie' }, { name: 'nap', w: 2, dur: [8, 16], pose: 'sleep' }, { name: 'bath', w: 1.6, dur: [6, 10], pose: 'bath' }, { name: 'talk', w: .6, dur: [2, 3], say: 'pullup' }],
+  poses: {
+    // a hot bath: sits in the water, eyes shut, its orange floats beside it
+    bath: { frames: ['a', 'b'], every: .9, shut: true, low: true },
+  },
   svg: `
     <g class="legs" fill="#6b4a2f">
       <rect class="la" x="11" y="25" width="4.5" height="8" rx="2"/><rect class="lb" x="16" y="25" width="4.5" height="8" rx="2"/>
@@ -21,7 +25,10 @@ export default {
       <path class="closed" d="M33.4 12.0 q1.6 1.3 3.2 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <path d="M40.6 17.6 q1.5 1 3 0" stroke="#3b2618" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="36.4" cy="15.6" r="1.3" fill="#fb7185" opacity=".5"/>
-      <circle cx="35" cy="3.6" r="3" fill="#fb923c"/>
-      <path d="M35 .7 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80"/>
+      <circle cx="35" cy="3.6" r="3" fill="#fb923c" data-hide="bath"/>
+      <path d="M35 .7 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80" data-hide="bath"/>
+      <circle data-pose="bath:a" cx="50" cy="19.4" r="2.6" fill="#fb923c"/><circle data-pose="bath:b" cx="50" cy="18.4" r="2.6" fill="#fb923c"/>
+      <circle data-pose="bath:a" cx="30" cy="9" r=".9" fill="#e0f2fe" opacity=".7"/><circle data-pose="bath:b" cx="31" cy="5.6" r="1.2" fill="#e0f2fe" opacity=".6"/>
+      <path data-pose="bath" d="M2 21.5 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 V28 H2z" fill="#38bdf8" opacity=".78"/>
     </g>`,
 };

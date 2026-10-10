@@ -142,8 +142,9 @@ export default {
       macaw: 'Hyacinth macaw', anteater: 'Anteater', ghost: 'Ghost', blackcat: 'Black cat', pig: 'Pig' },
     bubble: '{mood} · CPU {load}%',
     chill: "Couldn't care less about the CPU",
+    says: { meow: 'meow', hiss: 'hsss!', wow: 'such wow', woof: 'woof!', pullup: 'ok I pull up', quack: 'quack!', noot: 'noot noot', munch: 'munch munch', hoot: 'hoo-hoo', slow: 'slowly…', hello: 'hello!', hug: 'hug?', boo: 'boo!', oink: 'oink' },
     moods: {
-      sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
+      fly: 'Catching a fly', lick: 'Licking a paw', arch: 'Spooked!', sit: 'Sitting', chase: 'Chasing its tail', dive: 'Diving', binky: 'Happy!', nose: 'Sniffing', bath: 'In the bath', flap: 'Flapping', slide: 'Sliding', bamboo: 'Eating bamboo', wink: 'Winking', spin: 'Turning its head', hide: 'Hiding', ink: 'Squirting ink', wave: 'Waving', ants: 'Catching ants', fade: 'Fading…', mud: 'In the mud', talk: 'Talking', sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
       turn: 'Looking around', lie: 'Lying down', nap: 'Napping', sniff: 'Sniffing around', zoomies: 'Zoomies!', jump: 'Jumping',
       pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly', work: 'In a meeting', dance: 'Dancing',
     },

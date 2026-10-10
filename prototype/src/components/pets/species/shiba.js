@@ -2,7 +2,11 @@
 export default {
   color: '#e0a15e',
   speed: 1.15,
-  acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }],
+  acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }, { name: 'sit', w: 1.2, dur: [3, 6], pose: 'sit' }, { name: 'talk', w: .6, dur: [1.6, 2.2], say: 'wow' }],
+  poses: {
+    // sits back, eyes shut, smug
+    sit: { shut: true, move: () => ({ rot: -12, dy: 1 }) },
+  },
   svg: `
     <g class="legs" fill="#c98545">
       <rect class="la" x="12" y="24" width="4.5" height="9" rx="2"/><rect class="lb" x="17" y="24" width="4.5" height="9" rx="2"/>

@@ -3,10 +3,14 @@ export default {
   color: '#1f2937',
   speed: .7,
   waddle: true,
-  acts: [{ name: 'stand', w: 5, dur: [3, 6] }],
+  acts: [{ name: 'stand', w: 5, dur: [3, 6] }, { name: 'slide', w: 1.2, dur: [1.6, 2.6], pose: 'slide', speed: 60 }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'noot' }],
+  poses: {
+    // slides on its belly
+    slide: { move: () => ({ rot: 80, dy: -8 }) },
+  },
   svg: `
     <g class="legs" fill="#f59e0b">
-      <rect class="la" x="18" y="30" width="6" height="4" rx="2"/><rect class="lb" x="25" y="30" width="6" height="4" rx="2"/>
+      <rect class="la" x="18" y="30" width="6" height="4" rx="2" data-hide="slide"/><rect class="lb" x="25" y="30" width="6" height="4" rx="2" data-hide="slide"/>
     </g>
     <g class="body-g">
       <ellipse cx="24" cy="19" rx="10" ry="13" fill="#1f2937"/>
