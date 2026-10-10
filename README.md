@@ -223,7 +223,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   Google Meet: the export takes each event's Meet link (its
   `X-GOOGLE-CONFERENCE`, else a meet.google.com link in its description or
   location); such events get a video button in the calendar, and while one
-  is reminding, clicking the event's line on the clock joins it (`xdg-open`).
+  is reminding, the video icon on the clock joins it (`xdg-open`); the rest
+  of the clock still opens the calendar.
 
 ## Running the prototype
 

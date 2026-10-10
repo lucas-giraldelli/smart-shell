@@ -29,9 +29,9 @@ class Clock extends Component {
     this.dataset.popover = 'calendar';
     this.addEventListener('click', e => {
       if (cameFrom(e, 'ss-calendar')) return;
-      // the reminder line of a meeting with a Meet link joins it
+      // the reminder's video icon joins the Meet; the rest opens the calendar
       const event = store.get().agenda.upcoming ?? store.get().agenda.ongoing;
-      if (event?.meet && e.target.closest('.remind')) { window.open(event.meet, '_blank'); return; }
+      if (event?.meet && e.target.closest('.meet-ic')) { window.open(event.meet, '_blank'); return; }
       isOpen('calendar') ? closePopover() : openPopover('calendar');
     });
     this.tick();

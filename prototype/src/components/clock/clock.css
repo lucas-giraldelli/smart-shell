@@ -103,8 +103,8 @@
 .cal .skipped svg.i { width: 14px; height: 14px; color: var(--warn); margin-top: 1px; }
 
 /* a meeting with a Meet link: its reminder line joins it */
-.clock.has-meet .remind { cursor: pointer; }
-.clock.has-meet .remind .rtext { text-decoration: underline dotted; text-underline-offset: 2px; }
+.clock.has-meet .remind .meet-ic { cursor: pointer; transition: transform .15s; }
+.clock.has-meet .remind .meet-ic:hover { transform: scale(1.25); }
 
 /* calendar: the Meet button at the end of an event row */
 .cal .evt .meet { width: 22px; height: 22px; border-radius: 7px; background: none; color: var(--menu-sub); }

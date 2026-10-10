@@ -74,20 +74,11 @@ Tile {
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
     }
 
-    // click opens the calendar; the reminder line of a meeting with a Meet
-    // link joins it instead
+    // click opens the calendar; the reminder's video icon joins the Meet
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: mouse => {
-            const meet = root.event?.meet;
-            if (meet && mouse.y >= root.height / 2) {
-                Ui.closePopover();
-                Quickshell.execDetached(["xdg-open", meet]);
-                return;
-            }
-            calendar.open ? Ui.closePopover() : Ui.openPopover("calendar");
-        }
+        onClicked: calendar.open ? Ui.closePopover() : Ui.openPopover("calendar")
     }
 
     SystemClock {
@@ -178,7 +169,7 @@ Tile {
                         shadow: true
                         color: Theme.text
                     }
-                    // a Meet link: clicking this line joins the call
+                    // a Meet link: this icon joins the call
                     Icon {
                         visible: !!root.event?.meet
                         anchors.verticalCenter: parent.verticalCenter
@@ -186,6 +177,19 @@ Tile {
                         size: 12
                         shadow: true
                         color: root.tint
+                        scale: meetArea.containsMouse ? 1.25 : 1
+                        Behavior on scale { NumberAnimation { duration: 150 } }
+                        MouseArea {
+                            id: meetArea
+                            anchors.fill: parent
+                            anchors.margins: -5
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                Ui.closePopover();
+                                Quickshell.execDetached(["xdg-open", root.event.meet]);
+                            }
+                        }
                     }
                 }
             }
