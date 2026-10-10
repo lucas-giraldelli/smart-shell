@@ -20,7 +20,12 @@ Rectangle {
     readonly property string appIconSource: iconName
         ? (iconName.startsWith("/") || iconName.includes("://") ? iconName : Quickshell.iconPath(iconName, true))
         : (n.desktopEntry ? Quickshell.iconPath(DesktopEntries.byId(n.desktopEntry)?.icon ?? "", true) : "")
-    readonly property var actions: n.actions.filter(a => a.identifier !== "default")
+    // Chromium adds a "Settings" button (its notification settings) to every web
+    // notification: left out, like the default action (that's the card's click)
+    readonly property var actions: n.actions.filter(a => a.identifier !== "default" && a.identifier !== "settings")
+    // Chromium also starts the body with the site ("web.whatsapp.com"), a link
+    // or plain, on its own line: dropped
+    readonly property string body: n.body.replace(/^\s*(<a [^>]*>)?[a-z0-9-]+(\.[a-z0-9-]+)+(<\/a>)?\s*(\n|<br\s*\/?>)+/i, "")
     property date time: new Date()
 
     width: 380
@@ -169,7 +174,7 @@ Rectangle {
             }
         }
         Text {
-            visible: root.n.body !== ""
+            visible: root.body !== ""
             width: parent.width
             wrapMode: Text.Wrap
             maximumLineCount: 2
@@ -179,7 +184,7 @@ Rectangle {
             font.family: Theme.font
             font.pixelSize: 13
             color: root.love ? "#fecdd3" : Theme.menuSub
-            text: root.n.body
+            text: root.body
             onLinkActivated: link => Qt.openUrlExternally(link)
         }
         Row {
