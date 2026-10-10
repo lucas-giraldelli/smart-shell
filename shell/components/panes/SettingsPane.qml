@@ -218,7 +218,11 @@ PaneScroll {
         }
     }
     // care mode (services/Tama.qml); on the right, the pet's name (the one
-    // under the mouse, else the chosen one)
+    // under the mouse, else the chosen one). 10px below the grid
+    Item {
+        width: parent.width
+        height: 10
+    }
     Item {
         width: parent.width
         height: 29
