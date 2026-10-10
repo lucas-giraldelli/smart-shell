@@ -19,7 +19,7 @@ export default {
     // eyes squeezed into happy ^^, feathers fluffed
     pet: { dur: 2, def: { frames: ['a', 'b'], every: .3 } },
     // swallows a mouse whole, head tipped back
-    feed: { dur: 2.2, def: { move: t => ({ rot: -8 * Math.min(1, t / .4) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐭</text>', at: t => (t > 1.6 ? null : { x: 23, y: 22 - t * 2, s: 1 - t / 1.9 }) } } },
+    feed: { dur: 2.2, def: { move: t => ({ rot: -8 * Math.min(1, t / .4) }), prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🐭</text>', at: t => (t > 1.6 ? null : { x: 23, y: 22 - t * 2, s: 1 - t / 1.9 }) } } },
     // turns its head after a moth
     play: { pose: 'spin', dur: 2.6, def: { prop: { svg: '<text font-size="7" text-anchor="middle" dominant-baseline="central">🦋</text>', at: t => ({ x: 23 + 18 * Math.cos(t * 2.4), y: 6 + 4 * Math.sin(t * 4.8) }) } } },
     // winks, then down the pill goes

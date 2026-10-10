@@ -17,8 +17,9 @@ export default {
   care: {
     // stands up for a hug
     pet: { pose: 'hug', dur: 2.2 },
-    // its long tongue in an anthill
-    feed: { pose: 'ants', dur: 3 },
+    // its long tongue in an anthill, the ants going down to the last one
+    feed: { pose: 'ants', dur: 3, def: {
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🐜</text>', at: t => { const s = 1 - Math.floor(t / .9) * .34; return s > .05 ? { x: 51, y: 30, s } : null; } } } },
     // digs in the dirt
     play: { dur: 2.6, def: { frames: ['a', 'b'], every: .15, move: t => ({ rot: 8, dx: .8 * Math.sin(t * 30) }) } },
     // the tongue snaps up the pill

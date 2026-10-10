@@ -101,6 +101,9 @@ class Pets extends Component {
     const toggle = e => {
       if (!store.get().ui.tamaOn || e.target.closest('.menu')) return;
       e.preventDefault();
+      // beside the pet: to its left, or to its right near the screen's left edge
+      // (an attribute: the engine rewrites the pet's classes)
+      el.dataset.side = el.getBoundingClientRect().left < 230 + 24 + 12 ? 'right' : 'left';
       isOpen('tama') ? closePopover() : openPopover('tama');
     };
     el.addEventListener('click', toggle);

@@ -4,7 +4,7 @@ export default {
   speed: .7,
   waddle: true,
   mouth: [34.4, 14.4],   // where it opens its mouth to yawn
-  food: '🐟',            // what it eats (Tamagotchi mode)
+  food: '🦑',            // what it eats (Tamagotchi mode)
   bath: 1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'stand', w: 5, dur: [3, 6] }, { name: 'slide', w: 1.2, dur: [1.6, 2.6], pose: 'slide', speed: 60 }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'noot' }, { name: 'flap', w: 1, dur: [1.2, 2], pose: 'flap' }],
   poses: {
@@ -20,7 +20,7 @@ export default {
     // "noot noot", flapping with joy
     pet: { pose: 'flap', dur: 1.8, say: 'noot' },
     // tips its head back and swallows the fish whole
-    feed: { dur: 2.2, def: { move: t => ({ rot: -10 * Math.min(1, t / .4) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => (t > 1.5 ? null : { x: 36 - t * 2, y: 10 + t * 3, s: 1 - t / 1.8 }) } } },
+    feed: { dur: 2.2, def: { move: t => ({ rot: -10 * Math.min(1, t / .4) }), prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🦑</text>', at: t => (t > 1.5 ? null : { x: 36 - t * 2, y: 10 + t * 3, s: 1 - t / 1.8 }) } } },
     // slides on its belly after a ball
     play: { pose: 'slide', dur: 2.4, def: { speed: 50, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => ({ x: 54, y: 31 - 6 * Math.abs(Math.sin(t * 6)) }) } } },
     // swallows the pill, then slides off

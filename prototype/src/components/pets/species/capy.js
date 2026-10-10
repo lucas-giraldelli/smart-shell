@@ -20,7 +20,7 @@ export default {
     // eats the orange off its head; a new one grows back
     feed: { dur: 3, def: {
       frames: ['x', 'x', 'n'], every: [.9, 1.5, .6], once: true,
-      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍊</text>', at: t => (t < .9 ? { x: 35 + 7 * t / .9, y: 3.6 + 15 * Math.sin(t / .9 * Math.PI / 2) } : t < 2.4 ? { x: 42, y: 18.6, s: 1 - Math.floor((t - .9) / .5) * .34 } : null) },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🍊</text>', at: t => (t < .9 ? { x: 35 + 7 * t / .9, y: 3.6 + 15 * Math.sin(t / .9 * Math.PI / 2) } : t < 2.4 ? { x: 42, y: 18.6, s: 1 - Math.floor((t - .9) / .5) * .34 } : null) },
     } },
     // a little bird hops along its back
     play: { dur: 3, def: { shut: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐤</text>', at: t => ({ x: 12 + 18 * (t / 3), y: 7 - 4 * Math.abs(Math.sin(t * 6)) }) } } },

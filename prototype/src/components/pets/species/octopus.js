@@ -21,7 +21,7 @@ export default {
     pet: { pose: 'camo', dur: 2.2, def: { frames: ['b'], move: t => ({ rot: 3 * Math.sin(t * 7) }) } },
     // grabs a shrimp with a tentacle
     feed: { pose: 'wave', dur: 2.6, def: { frames: ['b', 'a', 'a'], every: [.9, .9, .8], once: true,
-      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🦐</text>', at: t => (t < .9 ? { x: 46, y: 10 } : t < 1.8 ? { x: 46 - (t - .9) * 22, y: 10 + (t - .9) * 9, s: 1 - (t - .9) * .6 } : null) } } },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🦐</text>', at: t => (t < .9 ? { x: 46, y: 10 } : t < 1.8 ? { x: 46 - (t - .9) * 22, y: 10 + (t - .9) * 9, s: 1 - (t - .9) * .6 } : null) } } },
     // juggles three balls
     play: { dur: 3, def: { frames: ['a', 'b', 'c'], every: .2 } },
     // changes colour as it swallows the pill

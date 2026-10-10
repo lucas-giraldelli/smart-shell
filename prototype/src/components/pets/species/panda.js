@@ -20,8 +20,9 @@ export default {
   care: {
     // rolls onto its side, hugging itself
     pet: { pose: 'roll', dur: 2.4 },
-    // munches bamboo
-    feed: { pose: 'bamboo', dur: 3 },
+    // sits and munches a bamboo shoot down to nothing
+    feed: { dur: 3, def: { frames: ['o', 'c'], every: .25,
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🎋</text>', at: t => { const s = 1 - Math.floor(t / .9) * .34; return s > .05 ? { x: 43, y: 19.5, s } : null; } } } },
     // pushes a big ball around
     play: { dur: 3, def: {
       move: t => ({ dx: 4 * Math.sin(t * 2), rot: 6 * Math.sin(t * 4) }),

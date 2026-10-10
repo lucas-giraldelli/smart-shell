@@ -20,7 +20,7 @@ export default {
     // a happy quack, tail wagging
     pet: { dur: 1.8, say: 'quack', def: { shut: true, tailFast: true, move: t => ({ rot: 3 * Math.sin(t * 8) }) } },
     // pecks at bread crumbs on the floor
-    feed: { dur: 2.6, def: { move: t => ({ rot: 22 * Math.abs(Math.sin(t * 6)) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍞</text>', at: t => { const s = 1 - Math.floor(t / .8) * .3; return s > .05 ? { x: 47, y: 31.5, s } : null; } } } },
+    feed: { dur: 2.6, def: { move: t => ({ rot: 22 * Math.abs(Math.sin(t * 6)) }), prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🍞</text>', at: t => { const s = 1 - Math.floor(t / .8) * .3; return s > .05 ? { x: 47, y: 31.5, s } : null; } } } },
     // paddles around a little pond
     play: { dur: 3, def: { frames: ['a', 'b'], every: .4, low: true, move: t => ({ dy: Math.sin(t * 4), dx: 3 * Math.sin(t * 1.2), flip: Math.cos(t * 1.2) < 0 }) } },
     // pecks the pill up like bread

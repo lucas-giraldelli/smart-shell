@@ -5,7 +5,7 @@ export default {
   speed: .7,
   float: true,
   sleepless: true,
-  food: '🍬',            // what it eats (Tamagotchi mode)
+  food: '🎃',            // what it eats (Tamagotchi mode)
   pace: { clean: 0 },   // how fast its needs run down against the default 1
   acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'fade', w: 1, dur: [2.4, 3.6], pose: 'fade' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'boo', pose: 'shout' }, { name: 'flip', w: .7, dur: [1.6, 2.6], pose: 'flip' }],
   poses: {
@@ -23,7 +23,7 @@ export default {
     // floats down to its candy and eats it, a bite at a time
     feed: { dur: 2.4, def: {
       frames: ['o', 'm'], every: .2,
-      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🍬</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 30, y: 21, s } : null; } },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🎃</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 30, y: 21, s } : null; } },
     } },
     // hide and seek: vanishes, comes back on the other side
     play: { dur: 3, def: {

@@ -18,7 +18,7 @@ export default {
     // stretches its neck out for a pat
     pet: { dur: 2.2, def: { shut: true, move: t => ({ rot: -5 * Math.min(1, t / .5), dx: 1 }) } },
     // bites its lettuce, slowly
-    feed: { dur: 3.2, def: { frames: ['o', 'c'], every: .5, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🥬</text>', at: t => { const s = 1 - Math.floor(t / 1) * .34; return s > .05 ? { x: 50, y: 22.6, s } : null; } } } },
+    feed: { dur: 3.2, def: { frames: ['o', 'c'], every: .5, prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🥬</text>', at: t => { const s = 1 - Math.floor(t / 1) * .34; return s > .05 ? { x: 50, y: 22.6, s } : null; } } } },
     // ambles round in a slow circle
     play: { dur: 3.6, def: { move: t => ({ dx: 6 * Math.sin(t * 1.4), flip: Math.cos(t * 1.4) < 0 }) } },
     // ducks into its shell with the pill, then peeks out

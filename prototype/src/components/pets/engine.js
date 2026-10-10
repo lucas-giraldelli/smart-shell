@@ -257,12 +257,12 @@ export function createPet(kind, species, host) {
     if (mv !== lastMove) { const [tf, op] = mv.split('|'); svgEl.style.transform = tf ?? ''; svgEl.style.opacity = op ?? ''; lastMove = mv; }
     const pp = def?.prop ? def.prop.at(pt) : null;
     if (def?.prop !== lastProp) {
-      propEl.innerHTML = def?.prop ? `<svg viewBox="-6 -6 12 12" width="12" height="12" overflow="visible">${def.prop.svg}</svg>` : '';
+      propEl.innerHTML = def?.prop ? `<svg viewBox="-9 -9 18 18" width="18" height="18" overflow="visible">${def.prop.svg}</svg>` : '';
       lastProp = def?.prop;
     }
     propEl.style.display = pp ? '' : 'none';
     if (pp) {
-      propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 6}px`; propEl.style.top = `${pp.y - 6}px`;
+      propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 9}px`; propEl.style.top = `${pp.y - 9}px`;
       propEl.style.scale = pp.s ?? 1;
     }
     if (face !== lastDir) { flip.style.transform = face < 0 ? 'scaleX(-1)' : ''; lastDir = face; }

@@ -68,7 +68,7 @@ export function yawnPart(species) {
 // What a pet does for a care action: its species' own `care[action]`
 // ({ dur, say, def, and name to borrow a plain pose's parts }), else the plain one below. `glyph` is what it eats.
 // Props drawn as emoji: an SVG <text> centred on the prop's point.
-export const emoji = (glyph, size = 9) => `<text font-size="${size}" text-anchor="middle" dominant-baseline="central">${glyph}</text>`;
+export const emoji = (glyph, size = 12) => `<text font-size="${size}" text-anchor="middle" dominant-baseline="central">${glyph}</text>`;
 const PLAIN = {
   // chews its food at its mouth, a bite at a time
   feed: (sp, glyph) => {
@@ -79,20 +79,20 @@ const PLAIN = {
   // a ball bouncing in front of it, and it hops after it
   play: () => ({ name: 'play', dur: 2.6, def: {
     move: t => ({ dy: -6 * Math.abs(Math.sin(t * 5)), flip: Math.floor(t / 1.3) % 2 === 1 }),
-    prop: { svg: emoji('🎾', 8), at: t => ({ x: 50 - (t % 1.3) * 3, y: 30 - 12 * Math.abs(Math.sin(t * 5 + 1.2)), s: 1 }) } } }),
+    prop: { svg: emoji('🎾', 10), at: t => ({ x: 50 - (t % 1.3) * 3, y: 30 - 12 * Math.abs(Math.sin(t * 5 + 1.2)), s: 1 }) } } }),
   // eyes shut, wiggling with joy (the hearts come from pets.js)
   pet: () => ({ name: 'love', dur: 1.8, def: { shut: true, move: t => ({ rot: 4 * Math.sin(t * 9) }) } }),
   // a soap bar scrubs it in zigzags, foam all over, eyes shut; then a shake
   clean: () => ({ name: 'wash', dur: 3, def: {
     frames: ['a', 'b'], every: .3, shut: true,
     move: t => (t < 2.3 ? { rot: 1.5 * Math.sin(t * 9) } : { dx: 1.6 * Math.sin(t * 60) }),
-    prop: { svg: emoji('🧼', 8), at: t => (t > 2.2 ? null : { x: 23 + 12 * Math.sin(t * 4.2), y: 18 + 5 * Math.sin(t * 8.4) }) },
+    prop: { svg: emoji('🧼', 11), at: t => (t > 2.2 ? null : { x: 23 + 12 * Math.sin(t * 4.2), y: 18 + 5 * Math.sin(t * 8.4) }) },
   } }),
   // the pill flies into its open mouth, a gulp, a happy hop
   medicine: sp => {
     const [mx, my] = sp.mouth ?? [40, 16];
     return { name: 'pill', dur: 2, def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.2], once: true,
-      prop: { svg: emoji('💊', 8), at: t => (t > .8 ? null : { x: mx + 8 - t * 7, y: my - 6 + t * 7, s: 1 }) },
+      prop: { svg: emoji('💊', 10), at: t => (t > .8 ? null : { x: mx + 8 - t * 7, y: my - 6 + t * 7, s: 1 }) },
       move: t => (t > 1 ? { dy: -3 * Math.abs(Math.sin((t - 1) * 8)) } : {}) } };
   },
 };

@@ -20,7 +20,7 @@ export default {
     // so happy: tail spinning, little hops
     pet: { pose: 'happy', dur: 2 },
     // munches an apple, "oink oink"
-    feed: { dur: 2.4, say: 'oink', def: { frames: ['o', 'c'], every: .2, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🍎</text>', at: t => { const s = 1 - Math.floor(t / 0.7) * .34; return s > .05 ? { x: 46.6, y: 21.6, s } : null; } } } },
+    feed: { dur: 2.4, say: 'oink', def: { frames: ['o', 'c'], every: .2, prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🍎</text>', at: t => { const s = 1 - Math.floor(t / 0.7) * .34; return s > .05 ? { x: 46.6, y: 21.6, s } : null; } } } },
     // rolls in the mud
     play: { pose: 'mud', dur: 3.2 },
     // a mud bath: to a pig, that's clean

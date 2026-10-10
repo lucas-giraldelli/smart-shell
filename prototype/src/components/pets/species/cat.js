@@ -20,7 +20,7 @@ export default {
     // its fish, a bite at a time, then licks its lips
     feed: { dur: 2.6, def: {
       frames: ['o', 'c', 'o', 'c', 'o', 'c', 'l', 'c'], every: .32, once: true,
-      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .64) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .64) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
     } },
     // crouches, wiggles and pounces on a ball of yarn
     play: { dur: 2.6, def: {

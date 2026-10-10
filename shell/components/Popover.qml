@@ -18,6 +18,12 @@ PopupWindow {
     default property alias content: body.data
     property int bubbleWidth: 240
     property int padding: 6
+    // beside its owner instead of above it, with no tail: to the left, or to
+    // the right when there's no room on the left (the pet's care menu, which
+    // must not cover the pet)
+    property bool side: false
+    readonly property int sideGap: 24
+    property bool sideRight: false
 
     // open on the screen it was opened on (Ui.popoverScreen) only
     readonly property bool open: Ui.popover === name
@@ -49,6 +55,10 @@ PopupWindow {
         const win = owner.QsWindow.window;
         if (!win)
             return;
+        if (side) {
+            sideRight = owner.mapToItem(null, 0, 0).x - sideGap - bubble.width < screenEdge;
+            return;
+        }
         const tileLeft = owner.mapToItem(null, 0, 0).x + 1;
         let l = 0;
         l = Math.min(l, win.width - screenEdge - tileLeft - bubble.width);
@@ -61,8 +71,8 @@ PopupWindow {
 
     anchor.item: owner
     // the CSS positions the bubble from the tile's padding box, 1px inside its border
-    anchor.rect.x: 1 + left - shadowX
-    anchor.rect.y: 1 - gap + shadowBottom
+    anchor.rect.x: side ? (sideRight ? owner.width + sideGap : -sideGap - bubble.width) - shadowX : 1 + left - shadowX
+    anchor.rect.y: side ? owner.height + shadowBottom : 1 - gap + shadowBottom
     anchor.edges: Edges.Top | Edges.Left
     anchor.gravity: Edges.Top | Edges.Right
     anchor.adjustment: PopupAdjustment.None
@@ -161,13 +171,13 @@ PopupWindow {
             ShapePath {
                 strokeWidth: -1
                 fillColor: Theme.menuBg
-                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 0) }
+                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, root.side ? 0 : 10, 0) }
             }
             ShapePath {
                 strokeWidth: -1
                 fillColor: Theme.menuLine
                 fillRule: ShapePath.OddEvenFill
-                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 0) + " " + root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, 10, 1) }
+                PathSvg { path: root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, root.side ? 0 : 10, 0) + " " + root.outline(bubble.width, bubble.height, 14, root.arrowX + 1, root.side ? 0 : 10, 1) }
             }
         }
 

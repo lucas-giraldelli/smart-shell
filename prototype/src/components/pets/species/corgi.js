@@ -21,7 +21,7 @@ export default {
     // wolfs its bone down, tail spinning
     feed: { dur: 1.8, def: {
       frames: ['o', 'c'], every: .12, tailFast: true,
-      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🦴</text>', at: t => { const s = 1 - Math.floor(t / .45) * .34; return s > .05 ? { x: 46.4, y: 19.4, s } : null; } },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🦴</text>', at: t => { const s = 1 - Math.floor(t / .45) * .34; return s > .05 ? { x: 46.4, y: 19.4, s } : null; } },
     } },
     // zoomies after a ball
     play: { dur: 3, def: {

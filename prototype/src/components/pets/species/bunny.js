@@ -19,7 +19,7 @@ export default {
     // nose twitching fast, one ear flopping down
     pet: { dur: 2, def: { frames: ['a', 'b'], every: .07, shut: true } },
     // nibbles a carrot down to nothing
-    feed: { dur: 2.6, def: { frames: ['o', 'c'], every: .1, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🥕</text>', at: t => { const s = 1 - Math.floor(t / 0.8) * .34; return s > .05 ? { x: 45.6, y: 18.6, s } : null; } } } },
+    feed: { dur: 2.6, def: { frames: ['o', 'c'], every: .1, prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🥕</text>', at: t => { const s = 1 - Math.floor(t / 0.8) * .34; return s > .05 ? { x: 45.6, y: 18.6, s } : null; } } } },
     // a double binky
     play: { pose: 'binky', dur: 2.3 },
     // chews the pill, nose going

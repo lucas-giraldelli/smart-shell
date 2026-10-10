@@ -21,7 +21,7 @@ export default {
     // ears flat, rubbing against you
     pet: { dur: 2, def: { shut: true, move: t => ({ rot: 3 * Math.sin(t * 5), dx: Math.sin(t * 5) }) } },
     // pounces on its snack, nose first
-    feed: { pose: 'dive', dur: 3, def: { prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍗</text>', at: t => (t > 2.6 ? null : { x: 50, y: 31.5, s: t < 1.4 ? 1 : 1 - (t - 1.4) / 1.3 }) } } },
+    feed: { pose: 'dive', dur: 3, def: { prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🍗</text>', at: t => (t > 2.6 ? null : { x: 50, y: 31.5, s: t < 1.4 ? 1 : 1 - (t - 1.4) / 1.3 }) } } },
     // chases its own tail, round and round
     play: { dur: 2.4, def: { tailFast: true, move: t => ({ flip: Math.floor(t / .22) % 2 === 1, dy: -2 * Math.abs(Math.sin(t * 14)) }) } },
     // swallows the pill, then sneezes

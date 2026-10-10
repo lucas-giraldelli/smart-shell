@@ -152,12 +152,17 @@ ss-pets { display: contents; }
 .pet.talking .say { opacity: 1; transform: translateX(-50%) scale(1); }
 
 /* a pose's prop (the frog's fly), positioned by the engine */
-.pet .prop { position: absolute; width: 12px; height: 12px; pointer-events: none; }
+.pet .prop { position: absolute; width: 18px; height: 18px; pointer-events: none; }
 .pet .prop svg { display: block; }
 
 /* Tamagotchi mode (pets/tama.js): its care menu above it, the sign of its most
    urgent need, a sick or baby look, its droppings on the dock */
-.pet .tama-menu { width: 230px; }
+/* the care menu opens beside the pet, not over it: to its left (to its right
+   when there's no room), 24px away, its bottom on the pet's, no tail */
+.pet .tama-menu { width: 230px; left: auto; right: calc(100% + 24px); bottom: 0; border: 1px solid var(--menu-line); transform-origin: 100% 100%; }
+.pet[data-side="right"] .tama-menu { right: auto; left: calc(100% + 24px); transform-origin: 0 100%; }
+.pet .tama-menu::before { clip-path: inset(-1px -1px 11px -1px round 14px); }
+.pet .tama-menu::after { display: none; }
 .pet .need {
   position: absolute; left: 50%; top: -22px; transform: translateX(-50%); font-size: 13px; pointer-events: none;
   animation: need 1.6s ease-in-out infinite;

@@ -19,7 +19,7 @@ export default {
     // leans its head in, crest up
     pet: { dur: 2, def: { shut: true, move: t => ({ rot: 8 * Math.min(1, t / .4) }) } },
     // cracks a nut with its beak
-    feed: { dur: 2.6, def: { move: t => ({ dy: Math.abs(Math.sin(t * 9)) }), prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🌰</text>', at: t => { const s = 1 - Math.floor(t / 0.75) * .34; return s > .05 ? { x: 41.6, y: 16.6, s } : null; } } } },
+    feed: { dur: 2.6, def: { move: t => ({ dy: Math.abs(Math.sin(t * 9)) }), prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🌰</text>', at: t => { const s = 1 - Math.floor(t / 0.75) * .34; return s > .05 ? { x: 41.6, y: 16.6, s } : null; } } } },
     // hangs upside down from a branch, swinging
     play: { pose: 'hang', dur: 3 },
     // "curupaco!", and down the pill goes

@@ -2,7 +2,7 @@
 export default {
   color: '#27272a',
   mouth: [39.4, 17.8],   // where it opens its mouth to yawn
-  food: '🐟',            // what it eats (Tamagotchi mode)
+  food: '🥛',            // what it eats (Tamagotchi mode)
   bath: -1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'pounce', w: .6, dur: [.5, .9], jump: true }, { name: 'arch', w: 1, dur: [1.4, 2.4], pose: 'arch' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'hiss' }, { name: 'dark', w: 1, dur: [2.4, 4], pose: 'dark' }],
   poses: {
@@ -20,7 +20,7 @@ export default {
     // its fish, eyes glowing
     feed: { dur: 2.4, def: {
       frames: ['o', 'c'], every: .22, move: t => ({ dy: .8 * Math.sin(t * 14) }),
-      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
+      prop: { svg: '<text font-size="12" text-anchor="middle" dominant-baseline="central">🥛</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
     } },
     // chases a laser dot along the floor
     play: { dur: 3, def: {
