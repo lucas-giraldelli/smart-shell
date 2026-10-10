@@ -21,54 +21,77 @@ tools/       helper scripts (icons, calendar export, service install)
 
 ## Install
 
-`bin/smart-shell` does it for you (Arch / CachyOS, uses `paru`):
+Only the core is required; each widget needs its own packages and stays
+visible but disabled (saying what's missing) until they're there. Install the
+core, then the lines for the widgets you want.
+
+**Arch / CachyOS**
+
+```sh
+paru -S quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify  # core
+paru -S ddcutil                  # brightness (also: sudo modprobe i2c-dev, user in the i2c group)
+paru -S hyprsunset               # night light
+paru -S docker lazydocker        # Docker tab (also: systemctl enable --now docker, user in the docker group)
+paru -S bluez bluez-utils blueman python-bluetooth-battery  # Bluetooth tile, headset battery
+paru -S btop kitty               # System tab's btop button
+paru -S openvpn3                 # VPN switch
+paru -S github-cli               # pull requests (then: gh auth login)
+paru -S nodejs                   # YouTube Music's like state
+paru -S gpu-screen-recorder      # recording indicator
+paru -S cava                     # pets dance to the music, the player's eq follows it
+```
+
+**Fedora**
+
+```sh
+sudo dnf copr enable errornointernet/quickshell
+sudo dnf install quickshell rsms-inter-fonts papirus-icon-theme qt6-qt5compat NetworkManager iputils curl jq libnotify  # core
+sudo dnf install ddcutil         # brightness
+sudo dnf install moby-engine     # Docker tab (lazydocker: see its README)
+sudo dnf install bluez blueman   # Bluetooth tile
+sudo dnf install btop kitty      # System tab's btop button
+sudo dnf install gh              # pull requests (then: gh auth login)
+sudo dnf install nodejs          # YouTube Music's like state
+sudo dnf install cava            # pets dance to the music, the player's eq follows it
+```
+
+**Debian / Ubuntu**
+
+Quickshell isn't packaged: build it from
+[source](https://quickshell.outfoxxed.me/docs/guide/install-setup/).
+
+```sh
+sudo apt install fonts-inter papirus-icon-theme qml6-module-qt5compat-graphicaleffects network-manager iputils-ping curl jq libnotify-bin  # core
+sudo apt install ddcutil         # brightness
+sudo apt install docker.io       # Docker tab (lazydocker: see its README)
+sudo apt install bluez blueman   # Bluetooth tile
+sudo apt install btop kitty      # System tab's btop button
+sudo apt install gh              # pull requests (then: gh auth login)
+sudo apt install nodejs          # YouTube Music's like state
+sudo apt install cava            # pets dance to the music, the player's eq follows it
+```
+
+Outside Arch, `hyprsunset`, `openvpn3` and `gpu-screen-recorder` come from
+their projects (or Flatpak / COPR), and the headset battery from
+`pip install bluetooth_battery`. `qt6-shadertools` is only needed to rebuild
+`shell/shaders/*.qsb` after editing a shader. Calendar events need Python,
+Thunderbird and the export timer (see [Calendar events](#calendar-events)).
+
+On Arch, `bin/smart-shell` does all of the above, the groups and services
+included:
 
 ```sh
 ln -s ~/projects/smart-shell/bin/smart-shell ~/.local/bin/   # once
-smart-shell install full          # core + every widget's packages and setup
-smart-shell install core          # just the dock
-smart-shell install docker events # only what some widgets need
-                                  # (brightness nightlight docker bluetooth events
-                                  #  system pets vpn prs music recording)
+smart-shell install full          # core + every widget
+smart-shell install pets prs      # just some widgets: brightness nightlight docker
+                                  #   bluetooth events system pets vpn prs music recording
 smart-shell hyprland              # add the exec-once and blur lines (asks first)
 smart-shell doctor                # what each widget is still missing
 smart-shell restart               # also: start, stop, log
 ```
 
-`install` also loads `i2c-dev` and adds you to the `i2c` / `docker` groups
-for brightness / Docker, enables the bluetooth and docker services, installs
-the calendar export timer, runs `gh auth login` for the PRs and copies the
-example config if you have none. `doctor` checks each widget, including the
-`gh` login, YouTube Music's debug port and another notification daemon
-still running.
-
-To add a widget later: install its packages (`smart-shell install <widget>`),
-then add its id to a group in `dock` (or `quick`) in the config - see
-[Making it yours](#making-it-yours). A widget whose backend is missing stays
-visible but disabled and says what to install.
-
-The manual way - dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
-
-| Package | For |
-|---|---|
-| `quickshell` (0.3.x) | the shell itself |
-| `inter-font` | the UI font |
-| `papirus-icon-theme` | app and tray icons (the shell asks for Papirus-Dark) |
-| `qt6-5compat` | app icon reflections |
-| `qt6-shadertools` | only to rebuild `shell/shaders/*.qsb` after editing a shader |
-| `networkmanager`, `iputils`, `curl` | network status, weather |
-| `jq`, `libnotify` | bringing a window forward from a notification or the player; merged-PR notifications |
-| `ddcutil` | monitor brightness (optional) |
-| `hyprsunset` | night light (optional) |
-| `docker` | Docker tab (optional) |
-| `bluez`, `bluez-utils`, `blueman` | Bluetooth tile and its "open manager" row (optional) |
-| `python-bluetooth-battery` (AUR) | headset battery for headsets that don't report it to BlueZ (optional) |
-| `btop`, `lazydocker`, `kitty` | the default commands behind the btop / lazydocker buttons |
-| `openvpn3` | VPN switch in the Network tab (optional) |
-| `github-cli` | pull requests in the tray (optional; `gh auth login`) |
-| `nodejs` (22+) | YouTube Music's like state (optional) |
-| `gpu-screen-recorder` | the recording indicator (optional) |
-| `cava` | pets dance to the music's loudness, the player's eq follows it (optional) |
+To add a widget later: install its packages, then add its id to a group in
+`dock` (or `quick`) in the config - see [Making it yours](#making-it-yours).
 
 Run it:
 
