@@ -50,7 +50,7 @@ export default {
     // the tongue snaps the pill out of the air
     medicine: { dur: 2.2, def: {
       frames: ['w', 't', 'g'], every: [.9, .35, .95], once: true,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > 1.25 ? null : { x: 52 - 4.4 * Math.min(1, t / .9), y: 8 + 5.8 * Math.min(1, t / .9) }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > 1.25 ? null : { x: 52 - 4.4 * Math.min(1, t / .9), y: 8 + 5.8 * Math.min(1, t / .9) }) },
     } },
   },
   svg: `

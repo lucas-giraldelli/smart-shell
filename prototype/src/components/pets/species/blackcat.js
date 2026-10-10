@@ -18,7 +18,7 @@ export default {
     // its fish, eyes glowing
     feed: { dur: 2.4, def: {
       frames: ['o', 'c'], every: .22, move: t => ({ dy: .8 * Math.sin(t * 14) }),
-      prop: { svg: '<text font-size="7" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
+      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
     } },
     // chases a laser dot along the floor
     play: { dur: 3, def: {
@@ -30,7 +30,7 @@ export default {
     // a hiss at the pill, then down it goes
     medicine: { dur: 2.2, say: 'hiss', def: {
       frames: ['c', 'o', 'c'], every: [.9, .5, .8], once: true,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t < .9 || t > 1.4 ? null : { x: 47 - (t - .9) * 8, y: 14 + (t - .9) * 7 }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t < .9 || t > 1.4 ? null : { x: 47 - (t - .9) * 8, y: 14 + (t - .9) * 7 }) },
     } },
   },
   svg: `

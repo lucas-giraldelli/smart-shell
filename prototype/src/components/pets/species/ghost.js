@@ -21,7 +21,7 @@ export default {
     // the candy goes right through it
     feed: { dur: 2.2, def: {
       frames: ['o', 'm'], every: .2,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🍬</text>', at: t => ({ x: 50 - t * 26, y: 19 }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍬</text>', at: t => ({ x: 50 - t * 26, y: 19 }) },
     } },
     // hide and seek: vanishes, comes back on the other side
     play: { dur: 3, def: {
@@ -32,7 +32,7 @@ export default {
     // boo! the pill bounces off
     medicine: { dur: 1.8, say: 'boo', def: {
       frames: ['o', 'm'], every: .18,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => ({ x: 40 + t * 12, y: 18 - 10 * Math.abs(Math.sin(t * 5)) }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => ({ x: 40 + t * 12, y: 18 - 10 * Math.abs(Math.sin(t * 5)) }) },
     } },
   },
   svg: `

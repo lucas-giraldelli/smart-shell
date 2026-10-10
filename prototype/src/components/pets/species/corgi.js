@@ -19,19 +19,19 @@ export default {
     // wolfs its bone down, tail spinning
     feed: { dur: 1.8, def: {
       frames: ['o', 'c'], every: .12, tailFast: true,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🦴</text>', at: t => { const s = 1 - Math.floor(t / .45) * .34; return s > .05 ? { x: 46.4, y: 19.4, s } : null; } },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🦴</text>', at: t => { const s = 1 - Math.floor(t / .45) * .34; return s > .05 ? { x: 46.4, y: 19.4, s } : null; } },
     } },
     // zoomies after a ball
     play: { dur: 3, def: {
       tailFast: true, move: t => ({ dx: 12 * Math.sin(t * 2.1), flip: Math.cos(t * 2.1) < 0, dy: -2 * Math.abs(Math.sin(t * 12)) }),
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => ({ x: 23 + 12 * Math.sin(t * 2.1) + (Math.cos(t * 2.1) < 0 ? -16 : 26), y: 31.5 }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => ({ x: 23 + 12 * Math.sin(t * 2.1) + (Math.cos(t * 2.1) < 0 ? -16 : 26), y: 31.5 }) },
     } },
     // bubbles, then a shake, ears flapping
     clean: { name: 'wash', dur: 2.8, def: { frames: ['a', 'b', 'a', 'b', 'a', 'b', 'd', 'e'], every: .32, once: true, shut: true, move: t => (t < 1.9 ? {} : { dx: 2 * Math.sin(t * 60) }) } },
     // takes the pill, then flops into a sploot
     medicine: { dur: 2.6, def: {
       frames: ['o', 'o', 'c'], every: [.5, .3, 1.8], once: true, low: true,
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 51 - t * 6, y: 13 + t * 7 }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 51 - t * 6, y: 13 + t * 7 }) },
     } },
   },
   svg: `

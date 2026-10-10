@@ -152,7 +152,7 @@ ss-pets { display: contents; }
 .pet.talking .say { opacity: 1; transform: translateX(-50%) scale(1); }
 
 /* a pose's prop (the frog's fly), positioned by the engine */
-.pet .prop { position: absolute; width: 8px; height: 8px; pointer-events: none; }
+.pet .prop { position: absolute; width: 12px; height: 12px; pointer-events: none; }
 .pet .prop svg { display: block; }
 
 /* Tamagotchi mode (pets/tama.js): its care menu above it, the sign of its most

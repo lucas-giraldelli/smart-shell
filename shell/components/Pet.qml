@@ -216,12 +216,13 @@ Item {
     readonly property var prop: poseDef?.prop ? poseDef.prop.at(s.poseT) : null
     Image {
         visible: !!root.prop
-        width: 8
-        height: 8
-        x: (root.face < 0 ? 46 - (root.prop?.x ?? 0) : (root.prop?.x ?? 0)) - 4
-        y: (root.prop?.y ?? 0) - 4
-        sourceSize: Qt.size(32, 32)
-        source: root.poseDef?.prop ? "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-4 -4 8 8">${root.poseDef.prop.svg}</svg>`) : ""
+        width: 12
+        height: 12
+        x: (root.face < 0 ? 46 - (root.prop?.x ?? 0) : (root.prop?.x ?? 0)) - 6
+        y: (root.prop?.y ?? 0) - 6
+        scale: root.prop?.s ?? 1
+        sourceSize: Qt.size(48, 48)
+        source: root.poseDef?.prop ? "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -6 12 12">${root.poseDef.prop.svg}</svg>`) : ""
     }
 
     // a word over its head (an action's `say`, under pets.says): white

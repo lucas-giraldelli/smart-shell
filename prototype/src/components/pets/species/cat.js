@@ -18,19 +18,19 @@ export default {
     // its fish, a bite at a time, then licks its lips
     feed: { dur: 2.6, def: {
       frames: ['o', 'c', 'o', 'c', 'o', 'c', 'l', 'c'], every: .32, once: true,
-      prop: { svg: '<text font-size="7" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .64) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
+      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .64) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
     } },
     // crouches, wiggles and pounces on a ball of yarn
     play: { dur: 2.6, def: {
       move: t => (t < 1 ? { dy: 1.5, rot: -4, dx: .6 * Math.sin(t * 30) } : t < 1.6 ? { dy: -10 * Math.sin((t - 1) / .6 * Math.PI), dx: 6 * (t - 1) / .6, rot: 8 * (t - 1) / .6 } : { dx: 6, rot: 4 }),
-      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🧶</text>', at: t => ({ x: Math.max(48, 56 - t * 6), y: 31.5 }) },
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🧶</text>', at: t => ({ x: Math.max(48, 56 - t * 6), y: 31.5 }) },
     } },
     // grooms itself: licks a paw and washes its face
     clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .28, shut: true, move: t => ({ rot: -1.5 * Math.sin(t * 11) }) } },
     // the pill hidden in a fish
     medicine: { dur: 2.4, def: {
       frames: ['o', 'c'], every: .3,
-      prop: { svg: '<text font-size="7" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
+      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🐟</text>', at: t => { const s = 1 - Math.floor(t / .7) * .34; return s > .05 ? { x: 43.4, y: 18.3, s } : null; } },
     } },
   },
   svg: `

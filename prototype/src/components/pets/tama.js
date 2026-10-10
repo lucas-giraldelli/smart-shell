@@ -15,8 +15,8 @@ import { fresh } from './tama-fresh.js';
 // It drops one every 2.5-4.5 h while fed; dirt, droppings or a hot PC can make
 // it sick (Medicine cures it).
 // It grows: a baby the first day (drawn smaller), young up to 3 days, then adult.
-// Each species has its own pace (TRAITS); a loaded CPU tires it a little and a
-// work meeting bores it a little, music cheers it up, and at night (22-6 h) it
+// Each species has its own pace (TRAITS); a loaded CPU tires it a little, a hot
+// one tires it and makes it sweat (and can make it sick), a work meeting bores it a little, music cheers it up, and at night (22-6 h) it
 // tires faster and asks for bed sooner. Most dislike a bath (the duck, penguin
 // and frog love one; the pig would rather have mud), and petting it over and
 // over pleases it less each time (a cat ends up hissing).
@@ -61,12 +61,13 @@ export function urgent(s) {
 export function tick(dt, { kind, asleep, hot, load = 0, music = false, meeting = false }) {
   const s = store.get().tama;
   const h = dt * (s.speed ?? 1) / 3600;
-  const tired = 6 * trait(kind, 'energy') * (night() ? 1.6 : 1) + (load > 72 ? 1.5 : 0);
+  // a busy CPU tires it a little; a hot one tires it and makes it sweat (dirtier)
+  const tired = 6 * trait(kind, 'energy') * (night() ? 1.6 : 1) + (load > 72 ? 1.5 : 0) + (hot ? 1.5 : 0);
   const n = {
     ...s,
     food: clamp(s.food - 12 * trait(kind, 'food') * h),
     fun: clamp(s.fun - (10 * trait(kind, 'fun') + (meeting ? 2 : 0) - (music ? 6 : 0)) * h),
-    clean: clamp(s.clean - (4 + 10 * s.poops.length) * trait(kind, 'clean') * h),
+    clean: clamp(s.clean - (4 + 10 * s.poops.length + (hot ? 2 : 0)) * trait(kind, 'clean') * h),
     energy: clamp(s.energy + (asleep || s.napping ? 30 : -tired) * h),
     nextPoop: s.nextPoop - h * (s.food > 30 ? 1 : .3),
   };
