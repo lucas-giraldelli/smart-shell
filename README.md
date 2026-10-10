@@ -9,6 +9,26 @@ runs as a layer-shell surface on Hyprland (`shell/`). Its approved visual spec
 is an HTML prototype with the same component structure (`prototype/`); the
 shell ports it piece by piece.
 
+![The dock](docs/media/dock.png)
+
+| Control center | Calendar |
+|---|---|
+| ![Control center, System tab](docs/media/control-center.png) | ![Calendar with holidays](docs/media/calendar.png) |
+
+**Themes** - aqua, neon, snowy, halloween, canarinho and paper (glass is the default):
+
+![Themes](docs/media/themes.png)
+
+**Pets** - dancing to the music and walking with the CPU load:
+
+![Pets dancing](docs/media/pets-dancing.gif)
+
+![Pets walking](docs/media/pets-walking.gif)
+
+![Every pet](docs/media/pets-all.png)
+
+The screenshots are of the prototype with its sample data.
+
 ## Repository layout
 
 ```
