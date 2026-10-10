@@ -13,7 +13,7 @@ import { fresh } from './tama-fresh.js';
 //   health  falls while it's sick or a need is nearly empty, recovers when fed
 //           and happy; at 0 the pet runs away and comes back as the ghost
 // It drops one every 2.5-4.5 h while fed; dirt, droppings or a hot PC can make
-// it sick (Medicine cures it). A need running out counts a care mistake.
+// it sick (Medicine cures it).
 // It grows: a baby the first day (drawn smaller), young up to 3 days, then adult.
 export const NEEDS = ['food', 'fun', 'clean', 'energy', 'health'];
 // what each species eats
@@ -56,7 +56,6 @@ export function tick(dt, { asleep, hot }) {
   if (!s.sick && (n.clean < 25 || n.poops.length >= 3 || hot) && Math.random() < h * 2) n.sick = true;
   const low = ['food', 'fun', 'clean', 'energy'].filter(k => n[k] < 15).length;
   n.health = clamp(s.health - (s.sick ? 10 : 0) * h - 5 * low * h + (!low && !s.sick && n.food > 50 && n.fun > 50 ? 4 : 0) * h);
-  for (const k of ['food', 'fun', 'energy']) if (s[k] > 0 && n[k] === 0) n.mistakes++;
   if (s.napping && n.energy >= 100) n.napping = false;
   if (n.health === 0) return runAway();
   update('tama', n);
@@ -97,6 +96,8 @@ export function care(action) {
     Object.assign(n, { sick: false, health: clamp(s.health + 20) });
     out = { effect: 'medicine' };
   } else if (action === 'sleep') {
+    // not sleepy yet: it won't go to bed
+    if (!s.napping && s.energy > 70) return { say: 'no' };
     n.napping = !s.napping;
   } else if (action === 'poop') {
     // one dropping clicked away
@@ -134,5 +135,5 @@ export function menuHTML(kind, s) {
       ${btn('medicine', '💊', t('tama.medicine'), !s.sick)}
       ${btn('sleep', s.napping ? '☀️' : '🌙', t(s.napping ? 'tama.wake' : 'tama.sleep'))}
     </div>
-    <div class="meta tm-foot">${t('tama.mistakes', { n: s.mistakes })}</div>`;
+`;
 }

@@ -2,5 +2,5 @@
 // state.js can start from it without a cycle.
 export const fresh = () => ({
   food: 80, fun: 80, clean: 100, energy: 90, health: 100,
-  sick: false, poops: [], nextPoop: 3, napping: false, mistakes: 0, bornAt: Date.now(),
+  sick: false, poops: [], nextPoop: 3, napping: false, bornAt: Date.now(),
 });

@@ -154,7 +154,7 @@ export default {
     food: 'Alimentação', fun: 'Diversão', clean: 'Higiene', energy: 'Energia', health: 'Saúde',
     pet: 'Carinho', feed: 'Alimentar', play: 'Brincar', wash: 'Limpar', medicine: 'Remédio', sleep: 'Dormir', wake: 'Acordar',
     baby: 'Filhote', young: 'Jovem', adult: 'Adulto', hours: '{h} h', days: '{d} dias',
-    sick: 'Doente', mistakes: 'Erros de cuidado: {n}',
+    sick: 'Doente',
     ranAway: '{name} fugiu', ranAwayBody: 'Sem cuidados, ele foi embora… e voltou como fantasma.',
   },
 

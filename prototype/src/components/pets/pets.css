@@ -195,5 +195,4 @@ ss-pets { display: contents; }
 .tama-menu .tm-act span { font-size: 16px; }
 .tama-menu .tm-act:hover { background: var(--menu-strong); }
 .tama-menu .tm-act:disabled { opacity: .4; cursor: default; }
-.tama-menu .tm-foot { padding: 6px 8px 2px; }
 .pet[data-open] .bubble { opacity: 0 !important; }   /* the hover label hides under the care menu */

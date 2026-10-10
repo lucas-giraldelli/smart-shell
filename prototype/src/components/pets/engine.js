@@ -58,10 +58,15 @@ export function createPet(kind, species, host) {
   const svgEl = el.querySelector('svg');
   showParts(flip);
   let lastPart = '', lastSay = '', lastMove = '', clickT = 0;
+  // classes owned by others (Tamagotchi mode: tama, sick, baby), kept through
+  // every class rewrite below
+  let flags = '';
   // a word over its head for a moment (a pets.says key)
+  let speaking = false;   // a word said on its own (a click, a refusal) holds the bubble
   function speak(word) {
-    sayEl.textContent = t(`pets.says.${word}`); lastSay = word; el.classList.add('talking');
-    clearTimeout(clickT); clickT = setTimeout(() => { el.classList.remove('talking'); lastSay = ''; lastCls = ''; }, 1400);
+    sayEl.textContent = t(`pets.says.${word}`); lastSay = word; speaking = true; el.classList.add('talking');
+    clearTimeout(clickT);
+    clickT = setTimeout(() => { speaking = false; el.classList.remove('talking'); lastSay = ''; lastCls = ''; }, 1400);
   }
 
   // each pet reacts at slightly different loads, so they don't all switch at once
@@ -246,11 +251,11 @@ export function createPet(kind, species, host) {
     propEl.style.display = pp ? '' : 'none';
     if (pp) { propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 4}px`; propEl.style.top = `${pp.y - 4}px`; }
     if (face !== lastDir) { flip.style.transform = face < 0 ? 'scaleX(-1)' : ''; lastDir = face; }
-    if (say !== lastSay) { sayEl.textContent = say ? t(`pets.says.${say}`) : ''; lastSay = say; }
+    if (!speaking && say !== lastSay) { sayEl.textContent = say ? t(`pets.says.${say}`) : ''; lastSay = say; }
 
     const moving = v > 4;
-    const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || own || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
-      def?.shut && 'shut', def?.low && 'lie', def?.move && 'posed', def?.tailFast && 'wagfast', say && 'talking',
+    const cls = [base, flags, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || own || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
+      def?.shut && 'shut', def?.low && 'lie', def?.move && 'posed', def?.tailFast && 'wagfast', (say || speaking) && 'talking',
       opts.heavy && 'heavy', opts.heavy === 2 && 'sweat',
       // the heat only shows while it walks or runs - not dancing, at the laptop, asleep or idling
       moving && !pose && opts.hot && 'hot', moving && !pose && opts.hot === 2 && 'scorch']
@@ -268,5 +273,5 @@ export function createPet(kind, species, host) {
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }
   }
 
-  return { kind, el, step, speak, love, hop: () => { jumpLeft = .55; }, remove: () => el.remove() };
+  return { kind, el, step, speak, love, hop: () => { jumpLeft = .55; }, setFlags: f => { flags = f; }, remove: () => el.remove() };
 }

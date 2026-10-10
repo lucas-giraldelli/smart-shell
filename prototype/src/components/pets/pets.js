@@ -101,9 +101,7 @@ class Pets extends Component {
     // baby looks, and its droppings on the dock
     for (const pet of this.pets) {
       const { el } = pet;
-      el.classList.toggle('tama', ui.tamaOn);
-      el.classList.toggle('sick', ui.tamaOn && tama.sick);
-      el.classList.toggle('baby', ui.tamaOn && stage(tama) === 'baby');
+      pet.setFlags([ui.tamaOn && 'tama', ui.tamaOn && tama.sick && 'sick', ui.tamaOn && stage(tama) === 'baby' && 'baby'].filter(Boolean).join(' '));
       el.toggleAttribute('data-open', ui.tamaOn && ui.popover === 'tama');
       const need = ui.tamaOn ? urgent(tama) : '';
       el.querySelector('.need').textContent = need === 'food' ? FOOD[pet.kind] ?? SIGN.food : SIGN[need] ?? '';
