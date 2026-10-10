@@ -34,20 +34,22 @@ Tile {
     readonly property int cells: items.length + (withPrs ? 1 : 0)
     readonly property int rows: Math.ceil(cells / 2)
     // grid rows stretch to fill the tile (CSS grid, align-content: normal)
-    readonly property real rowHeight: Math.max(18, (Theme.size - 2 - 4 * (rows - 1)) / rows)
+    // icons are 16px, with 7px of room above and below the grid
+    readonly property real padY: 7
+    readonly property real rowHeight: Math.max(16, (Theme.size - 2 - 2 * root.padY - 4 * (rows - 1)) / rows)
 
     property var menuItem: null    // the item whose menu is showing
 
     readonly property bool shown: cells > 0
     // two 1fr columns keep their 18px even when the second one is empty
-    implicitWidth: 18 * 2 + 4 + 9 * 2 + 2
+    implicitWidth: 16 * 2 + 4 + 9 * 2 + 2
     open: menu.open || prList.open
 
     // a lone item sits in the middle of the tile
     Grid {
         id: grid
-        x: root.cells === 1 ? (root.width - 18) / 2 : 10
-        y: 1
+        x: root.cells === 1 ? (root.width - 16) / 2 : 10
+        y: 1 + root.padY
         columns: root.cells === 1 ? 1 : 2
         columnSpacing: 4
         rowSpacing: 4
@@ -70,15 +72,15 @@ Tile {
                 onAttentionChanged: if (attention) hop.restart()
                 transform: Translate { id: lift }
 
-                width: 18
+                width: 16
                 height: root.rowHeight
 
                 Image {
                     id: icon
                     anchors.centerIn: parent
-                    width: 18
-                    height: 18
-                    sourceSize: Qt.size(36, 36)
+                    width: 16
+                    height: 16
+                    sourceSize: Qt.size(32, 32)
                     source: cell.modelData.icon
                     smooth: true
                     visible: false
@@ -120,8 +122,8 @@ Tile {
                 MouseArea {
                     id: area
                     anchors.centerIn: parent
-                    width: 18
-                    height: 18
+                    width: 16
+                    height: 16
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
@@ -153,13 +155,13 @@ Tile {
         Item {
             id: prCell
             visible: root.withPrs
-            width: 18
+            width: 16
             height: root.rowHeight
 
             Icon {
                 anchors.centerIn: parent
                 name: "git-pull-request"
-                size: 18
+                size: 16
                 color: prList.colorOf(root.prWorst)
                 scale: prArea.containsMouse ? 1.2 : 1
                 Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
@@ -172,8 +174,8 @@ Tile {
             MouseArea {
                 id: prArea
                 anchors.centerIn: parent
-                width: 18
-                height: 18
+                width: 16
+                height: 16
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: prList.open ? Ui.closePopover() : Ui.openPopover("prs")
