@@ -27,6 +27,10 @@ shell ports it piece by piece.
 
 ![Pets idling](docs/media/pets-idle.gif)
 
+Every trick, three frames each:
+
+![Every pet's tricks](docs/media/pets-tricks.png)
+
 ![Every pet](docs/media/pets-all.png)
 
 The screenshots are of the prototype with its sample data.
@@ -327,6 +331,37 @@ uses a static wallpaper; a local video can be linked into the untracked
   their feature visible but disabled, telling what to install.
 
 See [docs/architecture.md](docs/architecture.md) for how the pieces fit.
+
+## Adding a pet
+
+A pet is one file in `prototype/src/components/pets/species/`, shared by the
+prototype and the shell (linked as `shell/lib/pets/<name>.mjs`). It exports:
+
+- `svg` - the drawing, facing right in a 56x36 box with its feet on y=33.
+  The animator looks for these classes: `legs` holding `la` / `lb` (legs
+  swung in opposite phases), `body-g`, `tail` (wagged around its path's first
+  point), `eye` (hidden on a blink or asleep) and `closed` (shown instead).
+- `color`, `speed`, and the gaits `hop`, `waddle`, `float` or `chill` (never
+  runs); `sleepless` idles instead of sleeping.
+- `acts` - weighted idle actions: `{ name, w, dur: [min, max] }` plus `speed`,
+  `turn`, `jump`, `pose` and `say` (a word under `pets.says`). The name is the
+  mood shown on hover (`pets.moods`). Actions with a pose or a word are also
+  the tricks it stops for while walking.
+- `poses` - its own poses (`prototype/src/components/pets/poses.js`):
+  `frames` with `every` seconds each (`once` holds the last), `move(t)` for
+  the whole sprite (`dx`, `dy`, `rot`, `opacity`, `flip`), `shut` eyes, a
+  `low` stance, `tailFast`, and a `prop` drawn outside the sprite (the frog's
+  fly). In the SVG, `data-pose="leaf"` or `data-pose="fly:t"` shows a part
+  only during that pose or frame, and `data-hide="leaf"` hides one. A `sleep`
+  pose replaces the plain lying down (the fox curls up in its tail).
+- `mouth: [x, y]` - where it opens its mouth to yawn; `click` - the word it
+  says when clicked (else its first talking action's).
+
+Then register it: an import in `shell/Pets.qml` and
+`prototype/src/components/pets/pets.js`, its id in `pets.available`
+(`shell/Config.qml`, `prototype/src/data/config.js`), its name, moods and
+words in `prototype/src/i18n/locales/`, and its dance in `DANCES`
+(`shell/lib/pets.mjs`) and `pets.css`.
 
 ## Calendar events
 
