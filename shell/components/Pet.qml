@@ -209,7 +209,7 @@ Item {
             y: -6 + 4 - 20 * p
             scale: 0.7 + 0.45 * p
             opacity: p < 0.3 ? p / 0.3 * 0.9 : 0.9 * (1 - (p - 0.3) / 0.7)
-            text: "z"
+            text: root.species?.snore ?? "z"
             color: Theme.text
             font { family: Theme.font; pixelSize: 11; weight: Font.Bold }
         }

@@ -41,7 +41,7 @@ export function createPet(kind, species, host) {
   const el = document.createElement('div');
   el.className = base;
   el.dataset.kind = kind;
-  el.innerHTML = `<span class="bubble"></span><span class="zzz">z</span><span class="zzz">z</span>
+  el.innerHTML = `<span class="bubble"></span><span class="zzz">${species.snore ?? 'z'}</span><span class="zzz">${species.snore ?? 'z'}</span>
     <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
   host.append(el);
   const flip = el.querySelector('.flip');
