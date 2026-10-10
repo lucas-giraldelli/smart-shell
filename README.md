@@ -160,7 +160,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   forward (its workspace, then the window). `notifications.rules` restyle some,
   matched as substrings on `appName` / `summary` / `body`: `title`, `app`,
   `icon` (an icon name or path, e.g. `claude-desktop` for Claude Code's kitty
-  notifications),
+  notifications), `focusTitle` (a regex on the window title choosing which
+  of the app's windows a click brings forward, e.g. the kitty running Claude
+  Code, whose title starts with its status glyph),
   `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
   closed).
 - **Screen recording** - while `gpu-screen-recorder` runs, a red dot and the

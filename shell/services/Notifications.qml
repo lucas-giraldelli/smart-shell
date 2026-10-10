@@ -29,15 +29,19 @@ Singleton {
             return n.expireTimeout;
         return n.urgency === NotificationUrgency.Critical ? 0 : n.urgency === NotificationUrgency.Low ? 3000 : 5000;
     }
-    // bring the sender's window forward (its workspace, then the window): the
-    // first client whose class contains the app's name (a rule's `app`, e.g.
-    // WhatsApp), its own app name or its desktop entry
+    // bring the sender's window forward (its workspace, then the window): a
+    // client whose class contains the app's name (a rule's `app`, e.g.
+    // WhatsApp), its own app name or its desktop entry - among those, the
+    // first whose title matches the rule's `focusTitle` regex (which kitty
+    // runs Claude Code), else the first
     function focusApp(p) {
         const names = [p.appName, p.notif.appName, p.notif.desktopEntry].filter(s => s).map(s => s.toLowerCase());
         Quickshell.execDetached(["sh", "-c",
-            'addr=$(hyprctl clients -j | jq -r --argjson names "$1" \'first(.[] | select(.class | ascii_downcase | . as $c | any($names[]; . as $n | $c | contains($n)))) | .address\'); '
+            'addr=$(hyprctl clients -j | jq -r --argjson names "$1" --arg title "$2" \''
+            + '[.[] | select(.class | ascii_downcase | . as $c | any($names[]; . as $n | $c | contains($n)))] as $m'
+            + ' | (if $title != "" then first($m[] | select(.title | test($title))) else empty end) // first($m[]) | .address\'); '
             + '[ -n "$addr" ] && [ "$addr" != null ] && hyprctl dispatch focuswindow "address:$addr" >/dev/null',
-            "sh", JSON.stringify(names)]);
+            "sh", JSON.stringify(names), p.focusTitle]);
     }
     function dismiss(id) {
         const p = popups.find(x => x.id === id);
@@ -64,6 +68,7 @@ Singleton {
             const p = {
                 id: root.nextId++, notif: n,
                 appName: rule?.app ?? n.appName, summary: rule?.title ?? n.summary, icon: rule?.icon ?? "",
+                focusTitle: rule?.focusTitle ?? "",
                 style: rule?.style ?? "", timeout: root.timeoutOf(n, rule),
                 critical: n.urgency === NotificationUrgency.Critical
             };

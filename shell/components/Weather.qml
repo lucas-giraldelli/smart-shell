@@ -30,7 +30,7 @@ Tile {
 
     Icon {
         x: 12
-        y: 11.2
+        anchors.verticalCenter: parent.verticalCenter
         name: root.look.icon
         size: 26
         shadow: true

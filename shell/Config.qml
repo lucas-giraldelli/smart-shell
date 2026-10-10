@@ -75,7 +75,8 @@ Singleton {
         workspaces: { icons: {} },
         // notification popups: rules restyle some, matched (substring, any
         // case) on appName / summary / body - `title` replaces the summary,
-        // `app` the app's name, `icon` its icon, `style: "love"` the wine look, `timeout` in ms
+        // `app` the app's name, `icon` its icon, `focusTitle` a regex picking
+        // which of the app's windows a click brings forward, `style: "love"` the wine look, `timeout` in ms
         // (0 = until closed)
         notifications: { rules: [] }
     })

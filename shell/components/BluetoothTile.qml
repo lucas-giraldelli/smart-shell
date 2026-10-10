@@ -105,7 +105,7 @@ Tile {
     Icon {
         id: icon
         x: root.expanded ? 14 : 16
-        y: 14.2
+        anchors.verticalCenter: parent.verticalCenter
         Behavior on x { NumberAnimation { duration: 350 } }
         name: !root.on ? "bluetooth-off" : root.connected ? "bluetooth-connected" : "bluetooth"
         size: 20
