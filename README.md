@@ -186,6 +186,27 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   The same `thresholds` colour the quick tile (memory, CPU temperature). With
   `thresholds.tempC.roomTemp` set (e.g. 30), warn / crit become degrees over
   that room temperature.
+
+  **Tamagotchi mode** (prototype only for now; the switch beside the pet
+  picker, off by default): a click on the pet opens its care menu - Pet,
+  Feed, Play, Clean, Medicine and Sleep - with bars for food, fun, hygiene,
+  energy and health. The needs run down over hours, each species at its own
+  pace (the panda gets hungry sooner, the corgi and shiba tire and get bored
+  sooner, the capybara and turtle take it slow, the ghost never gets dirty).
+  It leaves droppings on the dock (a click cleans one), can get sick when
+  dirty or when the PC runs hot (Medicine cures it; it shows greenish with a
+  🤒), and wears a sign over its head for its most urgent need. A busy or hot
+  CPU tires it a little more, a hot one makes it sweat, a work meeting bores
+  it a little, music cheers it up, and at night it gets sleepy sooner. It
+  refuses what it doesn't need (food when full, play when tired, bed when not
+  sleepy, medicine when well); most sulk at a bath while the duck, penguin and
+  frog love one (the pig takes a mud bath); petting it again and again pleases
+  it less each time, and a cat ends up hissing. Every species has its own
+  animation for each action - the frog snaps its fly and bathes in the rain,
+  the shiba plays fetch, the capybara eats the orange off its head, the owl
+  sleeps with one eye open... It's a baby (drawn smaller) the first day; at
+  zero health it runs away and comes back as the ghost. The prototype's dev
+  panel can speed time up (60x, 600x) and reset it.
 - **Workspaces** - Hyprland. `workspaces.style` (also in the dock settings)
   picks how occupied workspaces show: `icons` (default; per workspace id in
   `workspaces.icons`, Lucide names), `numbers` (their id; the active pill shows
@@ -285,7 +306,12 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     own name, not as chromium) with a two-step kill (session
     processes are protected). `commands.monitor` is the btop button and `commands.docker` the lazydocker one; both open in kitty by default, so set them to your terminal (e.g. `foot -e btop`).
 - **Weather** - Open-Meteo over the network for `weather.lat` / `weather.lon`
-  (`weather.city` is only shown), refreshed every 10 minutes.
+  (`weather.city` is only shown), refreshed every 10 minutes. **Weather in
+  the dock** (prototype only for now; a dock setting, off by default) draws
+  the current weather inside the dock: rain, heavy rain and drizzle splashing
+  on its floor, storms with lightning, fog and clouds drifting, snow, a warm
+  glow on a clear day and stars on a clear night. A theme with its own
+  effect (snowy, halloween) wins. The dev panel can simulate each kind.
 - **Clock** - `clock.format` (also in the dock settings): `24h` (default, any
   language: "14:05") or `12h` ("2:05 PM"); it applies to every time shown -
   the tile, events, reminders and the forecast. Holidays for the regions in `holidays`; events from
@@ -355,8 +381,19 @@ prototype and the shell (linked as `shell/lib/pets/<name>.mjs`). It exports:
   fly). In the SVG, `data-pose="leaf"` or `data-pose="fly:t"` shows a part
   only during that pose or frame, and `data-hide="leaf"` hides one. A `sleep`
   pose replaces the plain lying down (the fox curls up in its tail).
-- `mouth: [x, y]` - where it opens its mouth to yawn; `click` - the word it
-  says when clicked (else its first talking action's).
+- `mouth: [x, y]` - where it opens its mouth to yawn and eat; `click` - the
+  word it says when clicked (else its first talking action's).
+- `care` - its animation for each Tamagotchi care action (`pet`, `feed`,
+  `play`, `clean`, `medicine`): `{ dur, say, def }` with `def` a pose as
+  above, or `{ pose: 'mud', def }` to borrow one of its poses and add to it,
+  or `name: 'wash'` to borrow the plain bath's bubbles. Without one, a plain
+  animation plays (`carePose` in `poses.js`).
+
+Code the shell loads (these species files and `poses.js`) must stay within
+what Qt's QML JavaScript engine handles: no spread (`...`), no optional calls
+(`fn?.()` crashes it), no `URL`, no `catch {}` without a binding. After a
+change, `smart-shell restart` and check `qs log` and
+`~/.cache/quickshell/crashes/`.
 
 Then register it: an import in `shell/Pets.qml` and
 `prototype/src/components/pets/pets.js`, its id in `pets.available`
