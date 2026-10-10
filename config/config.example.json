@@ -3,7 +3,7 @@
   "dock": [
     {"id": "workspaces", "widgets": ["workspaces", "capslock"]},
     {"id": "apps", "widgets": ["apps"]},
-    {"id": "status", "tiles": true, "widgets": ["music", "tray", "bluetooth", "quick", "weather", "clock"]}
+    {"id": "status", "tiles": true, "widgets": ["music", "tray", "prs", "bluetooth", "quick", "weather", "clock"]}
   ],
   "quick": ["volume", "brightness", "docker", "network", "system", "settings"],
   "commands": {

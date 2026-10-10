@@ -1,0 +1,23 @@
+/* the tile: the PR icon in the worst state's colour, then the count */
+.prs { cursor: pointer; gap: 8px; }
+.prs [data-icon] svg.i { width: 22px; height: 22px; color: var(--pr); }
+
+.prs-menu { width: 440px; padding: 6px; }
+.prs-head { display: flex; align-items: center; gap: 8px; padding: 0 0 2px 0; }
+.prs-head .sec { flex: 1; margin: 6px 8px; }
+.prs-head .ib.spinning svg.i { animation: spin 0.8s linear infinite; }
+.row.pr { gap: 10px; }
+.pr-ic { display: inline-grid; flex: none; }
+.pr-ic svg.i { width: 16px; height: 16px; }
+.pr-title { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 12.5px; }
+.prs-empty { padding: 10px 8px; }
+
+/* one collapsible group per repo, like the docker pane's compose projects */
+.pr-repo { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 9px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.pr-repo:hover { background: var(--menu-surface); }
+.pr-repo .pr-chev { width: 14px; height: 14px; color: var(--menu-sub); transition: transform .25s ease; }
+.pr-group.open .pr-chev { transform: rotate(90deg); }
+.pr-count { min-width: 20px; text-align: right; font-size: 11px; font-weight: 400; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.pr-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .25s ease; }
+.pr-group.open .pr-body { grid-template-rows: 1fr; }
+.pr-body > div { overflow: hidden; min-height: 0; padding-left: 14px; }

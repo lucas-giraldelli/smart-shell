@@ -47,6 +47,8 @@ export const store = createStore({
   network: { ...snap.network, vpnState: 'off', down: Array(40).fill(0), up: Array(40).fill(0) },
   docker: snap.docker,
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
+  // the user's open PRs (gh); `merged` ones linger until the next look
+  prs: { list: snap.prs, updatedAt: null, loading: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   agenda: { ongoing: null, upcoming: null, minutes: null },
   // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)

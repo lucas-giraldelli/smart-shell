@@ -6,7 +6,7 @@ export default {
   },
 
   widgets: {
-    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Music', weather: 'Weather',
+    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Music', weather: 'Weather', prs: 'PRs',
     bluetooth: 'Bluetooth', quick: 'Quick controls', tray: 'Tray', clock: 'Clock',
   },
 
@@ -74,6 +74,12 @@ export default {
     unknown: '{name} unavailable', install: 'Install the {pkg} package to use it.',
   },
 
+  prs: {
+    title: 'Pull requests', tile: '{n} open PRs', refresh: 'Refresh', none: 'No open PRs',
+    updated: 'updated at {time}', sample: 'sample',
+    status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',
+      pending: 'pipeline running', review: 'waiting for review', ready: 'ready', merged: 'merged' },
+  },
   weather: {
     feels: 'Feels like {temp}°', nextHours: 'Next hours', days: '7 days',
     updated: 'Open-Meteo · updated {time}', sample: 'Sample forecast · offline',

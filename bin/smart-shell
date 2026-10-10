@@ -18,10 +18,11 @@ SHELL_DIR="$REPO/shell"
 HYPR_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/config.json"
 
-WIDGETS=(brightness nightlight docker bluetooth events system pets vpn)
+WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs)
 
 # packages per widget; core is always installed
 declare -A PKGS=(
+  [prs]="github-cli"
   [core]="quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl"
   [brightness]="ddcutil"
   [nightlight]="hyprsunset"

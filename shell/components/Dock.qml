@@ -19,6 +19,7 @@ Rectangle {
         tray: trayWidget,
         quick: quickWidget,
         weather: weatherWidget,
+        prs: prsWidget,
         clock: clockWidget
     })
 
@@ -164,6 +165,10 @@ Rectangle {
     Component {
         id: weatherWidget
         Weather {}
+    }
+    Component {
+        id: prsWidget
+        PrsTile {}
     }
     Component {
         id: clockWidget

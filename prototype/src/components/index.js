@@ -6,6 +6,7 @@ import './capslock/capslock.js';
 import './app-row/app-row.js';
 import './music/music.js';
 import './weather/weather.js';
+import './prs/prs.js';
 import './bluetooth/bluetooth.js';
 import './quick/quick.js';
 import './tray/tray.js';
