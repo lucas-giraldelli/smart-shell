@@ -2,7 +2,8 @@
 export default {
   color: '#f97316',
   speed: 1.3,
-  acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'dive', w: 1, dur: [2.6, 3], pose: 'dive' }],
+  mouth: [43.2, 18.2],   // where it opens its mouth to yawn
+  acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'dive', w: 1, dur: [2.6, 3], pose: 'dive' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'yip' }],
   poses: {
     // a mousing dive: crouch, a high arc, nose buried in the snow
     dive: {
@@ -11,6 +12,8 @@ export default {
         : t < 1.05 ? { dy: -14 * Math.sin((t - .45) / .6 * Math.PI), rot: 35 * (t - .45) / .6 }
         : { rot: 35 }),
     },
+    // asleep: curled up in its tail
+    sleep: {},
   },
   svg: `
     <g class="legs" fill="#3b2618">
@@ -18,7 +21,7 @@ export default {
       <rect class="lb" x="28" y="24" width="3.5" height="9" rx="1.7"/><rect class="la" x="32.5" y="24" width="3.5" height="9" rx="1.7"/>
     </g>
     <g class="body-g">
-      <g class="tail" style="transform-origin: 100% 30%">
+      <g class="tail" style="transform-origin: 100% 30%" data-hide="sleep">
         <ellipse cx="11" cy="18" rx="8.5" ry="4.6" transform="rotate(-20 11 18)" fill="#f97316"/>
         <circle cx="5" cy="20.4" r="3" fill="#fff7ed"/>
       </g>
@@ -36,5 +39,7 @@ export default {
       <circle cx="33" cy="15.2" r="1.2" fill="#f9a8d4" opacity=".65"/>
       <path data-pose="dive:c" transform="translate(1 -5)" d="M33 21 q2 -6 6 -5 q2 -4 6 -1 q4 0 3 5 q2 3 -1 5 h-13 q-3 -2 -1 -4z" fill="#f8fafc"/>
       <circle data-pose="dive:c" cx="39" cy="8.5" r="1" fill="#f8fafc"/><circle data-pose="dive:c" cx="46" cy="7" r=".8" fill="#f8fafc"/>
+      <ellipse data-pose="sleep" cx="30" cy="24" rx="12" ry="4.2" fill="#f97316"/>
+      <ellipse data-pose="sleep" cx="41" cy="23.4" rx="3.4" ry="2.8" fill="#fff7ed"/>
     </g>`,
 };

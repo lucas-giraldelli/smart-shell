@@ -5,12 +5,14 @@ export default {
   speed: .7,
   float: true,
   sleepless: true,
-  acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'fade', w: 1, dur: [2.4, 3.6], pose: 'fade' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'boo', pose: 'shout' }],
+  acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'fade', w: 1, dur: [2.4, 3.6], pose: 'fade' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'boo', pose: 'shout' }, { name: 'flip', w: .7, dur: [1.6, 2.6], pose: 'flip' }],
   poses: {
     // fades nearly out and back
     fade: { move: t => ({ opacity: .15 + .85 * Math.abs(Math.cos(t * 1.4)) }) },
     // its boo: the mouth opens wide and closes
     shout: { frames: ['o', 'm'], every: .18 },
+    // floats upside down for a bit
+    flip: { move: t => ({ rot: 180 + 6 * Math.sin(t * 3), dy: -36 }) },
   },
   svg: `
     <g class="body-g" opacity=".92">

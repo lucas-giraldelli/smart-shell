@@ -96,7 +96,7 @@ Item {
             notes = live;
     }
     // the species' own pose (lib/poses.mjs): its frame and its motion
-    readonly property var poseDef: s.own ? species?.poses?.[s.own] ?? null : null
+    readonly property var poseDef: s.own && species ? Engine.poseOf(species, s.own) : null
     readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
     readonly property var poseMove: poseDef ? Engine.moveAt(poseDef, s.poseT) : ({})
     readonly property bool lying: s.pose.includes("lie") || (poseDef?.low ?? false)
@@ -149,7 +149,7 @@ Item {
             tongue,
             pouch: Math.round(croak * 10) / 10,
             // the tail wags -12..14deg (pets.css .tail): 1.6 s, fast .25 s, lying 4 s
-            wag: Math.round((1 + 13 * Math.sin(t / (s.fast ? 0.25 : root.lying ? 4 : 1.6) * Math.PI)) / 2) * 2,
+            wag: Math.round((1 + 13 * Math.sin(t / (s.fast || root.poseDef?.tailFast ? 0.25 : root.lying ? 4 : 1.6) * Math.PI)) / 2) * 2,
             bob: s.pose === "work" ? (Math.floor(t / 0.2) % 2 ? 0.7 : 0) : s.fast ? (Math.floor(t / (s.step / 2)) % 2 ? 1.6 : 0) : 0,
             screen: s.pose === "work" ? Engine.SCREEN_COLORS[Math.floor((t % 2.4) / 0.6) % 4] : ""
         };
@@ -214,10 +214,11 @@ Item {
     // a word over its head (an action's `say`, under pets.says): white
     // text with a dark outline, no box
     Text {
-        readonly property bool on: !!root.s.say
+        readonly property bool on: !!(root.s.say || root.clickSay)
         anchors.horizontalCenter: parent.horizontalCenter
         y: -14
-        text: root.s.say ? I18n.t(`pets.says.${root.s.say}`) : ""
+        readonly property string word: root.s.say || root.clickSay
+        text: word ? I18n.t(`pets.says.${word}`) : ""
         color: "#ffffff"
         style: Text.Outline
         styleColor: "#1c1917"
@@ -308,6 +309,13 @@ Item {
     }
     HoverHandler { id: hover }
 
+    property string clickSay: ""
+    Timer {
+        id: clickTimer
+        interval: 1400
+        onTriggered: root.clickSay = ""
+    }
+
     // click: a heart floats up
     Text {
         id: heart
@@ -327,6 +335,11 @@ Item {
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        onClicked: love.restart()
+        onClicked: {
+            love.restart();
+            // and says its word (species.click, else its talk action's)
+            root.clickSay = root.species?.click ?? root.species?.acts?.find(a => a.say)?.say ?? "";
+            clickTimer.restart();
+        }
     }
 }

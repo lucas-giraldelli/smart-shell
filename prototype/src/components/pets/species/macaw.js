@@ -3,10 +3,13 @@ export default {
   color: '#1d4ed8',
   speed: .95,
   hop: true,
-  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.2], jump: true }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.4, 2], say: 'hello' }],
+  mouth: [38.6, 14.8],   // where it opens its mouth to yawn
+  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.2], jump: true }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.4, 2], say: 'hello' }, { name: 'hang', w: .8, dur: [2.6, 4], pose: 'hang' }],
   poses: {
     // flaps its wings
     flap: { frames: ['a', 'b'], every: .16, move: t => ({ dy: -2 * Math.abs(Math.sin(t * 19.6)) }) },
+    // hangs upside down from a branch, swinging
+    hang: { move: t => ({ rot: 180 + 8 * Math.sin(t * 3), dy: -36 }) },
   },
   svg: `
     <g class="legs" fill="#52525b">
@@ -25,5 +28,7 @@ export default {
       <circle cx="30.2" cy="14.8" r="1.2" fill="#f9a8d4" opacity=".55"/>
       <path data-pose="flap:a" d="M18 16 q-1 -12 12 -9 q-4 6 -12 9z" fill="#1d4ed8"/>
       <path data-pose="flap:b" d="M18 17 q4 11 12 4z" fill="#1d4ed8"/>
+      <path data-pose="hang" d="M12 33.6 H36" stroke="#92400e" stroke-width="2.4" stroke-linecap="round"/>
+      <path data-pose="hang" d="M30 33.6 l4 2" stroke="#4ade80" stroke-width="1.6" stroke-linecap="round"/>
     </g>`,
 };

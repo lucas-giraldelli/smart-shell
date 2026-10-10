@@ -2,10 +2,13 @@
 export default {
   color: '#e0a15e',
   speed: 1.15,
-  acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }, { name: 'sit', w: 1.2, dur: [3, 6], pose: 'sit' }, { name: 'talk', w: .6, dur: [1.6, 2.2], say: 'wow' }],
+  mouth: [42.6, 18.4],   // where it opens its mouth to yawn
+  acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }, { name: 'sit', w: 1.2, dur: [3, 6], pose: 'sit' }, { name: 'talk', w: .6, dur: [1.6, 2.2], say: 'wow' }, { name: 'wag', w: 1.2, dur: [1.6, 2.6], pose: 'wag' }],
   poses: {
     // sits back, eyes shut, smug
     sit: { shut: true, move: () => ({ rot: -12, dy: 1 }) },
+    // wags its tail hard, wiggling all over
+    wag: { tailFast: true, move: t => ({ rot: 2.5 * Math.sin(t * 25) }) },
   },
   svg: `
     <g class="legs" fill="#c98545">

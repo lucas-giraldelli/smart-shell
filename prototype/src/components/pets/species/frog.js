@@ -3,14 +3,18 @@ export default {
   color: '#5cbf60',
   speed: 1,
   hop: true,
+  mouth: [33, 22.4],   // where it opens its mouth to yawn
+  click: 'croak',
   acts: [
     { name: 'stand', w: 4, dur: [2, 5] },
     { name: 'croak', w: 2, dur: [1.5, 3], pose: 'croak' },
     { name: 'tongue', w: 1.5, dur: [1.2, 2.4], pose: 'tongue' },
-    { name: 'jump', w: 1, dur: [.7, 1.1], jump: true }, { name: 'fly', w: 1.6, dur: [2.6, 3], pose: 'fly' }],
+    { name: 'jump', w: 1, dur: [.7, 1.1], jump: true }, { name: 'fly', w: 1.6, dur: [2.6, 3], pose: 'fly' }, { name: 'leaf', w: 1, dur: [3, 5], pose: 'leaf' }],
   poses: {
     // a fly buzzes around, the tongue snaps it, a gulp
     fly: { frames: ['a', 'b', 'c', 'b', 'a', 't', 'g'], every: [.3, .3, .3, .3, .3, .2, .7], once: true },
+    // holds a big leaf over its head as an umbrella; it rains around it
+    leaf: { frames: ['a', 'b', 'c'], every: .18 },
   },
   svg: `
     <g class="legs" fill="#3f9d4a">
@@ -37,5 +41,12 @@ export default {
       <path data-pose="fly:t" d="M36 20.4 L47.5 13.8" stroke="#f472b6" stroke-width="1.8" stroke-linecap="round"/>
       <circle data-pose="fly:t" cx="47.6" cy="13.8" r="1.4" fill="#1c1917"/>
       <ellipse data-pose="fly:g" cx="33" cy="25.5" rx="5.6" ry="4.2" fill="#e4f7d6"/>
+      <path data-pose="leaf" d="M30 22 L28 7" stroke="#2e7d32" stroke-width="1.2" stroke-linecap="round"/>
+      <path data-pose="leaf:a leaf:c" d="M17 9 Q28 -2 39 8 Q28 4 17 9z" fill="#22c55e" stroke="#15803d" stroke-width=".6"/>
+      <path data-pose="leaf:b" d="M17 8.4 Q28 -2.6 39 7.4 Q28 3.4 17 8.4z" fill="#22c55e" stroke="#15803d" stroke-width=".6"/>
+      <ellipse data-pose="leaf" cx="30.5" cy="22" rx="2" ry="1.6" fill="#5cbf60"/>
+      <path data-pose="leaf:a" d="M13 6 l-.8 2.6 M43 12 l-.8 2.6 M10 20 l-.8 2.6 M46 24 l-.8 2.6 M15 28 l-.8 2.6" stroke="#7dd3fc" stroke-width="1" stroke-linecap="round"/>
+      <path data-pose="leaf:b" d="M13 13 l-.8 2.6 M43 19 l-.8 2.6 M10 27 l-.8 2.6 M46 5 l-.8 2.6 M15 2 l-.8 2.6" stroke="#7dd3fc" stroke-width="1" stroke-linecap="round"/>
+      <path data-pose="leaf:c" d="M13 20 l-.8 2.6 M43 26 l-.8 2.6 M10 4 l-.8 2.6 M46 12 l-.8 2.6 M15 9 l-.8 2.6" stroke="#7dd3fc" stroke-width="1" stroke-linecap="round"/>
     </g>`,
 };

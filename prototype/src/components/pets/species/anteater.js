@@ -2,10 +2,13 @@
 export default {
   color: '#78716c',
   speed: .7,
-  acts: [{ name: 'stroll', w: 5, dur: [4, 8], speed: 22 }, { name: 'ants', w: 1.4, dur: [2.4, 3.6], pose: 'ants' }, { name: 'talk', w: .6, dur: [1.4, 2], say: 'hug' }],
+  mouth: [46.2, 22.2],   // where it opens its mouth to yawn
+  acts: [{ name: 'stroll', w: 5, dur: [4, 8], speed: 22 }, { name: 'ants', w: 1.4, dur: [2.4, 3.6], pose: 'ants' }, { name: 'hug', w: .8, dur: [1.8, 2.6], say: 'hug', pose: 'hug' }],
   poses: {
     // snout down, its long tongue flicking at ants
     ants: { frames: ['a', 'b'], every: .22, move: () => ({ rot: 6 }) },
+    // stands up on its hind legs, arms wide
+    hug: { move: () => ({ rot: -16, dx: 3 }) },
   },
   svg: `
     <g class="legs" fill="#57534e">
@@ -27,5 +30,6 @@ export default {
       <path data-pose="ants:a" d="M46 21.6 Q50 25 52.5 32.4" stroke="#f472b6" stroke-width="1" fill="none" stroke-linecap="round"/>
       <path data-pose="ants:b" d="M46 21.6 Q48 24 48.6 26.6" stroke="#f472b6" stroke-width="1" fill="none" stroke-linecap="round"/>
       <g data-pose="ants" fill="#1c1917"><circle cx="50.5" cy="33" r=".7"/><circle cx="51.6" cy="33" r=".5"/><circle cx="54" cy="33.2" r=".7"/><circle cx="55.1" cy="33.2" r=".5"/></g>
+      <path data-pose="hug" d="M32 22 L38 15 M30.5 22.5 L37.5 19" stroke="#57534e" stroke-width="3.2" stroke-linecap="round"/>
     </g>`,
 };

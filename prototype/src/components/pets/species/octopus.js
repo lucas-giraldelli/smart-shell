@@ -2,12 +2,15 @@
 export default {
   color: '#c084fc',
   speed: .75,
-  acts: [{ name: 'turn', w: 2, dur: [.8, 1.6], turn: true }, { name: 'ink', w: 1, dur: [1.6, 2], pose: 'ink' }, { name: 'wave', w: 1.2, dur: [1.6, 2.6], pose: 'wave' }],
+  mouth: [23.3, 19.6],   // where it opens its mouth to yawn
+  acts: [{ name: 'turn', w: 2, dur: [.8, 1.6], turn: true }, { name: 'ink', w: 1, dur: [1.6, 2], pose: 'ink' }, { name: 'wave', w: 1.2, dur: [1.6, 2.6], pose: 'wave' }, { name: 'camo', w: 1, dur: [2.4, 3.6], pose: 'camo' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'blub' }],
   poses: {
     // squirts a puff of ink behind it
     ink: { frames: ['a', 'b', 'c', 'c'], every: .4, once: true, move: t => ({ dx: Math.min(4, t * 8) }) },
     // waves a tentacle
     wave: { frames: ['a', 'b'], every: .3 },
+    // camouflage: shifts its colour
+    camo: { frames: ['a', 'b', 'c', 'b'], every: .5 },
   },
   svg: `
     <g class="legs" fill="#a855f7">
@@ -16,6 +19,12 @@ export default {
     </g>
     <g class="body-g">
       <path d="M10 22 q0 -19 13 -19 q13 0 13 19 q-13 4 -26 0z" fill="#c084fc"/>
+      <g data-pose="camo:a" fill="#2dd4bf"><rect x="12" y="20" width="4" height="13" rx="2"/><rect x="18" y="21" width="4" height="12" rx="2"/><rect x="24" y="21" width="4" height="12" rx="2"/><rect x="30" y="20" width="4" height="13" rx="2"/></g>
+      <g data-pose="camo:b" fill="#f472b6"><rect x="12" y="20" width="4" height="13" rx="2"/><rect x="18" y="21" width="4" height="12" rx="2"/><rect x="24" y="21" width="4" height="12" rx="2"/><rect x="30" y="20" width="4" height="13" rx="2"/></g>
+      <g data-pose="camo:c" fill="#fbbf24"><rect x="12" y="20" width="4" height="13" rx="2"/><rect x="18" y="21" width="4" height="12" rx="2"/><rect x="24" y="21" width="4" height="12" rx="2"/><rect x="30" y="20" width="4" height="13" rx="2"/></g>
+      <path data-pose="camo:a" d="M10 22 q0 -19 13 -19 q13 0 13 19 q-13 4 -26 0z" fill="#5eead4"/>
+      <path data-pose="camo:b" d="M10 22 q0 -19 13 -19 q13 0 13 19 q-13 4 -26 0z" fill="#f9a8d4"/>
+      <path data-pose="camo:c" d="M10 22 q0 -19 13 -19 q13 0 13 19 q-13 4 -26 0z" fill="#fcd34d"/>
       <circle cx="16" cy="9" r="1.6" fill="#e9d5ff" opacity=".7"/><circle cx="19" cy="6" r="1" fill="#e9d5ff" opacity=".7"/>
       <ellipse class="eye" cx="19.5" cy="15" rx="1.6" ry="2.1" fill="#1c1917"/><ellipse class="eye" cx="27" cy="15" rx="1.6" ry="2.1" fill="#1c1917"/>
       <circle class="eye" cx="20" cy="14.2" r=".55" fill="#ffffff"/><circle class="eye" cx="27.5" cy="14.2" r=".55" fill="#ffffff"/>

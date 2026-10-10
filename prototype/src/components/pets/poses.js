@@ -40,3 +40,16 @@ export function showParts(root, pose = '', frame = '') {
   for (const n of root.querySelectorAll('[data-pose]')) n.style.display = shows(n.dataset.pose, pose, frame) ? '' : 'none';
   for (const n of root.querySelectorAll('[data-hide]')) n.style.display = hides(n.dataset.hide, pose) ? 'none' : '';
 }
+
+// Every pet yawns as it falls asleep (and the turtle as an idle): eyes shut,
+// a stretch up, a mouth opened at the species' `mouth` point
+export const YAWN = {
+  frames: ['o'], shut: true,
+  move: t => { const k = Math.sin(Math.min(1, t / 1.6) * Math.PI); return { dy: -1.5 * k, rot: -4 * k }; },
+};
+export const poseOf = (species, name) => species.poses?.[name] ?? (name === 'yawn' ? YAWN : null);
+export function yawnPart(species) {
+  if (!species.mouth) return '';
+  const [x, y] = species.mouth;
+  return `<ellipse data-pose="yawn" cx="${x}" cy="${y}" rx="1.4" ry="1.9" fill="#1c1917"/><ellipse data-pose="yawn" cx="${x}" cy="${y + .8}" rx=".8" ry=".8" fill="#f472b6"/>`;
+}

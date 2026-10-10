@@ -3,20 +3,25 @@ export default {
   color: '#e2e8f0',
   speed: 1.1,
   hop: true,
-  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }, { name: 'binky', w: 1, dur: [1.2, 2.2], pose: 'binky' }, { name: 'nose', w: 1, dur: [1.5, 3], pose: 'nose' }],
+  mouth: [42.6, 18.4],   // where it opens its mouth to yawn
+  acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }, { name: 'binky', w: 1, dur: [1.2, 2.2], pose: 'binky' }, { name: 'nose', w: 1, dur: [1.5, 3], pose: 'nose' }, { name: 'scratch', w: 1, dur: [1.6, 2.4], pose: 'scratch' }, { name: 'talk', w: .5, dur: [1.2, 1.8], say: 'squeak' }],
   poses: {
     // a happy twisting hop
     binky: { move: t => { const q = (t % 1.1) / 1.1; return q < .5 ? { dy: -13 * Math.sin(q * 2 * Math.PI), rot: 22 * Math.sin(q * 4 * Math.PI) } : {}; } },
     // the nose twitches
     nose: { frames: ['a', 'b'], every: .14 },
+    // scratches an ear with a hind foot, head tilted, eyes shut
+    scratch: { frames: ['a', 'b'], every: .12, shut: true, move: () => ({ rot: -5 }) },
   },
   svg: `
     <g class="legs" fill="#e2e8f0">
-      <rect class="la" x="13" y="27" width="5" height="6" rx="2.5"/><rect class="lb" x="18" y="27" width="5" height="6" rx="2.5"/>
+      <rect class="la" x="13" y="27" width="5" height="6" rx="2.5" data-hide="scratch"/><rect class="lb" x="18" y="27" width="5" height="6" rx="2.5"/>
       <rect class="lb" x="27" y="27" width="4.5" height="6" rx="2.2"/><rect class="la" x="31.5" y="27" width="4.5" height="6" rx="2.2"/>
     </g>
     <g class="body-g">
       <circle class="tail" style="transform-origin: 50% 50%" cx="9.5" cy="20" r="3.6" fill="#fff"/>
+      <path data-pose="scratch:a" d="M15 27 Q22 20 30 14" stroke="#e2e8f0" stroke-width="3.6" fill="none" stroke-linecap="round"/>
+      <path data-pose="scratch:b" d="M15 27 Q22 19 29.4 12.6" stroke="#e2e8f0" stroke-width="3.6" fill="none" stroke-linecap="round"/>
       <ellipse cx="22" cy="23" rx="12" ry="8" fill="#f1f5f9"/>
       <ellipse cx="33" cy="4.5" rx="2.6" ry="7" transform="rotate(-12 33 4.5)" fill="#f1f5f9"/>
       <ellipse cx="33" cy="5" rx="1.2" ry="5" transform="rotate(-12 33 5)" fill="#fbcfe8"/>

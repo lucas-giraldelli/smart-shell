@@ -2,10 +2,13 @@
 export default {
   color: '#f9a8c0',
   speed: .8,
-  acts: [{ name: 'lie', w: 1.6, dur: [4, 9], pose: 'lie' }, { name: 'sniff', w: 1.4, dur: [1.5, 3], speed: 10 }, { name: 'mud', w: 1.4, dur: [4, 7], pose: 'mud' }, { name: 'talk', w: .7, dur: [1.2, 1.8], say: 'oink' }],
+  mouth: [42.8, 21.2],   // where it opens its mouth to yawn
+  acts: [{ name: 'lie', w: 1.6, dur: [4, 9], pose: 'lie' }, { name: 'sniff', w: 1.4, dur: [1.5, 3], speed: 10 }, { name: 'mud', w: 1.4, dur: [4, 7], pose: 'mud' }, { name: 'talk', w: .7, dur: [1.2, 1.8], say: 'oink' }, { name: 'happy', w: 1, dur: [1.6, 2.6], pose: 'happy' }],
   poses: {
     // rolls in the mud: a puddle, muddy spots, rocking happily
     mud: { frames: ['a', 'b'], every: [.8, 9], once: true, low: true, shut: true, move: t => ({ rot: 6 * Math.sin(t * 5) }) },
+    // so happy: tail spinning, little hops
+    happy: { tailFast: true, shut: true, move: t => ({ dy: -2.5 * Math.abs(Math.sin(t * 9)) }) },
   },
   svg: `
     <g class="legs" fill="#e88aa8">

@@ -1,5 +1,5 @@
 import { t } from '../../i18n/index.js';
-import { frameAt, moveAt, showParts } from './poses.js';
+import { frameAt, moveAt, showParts, poseOf, yawnPart } from './poses.js';
 
 // Behaviour shared by every pet. A pet reacts to CPU load:
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
@@ -28,6 +28,8 @@ const LAPTOP = `
     <rect x="37.5" y="27.6" width="16" height="2" rx="1" fill="#94a3b8"/>
   </g>`;
 
+const clickWord = species => species.click ?? species.acts?.find(a => a.say)?.say ?? '';
+
 function actionsFor(species) {
   const byName = new Map(BASE_ACTS.map(a => [a.name, a]));
   for (const a of species.acts ?? []) byName.set(a.name, a);
@@ -43,21 +45,24 @@ export function createPet(kind, species, host) {
   el.className = base;
   el.dataset.kind = kind;
   el.innerHTML = `<span class="bubble"></span><span class="say"></span><span class="zzz">z</span><span class="zzz">z</span>
-    <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
+    <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${yawnPart(species)}${LAPTOP}</g></svg>`;
   host.append(el);
   const flip = el.querySelector('.flip');
   const bubble = el.querySelector('.bubble');
   const sayEl = el.querySelector('.say');
   const svgEl = el.querySelector('svg');
   showParts(flip);
-  let lastPart = '', lastSay = '', lastMove = '';
+  let lastPart = '', lastSay = '', lastMove = '', clickT = 0;
 
   // each pet reacts at slightly different loads, so they don't all switch at once
   const jitter = (Math.random() - .5) * 12;
   let x = 20 + Math.random() * Math.max(0, host.offsetWidth - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, jumpLeft = 0, yawnLeft = 0, lastState = 'idle';
+  // walking, it stops every 6-14 s for one of its tricks (an action with a pose or a word)
+  const tricks = acts.filter(a => (a.pose && a.pose !== 'lie' && a.pose !== 'sleep') || a.say);
+  let trick = null, trickLeft = 0, trickT = 0, trickIn = 6 + Math.random() * 8;
   let lastCls = '', lastStep = '', lastDir = 0, lastMood = '';
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
@@ -94,6 +99,12 @@ export function createPet(kind, species, host) {
     heart.textContent = '♥';
     el.append(heart);
     setTimeout(() => heart.remove(), 1000);
+    // and says its word (species.click, else its talk action's)
+    const word = clickWord(species);
+    if (word) {
+      sayEl.textContent = t(`pets.says.${word}`); lastSay = word; el.classList.add('talking');
+      clearTimeout(clickT); clickT = setTimeout(() => { el.classList.remove('talking'); lastSay = ''; lastCls = ''; }, 1400);
+    }
   });
 
   // dancing: bursts of 2-4 music notes over the pet's head every 1.2-1.8 s,
@@ -131,6 +142,11 @@ export function createPet(kind, species, host) {
       if ((pendingT += dt) > SWITCH_DELAY) { state = want; pending = null; act = null; }
     }
 
+    // falling asleep: a 1.6 s yawn first
+    if (state === 'sleep' && lastState !== 'sleep') yawnLeft = 1.6;
+    lastState = state;
+    yawnLeft = Math.max(0, yawnLeft - dt);
+
     let target, pose = '';
     if (state === 'idle') {
       if (!act || (actLeft -= dt) <= 0) pickAct();
@@ -141,13 +157,36 @@ export function createPet(kind, species, host) {
       target = STATE_SPEED[state];
       if (state === 'sleep') pose = 'lie sleep';
     }
+    if (state === 'walk' && !activity && tricks.length) {
+      if (trick && (trickLeft -= dt) <= 0) trick = null;
+      else if (trick) trickT += dt;
+      else if ((trickIn -= dt) <= 0) {
+        trickIn = 6 + Math.random() * 8;
+        let r = Math.random() * tricks.reduce((t, a) => t + a.w, 0);
+        trick = tricks.find(a => (r -= a.w) < 0) ?? tricks[0];
+        trickLeft = trick.dur[0] + Math.random() * (trick.dur[1] - trick.dur[0]);
+        trickT = 0;
+        if (trick.turn) dir = -dir;
+        if (trick.jump) jumpLeft = .55;
+      }
+    } else trick = null;
+    if (trick) {
+      target = trick.speed ?? 0;
+      if (trick.pose) pose = trick.pose;
+    }
+    // what it's doing now: the idle action, or the trick it stopped for
+    const cur = state === 'idle' ? act : trick, curT = state === 'idle' ? actT : trickT;
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    // the species' own pose (poses.js); one with a speed moves while it plays
-    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
+    // the species' own pose (poses.js); one with a speed moves while it plays.
+    // Its `sleep` pose, if any, replaces the plain lying down
+    const own = cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
+      : state === 'sleep' && !activity && yawnLeft > 0 ? 'yawn'
+      : state === 'sleep' && !activity && poseOf(species, 'sleep') ? 'sleep' : '';
+    if (own === 'yawn') pose = 'yawn';
     if (pose && !(own && act?.speed)) target = 0;
     // a word in a speech bubble (act.say, a key under pets.says)
-    const say = state === 'idle' && !activity && act?.say ? act.say : '';
+    const say = cur && !activity && cur.say ? cur.say : '';
     if (activity === 'listen') {
       target = 0;
       if ((listenFlip -= dt) <= 0) { dir = -dir; listenFlip = .4 + Math.random() * .25; }
@@ -181,8 +220,8 @@ export function createPet(kind, species, host) {
     if (x < 14) { x = 14; dir = 1; }
     el.style.left = x.toFixed(1) + 'px';
     // the species' own pose: its parts, frame and motion (poses.js)
-    const def = own ? species.poses[own] : null;
-    const pt = def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
+    const def = own ? poseOf(species, own) : null;
+    const pt = own === 'yawn' ? 1.6 - yawnLeft : def ? curT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
     const part = def ? `${own}:${frameAt(def, pt)}` : '';
     if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
     const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';
@@ -192,7 +231,7 @@ export function createPet(kind, species, host) {
 
     const moving = v > 4;
     const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || own || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
-      def?.shut && 'shut', def?.low && 'lie', def?.move && 'posed', say && 'talking',
+      def?.shut && 'shut', def?.low && 'lie', def?.move && 'posed', def?.tailFast && 'wagfast', say && 'talking',
       opts.heavy && 'heavy', opts.heavy === 2 && 'sweat',
       // the heat only shows while it walks or runs - not dancing, at the laptop, asleep or idling
       moving && !pose && opts.hot && 'hot', moving && !pose && opts.hot === 2 && 'scorch']
@@ -204,7 +243,7 @@ export function createPet(kind, species, host) {
       if (st !== lastStep) { el.style.setProperty('--step', st); lastStep = st; }
     }
 
-    let mood = t(`pets.moods.${activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state}`);
+    let mood = t(`pets.moods.${activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : trick ? trick.name : state}`);
     if (species.chill && load + jitter >= 72) mood = t('pets.chill');
     const text = t('pets.bubble', { name: t(`pets.names.${kind}`), mood, load: Math.round(load) });
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }

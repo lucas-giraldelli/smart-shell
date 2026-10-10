@@ -3,10 +3,13 @@ export default {
   color: '#1f2937',
   speed: .7,
   waddle: true,
-  acts: [{ name: 'stand', w: 5, dur: [3, 6] }, { name: 'slide', w: 1.2, dur: [1.6, 2.6], pose: 'slide', speed: 60 }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'noot' }],
+  mouth: [34.4, 14.4],   // where it opens its mouth to yawn
+  acts: [{ name: 'stand', w: 5, dur: [3, 6] }, { name: 'slide', w: 1.2, dur: [1.6, 2.6], pose: 'slide', speed: 60 }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'noot' }, { name: 'flap', w: 1, dur: [1.2, 2], pose: 'flap' }],
   poses: {
     // slides on its belly
     slide: { move: () => ({ rot: 80, dy: -8 }) },
+    // flaps its little flippers
+    flap: { frames: ['a', 'b'], every: .14, move: t => ({ dy: -1 * Math.abs(Math.sin(t * 22)) }) },
   },
   svg: `
     <g class="legs" fill="#f59e0b">
@@ -14,7 +17,9 @@ export default {
     </g>
     <g class="body-g">
       <ellipse cx="24" cy="19" rx="10" ry="13" fill="#1f2937"/>
-      <path class="tail" style="transform-origin: 50% 0%" d="M16 16 q-5 6 -2 11" stroke="#111827" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+      <path data-pose="flap:a" d="M16 17 q-7 -2 -9 -7" stroke="#111827" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path data-pose="flap:b" d="M16 17 q-6 4 -8 9" stroke="#111827" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path class="tail" data-hide="flap" style="transform-origin: 50% 0%" d="M16 16 q-5 6 -2 11" stroke="#111827" stroke-width="4.5" fill="none" stroke-linecap="round"/>
       <ellipse cx="26" cy="22" rx="7" ry="9.5" fill="#f8fafc"/>
       <ellipse cx="26" cy="27" rx="5.5" ry="4" fill="#e2e8f0"/>
       <ellipse cx="28" cy="12" rx="6.5" ry="4.8" fill="#f8fafc"/>

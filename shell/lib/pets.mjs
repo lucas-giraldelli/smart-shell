@@ -4,6 +4,9 @@
 // (legs swung, lying down, eyes closed, at the laptop...) is baked into its own
 // SVG string, and the shell swaps images.
 
+import { partsFor, poseOf, yawnPart } from './poses.mjs';
+export { frameAt, moveAt, poseOf } from './poses.mjs';
+
 // --- behaviour (engine.js) ---
 // A pet reacts to CPU load: sleep (< 10%) · idle (< 40%) · walk (< 72%) · run.
 // While idle it picks weighted actions; each species adds or overrides actions
@@ -37,7 +40,10 @@ export function createPet(species, width) {
   let x = 20 + Math.random() * Math.max(0, width - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, jumpLeft = 0, yawnLeft = 0, lastState = 'idle';
+  // walking, it stops every 6-14 s for one of its tricks (an action with a pose or a word)
+  const tricks = acts.filter(a => (a.pose && a.pose !== 'lie' && a.pose !== 'sleep') || a.say);
+  let trick = null, trickLeft = 0, trickT = 0, trickIn = 6 + Math.random() * 8;
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
   // below `walk` it walks, above it runs
@@ -76,6 +82,11 @@ export function createPet(species, width) {
       if ((pendingT += dt) > SWITCH_DELAY) { state = want; pending = null; act = null; }
     }
 
+    // falling asleep: a 1.6 s yawn first
+    if (state === 'sleep' && lastState !== 'sleep') yawnLeft = 1.6;
+    lastState = state;
+    yawnLeft = Math.max(0, yawnLeft - dt);
+
     let target, pose = '';
     if (state === 'idle') {
       if (!act || (actLeft -= dt) <= 0) pickAct();
@@ -86,13 +97,36 @@ export function createPet(species, width) {
       target = STATE_SPEED[state];
       if (state === 'sleep') pose = 'lie sleep';
     }
+    if (state === 'walk' && !activity && tricks.length) {
+      if (trick && (trickLeft -= dt) <= 0) trick = null;
+      else if (trick) trickT += dt;
+      else if ((trickIn -= dt) <= 0) {
+        trickIn = 6 + Math.random() * 8;
+        let r = Math.random() * tricks.reduce((t, a) => t + a.w, 0);
+        trick = tricks.find(a => (r -= a.w) < 0) ?? tricks[0];
+        trickLeft = trick.dur[0] + Math.random() * (trick.dur[1] - trick.dur[0]);
+        trickT = 0;
+        if (trick.turn) dir = -dir;
+        if (trick.jump) jumpLeft = .55;
+      }
+    } else trick = null;
+    if (trick) {
+      target = trick.speed ?? 0;
+      if (trick.pose) pose = trick.pose;
+    }
+    // what it's doing now: the idle action, or the trick it stopped for
+    const cur = state === 'idle' ? act : trick, curT = state === 'idle' ? actT : trickT;
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    // the species' own pose (poses.js); one with a speed moves while it plays
-    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
+    // the species' own pose (poses.js); one with a speed moves while it plays.
+    // Its `sleep` pose, if any, replaces the plain lying down
+    const own = cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
+      : state === 'sleep' && !activity && yawnLeft > 0 ? 'yawn'
+      : state === 'sleep' && !activity && poseOf(species, 'sleep') ? 'sleep' : '';
+    if (own === 'yawn') pose = 'yawn';
     if (pose && !(own && act?.speed)) target = 0;
     // a word in a speech bubble (act.say, a key under pets.says)
-    const say = state === 'idle' && !activity && act?.say ? act.say : '';
+    const say = cur && !activity && cur.say ? cur.say : '';
     if (activity === 'listen') {
       target = 0;
       if ((listenFlip -= dt) <= 0) { dir = -dir; listenFlip = .4 + Math.random() * .25; }
@@ -126,11 +160,11 @@ export function createPet(species, width) {
     if (x < 14) { x = 14; dir = 1; }
 
     const moving = v > 4;
-    let mood = activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state;
+    let mood = activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : trick ? trick.name : state;
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
       x, dir, moving, fast: v > 90, pose: pose === 'dance' || own || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
-      own, poseT: own ? actT : 0, say,
+      own, poseT: own === 'yawn' ? 1.6 - yawnLeft : own ? curT : 0, say,
       // legs keep pace with the body: faster walk, shorter step
       step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
       mood,
@@ -150,9 +184,6 @@ const LAPTOP = (screen) => `
   </g>`;
 export const SCREEN_COLORS = ['#7dd3fc', '#a5f3fc', '#93c5fd', '#bae6fd'];
 
-import { partsFor } from './poses.mjs';
-export { frameAt, moveAt } from './poses.mjs';
-
 const drop = (svg, cls) => svg.replace(new RegExp(`<[a-z]+ class="${cls}[^"]*"[^>]*/>`, 'g'), '');
 
 // One look of a sprite as an SVG data URL:
@@ -170,7 +201,7 @@ export function look(species, opts) {
   if (!species.__looks) species.__looks = new Map();
   if (species.__looks.has(key)) return species.__looks.get(key);
   const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '', wag = 0, pose = '', frame = '' } = opts;
-  let svg = partsFor(species.svg, pose, frame);
+  let svg = partsFor(species.svg + yawnPart(species), pose, frame);
   if (wag) svg = svg.replace(/<path class="tail" d="M\s*([\d.]+)[ ,]([\d.]+)/, (m, x, y) => `<path class="tail" transform="rotate(${wag} ${x} ${y})" d="M${x} ${y}`);
   if (leg) {
     svg = svg.replace(/<rect class="(la|lb)" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)"([^>]*)\/>/g,

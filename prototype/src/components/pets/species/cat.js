@@ -1,10 +1,13 @@
 // Lies down and naps between strolls.
 export default {
   color: '#f2a65a',
-  acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'lick', w: 1.2, dur: [2, 3.5], pose: 'lick' }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'meow' }],
+  mouth: [39.4, 17.8],   // where it opens its mouth to yawn
+  acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'lick', w: 1.2, dur: [2, 3.5], pose: 'lick' }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'meow' }, { name: 'stretch', w: 1, dur: [1.8, 2.6], pose: 'stretch' }],
   poses: {
     // licks a raised paw, eyes shut
     lick: { frames: ['a', 'b'], every: .28, shut: true, move: t => ({ rot: -1.5 * Math.sin(t * 11) }) },
+    // a long stretch: front low, rear up, eyes shut
+    stretch: { shut: true, move: t => { const k = Math.sin(Math.min(1, t / .7) * Math.PI / 2); return { rot: 9 * k, dy: 1.5 * k }; } },
   },
   svg: `
     <g class="legs" fill="#d9823c">

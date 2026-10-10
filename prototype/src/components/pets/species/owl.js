@@ -3,6 +3,7 @@ export default {
   color: '#a16207',
   speed: .8,
   hop: true,
+  mouth: [23, 19.8],   // where it opens its mouth to yawn
   acts: [{ name: 'turn', w: 3, dur: [1.5, 3], turn: true }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'wink', w: 1, dur: [1, 1.6], pose: 'wink' }, { name: 'spin', w: 1, dur: [2.2, 2.6], pose: 'spin' }, { name: 'talk', w: .6, dur: [1.4, 2], say: 'hoot' }],
   poses: {
     // winks one eye

@@ -2,10 +2,13 @@
 export default {
   color: '#f59e42',
   speed: 1.2,
-  acts: [{ name: 'zoomies', w: 1.4, dur: [1.2, 2.2], speed: 150 }, { name: 'chase', w: 1, dur: [1.6, 2.6], pose: 'chase' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'woof' }],
+  mouth: [43, 19],   // where it opens its mouth to yawn
+  acts: [{ name: 'zoomies', w: 1.4, dur: [1.2, 2.2], speed: 150 }, { name: 'chase', w: 1, dur: [1.6, 2.6], pose: 'chase' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'woof' }, { name: 'sploot', w: 1, dur: [3, 6], pose: 'sploot' }],
   poses: {
     // chases its own tail: spins and hops
     chase: { move: t => ({ flip: Math.floor(t / .2) % 2 === 1, dy: -3 * Math.abs(Math.sin(t * 15.7)) }) },
+    // a sploot: belly down, back legs stretched out behind
+    sploot: { low: true },
   },
   svg: `
     <g class="legs" fill="#e07f24">
@@ -14,6 +17,9 @@ export default {
     </g>
     <g class="body-g">
       <ellipse class="tail" cx="9" cy="18" rx="3.4" ry="2.6" fill="#f59e42"/>
+      <rect data-pose="sploot" x="1" y="22.5" width="10" height="4" rx="2" fill="#e07f24"/>
+      <rect data-pose="sploot" x="2" y="25.5" width="9" height="3.6" rx="1.8" fill="#e07f24"/>
+      <rect data-pose="sploot" x="33" y="25" width="8" height="3.4" rx="1.7" fill="#e07f24"/>
       <ellipse cx="23" cy="22" rx="14.5" ry="7.5" fill="#f59e42"/>
       <ellipse cx="25" cy="26" rx="10" ry="3.2" fill="#fff7ed"/>
       <polygon points="30,10 31,-1 37,7" fill="#f59e42"/><polygon points="38,7 45,-1 44,11" fill="#f59e42"/>

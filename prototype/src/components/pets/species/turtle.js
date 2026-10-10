@@ -3,7 +3,8 @@ export default {
   color: '#16a34a',
   speed: .35,
   chill: true,
-  acts: [{ name: 'stand', w: 5, dur: [3, 7] }, { name: 'nap', w: 2, dur: [8, 14], pose: 'sleep' }, { name: 'hide', w: 1.2, dur: [3, 5], pose: 'hide' }, { name: 'talk', w: .6, dur: [1.6, 2.4], say: 'slow' }],
+  mouth: [45.8, 22.6],   // where it opens its mouth to yawn
+  acts: [{ name: 'stand', w: 5, dur: [3, 7] }, { name: 'nap', w: 2, dur: [8, 14], pose: 'sleep' }, { name: 'hide', w: 1.2, dur: [3, 5], pose: 'hide' }, { name: 'talk', w: .6, dur: [1.6, 2.4], say: 'slow' }, { name: 'yawn', w: .8, dur: [1.6, 1.8], pose: 'yawn' }],
   poses: {
     // hides in its shell, then peeks out
     hide: { frames: ['a', 'a', 'a', 'b', 'b', 'a'], every: .5, move: () => ({ dy: 5 }) },

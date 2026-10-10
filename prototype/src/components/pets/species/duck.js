@@ -3,10 +3,13 @@ export default {
   color: '#facc15',
   speed: .8,
   waddle: true,
-  acts: [{ name: 'stand', w: 4, dur: [2, 5] }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'quack' }],
+  mouth: [41.2, 14.4],   // where it opens its mouth to yawn
+  acts: [{ name: 'stand', w: 4, dur: [2, 5] }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'quack' }, { name: 'ducklings', w: 1, dur: [3, 5], pose: 'ducklings', speed: 14 }],
   poses: {
     // flaps its wings
     flap: { frames: ['a', 'b'], every: .16, move: t => ({ dy: -1.5 * Math.abs(Math.sin(t * 19.6)) }) },
+    // its ducklings waddle along behind it
+    ducklings: { frames: ['a', 'b'], every: .25 },
   },
   svg: `
     <g class="legs" fill="#f97316">
@@ -24,5 +27,9 @@ export default {
       <circle cx="32" cy="14.4" r="1.3" fill="#fb923c" opacity=".55"/>
       <path data-pose="flap:a" d="M15 20 q2 -11 12 -6 q-5 3 -12 6z" fill="#eab308"/>
       <path data-pose="flap:b" d="M15 21 q6 8 12 0z" fill="#eab308"/>
+      <g data-pose="ducklings:a" fill="#fde047"><ellipse cx="9" cy="30.4" rx="3" ry="2.2"/><circle cx="11" cy="27.6" r="1.9"/><ellipse cx="2.6" cy="29.8" rx="2.6" ry="2"/><circle cx="4.4" cy="27.2" r="1.7"/></g>
+      <g data-pose="ducklings:b" fill="#fde047"><ellipse cx="9" cy="30" rx="3" ry="2.2"/><circle cx="11" cy="27.2" r="1.9"/><ellipse cx="2.6" cy="30.2" rx="2.6" ry="2"/><circle cx="4.4" cy="27.6" r="1.7"/></g>
+      <g data-pose="ducklings" fill="#f97316"><path d="M12.6 27.4 l1.6 .3 l-1.6 .5z"/><path d="M5.8 27.2 l1.4 .3 l-1.4 .5z"/></g>
+      <g data-pose="ducklings" fill="#1c1917"><circle cx="11.6" cy="27" r=".45"/><circle cx="4.9" cy="26.8" r=".4"/></g>
     </g>`,
 };
