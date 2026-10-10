@@ -1,4 +1,4 @@
-.tray { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 7px 9px; }
+.tray { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px 9px; }
 .tray img { width: 16px; height: 16px; display: block; cursor: pointer; transition: transform .2s; }
 .tray img:hover { transform: scale(1.2); }
 /* needs attention: the caps lock hop, right away and then every 8 s; every
