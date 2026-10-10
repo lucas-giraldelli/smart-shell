@@ -203,3 +203,6 @@
 .cc .vpn-on { color: var(--ok); }
 .cc .vpn-authenticating, .cc .vpn-connecting { color: var(--warn); }
 .cc .vpn-error { color: var(--crit); }
+/* system: two half-width toggles under the uptime row */
+.cc .sys-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 8px 4px; }
+.cc .sys-actions .btn-s { justify-content: center; }

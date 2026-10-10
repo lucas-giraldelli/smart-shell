@@ -82,9 +82,11 @@ export default {
       </div>
     </div>
     <div class="dk-head"><span class="uptime" data-uptime></span>
-      <button class="btn-s" data-dnd title="${t('settings.dnd')}">${icon('bell-off')}${t('settings.dnd')}</button>
-      <button class="btn-s" data-screen-off title="${t('system.screenOff')}">${icon('monitor-off')}${t('system.screen')}</button>
       <button class="btn-s" data-monitor title="${config.commands.monitor}">${icon('external-link')}btop</button></div>
+    <div class="sys-actions">
+      <button class="btn-s" data-dnd>${icon('bell-off')}${t('settings.dnd')}</button>
+      <button class="btn-s" data-screen-off>${icon('monitor-off')}${t('system.screenOff')}</button>
+    </div>
     <div class="sec">${t('system.top')}</div>
     <div class="top-list"></div>`,
 

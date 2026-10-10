@@ -200,30 +200,6 @@ PaneScroll {
                 text: clock.date, I18n.t("system.uptime", { time: Rules.uptime(Panes.i18n, SystemStats.bootedAt.getTime()) })
             }
         }
-        // the user's Super+F10: blank the panel so the OLED can run its care cycle
-        // do not disturb: only rules with `dnd: true` pop up
-        SmallButton {
-            anchors.right: screenOff.left
-            anchors.rightMargin: 6
-            y: 4
-            icon: "bell-off"
-            text: I18n.t("settings.dnd")
-            active: Ui.dnd
-            onClicked: Ui.dnd = !Ui.dnd
-        }
-        SmallButton {
-            id: screenOff
-            anchors.right: btop.left
-            anchors.rightMargin: 6
-            y: 4
-            icon: "monitor-off"
-            text: I18n.t("system.screen")
-            onClicked: {
-                const screen = Ui.popoverScreen;
-                Ui.closePopover();
-                Quickshell.execDetached(["hyprctl", "dispatch", "dpms", "toggle", screen]);
-            }
-        }
         SmallButton {
             id: btop
             anchors.right: parent.right
@@ -234,6 +210,33 @@ PaneScroll {
             onClicked: {
                 Quickshell.execDetached(["sh", "-c", Config.commands.monitor]);
                 Ui.closePopover();
+            }
+        }
+    }
+
+    // a row of two half-width toggles (.sys-actions): do not disturb (only
+    // rules with `dnd: true` pop up) and the screen (the user's Super+F10,
+    // blanking the panel so the OLED can run its care cycle)
+    Row {
+        x: 8
+        width: parent.width - 16
+        spacing: 6
+        bottomPadding: 4
+        SmallButton {
+            width: (parent.width - 6) / 2
+            icon: "bell-off"
+            text: I18n.t("settings.dnd")
+            active: Ui.dnd
+            onClicked: Ui.dnd = !Ui.dnd
+        }
+        SmallButton {
+            width: (parent.width - 6) / 2
+            icon: "monitor-off"
+            text: I18n.t("system.screenOff")
+            onClicked: {
+                const screen = Ui.popoverScreen;
+                Ui.closePopover();
+                Quickshell.execDetached(["hyprctl", "dispatch", "dpms", "toggle", screen]);
             }
         }
     }

@@ -165,7 +165,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   Code, whose title starts with its status glyph),
   `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
   closed).
-  Do not disturb (the button next to "Screen" in the System tab, or `qs ipc -p <shell> call notifications
+  Do not disturb (a toggle in the System tab, next to "Turn off screen", or `qs ipc -p <shell> call notifications
   toggleDnd` for a keybind) holds every popup except rules with `dnd: true`;
   a muted bell shows after the caps lock, and a click on it turns it off.
 - **Screen recording** - while `gpu-screen-recorder` runs, a red dot and the
