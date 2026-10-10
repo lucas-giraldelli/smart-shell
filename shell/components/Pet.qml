@@ -49,7 +49,7 @@ Item {
     function tickGroove(dt) {
         if (!dancing && clock - quietAt < 1.2)
             return;
-        const want = !dancing || listening ? 0 : Beat.active ? Math.min(1, 0.15 + 1.1 * Beat.level) : 0.6;
+        const want = !dancing || listening ? 0 : Beat.active ? 0.85 * Math.min(1, 0.15 + 1.1 * Beat.level) : 0.6;
         groove += (want - groove) * (1 - Math.exp(-dt / (want > groove ? 0.7 : 0.35)));
     }
     readonly property var dance: Engine.DANCES[kind] ?? null
