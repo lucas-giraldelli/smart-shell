@@ -2,16 +2,18 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { toggleCapsLock } from '../../services/keyboard.js';
 import { t } from '../../i18n/index.js';
+import { update } from '../../state.js';
 
 // Caps Lock indicator for keyboards without an LED: always visible, white when
 // off and the theme's ok-green when on. While Hyprland's resize submap is on
 // (Alt+R) a resize indicator shows to its right, in the same style.
 class CapsLock extends Component {
-  static slices = ['keyboard'];
+  static slices = ['keyboard', 'ui'];
 
   render() {
     return `${icon('arrow-big-up-dash')}<span class="label"></span>
       <span class="resize" data-tip>${icon('scaling')}<span class="label">${t('keyboard.resize')}</span></span>
+      <span class="dnd" data-tip>${icon('bell-off')}<span class="label">${t('keyboard.dnd')}</span></span>
       <span class="rec" data-tip><i></i><b data-rec-time>0:00</b><span class="label">${t('keyboard.recording')}</span></span>`;
   }
 
@@ -19,15 +21,20 @@ class CapsLock extends Component {
     this.classList.add('caps');
     this.dataset.tip = '';
     // prototype only: lets you preview the "on" state without the key
-    this.addEventListener('click', toggleCapsLock);
+    this.addEventListener('click', e => {
+      if (e.target.closest('.dnd')) return update('ui', { dnd: false });
+      toggleCapsLock();
+    });
   }
 
-  update({ keyboard }) {
+  update({ keyboard, ui }) {
     const on = keyboard.capsLock;
     this.classList.toggle('on', on);
     this.dataset.status = on ? 'ok' : 'off';
     this.$(':scope > .label').textContent = t(on ? 'capslock.on' : 'capslock.off');
     this.classList.toggle('resizing', keyboard.submap === 'resize');
+    // do not disturb: a muted bell after the others; click turns it off
+    this.classList.toggle('dnd', !!ui.dnd);
     // recording: a red dot and the elapsed time (click stops it in the shell)
     if (!!keyboard.recording !== this.classList.contains('recording')) {
       this.classList.toggle('recording', !!keyboard.recording);

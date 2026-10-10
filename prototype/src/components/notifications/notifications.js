@@ -2,7 +2,7 @@ import { Component, define } from '../../core/component.js';
 import { icon, appIcon } from '../../core/icons.js';
 import { setHTML } from '../ui/ui.js';
 import { t, formatTime } from '../../i18n/index.js';
-import { update } from '../../state.js';
+import { update, store } from '../../state.js';
 import { config } from '../../data/config.js';
 
 // Notification popups (the shell is the notification server - Quickshell's
@@ -33,6 +33,8 @@ export function dismiss(id) {
 let nextId = 1;
 export function notify(n) {
   const rule = ruleFor(n);
+  // do not disturb: only a rule with `dnd: true` gets through
+  if (store.get().ui.dnd && !rule?.dnd) return;
   const full = { id: nextId++, time: new Date(), urgency: 'normal', actions: [], ...n, ...(rule ? { style: rule.style, timeout: rule.timeout, summary: rule.title ?? n.summary, appName: rule.app ?? n.appName, appIcon: rule.icon ?? n.appIcon } : {}) };
   update('notifications', s => ({ list: [...s.list, full].slice(-4) }));
   arm(full);

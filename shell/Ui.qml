@@ -24,6 +24,7 @@ Singleton {
     property alias locale: prefs.locale      // "" = config.locale, then the system's
     property alias prsHidden: prefs.prsHidden    // repos left out of the PR widget
     property alias prsMerged: prefs.prsMerged    // merged PRs kept until dismissed
+    property alias dnd: prefs.dnd                // do not disturb: only rules with `dnd: true` pop up
 
     // transient
     // a fullscreen window is focused: pets and effects hold still
@@ -101,6 +102,7 @@ Singleton {
             property string locale: ""
             property var prsHidden: []
             property var prsMerged: []
+            property bool dnd: false
         }
     }
 }

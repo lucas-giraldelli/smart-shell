@@ -18,8 +18,10 @@ Item {
 
     readonly property bool resizing: Keyboard.submap === "resize"
     readonly property bool recording: Recording.active
+    readonly property bool dnd: Ui.dnd
     readonly property real recX: 24 + 6 + (resizing ? 24 + 6 : 0)
-    implicitWidth: recording ? recX + rec.width : resizing ? 24 + 6 + 24 : 24
+    readonly property real dndX: recording ? recX + rec.width + 6 : recX
+    implicitWidth: dnd ? dndX + 24 : recording ? recX + rec.width : resizing ? 24 + 6 + 24 : 24
     Behavior on implicitWidth { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
     implicitHeight: Theme.size
 
@@ -113,6 +115,40 @@ Item {
             target: rec
             text: I18n.t("keyboard.recording")
             shown: recArea.containsMouse
+        }
+    }
+
+    // do not disturb: a muted bell; click turns it off
+    Item {
+        id: dndItem
+        x: root.dndX
+        width: 24
+        height: 24
+        anchors.verticalCenter: parent.verticalCenter
+        opacity: root.dnd ? 1 : 0
+        scale: root.dnd ? 1 : 0.6
+        visible: opacity > 0
+        Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+        Icon {
+            anchors.centerIn: parent
+            name: "bell-off"
+            size: 15
+            shadow: true
+            color: dndArea.containsMouse ? Theme.text : Theme.sub
+        }
+        MouseArea {
+            id: dndArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: Ui.dnd = false
+        }
+        Tip {
+            target: dndItem
+            text: I18n.t("keyboard.dnd")
+            shown: dndArea.containsMouse
         }
     }
 

@@ -79,6 +79,12 @@ PaneScroll {
     }
     // workspaces style
     SegmentedRow {
+        label: I18n.t("settings.notifications")
+        options: [{ value: "all", text: I18n.t("settings.notifyAll") }, { value: "dnd", text: I18n.t("settings.dnd") }]
+        current: Ui.dnd ? "dnd" : "all"
+        onPicked: value => Ui.dnd = value === "dnd"
+    }
+    SegmentedRow {
         label: I18n.t("settings.wsStyle")
         options: ["icons", "numbers", "dots"].map(value => ({ value, text: I18n.t(`settings.wsStyles.${value}`) }))
         current: Ui.wsStyle

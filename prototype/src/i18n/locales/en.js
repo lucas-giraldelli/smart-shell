@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'YouTube Music volume', notPlaying: 'YouTube Music isn\'t open' },
 
-  keyboard: { recording: 'Click to stop recording', resize: 'Resize · Esc exits' },
+  keyboard: { dnd: 'Click to turn off do not disturb', recording: 'Click to stop recording', resize: 'Resize · Esc exits' },
 
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
@@ -50,7 +50,7 @@ export default {
   },
 
   settings: {
-    label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', clock: 'Clock', wsStyle: 'Workspaces', wsStyles: { icons: 'Icons', numbers: 'Numbers', dots: 'Dots' },
+    label: 'Dock', look: 'Appearance', size: 'Size', magnify: 'Magnification', clock: 'Clock', notifications: 'Notifications', notifyAll: 'All', dnd: 'Do not disturb', wsStyle: 'Workspaces', wsStyles: { icons: 'Icons', numbers: 'Numbers', dots: 'Dots' },
     widgets: 'Widgets', pets: 'Pet', noPet: 'None', language: 'Language',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },

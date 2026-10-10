@@ -165,6 +165,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   Code, whose title starts with its status glyph),
   `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
   closed).
+  Do not disturb (Dock tab, or `qs ipc -p <shell> call notifications
+  toggleDnd` for a keybind) holds every popup except rules with `dnd: true`;
+  a muted bell shows after the caps lock, and a click on it turns it off.
 - **Screen recording** - while `gpu-screen-recorder` runs, a red dot and the
   elapsed time show after the caps lock; a click stops it by running
   `commands.record`. The recording script tells the dock with

@@ -51,3 +51,20 @@
 .caps .rec i { width: 8px; height: 8px; border-radius: 99px; background: var(--crit); animation: rec-pulse 1.4s ease-in-out infinite; }
 @keyframes rec-pulse { 50% { opacity: .3; } }
 .caps .rec .label { bottom: calc(100% + 14px); }
+
+/* do not disturb: a muted bell after the resize / recording indicators */
+.caps.dnd { margin-right: 30px; }
+.caps .dnd {
+  position: absolute; top: 0; left: 30px; width: 24px; height: 24px; display: grid; place-items: center;
+  color: var(--sub); cursor: pointer; opacity: 0; transform: scale(.6); pointer-events: none;
+  transition: opacity .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1), left .25s ease;
+}
+.caps .dnd:hover { color: var(--text); }
+.caps.dnd .dnd { opacity: 1; transform: none; pointer-events: auto; }
+.caps.resizing .dnd { left: 60px; }
+.caps.recording .dnd { left: 124px; }
+.caps.recording.resizing .dnd { left: 154px; }
+.caps.dnd.resizing { margin-right: 60px; }
+.caps.dnd.recording { margin-right: 124px; }
+.caps.dnd.recording.resizing { margin-right: 154px; }
+.caps .dnd .label { bottom: calc(100% + 14px); }

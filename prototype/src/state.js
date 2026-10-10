@@ -17,6 +17,7 @@ export const store = createStore({
     pet: loadPref('pet', loadPref('pets', ['cat'])[0] ?? null),
     size: loadPref('size', 52),
     magnify: loadPref('magnify', 1.75),
+    dnd: loadPref('dnd', false),   // do not disturb: only rules with `dnd: true` pop up
     liveWallpaper: loadPref('liveWallpaper', false),
     popover: null,          // 'bluetooth' | 'control-center' | 'calendar' | 'weather' | null
     ccTab: 'volume',

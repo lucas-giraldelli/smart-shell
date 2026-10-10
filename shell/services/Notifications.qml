@@ -1,6 +1,7 @@
 pragma Singleton
 import QtQuick
 import Quickshell
+import Quickshell.Io
 import Quickshell.Services.Notifications
 import ".."
 
@@ -9,7 +10,7 @@ import ".."
 // bodies, images, actions and markup. config.notifications.rules restyle
 // some (matched as substrings on appName / summary / body): `title`, `app`,
 // `icon` (an icon name or path), `style` ("love"), `timeout` (ms, 0 = until
-// closed). At most 4 popups.
+// closed), `dnd: true` (pops up even in do not disturb). At most 4 popups.
 Singleton {
     id: root
 
@@ -53,6 +54,13 @@ Singleton {
         popups = popups.filter(x => x.id !== id);
     }
 
+    IpcHandler {
+        target: "notifications"
+        function toggleDnd(): void {
+            Ui.dnd = !Ui.dnd;
+        }
+    }
+
     NotificationServer {
         keepOnReload: false
         bodySupported: true
@@ -65,6 +73,9 @@ Singleton {
         onNotification: n => {
             n.tracked = true;
             const rule = root.ruleFor(n);
+            // do not disturb: only a rule with `dnd: true` gets through
+            if (Ui.dnd && !rule?.dnd)
+                return;
             const p = {
                 id: root.nextId++, notif: n,
                 appName: rule?.app ?? n.appName, summary: rule?.title ?? n.summary, icon: rule?.icon ?? "",
