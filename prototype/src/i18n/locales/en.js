@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'YouTube Music volume', notPlaying: 'YouTube Music isn\'t open' },
 
-  keyboard: { dnd: 'Click to turn off do not disturb', recording: 'Click to stop recording', resize: 'Resize · Esc exits' },
+  keyboard: { dnd: 'Click to turn off do not disturb', recording: 'Click to stop recording', resize: 'Resize · Esc to exit' },
 
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
@@ -23,7 +23,7 @@ export default {
     label: 'System', cpu: 'CPU', memory: 'Memory', temp: 'Die (Tccd1) at {temp}°C',
     free: '{free} GiB', used: '{used} of {total} GiB in use',
     uptime: 'Up for {time}', screen: 'Screen', screenOff: 'Turn off screen', since: 'On since {date}',
-    top: 'RAM usage', kill: 'Quit', killArm: 'Click again',
+    top: 'RAM usage', kill: 'Quit', killArm: 'Click to confirm',
     killWait: 'Quitting…', killForce: 'Click to force',
     uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
@@ -63,7 +63,7 @@ export default {
 
   docker: {
     label: 'Docker', summary: '{up} of {total} running · {mem}', serviceDown: 'Docker service stopped',
-    running: 'Running', paused: 'Paused', restarting: 'Restarting…', unhealthy: 'Running · unhealthy', exitedError: 'Exited with error ({code})',
+    running: 'Running', paused: 'Paused', restarting: 'Restarting…', unhealthy: 'Running · failing health check', exitedError: 'Exited with error ({code})',
     start: 'Start', stop: 'Stop', other: 'Other',
   },
 

@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'Volume do YouTube Music', notPlaying: 'YouTube Music não está aberto' },
 
-  keyboard: { resize: 'Redimensionar · Esc sai', recording: 'Clique para parar gravação', dnd: 'Clique para desligar não perturbe' },
+  keyboard: { resize: 'Redimensionar · Esc para sair', recording: 'Clique para parar gravação', dnd: 'Clique para desligar não perturbe' },
 
   capslock: { on: 'Caps Lock ligado', off: 'Caps Lock desligado' },
 
@@ -23,7 +23,7 @@ export default {
     label: 'Sistema', cpu: 'CPU', memory: 'Memória', temp: 'Die (Tccd1) a {temp}°C',
     free: '{free} GiB', used: '{used} de {total} GiB em uso',
     uptime: 'Ligado há {time}', screen: 'Tela', screenOff: 'Desligar tela', since: 'Ligado desde {date}',
-    top: 'Uso de RAM', kill: 'Encerrar', killArm: 'Clique de novo',
+    top: 'Uso de RAM', kill: 'Encerrar', killArm: 'Clique para confirmar',
     killWait: 'Encerrando…', killForce: 'Clique para forçar',
     uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
@@ -62,8 +62,8 @@ export default {
   },
 
   docker: {
-    label: 'Docker', summary: '{up} de {total} rodando · {mem}', serviceDown: 'Serviço do Docker parado',
-    running: 'Rodando', paused: 'Pausado', restarting: 'Reiniciando…', unhealthy: 'Rodando · unhealthy', exitedError: 'Saiu com erro ({code})',
+    label: 'Docker', summary: '{up} de {total} em execução · {mem}', serviceDown: 'Serviço do Docker parado',
+    running: 'Em execução', paused: 'Pausado', restarting: 'Reiniciando…', unhealthy: 'Em execução · com falha', exitedError: 'Encerrado com erro ({code})',
     start: 'Iniciar', stop: 'Parar', other: 'Outros',
   },
 
@@ -79,8 +79,8 @@ export default {
     hide: 'Ocultar', dismiss: 'Dispensar', unhide: 'Mostrar',
     showHidden: 'Mostrar ocultos ({n})', hideHidden: 'Esconder ocultos ({n})',
     updated: 'atualizado às {time}', sample: 'exemplo',
-    status: { failing: 'pipeline quebrada', conflict: 'conflito com a base', behind: 'desatualizado com a main',
-      pending: 'pipeline rodando', green: 'pipeline verde', approved: 'pipeline verde e aprovado', merged: 'mergeado' },
+    status: { failing: 'pipeline com falha', conflict: 'conflito com a base', behind: 'atrás da main',
+      pending: 'pipeline em execução', green: 'pipeline verde', approved: 'pipeline verde e aprovado', merged: 'merge concluído' },
   },
   weather: {
     feels: 'Sensação {temp}°', nextHours: 'Próximas horas', days: '7 dias',
@@ -155,7 +155,7 @@ export default {
     show: 'Mostrar painel (H)', title: 'smart-shell · protótipo',
     intro: 'Maquete em HTML. O shell real roda em Quickshell (QML) com o mesmo visual.',
     backends: 'Backends instalados (simulação)', failures: 'Simular falhas',
-    offline: 'Rede caiu', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia', trayAttention: 'Slack com menção',
+    offline: 'Sem rede', dockerDown: 'Docker parado', containerError: 'Container com erro', memHeavy: 'RAM quase cheia', trayAttention: 'Slack com menção',
     tuning: 'Ajustes', cpuLoad: 'Carga da CPU', resizeSubmap: 'Submap resize (Alt+R)', musicPlaying: 'YouTube Music tocando (pets dançam)', cpuAuto: 'CPU simulada (picos estilo X3D)',
     liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
