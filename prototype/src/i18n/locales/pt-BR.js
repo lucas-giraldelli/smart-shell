@@ -51,7 +51,7 @@ export default {
 
   settings: {
     label: 'Dock', look: 'Aparência', size: 'Tamanho', magnify: 'Ampliação', clock: 'Relógio', dnd: 'Não perturbe', wsStyle: 'Workspaces', wsStyles: { icons: 'Ícones', numbers: 'Números', dots: 'Pontos' },
-    widgets: 'Widgets', pets: 'Pet', noPet: 'Nenhum', language: 'Idioma',
+    widgets: 'Widgets', pets: 'Pet', weatherFx: 'Clima na dock', tama: 'Modo Tamagotchi (clique direito no pet)', noPet: 'Nenhum', language: 'Idioma',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },
 
@@ -142,12 +142,20 @@ export default {
       macaw: 'Arara-azul', anteater: 'Tamanduá', ghost: 'Fantasma', blackcat: 'Gato preto', pig: 'Porco' },
     bubble: '{mood} · CPU {load}%',
     chill: 'Nem aí pra CPU',
-    says: { croak: 'croac!', yip: 'yip!', squeak: 'iic!', blub: 'blub blub', meow: 'miau', hiss: 'hsss!', wow: 'such wow', woof: 'au!', pullup: 'ok I pull up', quack: 'quack!', noot: 'noot noot', munch: 'nhom nhom', hoot: 'hu-hu', slow: 'devagar…', hello: 'curupaco!', hug: 'abraço?', boo: 'boo!', oink: 'oinc' },
+    says: { yum: 'nham!', yay: 'eba!', no: 'não!', croak: 'croac!', yip: 'yip!', squeak: 'iic!', blub: 'blub blub', meow: 'miau', hiss: 'hsss!', wow: 'such wow', woof: 'au!', pullup: 'ok I pull up', quack: 'quack!', noot: 'noot noot', munch: 'nhom nhom', hoot: 'hu-hu', slow: 'devagar…', hello: 'curupaco!', hug: 'abraço?', boo: 'boo!', oink: 'oinc' },
     moods: {
       leaf: 'Na sombra', stretch: 'Se espreguiçando', dark: 'No escuro', wag: 'Abanando o rabo', sploot: 'Esparramado', scratch: 'Se coçando', ducklings: 'Com os patinhos', roll: 'Rolando', yawn: 'Bocejando', camo: 'Camuflado', hang: 'Pendurado', hug: 'Abraço!', flip: 'De ponta-cabeça', happy: 'Feliz da vida', fly: 'Caçando mosca', lick: 'Lambendo a pata', arch: 'Assustado!', sit: 'Sentado', chase: 'Atrás do rabo', dive: 'Mergulhando', binky: 'Feliz!', nose: 'Farejando', bath: 'No banho', flap: 'Batendo as asas', slide: 'Escorregando', bamboo: 'Comendo bambu', wink: 'Piscando', spin: 'Girando a cabeça', hide: 'Escondido', ink: 'Soltando tinta', wave: 'Acenando', ants: 'Caçando formigas', fade: 'Sumindo…', mud: 'Na lama', talk: 'Falando', sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
       turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', sniff: 'Fuçando', zoomies: 'Zoomies!', jump: 'Pulando',
       pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca', work: 'Em reunião', dance: 'Dançando',
     },
+  },
+
+  tama: {
+    food: 'Alimentação', fun: 'Diversão', clean: 'Higiene', energy: 'Energia', health: 'Saúde',
+    feed: 'Alimentar', play: 'Brincar', wash: 'Limpar', medicine: 'Remédio', sleep: 'Dormir', wake: 'Acordar',
+    baby: 'Filhote', young: 'Jovem', adult: 'Adulto', hours: '{h} h', days: '{d} dias',
+    sick: 'Doente', mistakes: 'Erros de cuidado: {n}',
+    ranAway: '{name} fugiu', ranAwayBody: 'Sem cuidados, ele foi embora… e voltou como fantasma.',
   },
 
   dev: {
@@ -160,5 +168,7 @@ export default {
     liveWallpaper: 'Wallpaper animado (vídeo local)', auto: 'auto',
     hint: 'Clique num app para abrir · botão direito fecha · clique no bloco rápido abre a central (configurações da dock na aba Dock) · roda no volume/brilho · clique num pet · Caps Lock acende o indicador.',
     keys: 'H esconde o painel · 1–{n} troca o tema',
+    weather: 'Clima (simulação)', real: 'real', tamaSpeed: 'Tempo do Tamagotchi', tamaReset: 'Zerar',
+    weathers: { sun: 'Sol', stars: 'Noite limpa', clouds: 'Nublado', fog: 'Neblina', drizzle: 'Garoa', rain: 'Chuva', downpour: 'Chuva forte', storm: 'Tempestade', snow: 'Neve' },
   },
 };

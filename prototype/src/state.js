@@ -1,6 +1,7 @@
 import { createStore } from './core/store.js';
 import { loadPref } from './core/prefs.js';
 import * as snap from './data/snapshot.js';
+import { fresh } from './components/pets/tama-fresh.js';
 
 // The whole app state. Each top-level key is a slice components can subscribe to;
 // in the real shell every slice except `ui` is fed by a Quickshell service.
@@ -19,6 +20,8 @@ export const store = createStore({
     magnify: loadPref('magnify', 1.75),
     dnd: loadPref('dnd', false),   // do not disturb: only rules with `dnd: true` pop up
     liveWallpaper: loadPref('liveWallpaper', false),
+    weatherFx: loadPref('weatherFx', false),   // the current weather drawn inside the dock
+    tamaOn: loadPref('tamaOn', false),         // Tamagotchi mode: the pet has needs (pets/tama.js)
     popover: null,          // 'bluetooth' | 'control-center' | 'calendar' | 'weather' | null
     ccTab: 'volume',
   },
@@ -55,6 +58,8 @@ export const store = createStore({
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   notifications: { list: [] },   // popups on screen, oldest first
   agenda: { ongoing: null, upcoming: null, minutes: null },
+  // the pet's needs in Tamagotchi mode (pets/tama.js); `speed` speeds time up in the mock
+  tama: { ...fresh(), ...loadPref('tama', {}), speed: 1 },
   // `volume` / `muted`: the YouTube Music app's own stream (right click on the tile)
   // `art`: the cover (mpris:artUrl), none in the snapshot
   media: { ...snap.media, art: null, playing: true, progress: 0.32, volume: 70, muted: false },

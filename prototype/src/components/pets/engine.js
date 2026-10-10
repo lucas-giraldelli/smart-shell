@@ -58,6 +58,11 @@ export function createPet(kind, species, host) {
   const svgEl = el.querySelector('svg');
   showParts(flip);
   let lastPart = '', lastSay = '', lastMove = '', clickT = 0;
+  // a word over its head for a moment (a pets.says key)
+  function speak(word) {
+    sayEl.textContent = t(`pets.says.${word}`); lastSay = word; el.classList.add('talking');
+    clearTimeout(clickT); clickT = setTimeout(() => { el.classList.remove('talking'); lastSay = ''; lastCls = ''; }, 1400);
+  }
 
   // each pet reacts at slightly different loads, so they don't all switch at once
   const jitter = (Math.random() - .5) * 12;
@@ -106,10 +111,7 @@ export function createPet(kind, species, host) {
     setTimeout(() => heart.remove(), 1000);
     // and says its word (species.click, else its talk action's)
     const word = clickWord(species);
-    if (word) {
-      sayEl.textContent = t(`pets.says.${word}`); lastSay = word; el.classList.add('talking');
-      clearTimeout(clickT); clickT = setTimeout(() => { el.classList.remove('talking'); lastSay = ''; lastCls = ''; }, 1400);
-    }
+    if (word) speak(word);
   });
 
   // dancing: bursts of 2-4 music notes over the pet's head every 1.2-1.8 s,
@@ -134,7 +136,8 @@ export function createPet(kind, species, host) {
     for (let i = 0; i < count; i++) setTimeout(note, i * 120);
   }
 
-  // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit), groove: 0..1 while dancing }
+  // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit), groove: 0..1 while dancing,
+  //         hold: stand still }
   function step(dt, load, activity = null, opts = {}) {
     if (opts.cpu) cpu = opts.cpu;
     if (activity === 'dance') {
@@ -190,6 +193,7 @@ export function createPet(kind, species, host) {
       : state === 'sleep' && !activity && poseOf(species, 'sleep') ? 'sleep' : '';
     if (own === 'yawn') pose = 'yawn';
     if (pose && !(own && act?.speed)) target = 0;
+    if (opts.hold) target = 0;   // its Tamagotchi menu is open
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = cur && !activity && cur.say ? cur.say : '';
     if (activity === 'listen') {
@@ -261,5 +265,5 @@ export function createPet(kind, species, host) {
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }
   }
 
-  return { kind, step, remove: () => el.remove() };
+  return { kind, el, step, speak, hop: () => { jumpLeft = .55; }, remove: () => el.remove() };
 }

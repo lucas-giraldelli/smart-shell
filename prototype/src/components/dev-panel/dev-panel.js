@@ -4,6 +4,11 @@ import { store, update } from '../../state.js';
 import { themes } from '../../data/themes.js';
 import { capabilities } from '../../data/capabilities.js';
 import { t } from '../../i18n/index.js';
+import { reset as resetTama } from '../pets/tama.js';
+
+// simulated weather for the dock's weather effect: [label key, WMO code, day]
+const WEATHER = [['sun', 0, true], ['stars', 0, false], ['clouds', 3, true], ['fog', 45, true], ['drizzle', 53, true],
+  ['rain', 63, true], ['downpour', 65, true], ['storm', 95, true], ['snow', 73, true]];
 
 // Prototype-only controls: simulated backends, failures, CPU load and the
 // animated wallpaper. Dock settings live in the control center's Dock tab.
@@ -11,7 +16,7 @@ import { t } from '../../i18n/index.js';
 const check = (attr, id, label) => `<label class="check"><input type="checkbox" ${attr}="${id}"> ${label}</label>`;
 
 class DevPanel extends Component {
-  static slices = ['ui', 'system', 'caps', 'network', 'docker', 'tray', 'media', 'keyboard'];
+  static slices = ['ui', 'system', 'caps', 'network', 'docker', 'tray', 'media', 'keyboard', 'tama'];
 
   render() {
     return `
@@ -36,6 +41,11 @@ class DevPanel extends Component {
         ${check('data-opt', 'resizeSubmap', t('dev.resizeSubmap'))}
         ${check('data-opt', 'recording', t('dev.recording'))}
         ${check('data-opt', 'liveWallpaper', t('dev.liveWallpaper'))}
+        <div class="dp-row"><label>${t('dev.weather')}</label><select data-weather><option value="">${t('dev.real')}</option>${
+          WEATHER.map(([k], i) => `<option value="${i}">${t(`dev.weathers.${k}`)}</option>`).join('')}</select></div>
+        <div class="dp-row"><label>${t('dev.tamaSpeed')}</label><select data-tama-speed>${
+          [1, 60, 600].map(v => `<option value="${v}">${v === 1 ? t('dev.real') : `${v}×`}</option>`).join('')}</select>
+          <button class="btn-s" data-tama-reset>${t('dev.tamaReset')}</button></div>
         <h2>${t('dev.notify')}</h2>
         <div class="dp-btns">${Object.keys(samples).map(k => `<button class="btn-s" data-notify="${k}">${k}</button>`).join('')}</div>
         <div class="hint">${t('dev.hint')}<br>${t('dev.keys', { n: themes.length })}</div>
@@ -50,9 +60,17 @@ class DevPanel extends Component {
     this.addEventListener('click', e => {
       const k = e.target.closest('[data-notify]')?.dataset.notify;
       if (k) notify(samples[k]);
+      if (e.target.closest('[data-tama-reset]')) resetTama();
     });
 
     this.addEventListener('change', e => {
+      if (e.target.matches('[data-weather]')) {
+        const w = WEATHER[e.target.value];
+        if (w) update('weather', s => ({ current: { ...s.current, code: w[1], isDay: w[2] } }));
+        if (!store.get().ui.weatherFx) update('ui', { weatherFx: true });
+        return;
+      }
+      if (e.target.matches('[data-tama-speed]')) return update('tama', { speed: +e.target.value });
       const { cap, opt, fail } = e.target.dataset;
       const on = e.target.checked;
       if (cap) update('caps', { [cap]: on });

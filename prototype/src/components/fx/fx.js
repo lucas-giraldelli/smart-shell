@@ -3,14 +3,17 @@ import { onFrame } from '../../core/loop.js';
 import { themes } from '../../data/themes.js';
 import { snow } from './effects/snow.js';
 import { bats } from './effects/bats.js';
+import { weatherFx, rain, downpour, drizzle, storm, fog, clouds, sun, stars } from './effects/weather.js';
 
 // Particle layer inside the dock (it lives in <ss-dock>, see fx.css); the
-// active theme picks the effect (themes.js `fx`). Nothing is drawn outside
-// the dock, and nothing lands: flakes drift through and start over.
-const EFFECTS = { snow, bats };
+// active theme picks the effect (themes.js `fx`), else, with the weather in
+// the dock on (ui.weatherFx), the current weather does (effects/weather.js).
+// Nothing is drawn outside the dock, and nothing lands: flakes drift through
+// and start over.
+const EFFECTS = { snow, bats, rain, downpour, drizzle, storm, fog, clouds, sun, stars };
 
 class Fx extends Component {
-  static slices = ['ui'];
+  static slices = ['ui', 'weather'];
 
   render() {
     return '<canvas data-testid="fx-canvas"></canvas>';
@@ -49,8 +52,9 @@ class Fx extends Component {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  update({ ui }) {
-    const id = themes.find(t => t.id === ui.theme)?.fx ?? null;
+  update({ ui, weather }) {
+    const c = weather.current;
+    const id = themes.find(t => t.id === ui.theme)?.fx ?? (ui.weatherFx ? weatherFx(c.code, c.isDay) : null);
     if (id !== this.effectId || this.draw === undefined) this.start(id);
   }
 

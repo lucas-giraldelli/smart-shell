@@ -33,6 +33,7 @@ export default {
         </button>`).join('')}
       </div>
       ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
+      <div class="checks"><label class="check-row" data-flag="weatherFx"><span data-box></span>${t('settings.weatherFx')}</label></div>
       <div class="seg-row"><span class="grow">${t('settings.wsStyle')}</span><span class="seg">${
         ['icons', 'numbers', 'dots'].map(s => `<button data-ws-style="${s}">${t(`settings.wsStyles.${s}`)}</button>`).join('')}</span></div>
 
@@ -48,6 +49,7 @@ export default {
           <button class="ps-opt" role="option" data-pet="${k}">${sprite(k)}<span class="grow">${petName(k)}</span><span class="ps-check">${icon('check')}</span></button>`).join('')}
         </div>
       </div>
+      <div class="checks"><label class="check-row" data-flag="tamaOn"><span data-box></span>${t('settings.tama')}</label></div>
 
       <div class="sec">${t('settings.language')}</div>
       <div class="langs">${locales().map(l => `<button data-locale="${l}">${t(`settings.locales.${l}`)}</button>`).join('')}</div>
@@ -60,6 +62,7 @@ export default {
     setSlider(root, 'size', ui.size, `${ui.size}px`);
     root.querySelectorAll('[data-ws-style]').forEach(b => b.classList.toggle('on', b.dataset.wsStyle === ui.wsStyle));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
+    root.querySelectorAll('[data-flag]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!!ui[el.dataset.flag])));
     setHTML(root.querySelector('[data-ps-current]'), `${sprite(ui.pet)}<span class="grow">${petName(ui.pet)}</span>`);
     root.querySelectorAll('.ps-opt').forEach(el => el.classList.toggle('on', (ui.pet ?? 'none') === el.dataset.pet));
     root.querySelectorAll('[data-clock-format]').forEach(b => b.classList.toggle('on', b.dataset.clockFormat === ui.clockFormat));
@@ -74,6 +77,8 @@ export default {
     if (clockFormat) return update('ui', { clockFormat: clockFormat.dataset.clockFormat });
     const wsStyle = target.closest('[data-ws-style]');
     if (wsStyle) return update('ui', { wsStyle: wsStyle.dataset.wsStyle });
+    const flag = target.closest('[data-flag]');
+    if (flag) return update('ui', { [flag.dataset.flag]: !ui[flag.dataset.flag] });
     const widget = target.closest('[data-widget]');
     if (widget) {
       const id = widget.dataset.widget;

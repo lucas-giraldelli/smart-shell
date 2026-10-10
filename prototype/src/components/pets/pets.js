@@ -4,6 +4,9 @@ import { store } from '../../state.js';
 import { createPet } from './engine.js';
 import { config } from '../../data/config.js';
 import { memStatus, tempStatus } from '../control-center/panes/system.js';
+import { openPopover } from '../../core/popover.js';
+import { setHTML } from '../ui/ui.js';
+import { tick, care, menuHTML, urgent, stage, FOOD, SIGN } from './tama.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
@@ -37,17 +40,24 @@ export const species = {
 // The pet walking on top of the dock (one per dock, ui.pet). Must sit inside
 // .dock-wrap, which is its floor.
 class Pets extends Component {
-  static slices = ['ui'];
+  static slices = ['ui', 'tama'];
 
   setup() {
     this.pets = [];
+    // the pet's droppings, on the dock's floor (Tamagotchi mode); a click cleans one
+    this.poops = document.createElement('div');
+    this.poops.className = 'tama-poops';
+    this.parentElement.append(this.poops);
+    this.poops.addEventListener('click', e => {
+      if (e.target.closest('[data-poop]') && this.pets[0]) this.react(this.pets[0], care('poop'));
+    });
     // how into the music they are (0..1). A song starts: they look around
     // for ~1.4 s, then ease in over ~2 s; it stops: they keep going ~1.2 s,
     // then wind down in ~1 s (the mock has no cava, so it holds at 0.6). It
     // sets the dance's tempo (--slow) and how far they stroll
-    let groove = 0, clock = 0, heard = false, changedAt = -10;
+    let groove = 0, clock = 0, heard = false, changedAt = -10, tamaIn = 0;
     this.stopLoop = onFrame(dt => {
-      const { system, agenda } = store.get();
+      const { system, agenda, ui, tama } = store.get();
       // what the user is busy with right now: a work meeting wins over music
       const work = agenda.ongoing?.category === 'work';
       clock += dt;
@@ -63,21 +73,75 @@ class Pets extends Component {
       // config.thresholds: CPU drives what it does; low free RAM makes it
       // heavy, heat turns it reddish (1 = warn, 2 = crit)
       const level = st => (st === 'crit' ? 2 : st === 'warn' ? 1 : 0);
-      const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)), groove };
-      for (const pet of this.pets) pet.step(dt, system.load, activity, opts);
+      const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)), groove,
+        hold: ui.popover === 'tama' };
+      // Tamagotchi mode: put to bed, it sleeps whatever the CPU does; its
+      // needs run down once a second
+      const napping = ui.tamaOn && tama.napping;
+      for (const pet of this.pets) pet.step(dt, napping ? 0 : system.load, activity, opts);
+      if (ui.tamaOn && this.pets.length && (tamaIn -= dt) <= 0) {
+        tamaIn = 1;
+        tick(1, { asleep: napping || system.load < config.thresholds.cpu.sleep, hot: opts.hot === 2 || opts.heavy === 2 });
+      }
     });
   }
 
   teardown() {
     this.stopLoop();
+    this.poops.remove();
   }
 
-  update({ ui }) {
+  update({ ui, tama }) {
     const wanted = species[ui.pet] ? [ui.pet] : [];
     this.pets = this.pets.filter(p => wanted.includes(p.kind) || (p.remove(), false));
     for (const kind of wanted) {
-      if (!this.pets.some(p => p.kind === kind)) this.pets.push(createPet(kind, species[kind], this.parentElement));
+      if (!this.pets.some(p => p.kind === kind)) this.pets.push(this.adopt(createPet(kind, species[kind], this.parentElement)));
     }
+    // Tamagotchi mode: its menu, the sign of its most urgent need, sick or
+    // baby looks, and its droppings on the dock
+    for (const pet of this.pets) {
+      const { el } = pet;
+      el.classList.toggle('tama', ui.tamaOn);
+      el.classList.toggle('sick', ui.tamaOn && tama.sick);
+      el.classList.toggle('baby', ui.tamaOn && stage(tama) === 'baby');
+      el.toggleAttribute('data-open', ui.tamaOn && ui.popover === 'tama');
+      const need = ui.tamaOn ? urgent(tama) : '';
+      el.querySelector('.need').textContent = need === 'food' ? FOOD[pet.kind] ?? SIGN.food : SIGN[need] ?? '';
+      if (ui.tamaOn && ui.popover === 'tama') setHTML(el.querySelector('.menu'), menuHTML(pet.kind, tama));
+    }
+    const poops = ui.tamaOn && this.pets.length ? tama.poops : [];
+    setHTML(this.poops, poops.map(x => `<button class="poop" style="left:${(x * 100).toFixed(1)}%" data-poop>💩</button>`).join(''));
+  }
+
+  // wire a new pet up for Tamagotchi mode: a right click opens its care menu
+  adopt(pet) {
+    const { el } = pet;
+    el.dataset.popover = 'tama';
+    el.insertAdjacentHTML('beforeend', '<span class="need"></span><div class="menu tama-menu"></div>');
+    el.addEventListener('contextmenu', e => {
+      if (!store.get().ui.tamaOn) return;
+      e.preventDefault();
+      openPopover('tama');
+    });
+    el.querySelector('.menu').addEventListener('click', e => {
+      e.stopPropagation();   // not a click on the pet (heart, word)
+      const action = e.target.closest('[data-care]')?.dataset.care;
+      if (action) this.react(pet, care(action));
+    });
+    return pet;
+  }
+
+  // what the pet does about a care action: a word, a hop, a little effect
+  react(pet, { say, effect } = {}) {
+    if (say) pet.speak(say);
+    if (effect === 'feed' || effect === 'play') pet.hop();
+    const glyph = { feed: FOOD[pet.kind] ?? '🍖', play: '🎾', clean: '✨', medicine: '💊' }[effect];
+    if (!glyph) return;
+    const fx = document.createElement('span');
+    fx.className = `tm-fx ${effect}`;
+    fx.textContent = glyph;
+    pet.el.append(fx);
+    setTimeout(() => fx.remove(), 1300);
   }
 }
 
