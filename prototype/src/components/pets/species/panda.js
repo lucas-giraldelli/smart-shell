@@ -11,6 +11,24 @@ export default {
     roll: { low: true, shut: true, move: t => ({ rot: 18 * Math.sin(t * 4) }) },
     // scratches its belly
     scratch: { frames: ['a', 'b'], every: .16, shut: true },
+    // asleep on its back, belly up
+    sleep: { move: () => ({ rot: 180, dy: -31 }) },
+  },
+  // what it does for each care action (Tamagotchi mode, poses.js carePose)
+  care: {
+    // rolls onto its side, hugging itself
+    pet: { pose: 'roll', dur: 2.4 },
+    // munches bamboo
+    feed: { pose: 'bamboo', dur: 3 },
+    // pushes a big ball around
+    play: { dur: 3, def: {
+      move: t => ({ dx: 4 * Math.sin(t * 2), rot: 6 * Math.sin(t * 4) }),
+      prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">⚽</text>', at: t => ({ x: 50 + 4 * Math.sin(t * 2), y: 27, s: 1.5 }) },
+    } },
+    // a dust bath, scratching
+    clean: { dur: 2.6, def: { frames: ['a', 'b'], every: .2, shut: true, move: t => ({ rot: 4 * Math.sin(t * 8) }) } },
+    // swallows the pill, then rolls over
+    medicine: { dur: 2.4, def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.6], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 37.2 + 8 - t * 7, y: 18.8 - 6 + t * 7 }) }, move: t => (t > 1 ? { rot: 18 * Math.sin((t - 1) * 4) } : {}) } },
   },
   svg: `
     <g class="legs" fill="#18181b">
@@ -36,7 +54,9 @@ export default {
       <path data-pose="bamboo" d="M42.5 19 q3 -1 4.5 -4 M44 16 q-.5 -3 1.5 -5" stroke="#4ade80" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <ellipse data-pose="bamboo" cx="39" cy="22" rx="2.4" ry="2.2" fill="#18181b"/>
       <ellipse data-pose="bamboo:b" cx="37.4" cy="18.6" rx="1.2" ry=".9" fill="#18181b"/>
-      <ellipse data-pose="scratch:a" cx="30" cy="23" rx="2.6" ry="2.2" fill="#18181b"/>
-      <ellipse data-pose="scratch:b" cx="27" cy="24" rx="2.6" ry="2.2" fill="#18181b"/>
+      <ellipse data-pose="scratch:a care-clean:a" cx="30" cy="23" rx="2.6" ry="2.2" fill="#18181b"/>
+      <ellipse data-pose="scratch:b care-clean:b" cx="27" cy="24" rx="2.6" ry="2.2" fill="#18181b"/>
+      <g data-pose="care-clean:a" fill="#d6c7a8" opacity=".75"><circle cx="8" cy="30" r="3"/><circle cx="14" cy="32" r="2.2"/><circle cx="38" cy="31" r="2.6"/></g>
+      <g data-pose="care-clean:b" fill="#d6c7a8" opacity=".6"><circle cx="6" cy="27" r="3.6"/><circle cx="40" cy="28" r="3.2"/><circle cx="16" cy="29" r="2"/></g>
     </g>`,
 };

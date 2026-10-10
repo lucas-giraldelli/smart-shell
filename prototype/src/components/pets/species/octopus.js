@@ -11,6 +11,22 @@ export default {
     wave: { frames: ['a', 'b'], every: .3 },
     // camouflage: shifts its colour
     camo: { frames: ['a', 'b', 'c', 'b'], every: .5 },
+    // asleep: shrinks a little and goes see-through
+    sleep: { move: () => ({ opacity: .55, dy: 2 }) },
+  },
+  // what it does for each care action (Tamagotchi mode, poses.js carePose)
+  care: {
+    // blushes pink, tentacles rippling
+    pet: { pose: 'camo', dur: 2.2, def: { frames: ['b'], move: t => ({ rot: 3 * Math.sin(t * 7) }) } },
+    // grabs a shrimp with a tentacle
+    feed: { pose: 'wave', dur: 2.6, def: { frames: ['b', 'a', 'a'], every: [.9, .9, .8], once: true,
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🦐</text>', at: t => (t < .9 ? { x: 46, y: 10 } : t < 1.8 ? { x: 46 - (t - .9) * 22, y: 10 + (t - .9) * 9, s: 1 - (t - .9) * .6 } : null) } } },
+    // juggles three balls
+    play: { dur: 3, def: { frames: ['a', 'b', 'c'], every: .2 } },
+    // blows bubbles
+    clean: { name: 'wash', dur: 2.6, def: { frames: ['a', 'b'], every: .3, shut: true } },
+    // changes colour as it swallows the pill
+    medicine: { pose: 'camo', dur: 2.4, def: { frames: ['a', 'b', 'c'], every: .4, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 23.3 + 8 - t * 7, y: 19.6 - 6 + t * 7 }) } } },
   },
   svg: `
     <g class="legs" fill="#a855f7">
@@ -36,5 +52,9 @@ export default {
       <g data-pose="ink:c" fill="#312e81" stroke="#a5b4fc" stroke-width=".5" opacity=".6"><circle cx="5" cy="25" r="4.4"/><circle cx="1.5" cy="29" r="3.2"/><circle cx="8" cy="30" r="2.6"/></g>
       <path data-pose="wave:a" d="M32 21 q6 -2 7 -9" stroke="#a855f7" stroke-width="4" fill="none" stroke-linecap="round"/>
       <path data-pose="wave:b" d="M32 21 q7 0 10 -7" stroke="#a855f7" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path data-pose="care-play" d="M10 20 q-6 -4 -5 -12 M36 20 q6 -4 5 -12" stroke="#a855f7" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g data-pose="care-play:a"><circle cx="5" cy="4" r="2" fill="#f87171"/><circle cx="23" cy="-2" r="2" fill="#fde047"/><circle cx="41" cy="4" r="2" fill="#4ade80"/></g>
+      <g data-pose="care-play:b"><circle cx="11" cy="-2" r="2" fill="#fde047"/><circle cx="35" cy="-2" r="2" fill="#4ade80"/><circle cx="41" cy="4" r="2" fill="#f87171"/></g>
+      <g data-pose="care-play:c"><circle cx="23" cy="-2" r="2" fill="#4ade80"/><circle cx="5" cy="4" r="2" fill="#f87171"/><circle cx="35" cy="-2" r="2" fill="#fde047"/></g>
     </g>`,
 };
