@@ -54,7 +54,8 @@ Singleton {
             if (running && !root.active) {
                 root.since = new Date();
                 root.active = true;
-            } else if (!running && root.active) {
+            } else if (!running && root.active && Date.now() - root.since.getTime() > 3000) {
+                // (a grace period: the script says "started" just before the recorder runs)
                 root.active = false;
             }
         }
