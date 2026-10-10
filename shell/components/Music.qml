@@ -246,7 +246,8 @@ Tile {
             }
         }
 
-        // .eq: four 3px bars, 14px tall; they bounce while playing
+        // .eq: four 3px bars, 14px tall; with cava they follow the music
+        // (bass to treble), without it they bounce while playing
         Row {
             id: eq
             anchors.verticalCenter: parent.verticalCenter
@@ -258,15 +259,20 @@ Tile {
                 Rectangle {
                     id: bar
                     required property int modelData
+                    required property int index
                     property real level: 0.3
                     anchors.bottom: parent.bottom
                     width: 3
-                    height: 14 * level
+                    height: 14 * (Beat.running ? Math.max(0.15, Beat.bars[index]) : level)
                     radius: 2
                     color: Theme.accent
+                    Behavior on height {
+                        enabled: Beat.running
+                        NumberAnimation { duration: 70 }
+                    }
 
                     SequentialAnimation on level {
-                        running: Media.playing
+                        running: Media.playing && !Beat.running
                         loops: Animation.Infinite
                         NumberAnimation { from: 0.15; to: 1; duration: bar.modelData; easing.type: Easing.InOutQuad }
                         NumberAnimation { from: 1; to: 0.15; duration: bar.modelData; easing.type: Easing.InOutQuad }
