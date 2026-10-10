@@ -137,15 +137,15 @@ ss-pets { display: contents; }
 }
 @keyframes heat { 0% { transform: translateY(2px); opacity: 0; } 40% { opacity: .75; } 100% { transform: translateY(-6px); opacity: 0; } }
 
-/* a species' own pose (poses.js): eyes shut; a word in a speech bubble */
+/* a species' own pose (poses.js): eyes shut; a word over its head (white, dark outline, no box) */
 .pet.shut .eye { display: none; }
 .pet.shut .closed { display: inline; }
 .pet svg { transform-origin: 50% 100%; }
 .pet.posed svg { animation: none; }   /* the pose moves it instead */
 .pet .say {
   position: absolute; left: 50%; bottom: 40px; transform: translateX(-50%) scale(.6); opacity: 0;
-  padding: 2px 7px; border-radius: 9px; white-space: nowrap; pointer-events: none;
-  font-size: 10px; font-weight: 700; color: #1c1917; background: #f8fafc;
+  white-space: nowrap; pointer-events: none;
+  font-size: 11px; font-weight: 900; color: #fff; -webkit-text-stroke: 3px #1c1917; paint-order: stroke fill;
   transition: opacity .2s, transform .2s;
 }
 .pet.talking .say { opacity: 1; transform: translateX(-50%) scale(1); }

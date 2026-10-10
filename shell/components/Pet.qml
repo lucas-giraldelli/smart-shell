@@ -211,27 +211,21 @@ Item {
     // faces where it walks; a pose can turn it around (flip)
     readonly property int face: poseMove.flip ? -s.dir : s.dir
 
-    // a word in a speech bubble (an action's `say`, under pets.says)
-    Rectangle {
-        id: sayBubble
+    // a word over its head (an action's `say`, under pets.says): white
+    // text with a dark outline, no box
+    Text {
         readonly property bool on: !!root.s.say
         anchors.horizontalCenter: parent.horizontalCenter
-        y: -16
-        width: sayText.implicitWidth + 14
-        height: 16
-        radius: 8
-        color: "#f8fafc"
+        y: -14
+        text: root.s.say ? I18n.t(`pets.says.${root.s.say}`) : ""
+        color: "#ffffff"
+        style: Text.Outline
+        styleColor: "#1c1917"
+        font { family: Theme.font; pixelSize: 11; weight: Font.Black }
         opacity: on ? 1 : 0
         scale: on ? 1 : 0.6
         Behavior on opacity { NumberAnimation { duration: 200 } }
         Behavior on scale { NumberAnimation { duration: 200 } }
-        Text {
-            id: sayText
-            anchors.centerIn: parent
-            text: root.s.say ? I18n.t(`pets.says.${root.s.say}`) : ""
-            color: "#1c1917"
-            font { family: Theme.font; pixelSize: 10; weight: Font.Bold }
-        }
     }
 
     // sleeping: two z's drifting up (2.4 s, staggered)
