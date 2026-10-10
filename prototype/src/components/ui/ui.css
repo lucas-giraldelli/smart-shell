@@ -82,3 +82,5 @@ input.rng {
 input.rng.warm { --fill: #fb923c; }
 input.rng::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 99px; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .45); }
 input.rng::-moz-range-thumb { width: 16px; height: 16px; border: 0; border-radius: 99px; background: #fff; box-shadow: 0 1px 4px rgba(0, 0, 0, .45); }
+/* a toggle that is on */
+.btn-s.on { color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 20%, transparent); border-color: color-mix(in srgb, var(--menu-accent) 45%, transparent); }

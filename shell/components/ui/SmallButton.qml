@@ -8,13 +8,14 @@ Rectangle {
 
     property string icon
     property alias text: label.text
+    property bool active: false            // a toggle that's on (.btn-s.on): accent tint
     signal clicked
 
     implicitWidth: row.implicitWidth + 20 + 2
     implicitHeight: label.implicitHeight + 12 + 2
     radius: 8
-    color: area.containsMouse ? Theme.menuStrong : Theme.menuSurface
-    border.color: Theme.menuStrong
+    color: active ? Theme.mix(Theme.menuAccent, area.containsMouse ? 0.3 : 0.2) : area.containsMouse ? Theme.menuStrong : Theme.menuSurface
+    border.color: active ? Theme.mix(Theme.menuAccent, 0.45) : Theme.menuStrong
 
     Row {
         id: row
@@ -25,13 +26,13 @@ Rectangle {
             anchors.verticalCenter: parent.verticalCenter
             name: root.icon
             size: 13
-            color: Theme.menuText
+            color: root.active ? Theme.menuAccent : Theme.menuText
         }
         Label {
             id: label
             anchors.verticalCenter: parent.verticalCenter
             size: 11.5
-            color: Theme.menuText
+            color: root.active ? Theme.menuAccent : Theme.menuText
         }
     }
 

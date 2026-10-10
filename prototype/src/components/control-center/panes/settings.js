@@ -33,8 +33,6 @@ export default {
         </button>`).join('')}
       </div>
       ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
-      <div class="seg-row"><span class="grow">${t('settings.notifications')}</span><span class="seg">${
-        ['all', 'dnd'].map(v => `<button data-dnd="${v}">${t(v === 'all' ? 'settings.notifyAll' : 'settings.dnd')}</button>`).join('')}</span></div>
       <div class="seg-row"><span class="grow">${t('settings.wsStyle')}</span><span class="seg">${
         ['icons', 'numbers', 'dots'].map(s => `<button data-ws-style="${s}">${t(`settings.wsStyles.${s}`)}</button>`).join('')}</span></div>
 
@@ -60,7 +58,6 @@ export default {
   update(root, { ui }) {
     root.querySelectorAll('[data-theme-id]').forEach(b => b.classList.toggle('on', b.dataset.themeId === ui.theme));
     setSlider(root, 'size', ui.size, `${ui.size}px`);
-    root.querySelectorAll('[data-dnd]').forEach(b => b.classList.toggle('on', (b.dataset.dnd === 'dnd') === !!ui.dnd));
     root.querySelectorAll('[data-ws-style]').forEach(b => b.classList.toggle('on', b.dataset.wsStyle === ui.wsStyle));
     root.querySelectorAll('[data-widget]').forEach(el => setHTML(el.querySelector('[data-box]'), check(!ui.hidden.includes(el.dataset.widget))));
     setHTML(root.querySelector('[data-ps-current]'), `${sprite(ui.pet)}<span class="grow">${petName(ui.pet)}</span>`);
@@ -71,8 +68,6 @@ export default {
 
   click(target) {
     const ui = store.get().ui;
-    const dnd = target.closest('[data-dnd]');
-    if (dnd) return update('ui', { dnd: dnd.dataset.dnd === 'dnd' });
     const theme = target.closest('[data-theme-id]');
     if (theme) return update('ui', { theme: theme.dataset.themeId });
     const clockFormat = target.closest('[data-clock-format]');

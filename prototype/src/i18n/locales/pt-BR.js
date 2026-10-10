@@ -50,7 +50,7 @@ export default {
   },
 
   settings: {
-    label: 'Dock', look: 'Aparência', size: 'Tamanho', magnify: 'Ampliação', clock: 'Relógio', notifications: 'Notificações', notifyAll: 'Todas', dnd: 'Não perturbe', wsStyle: 'Workspaces', wsStyles: { icons: 'Ícones', numbers: 'Números', dots: 'Pontos' },
+    label: 'Dock', look: 'Aparência', size: 'Tamanho', magnify: 'Ampliação', clock: 'Relógio', dnd: 'Não perturbe', wsStyle: 'Workspaces', wsStyles: { icons: 'Ícones', numbers: 'Números', dots: 'Pontos' },
     widgets: 'Widgets', pets: 'Pet', noPet: 'Nenhum', language: 'Idioma',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },

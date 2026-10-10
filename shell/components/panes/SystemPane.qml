@@ -201,7 +201,18 @@ PaneScroll {
             }
         }
         // the user's Super+F10: blank the panel so the OLED can run its care cycle
+        // do not disturb: only rules with `dnd: true` pop up
         SmallButton {
+            anchors.right: screenOff.left
+            anchors.rightMargin: 6
+            y: 4
+            icon: "bell-off"
+            text: I18n.t("settings.dnd")
+            active: Ui.dnd
+            onClicked: Ui.dnd = !Ui.dnd
+        }
+        SmallButton {
+            id: screenOff
             anchors.right: btop.left
             anchors.rightMargin: 6
             y: 4
