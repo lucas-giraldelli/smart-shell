@@ -130,6 +130,8 @@ Item {
             closed: root.sleeping || blink,
             tongue,
             pouch: Math.round(croak * 10) / 10,
+            // the tail wags -12..14deg (pets.css .tail): 1.6 s, fast .25 s, lying 4 s
+            wag: Math.round((1 + 13 * Math.sin(t / (s.fast ? 0.25 : root.lying ? 4 : 1.6) * Math.PI)) / 2) * 2,
             bob: s.pose === "work" ? (Math.floor(t / 0.2) % 2 ? 0.7 : 0) : s.fast ? (Math.floor(t / (s.step / 2)) % 2 ? 1.6 : 0) : 0,
             screen: s.pose === "work" ? Engine.SCREEN_COLORS[Math.floor((t % 2.4) / 0.6) % 4] : ""
         };
@@ -139,7 +141,8 @@ Item {
         id: sprite
         width: 46
         height: 36
-        // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks it
+        // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks
+        // it; float (ghost) bobs it in the air
         x: root.move.dx ?? 0
         y: {
             if (root.move.dy !== undefined)
@@ -148,6 +151,8 @@ Item {
                 return -16 * Math.sin(Math.min(1, (root.clock % 0.55) / 0.55) * Math.PI);
             if (root.species?.hop && root.s.moving)    // heavy: lower hops
                 return -(root.heavy ? 4 : 8) * Math.abs(Math.sin(root.clock / (root.s.step * 1.3) * Math.PI));
+            if (root.species?.float)                   // the ghost drifts, never walks (2.4 s)
+                return -4 - 2 * Math.cos(root.clock / 1.2 * Math.PI);
             return 0;
         }
         rotation: root.move.rot !== undefined ? root.move.rot

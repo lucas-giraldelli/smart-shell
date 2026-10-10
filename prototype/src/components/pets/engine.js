@@ -3,7 +3,7 @@ import { t } from '../../i18n/index.js';
 // Behaviour shared by every pet. A pet reacts to CPU load:
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
 // While idle it picks weighted actions; each species adds or overrides actions
-// through `acts` and can set speed / hop / waddle / chill (never runs).
+// through `acts` and can set speed / hop / waddle / float / chill (never runs).
 // An action's `pose` becomes a CSS class on the pet while it stands still
 // ('lie', 'sleep', or any species-specific one like the frog's 'croak').
 // Outside activities override all of that: during a work meeting every pet
@@ -37,7 +37,7 @@ export function createPet(kind, species, host) {
   // the species name picks its dance in pets.css
   const acts = actionsFor(species);
   const mult = species.speed ?? 1;
-  const base = 'pet' + (species.hop ? ' hop' : '') + (species.waddle ? ' waddle' : '');
+  const base = 'pet' + (species.hop ? ' hop' : '') + (species.waddle ? ' waddle' : '') + (species.float ? ' float' : '');
   const el = document.createElement('div');
   el.className = base;
   el.dataset.kind = kind;

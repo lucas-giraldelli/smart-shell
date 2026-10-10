@@ -138,7 +138,9 @@ export default {
   },
 
   pets: {
-    names: { cat: 'Cat', shiba: 'Shiba', fox: 'Fox', penguin: 'Penguin', bunny: 'Bunny', capy: 'Capybara', frog: 'Frog' },
+    names: { cat: 'Cat', shiba: 'Shiba', fox: 'Fox', penguin: 'Penguin', bunny: 'Bunny', capy: 'Capybara', frog: 'Frog',
+      duck: 'Duck', corgi: 'Corgi', panda: 'Panda', owl: 'Owl', turtle: 'Turtle', octopus: 'Octopus',
+      macaw: 'Hyacinth macaw', anteater: 'Anteater', ghost: 'Ghost', blackcat: 'Black cat' },
     bubble: '{mood} · CPU {load}%',
     chill: "Couldn't care less about the CPU",
     moods: {

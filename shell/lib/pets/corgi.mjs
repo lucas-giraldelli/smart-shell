@@ -1,0 +1,1 @@
+../../../prototype/src/components/pets/species/corgi.js

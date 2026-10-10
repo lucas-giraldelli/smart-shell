@@ -142,12 +142,14 @@ const drop = (svg, cls) => svg.replace(new RegExp(`<[a-z]+ class="${cls}[^"]*"[^
 //   pouch   the frog's throat pouch scale (croak)
 //   bob     body raised (fast run, typing)
 //   screen  the laptop's screen colour, or '' for no laptop
+//   wag     the tail's angle (deg), turned around where it starts (its path's M)
 export function look(species, opts) {
   const key = JSON.stringify(opts);
   if (!species.__looks) species.__looks = new Map();
   if (species.__looks.has(key)) return species.__looks.get(key);
-  const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '' } = opts;
+  const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '', wag = 0 } = opts;
   let svg = species.svg;
+  if (wag) svg = svg.replace(/<path class="tail" d="M\s*([\d.]+)[ ,]([\d.]+)/, (m, x, y) => `<path class="tail" transform="rotate(${wag} ${x} ${y})" d="M${x} ${y}`);
   if (leg) {
     svg = svg.replace(/<rect class="(la|lb)" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)"([^>]*)\/>/g,
       (_, cls, x, y, w, rest) => {
@@ -190,4 +192,14 @@ export const DANCES = {
   bunny: { beats: 1, at: p => ({ dy: p < .4 ? -8 * (p / .4) : -8 * (1 - (p - .4) / .6) }) }, // skip
   capy: { beats: 4, at: p => ({ rot: -4 * Math.cos(p * Math.PI * 2), dy: -2 * tri(p) }) }, // half-time nod
   frog: { beats: 2, at: p => ({ dx: -4 * Math.cos(p * Math.PI * 2), dy: -6 * Math.abs(wave(p)) }) }, // side hops
+  duck: { beats: 1.6, at: p => ({ rot: -12 * Math.cos(p * Math.PI * 2) }) },          // a quick waddle
+  corgi: { beats: .8, at: p => ({ dy: -5 * tri(p) }) },                                // bounces double time
+  panda: { beats: 4, at: p => ({ rot: -4 * Math.cos(p * Math.PI * 2), dy: -2 * tri(p) }) }, // slow nod
+  owl: { beats: 1.6, at: p => ({ rot: -8 * Math.cos(p * Math.PI * 2) }) },            // head-bob sway
+  turtle: { beats: 6, at: p => ({ rot: -4 * Math.cos(p * Math.PI * 2), dy: -2 * tri(p) }) }, // the slowest groove
+  octopus: { beats: 1, at: p => ({ rot: -6 * Math.cos(p * Math.PI * 2), dy: -3 * tri(p) }) }, // wiggles
+  macaw: { beats: 1, at: p => ({ dy: p < .4 ? -8 * (p / .4) : -8 * (1 - (p - .4) / .6) }) }, // hops on the beat
+  anteater: { beats: 2.4, at: p => ({ dx: -3 * Math.cos(p * Math.PI * 2), rot: -4 * Math.cos(p * Math.PI * 2) }) }, // side to side
+  ghost: { beats: 2, at: p => ({ dy: -6 + -3 * Math.cos(p * Math.PI * 2), rot: -6 * Math.cos(p * Math.PI * 2) }) }, // floats and sways
+  blackcat: { beats: 2, at: p => ({ rot: -8 * Math.cos(p * Math.PI * 2) }) },         // sways
 };

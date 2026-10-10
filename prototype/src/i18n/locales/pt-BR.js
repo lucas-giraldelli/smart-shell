@@ -138,7 +138,9 @@ export default {
   },
 
   pets: {
-    names: { cat: 'Gato', shiba: 'Shiba', fox: 'Raposa', penguin: 'Pinguim', bunny: 'Coelho', capy: 'Capivara', frog: 'Sapo' },
+    names: { cat: 'Gato', shiba: 'Shiba', fox: 'Raposa', penguin: 'Pinguim', bunny: 'Coelho', capy: 'Capivara', frog: 'Sapo',
+      duck: 'Pato', corgi: 'Corgi', panda: 'Panda', owl: 'Coruja', turtle: 'Tartaruga', octopus: 'Polvo',
+      macaw: 'Arara-azul', anteater: 'Tamanduá', ghost: 'Fantasma', blackcat: 'Gato preto' },
     bubble: '{mood} · CPU {load}%',
     chill: 'Nem aí pra CPU',
     moods: {
