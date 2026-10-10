@@ -166,7 +166,9 @@ export function look(species, opts) {
       });
   }
   if (screen) svg += LAPTOP(screen);
-  const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 36">${svg}</svg>`);
+  // 10px wider than the 46px sprite box: the laptop reaches x 53.5 (the
+  // prototype's svg overflows visibly)
+  const url = 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 56 36">${svg}</svg>`);
   species.__looks.set(key, url);
   return url;
 }

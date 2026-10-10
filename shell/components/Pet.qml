@@ -159,9 +159,12 @@ Item {
 
         Image {
             id: spriteImage
-            anchors.fill: parent
+            // the sprite box is 46px; the drawing is 56px wide so the
+            // laptop in front of it isn't cut
+            width: 56
+            height: 36
             visible: root.hot === 0
-            sourceSize: Qt.size(92, 72)
+            sourceSize: Qt.size(112, 72)
             smooth: true
             source: root.species ? Engine.look(root.species, root.lookOpts) : ""
             // faces right; flip around the sprite box when walking left
