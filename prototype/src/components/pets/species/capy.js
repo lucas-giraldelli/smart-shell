@@ -8,6 +8,24 @@ export default {
   poses: {
     // a hot bath: sits in the water, eyes shut, its orange floats beside it
     bath: { frames: ['a', 'b'], every: .9, shut: true, low: true },
+    // asleep in the water, its orange floating beside it
+    sleep: { low: true },
+  },
+  // what it does for each care action (Tamagotchi mode, poses.js carePose)
+  care: {
+    // zen: eyes shut, its orange bobbing
+    pet: { dur: 2.2, def: { frames: ['a', 'b'], every: .4, shut: true } },
+    // eats the orange off its head; a new one grows back
+    feed: { dur: 3, def: {
+      frames: ['x', 'x', 'n'], every: [.9, 1.5, .6], once: true,
+      prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🍊</text>', at: t => (t < .9 ? { x: 35 + 7 * t / .9, y: 3.6 + 15 * Math.sin(t / .9 * Math.PI / 2) } : t < 2.4 ? { x: 42, y: 18.6, s: 1 - Math.floor((t - .9) / .5) * .34 } : null) },
+    } },
+    // a little bird hops along its back
+    play: { dur: 3, def: { shut: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">🐤</text>', at: t => ({ x: 12 + 18 * (t / 3), y: 7 - 4 * Math.abs(Math.sin(t * 6)) }) } } },
+    // a soak in the hot spring
+    clean: { pose: 'bath', dur: 3.4 },
+    // "ok I pull up", and down the pill goes
+    medicine: { dur: 2.2, say: 'pullup', def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.4], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 42.2 + 8 - t * 7, y: 18.4 - 6 + t * 7 }) } } },
   },
   svg: `
     <g class="legs" fill="#6b4a2f">
@@ -26,10 +44,12 @@ export default {
       <path class="closed" d="M33.4 12.0 q1.6 1.3 3.2 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <path d="M40.6 17.6 q1.5 1 3 0" stroke="#3b2618" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="36.4" cy="15.6" r="1.3" fill="#fb7185" opacity=".5"/>
-      <circle cx="35" cy="3.6" r="3" fill="#fb923c" data-hide="bath"/>
-      <path d="M35 .7 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80" data-hide="bath"/>
-      <circle data-pose="bath:a" cx="50" cy="19.4" r="2.6" fill="#fb923c"/><circle data-pose="bath:b" cx="50" cy="18.4" r="2.6" fill="#fb923c"/>
+      <circle cx="35" cy="3.6" r="3" fill="#fb923c" data-hide="bath sleep care-pet care-feed:x"/>
+      <path d="M35 .7 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80" data-hide="bath sleep care-pet care-feed:x"/>
+      <circle data-pose="bath:a sleep" cx="50" cy="19.4" r="2.6" fill="#fb923c"/><circle data-pose="bath:b" cx="50" cy="18.4" r="2.6" fill="#fb923c"/>
       <circle data-pose="bath:a" cx="30" cy="9" r=".9" fill="#e0f2fe" opacity=".7"/><circle data-pose="bath:b" cx="31" cy="5.6" r="1.2" fill="#e0f2fe" opacity=".6"/>
-      <path data-pose="bath" d="M2 21.5 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 V28 H2z" fill="#38bdf8" opacity=".78"/>
+      <path data-pose="bath sleep" d="M2 21.5 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 q4.5 -2 9 0 q4.5 2 9 0 V28 H2z" fill="#38bdf8" opacity=".78"/>
+      <g data-pose="care-pet:a"><circle cx="35" cy="1.6" r="3" fill="#fb923c"/><path d="M35 -1.3 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80"/></g>
+      <g data-pose="care-pet:b"><circle cx="35" cy="3.6" r="3" fill="#fb923c"/><path d="M35 .7 q2 -1.6 3.6 -.4 q-1.6 1.4 -3.6 .4z" fill="#4ade80"/></g>
     </g>`,
 };

@@ -9,6 +9,21 @@ export default {
     mud: { frames: ['a', 'b'], every: [.8, 9], once: true, low: true, shut: true, move: t => ({ rot: 6 * Math.sin(t * 5) }) },
     // so happy: tail spinning, little hops
     happy: { tailFast: true, shut: true, move: t => ({ dy: -2.5 * Math.abs(Math.sin(t * 9)) }) },
+    // asleep in the mud
+    sleep: {},
+  },
+  // what it does for each care action (Tamagotchi mode, poses.js carePose)
+  care: {
+    // so happy: tail spinning, little hops
+    pet: { pose: 'happy', dur: 2 },
+    // munches an apple, "oink oink"
+    feed: { dur: 2.4, say: 'oink', def: { frames: ['o', 'c'], every: .2, prop: { svg: '<text font-size="9" text-anchor="middle" dominant-baseline="central">🍎</text>', at: t => { const s = 1 - Math.floor(t / 0.7) * .34; return s > .05 ? { x: 46.6, y: 21.6, s } : null; } } } },
+    // rolls in the mud
+    play: { pose: 'mud', dur: 3.2 },
+    // a mud bath: to a pig, that's clean
+    clean: { pose: 'mud', dur: 3, say: 'oink' },
+    // "oink", and down the pill goes
+    medicine: { dur: 2, say: 'oink', def: { frames: ['o', 'o', 'c'], every: [.5, .3, 1.2], once: true, prop: { svg: '<text font-size="8" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .8 ? null : { x: 42.8 + 8 - t * 7, y: 21.2 - 6 + t * 7 }) } } },
   },
   svg: `
     <g class="legs" fill="#e88aa8">
@@ -28,6 +43,6 @@ export default {
       <path d="M41.2 20.6 q1.6 1.1 3.2 0" stroke="#9d4b67" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="33.8" cy="17.4" r="1.4" fill="#f472b6" opacity=".7"/>
       <g data-pose="mud:b" fill="#78350f" opacity=".75"><ellipse cx="17" cy="16" rx="3" ry="2"/><ellipse cx="26" cy="22" rx="3.6" ry="2.2"/><ellipse cx="13" cy="23" rx="2" ry="1.4"/><circle cx="40" cy="20.6" r="1.4"/></g>
-      <path data-pose="mud" d="M4 24 q8 -3.5 18 -1.5 q10 -2.5 22 0.5 q4 2 0 4.5 q-20 2 -38 0 q-4 -2 -2 -3.5z" fill="#92400e"/>
+      <path data-pose="mud sleep" d="M4 24 q8 -3.5 18 -1.5 q10 -2.5 22 0.5 q4 2 0 4.5 q-20 2 -38 0 q-4 -2 -2 -3.5z" fill="#92400e"/>
     </g>`,
 };

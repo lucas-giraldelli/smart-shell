@@ -92,8 +92,13 @@ const PLAIN = {
       move: t => (t > 1 ? { dy: -3 * Math.abs(Math.sin((t - 1) * 8)) } : {}) } };
   },
 };
+//   own.pose borrows one of its poses (its parts and def); own.def then only
+//   adds to it (a prop, a speed...)
 export function carePose(species, action, glyph) {
   const own = species.care?.[action];
+  if (own && own.pose) {
+    return Object.assign({}, own, { name: own.pose, def: Object.assign({}, poseOf(species, own.pose), own.def || {}) });
+  }
   if (own) return Object.assign({ name: `care-${action}` }, own);   // own.name wins
   const plain = PLAIN[action];
   return plain ? plain(species, glyph) : null;
