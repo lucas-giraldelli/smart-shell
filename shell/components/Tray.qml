@@ -32,17 +32,21 @@ Tile {
     readonly property int prCount: shownPrs.filter(p => !p.merged).length
     readonly property string prWorst: PrRules.worst(shownPrs) ?? ""
     readonly property int cells: items.length + (withPrs ? 1 : 0)
-    readonly property int rows: Math.ceil(cells / 2)
-    // grid rows stretch to fill the tile (CSS grid, align-content: normal)
-    // icons are 16px, with 7px of room above and below the grid
+    // 16px icons with 7px of room above and below: as many rows as the dock's
+    // height fits (two at 52px, one at 42px), the rest goes into columns -
+    // at least two, so a second item doesn't widen the tile
     readonly property real padY: 7
+    readonly property int maxRows: Math.max(1, Math.floor((Theme.size - 2 - 2 * padY + 4) / (16 + 4)))
+    readonly property int columns: cells <= 1 ? 1 : Math.max(2, Math.ceil(cells / maxRows))
+    readonly property int rows: Math.ceil(cells / columns)
+    // grid rows stretch to fill the tile (CSS grid, align-content: normal)
     readonly property real rowHeight: Math.max(16, (Theme.size - 2 - 2 * root.padY - 4 * (rows - 1)) / rows)
 
     property var menuItem: null    // the item whose menu is showing
 
     readonly property bool shown: cells > 0
-    // two 1fr columns keep their 18px even when the second one is empty
-    implicitWidth: 16 * 2 + 4 + 9 * 2 + 2
+    // the columns keep their 16px even when the last one is empty
+    implicitWidth: 16 * Math.max(2, columns) + 4 * (Math.max(2, columns) - 1) + 9 * 2 + 2
     open: menu.open || prList.open
 
     // a lone item sits in the middle of the tile
@@ -50,7 +54,7 @@ Tile {
         id: grid
         x: root.cells === 1 ? (root.width - 16) / 2 : 10
         y: 1 + root.padY
-        columns: root.cells === 1 ? 1 : 2
+        columns: root.columns
         columnSpacing: 4
         rowSpacing: 4
 

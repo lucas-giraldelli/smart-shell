@@ -10,7 +10,7 @@ import '../prs/prs.js';
 // right away, then again every 8 s until it's dealt with (every 2 s for
 // Slack's red badge).
 class Tray extends Component {
-  static slices = ['tray'];
+  static slices = ['tray', 'ui'];
 
   // the pull requests ride in the tray as one more item (the `prs` widget)
   get withPrs() {
@@ -26,7 +26,12 @@ class Tray extends Component {
     this.classList.add('tile', 'tray');
   }
 
-  update({ tray: t }) {
+  update({ tray: t, ui }) {
+    // as many rows of 16px icons as the dock's height fits (two at 52px, one
+    // at 42px), the rest in columns - at least two
+    const cells = this.querySelectorAll('[data-item], ss-prs').length;
+    const maxRows = Math.max(1, Math.floor((ui.size - 2 - 14 + 4) / 20));
+    this.style.gridTemplateColumns = `repeat(${cells <= 1 ? 1 : Math.max(2, Math.ceil(cells / maxRows))}, 1fr)`;
     this.toggleAttribute('data-single', this.querySelectorAll('[data-item], ss-prs').length === 1);
     this.querySelectorAll('[data-item]').forEach(img => {
       img.classList.toggle('attention', t.attention.includes(img.dataset.item));
