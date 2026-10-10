@@ -12,7 +12,6 @@ export const widgets = {
   apps: { tag: 'ss-app-row' },
   music: { tag: 'ss-music' },
   weather: { tag: 'ss-weather' },
-  prs: { tag: 'ss-prs' },
   bluetooth: { tag: 'ss-bluetooth', requires: 'bluetooth' },
   quick: { tag: 'ss-quick' },
   tray: { tag: 'ss-tray' },

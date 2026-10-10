@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Services.SystemTray
 import ".."
 import "../services"
+import "../lib/prs.mjs" as PrRules
 
 // System tray (prototype: components/tray): StatusNotifierItem icons in a
 // two-column grid inside a tile. Click activates an item, middle click runs its
@@ -25,23 +26,29 @@ Tile {
         const keys = [item.id, item.title, item.icon].join(" ").toLowerCase();
         return !Config.trayHidden.some(word => keys.includes(word.toLowerCase()));
     })
-    readonly property int rows: Math.ceil(items.length / 2)
+    // the pull requests ride in the tray as one more item (the `prs` widget)
+    readonly property bool withPrs: Prs.loaded && Config.dock.some(g => g.widgets.includes("prs")) && !Ui.hidden.includes("prs")
+    readonly property var shownPrs: Prs.list.filter(p => !Ui.prsHidden.includes(p.repo))
+    readonly property int prCount: shownPrs.filter(p => !p.merged).length
+    readonly property string prWorst: PrRules.worst(shownPrs) ?? ""
+    readonly property int cells: items.length + (withPrs ? 1 : 0)
+    readonly property int rows: Math.ceil(cells / 2)
     // grid rows stretch to fill the tile (CSS grid, align-content: normal)
     readonly property real rowHeight: Math.max(18, (Theme.size - 2 - 4 * (rows - 1)) / rows)
 
     property var menuItem: null    // the item whose menu is showing
 
-    readonly property bool shown: items.length > 0
+    readonly property bool shown: cells > 0
     // two 1fr columns keep their 18px even when the second one is empty
     implicitWidth: 18 * 2 + 4 + 9 * 2 + 2
-    open: menu.open
+    open: menu.open || prList.open
 
     // a lone item sits in the middle of the tile
     Grid {
         id: grid
-        x: root.items.length === 1 ? (root.width - 18) / 2 : 10
+        x: root.cells === 1 ? (root.width - 18) / 2 : 10
         y: 1
-        columns: root.items.length === 1 ? 1 : 2
+        columns: root.cells === 1 ? 1 : 2
         columnSpacing: 4
         rowSpacing: 4
 
@@ -140,6 +147,56 @@ Tile {
                 }
             }
         }
+
+        // the pull requests: the PR icon in the worst state's colour, the open
+        // count in a badge on its corner; click lists them (PrList)
+        Item {
+            id: prCell
+            visible: root.withPrs
+            width: 18
+            height: root.rowHeight
+
+            Icon {
+                anchors.centerIn: parent
+                name: "git-pull-request"
+                size: 18
+                color: prList.colorOf(root.prWorst)
+                scale: prArea.containsMouse ? 1.2 : 1
+                Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+            }
+            Rectangle {
+                readonly property bool crit: ["failing", "conflict"].includes(root.prWorst)
+                x: parent.width / 2 + 9 - width + 7
+                y: parent.height / 2 - 9 - 5
+                width: Math.max(13, badge.implicitWidth + 6)
+                height: 13
+                radius: 6.5
+                color: crit ? Theme.crit : Theme.menuStrong
+                Label {
+                    id: badge
+                    anchors.centerIn: parent
+                    text: root.prCount
+                    size: 9
+                    weight: Font.Bold
+                    tnum: true
+                    color: parent.crit ? "#ffffff" : Theme.text
+                }
+            }
+            Tip {
+                target: prCell
+                text: I18n.t("prs.tile", { n: root.prCount })
+                shown: prArea.containsMouse && !prList.open
+            }
+            MouseArea {
+                id: prArea
+                anchors.centerIn: parent
+                width: 18
+                height: 18
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: prList.open ? Ui.closePopover() : Ui.openPopover("prs")
+            }
+        }
     }
 
     // opened from outside (IPC): show the first item that has a menu
@@ -149,6 +206,11 @@ Tile {
             if (Ui.popover === "tray" && !root.menuItem)
                 root.menuItem = root.items.find(i => i.hasMenu) ?? null;
         }
+    }
+
+    PrList {
+        id: prList
+        owner: root
     }
 
     TrayMenu {
