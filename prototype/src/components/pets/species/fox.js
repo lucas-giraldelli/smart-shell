@@ -8,9 +8,9 @@ export default {
     // a mousing dive: crouch, a high arc, nose buried in the snow
     dive: {
       frames: ['a', 'b', 'c'], every: [.45, .6, 2], once: true,
-      move: t => (t < .45 ? { dy: 2, rot: -6 }
-        : t < 1.05 ? { dy: -14 * Math.sin((t - .45) / .6 * Math.PI), rot: 35 * (t - .45) / .6 }
-        : { rot: 35 }),
+      move: t => (t < .45 ? { dx: -6, dy: 2, rot: -6 }
+        : t < 1.05 ? { dx: -6, dy: -14 * Math.sin((t - .45) / .6 * Math.PI), rot: 35 * (t - .45) / .6 }
+        : { dx: -6, rot: 35 }),
     },
     // asleep: curled up in its tail
     sleep: {},
@@ -37,9 +37,8 @@ export default {
       <circle cx="46" cy="15" r="1.1" fill="#1c1917"/>
       <path d="M41.6 17.4 q1.5 1.3 3 0" stroke="#3b2618" stroke-width=".8" fill="none" stroke-linecap="round"/>
       <circle cx="33" cy="15.2" r="1.2" fill="#f9a8d4" opacity=".65"/>
-      <path data-pose="dive:c" transform="translate(1 -5)" d="M33 21 q2 -6 6 -5 q2 -4 6 -1 q4 0 3 5 q2 3 -1 5 h-13 q-3 -2 -1 -4z" fill="#f8fafc"/>
-      <circle data-pose="dive:c" cx="39" cy="8.5" r="1" fill="#f8fafc"/><circle data-pose="dive:c" cx="46" cy="7" r=".8" fill="#f8fafc"/>
       <ellipse data-pose="sleep" cx="30" cy="24" rx="12" ry="4.2" fill="#f97316"/>
       <ellipse data-pose="sleep" cx="41" cy="23.4" rx="3.4" ry="2.8" fill="#fff7ed"/>
+      <g data-pose="dive:c" transform="translate(47.25 16.6) rotate(-35)" fill="#f8fafc"><path d="M-7.5 2 q1.5 -6 7.5 -6 q6 0 7.5 6z"/><circle cx="-6" cy="-6" r=".8"/><circle cx="5" cy="-8" r=".7"/><circle cx="8" cy="-4" r=".6"/></g>
     </g>`,
 };

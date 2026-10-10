@@ -12,7 +12,7 @@ export default {
     { name: 'jump', w: 1, dur: [.7, 1.1], jump: true }, { name: 'fly', w: 1.6, dur: [2.6, 3], pose: 'fly' }, { name: 'leaf', w: 1, dur: [3, 5], pose: 'leaf' }],
   poses: {
     // a fly buzzes around, the tongue snaps it, a gulp
-    fly: { frames: ['a', 'b', 'c', 'b', 'a', 't', 'g'], every: [.3, .3, .3, .3, .3, .2, .7], once: true },
+    fly: { frames: ['a', 'b', 'c', 'b', 'a', 't', 'g'], every: [.3, .3, .3, .3, .3, .35, .7], once: true },
     // holds a big leaf over its head as an umbrella; it rains around it
     leaf: { frames: ['a', 'b', 'c'], every: .18 },
   },
