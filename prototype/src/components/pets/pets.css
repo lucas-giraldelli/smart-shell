@@ -150,3 +150,7 @@ ss-pets { display: contents; }
   transition: opacity .2s, transform .2s;
 }
 .pet.talking .say { opacity: 1; transform: translateX(-50%) scale(1); }
+
+/* a pose's prop (the frog's fly), positioned by the engine */
+.pet .prop { position: absolute; width: 8px; height: 8px; pointer-events: none; }
+.pet .prop svg { display: block; }

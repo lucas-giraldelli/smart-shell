@@ -50,6 +50,11 @@ export function createPet(kind, species, host) {
   const flip = el.querySelector('.flip');
   const bubble = el.querySelector('.bubble');
   const sayEl = el.querySelector('.say');
+  // a pose's prop (poses.js): its own element, not turned with the sprite
+  const propEl = document.createElement('span');
+  propEl.className = 'prop';
+  el.append(propEl);
+  let lastProp = null;
   const svgEl = el.querySelector('svg');
   showParts(flip);
   let lastPart = '', lastSay = '', lastMove = '', clickT = 0;
@@ -226,6 +231,13 @@ export function createPet(kind, species, host) {
     if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
     const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';
     if (mv !== lastMove) { const [tf, op] = mv.split('|'); svgEl.style.transform = tf ?? ''; svgEl.style.opacity = op ?? ''; lastMove = mv; }
+    const pp = def?.prop ? def.prop.at(pt) : null;
+    if (def?.prop !== lastProp) {
+      propEl.innerHTML = def?.prop ? `<svg viewBox="-4 -4 8 8" width="8" height="8">${def.prop.svg}</svg>` : '';
+      lastProp = def?.prop;
+    }
+    propEl.style.display = pp ? '' : 'none';
+    if (pp) { propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 4}px`; propEl.style.top = `${pp.y - 4}px`; }
     if (face !== lastDir) { flip.style.transform = face < 0 ? 'scaleX(-1)' : ''; lastDir = face; }
     if (say !== lastSay) { sayEl.textContent = say ? t(`pets.says.${say}`) : ''; lastSay = say; }
 

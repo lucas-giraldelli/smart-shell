@@ -6,6 +6,8 @@
 //   move(t) moves the whole sprite, t = seconds into the pose:
 //           { dx, dy, rot (deg, around its feet), opacity, flip (faces back) }
 //   shut    eyes closed · low: legs hidden, body lowered (like lying down)
+//   prop    an object of its own, outside the sprite (not turned or moved with
+//           it): { svg (drawn around 0,0), at(t) -> { x, y } in sprite units, or null }
 // In the species' SVG, data-pose="lick" shows an element only during that
 // pose, data-pose="lick:b fly:2" only on those frames, and data-hide="lick"
 // hides it during the pose. Such elements can't nest a tag of their own kind.

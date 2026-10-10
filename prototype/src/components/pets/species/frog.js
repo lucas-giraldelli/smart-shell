@@ -11,8 +11,20 @@ export default {
     { name: 'tongue', w: 1.5, dur: [1.2, 2.4], pose: 'tongue' },
     { name: 'jump', w: 1, dur: [.7, 1.1], jump: true }, { name: 'fly', w: 1.6, dur: [2.6, 3], pose: 'fly' }, { name: 'leaf', w: 1, dur: [3, 5], pose: 'leaf' }],
   poses: {
-    // a fly buzzes around, the tongue snaps it, a gulp
-    fly: { frames: ['a', 'b', 'c', 'b', 'a', 't', 'g'], every: [.3, .3, .3, .3, .3, .35, .7], once: true },
+    // a fly buzzes around, the tongue snaps it, a gulp. The fly is a prop of
+    // its own: it wanders freely, then lands where the tongue reaches
+    fly: {
+      frames: ['w', 't', 'g'], every: [1.5, .35, .7], once: true,
+      prop: {
+        svg: '<ellipse cx="-.4" cy="-1.3" rx="1.8" ry="1" fill="#e2e8f0" opacity=".85"/><circle cx="0" cy=".2" r="1.2" fill="#1c1917"/>',
+        at: t => {
+          if (t > 1.85) return null;
+          const k = Math.min(1, t / 1.5) ** 3;
+          const x = 49 + 4.5 * Math.sin(t * 6.1), y = 9 + 3.5 * Math.sin(t * 8.7 + 1);
+          return { x: x + (47.6 - x) * k, y: y + (13.8 - y) * k };
+        },
+      },
+    },
     // holds a big leaf over its head as an umbrella; it rains around it
     leaf: { frames: ['a', 'b', 'c'], every: .18 },
   },
@@ -35,11 +47,7 @@ export default {
       <path d="M29.5 21 q3.2 2.2 6.6 -.4" stroke="#2e7d32" stroke-width="1.2" fill="none" stroke-linecap="round"/>
       <path class="tongue" d="M37.5 20.6 L46 18.5" stroke="#f472b6" stroke-width="1.8" stroke-linecap="round"/>
       <circle class="tongue fly-tip" cx="46.2" cy="18.4" r="1.4" fill="#f472b6"/>
-      <g data-pose="fly:a"><ellipse cx="47.5" cy="9.4" rx="1.7" ry="1" fill="#e2e8f0" opacity=".85"/><circle cx="48" cy="10.6" r="1.1" fill="#1c1917"/></g>
-      <g data-pose="fly:b"><ellipse cx="51.5" cy="12.4" rx="1.7" ry="1" fill="#e2e8f0" opacity=".85"/><circle cx="52" cy="13.6" r="1.1" fill="#1c1917"/></g>
-      <g data-pose="fly:c"><ellipse cx="46.5" cy="15.4" rx="1.7" ry="1" fill="#e2e8f0" opacity=".85"/><circle cx="47" cy="16.6" r="1.1" fill="#1c1917"/></g>
       <path data-pose="fly:t" d="M36 20.4 L47.5 13.8" stroke="#f472b6" stroke-width="1.8" stroke-linecap="round"/>
-      <circle data-pose="fly:t" cx="47.6" cy="13.8" r="1.4" fill="#1c1917"/>
       <ellipse data-pose="fly:g" cx="33" cy="25.5" rx="5.6" ry="4.2" fill="#e4f7d6"/>
       <path data-pose="leaf" d="M30 22 L28 7" stroke="#2e7d32" stroke-width="1.2" stroke-linecap="round"/>
       <path data-pose="leaf:a leaf:c" d="M17 9 Q28 -2 39 8 Q28 4 17 9z" fill="#22c55e" stroke="#15803d" stroke-width=".6"/>
