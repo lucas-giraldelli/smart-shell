@@ -15,7 +15,24 @@ import { fresh } from './tama-fresh.js';
 // It drops one every 2.5-4.5 h while fed; dirt, droppings or a hot PC can make
 // it sick (Medicine cures it).
 // It grows: a baby the first day (drawn smaller), young up to 3 days, then adult.
+// Each species has its own pace (TRAITS); a loaded CPU tires it a little and a
+// work meeting bores it a little, music cheers it up, and at night (22-6 h) it
+// tires faster and asks for bed sooner. Most dislike a bath (the duck, penguin
+// and frog love one; the pig would rather have mud), and petting it over and
+// over pleases it less each time (a cat ends up hissing).
 export const NEEDS = ['food', 'fun', 'clean', 'energy', 'health'];
+// how fast each need runs down against the default (1), and how it takes a
+// bath: 1 loves it, 0 doesn't mind, -1 sulks
+const TRAITS = {
+  panda: { food: 1.5 }, corgi: { fun: 1.4, energy: 1.4 }, shiba: { fun: 1.3, energy: 1.3 },
+  capy: { food: .7, fun: .6, energy: .7, clean: .7 }, turtle: { food: .6, fun: .6, energy: .6, clean: .6 },
+  ghost: { clean: 0 }, cat: { bath: -1 }, blackcat: { bath: -1 }, pig: { bath: -1, clean: 1.5 },
+  duck: { bath: 1 }, penguin: { bath: 1 }, frog: { bath: 1 },
+};
+const trait = (kind, k) => TRAITS[kind]?.[k] ?? (k === 'bath' ? 0 : 1);
+const night = () => { const h = new Date().getHours(); return h >= 22 || h < 6; };
+// recent pets (ms), for the diminishing returns; session only
+let petted = [];
 // what each species eats
 export const FOOD = {
   cat: '🐟', blackcat: '🐟', penguin: '🐟', shiba: '🦴', corgi: '🦴', fox: '🍗', bunny: '🥕', capy: '🍊',
@@ -34,19 +51,23 @@ export const stage = s => (ageDays(s) < 1 ? 'baby' : ageDays(s) < 3 ? 'young' : 
 // the most urgent need, for the sign over its head ('' = all fine)
 export function urgent(s) {
   if (s.sick) return 'sick';
-  return ['food', 'energy', 'clean', 'fun'].filter(k => s[k] < 25).sort((a, b) => s[a] - s[b])[0] ?? '';
+  // at night it asks for bed while it still has some energy left
+  const low = k => s[k] < (k === 'energy' && night() ? 45 : 25);
+  return ['food', 'energy', 'clean', 'fun'].filter(low).sort((a, b) => s[a] - s[b])[0] ?? '';
 }
 
 // time passes: `dt` seconds of real time, times the mock's speed-up
-export function tick(dt, { asleep, hot }) {
+//   ctx: { kind, asleep, hot, load (CPU %), music (playing), meeting (a work one) }
+export function tick(dt, { kind, asleep, hot, load = 0, music = false, meeting = false }) {
   const s = store.get().tama;
   const h = dt * (s.speed ?? 1) / 3600;
+  const tired = 6 * trait(kind, 'energy') * (night() ? 1.6 : 1) + (load > 72 ? 1.5 : 0);
   const n = {
     ...s,
-    food: clamp(s.food - 12 * h),
-    fun: clamp(s.fun - 10 * h),
-    clean: clamp(s.clean - (4 + 10 * s.poops.length) * h),
-    energy: clamp(s.energy + (asleep || s.napping ? 30 : -6) * h),
+    food: clamp(s.food - 12 * trait(kind, 'food') * h),
+    fun: clamp(s.fun - (10 * trait(kind, 'fun') + (meeting ? 2 : 0) - (music ? 6 : 0)) * h),
+    clean: clamp(s.clean - (4 + 10 * s.poops.length) * trait(kind, 'clean') * h),
+    energy: clamp(s.energy + (asleep || s.napping ? 30 : -tired) * h),
     nextPoop: s.nextPoop - h * (s.food > 30 ? 1 : .3),
   };
   if (n.nextPoop <= 0) {
@@ -73,23 +94,32 @@ function runAway() {
 
 // a care action from the menu; returns what the pet does about it
 //   { say, effect } - a word (pets.says) and an effect to play (pets.js)
-export function care(action) {
+export function care(action, kind) {
   const s = store.get().tama;
   const n = { ...s };
   let out = {};
   if (action === 'feed') {
     if (s.food >= 95) return { say: 'no' };
     Object.assign(n, { food: clamp(s.food + 30), energy: clamp(s.energy + 5) });
-    out = { say: 'yum', effect: 'feed' };
+    out = { effect: 'feed' };
   } else if (action === 'play') {
     if (s.energy < 15) return { say: 'no' };
     Object.assign(n, { fun: clamp(s.fun + 30), energy: clamp(s.energy - 10), food: clamp(s.food - 5) });
-    out = { say: 'yay', effect: 'play' };
+    out = { effect: 'play' };
   } else if (action === 'pet') {
-    Object.assign(n, { fun: clamp(s.fun + 8), health: clamp(s.health + 2) });
-    out = { effect: 'love' };
+    // each pet in the last 2 minutes halves the next one's joy; a cat has had enough at 4
+    const now = Date.now();
+    petted = [...petted.filter(t => now - t < 120e3), now];
+    if ((kind === 'cat' || kind === 'blackcat') && petted.length >= 4) {
+      Object.assign(n, { fun: clamp(s.fun - 3) });
+      out = { say: 'hiss' };
+    } else {
+      Object.assign(n, { fun: clamp(s.fun + 8 / 2 ** (petted.length - 1)), health: clamp(s.health + 1) });
+      out = { effect: 'pet' };
+    }
   } else if (action === 'clean') {
-    Object.assign(n, { clean: 100, poops: [] });
+    const bath = trait(kind, 'bath');
+    Object.assign(n, { clean: 100, poops: [], fun: clamp(s.fun + (bath > 0 ? 10 : bath < 0 ? -8 : -3)) });
     out = { effect: 'clean' };
   } else if (action === 'medicine') {
     if (!s.sick) return { say: 'no' };

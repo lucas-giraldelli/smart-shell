@@ -9,6 +9,30 @@ export default {
     sit: { shut: true, move: () => ({ rot: -12, dy: 1 }) },
     // wags its tail hard, wiggling all over
     wag: { tailFast: true, move: t => ({ rot: 2.5 * Math.sin(t * 25) }) },
+    // asleep on its side
+    sleep: { move: () => ({ rot: -4 }) },
+  },
+  // what it does for each care action (Tamagotchi mode, poses.js carePose)
+  care: {
+    // the shiba smile: eyes shut, tail going hard
+    pet: { dur: 2, def: { shut: true, tailFast: true, move: t => ({ rot: 3 * Math.sin(t * 6) }) } },
+    // lies down to gnaw a bone
+    feed: { dur: 2.8, def: {
+      frames: ['o', 'c'], every: .2, low: true,
+      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🦴</text>', at: t => { const s = 1 - Math.floor(t / .8) * .3; return s > .05 ? { x: 46, y: 23.5, s } : null; } },
+    } },
+    // fetch: watches the ball fly, runs off, trots back with it
+    play: { dur: 3.4, def: {
+      move: t => (t < .9 ? {} : t < 2 ? { dx: 14 * (t - .9) / 1.1, dy: -3 * Math.abs(Math.sin(t * 10)) } : { dx: 14 * (1 - (t - 2) / 1.4), flip: true, dy: -2 * Math.abs(Math.sin(t * 10)) }),
+      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">🎾</text>', at: t => (t < .9 ? { x: 44 + t * 14, y: 16 - 14 * Math.sin(t / .9 * Math.PI) } : t < 2 ? null : { x: 46 + 14 * (1 - (t - 2) / 1.4), y: 18.5 }) },
+    } },
+    // bubbles, then a big shake, water flying
+    clean: { name: 'wash', dur: 2.8, def: { frames: ['a', 'b', 'a', 'b', 'a', 'b', 'd', 'e'], every: .32, once: true, shut: true, move: t => (t < 1.9 ? {} : { dx: 2 * Math.sin(t * 60), rot: 5 * Math.sin(t * 60) }) } },
+    // sits back, eyes shut ("hmph"), takes the pill
+    medicine: { dur: 2.2, def: {
+      shut: true, move: () => ({ rot: -12, dy: 1 }),
+      prop: { svg: '<text font-size="6" text-anchor="middle" dominant-baseline="central">💊</text>', at: t => (t > .9 ? null : { x: 52 - t * 8, y: 8 + t * 9 }) },
+    } },
   },
   svg: `
     <g class="legs" fill="#c98545">
@@ -28,5 +52,6 @@ export default {
       <path class="closed" d="M32.9 11.9 q1.7 1.3 3.4 0 M38.5 11.9 q1.7 1.3 3.4 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <ellipse cx="44.2" cy="15.4" rx="1.4" ry="1.1" fill="#1c1917"/>
       <path d="M41 17.4 q1.6 1.5 3.2 -.1" stroke="#1c1917" stroke-width=".8" fill="none" stroke-linecap="round"/>
+      <g data-pose="wash:d wash:e" fill="#7dd3fc"><circle cx="6" cy="14" r="1"/><circle cx="12" cy="8" r=".9"/><circle cx="40" cy="5" r="1"/><circle cx="46" cy="20" r=".9"/><circle cx="26" cy="9" r=".8"/></g>
     </g>`,
 };

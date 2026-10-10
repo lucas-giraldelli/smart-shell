@@ -171,12 +171,6 @@ ss-pets { display: contents; }
   font-size: 13px; line-height: 1; pointer-events: auto;
 }
 .tama-poops .poop:hover { scale: 1.2; }
-.pet .tm-fx { position: absolute; left: 70%; top: -18px; font-size: 14px; pointer-events: none; animation: tm-drop 1.2s ease-in forwards; }
-.pet .tm-fx.play { animation-name: tm-ball; }
-.pet .tm-fx.clean, .pet .tm-fx.medicine { left: 35%; animation-name: tm-rise; }
-@keyframes tm-drop { 0% { translate: 0 -10px; opacity: 0; } 20% { opacity: 1; } 70% { translate: 0 14px; opacity: 1; } 100% { translate: 0 16px; opacity: 0; scale: .4; } }
-@keyframes tm-ball { 0% { translate: 40px 22px; } 30% { translate: 20px -2px; } 60% { translate: 8px 22px; } 80% { translate: 2px 10px; } 100% { translate: -4px 22px; opacity: 0; } }
-@keyframes tm-rise { 0% { translate: 0 10px; opacity: 0; scale: .6; } 30% { opacity: 1; } 100% { translate: 0 -16px; opacity: 0; scale: 1.2; } }
 
 .tama-menu .tm-head { display: flex; align-items: baseline; gap: 8px; padding: 6px 8px 8px; }
 .tama-menu .tm-head b { font-size: 13px; }

@@ -49,7 +49,7 @@ class Pets extends Component {
     this.poops.className = 'tama-poops';
     this.parentElement.append(this.poops);
     this.poops.addEventListener('click', e => {
-      if (e.target.closest('[data-poop]') && this.pets[0]) this.react(this.pets[0], care('poop'));
+      if (e.target.closest('[data-poop]') && this.pets[0]) care('poop', this.pets[0].kind);
     });
     // how into the music they are (0..1). A song starts: they look around
     // for ~1.4 s, then ease in over ~2 s; it stops: they keep going ~1.2 s,
@@ -81,7 +81,8 @@ class Pets extends Component {
       for (const pet of this.pets) pet.step(dt, napping ? 0 : system.load, activity, opts);
       if (ui.tamaOn && this.pets.length && (tamaIn -= dt) <= 0) {
         tamaIn = 1;
-        tick(1, { asleep: napping || system.load < config.thresholds.cpu.sleep, hot: opts.hot === 2 || opts.heavy === 2 });
+        tick(1, { kind: ui.pet, asleep: napping || system.load < config.thresholds.cpu.sleep, hot: opts.hot === 2 || opts.heavy === 2,
+          load: system.load, music: hears, meeting: work });
       }
     });
   }
@@ -127,23 +128,17 @@ class Pets extends Component {
     el.querySelector('.menu').addEventListener('click', e => {
       e.stopPropagation();   // not a click on the pet (heart, word)
       const action = e.target.closest('[data-care]')?.dataset.care;
-      if (action) this.react(pet, care(action));
+      if (action) this.react(pet, care(action, pet.kind));
     });
     return pet;
   }
 
-  // what the pet does about a care action: a word, a hop, a little effect
+  // what the pet does about a care action: a word, and its care animation
   react(pet, { say, effect } = {}) {
-    if (effect === 'love') return pet.love();
     if (say) pet.speak(say);
-    if (effect === 'feed' || effect === 'play') pet.hop();
-    const glyph = { feed: FOOD[pet.kind] ?? '🍖', play: '🎾', clean: '✨', medicine: '💊' }[effect];
-    if (!glyph) return;
-    const fx = document.createElement('span');
-    fx.className = `tm-fx ${effect}`;
-    fx.textContent = glyph;
-    pet.el.append(fx);
-    setTimeout(() => fx.remove(), 1300);
+    if (!effect) return;
+    if (effect === 'pet') pet.love();   // a heart and its word
+    pet.perform(effect, FOOD[pet.kind] ?? '🍖');
   }
 }
 

@@ -1,5 +1,5 @@
 import { t } from '../../i18n/index.js';
-import { frameAt, moveAt, showParts, poseOf, yawnPart } from './poses.js';
+import { frameAt, moveAt, showParts, poseOf, yawnPart, carePose } from './poses.js';
 
 // Behaviour shared by every pet. A pet reacts to CPU load:
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
@@ -61,6 +61,14 @@ export function createPet(kind, species, host) {
   // classes owned by others (Tamagotchi mode: tama, sick, baby), kept through
   // every class rewrite below
   let flags = '';
+  // a care animation playing: { name, def, t, left } (perform)
+  let forced = null;
+  function perform(action, glyph) {
+    const c = carePose(species, action, glyph);
+    if (!c) return;
+    forced = { ...c, t: 0, left: c.dur };
+    if (c.say) speak(c.say);
+  }
   // a word over its head for a moment (a pets.says key)
   let speaking = false;   // a word said on its own (a click, a refusal) holds the bubble
   function speak(word) {
@@ -194,13 +202,17 @@ export function createPet(kind, species, host) {
     const cur = state === 'idle' ? act : trick, curT = state === 'idle' ? actT : trickT;
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
+    // a care animation (Tamagotchi mode) wins over everything while it plays
+    if (forced && (forced.left -= dt) <= 0) forced = null;
+    else if (forced) forced.t += dt;
+    if (forced) pose = forced.name;
     // the species' own pose (poses.js); one with a speed moves while it plays.
     // Its `sleep` pose, if any, replaces the plain lying down
-    const own = cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
+    const own = forced ? forced.name : cur && pose && cur.pose && pose.split(' ').includes(cur.pose) && poseOf(species, cur.pose) ? cur.pose
       : state === 'sleep' && !activity && yawnLeft > 0 ? 'yawn'
       : state === 'sleep' && !activity && poseOf(species, 'sleep') ? 'sleep' : '';
     if (own === 'yawn') pose = 'yawn';
-    if (pose && !(own && act?.speed)) target = 0;
+    if (pose && !(own && (forced ? forced.def.speed : act?.speed))) target = 0;
     if (opts.hold) target = 0;   // its Tamagotchi menu is open
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = cur && !activity && cur.say ? cur.say : '';
@@ -237,8 +249,8 @@ export function createPet(kind, species, host) {
     if (x < 14) { x = 14; dir = 1; }
     el.style.left = x.toFixed(1) + 'px';
     // the species' own pose: its parts, frame and motion (poses.js)
-    const def = own ? poseOf(species, own) : null;
-    const pt = own === 'yawn' ? 1.6 - yawnLeft : def ? curT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
+    const def = forced ? forced.def : own ? poseOf(species, own) : null;
+    const pt = forced ? forced.t : own === 'yawn' ? 1.6 - yawnLeft : def ? curT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
     const part = def ? `${own}:${frameAt(def, pt)}` : '';
     if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
     const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';
@@ -249,7 +261,10 @@ export function createPet(kind, species, host) {
       lastProp = def?.prop;
     }
     propEl.style.display = pp ? '' : 'none';
-    if (pp) { propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 4}px`; propEl.style.top = `${pp.y - 4}px`; }
+    if (pp) {
+      propEl.style.left = `${(face < 0 ? 46 - pp.x : pp.x) - 4}px`; propEl.style.top = `${pp.y - 4}px`;
+      propEl.style.scale = pp.s ?? 1;
+    }
     if (face !== lastDir) { flip.style.transform = face < 0 ? 'scaleX(-1)' : ''; lastDir = face; }
     if (!speaking && say !== lastSay) { sayEl.textContent = say ? t(`pets.says.${say}`) : ''; lastSay = say; }
 
@@ -273,5 +288,5 @@ export function createPet(kind, species, host) {
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }
   }
 
-  return { kind, el, step, speak, love, hop: () => { jumpLeft = .55; }, setFlags: f => { flags = f; }, remove: () => el.remove() };
+  return { kind, el, step, speak, love, perform, hop: () => { jumpLeft = .55; }, setFlags: f => { flags = f; }, remove: () => el.remove() };
 }
