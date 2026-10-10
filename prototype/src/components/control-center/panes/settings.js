@@ -41,6 +41,7 @@ export default {
       <div class="checks">${TOGGLEABLE.map(id => `<label class="check-row" data-widget="${id}"><span data-box></span>${t(`widgets.${id}`)}</label>`).join('')}</div>
 
       <div class="sec">${t('settings.pets')}</div>
+      <div class="pet-row">
       <div class="pet-select" data-pet-select>
         <button class="ps-trigger" data-ps-toggle aria-haspopup="listbox">
           <span data-ps-current></span>${icon('chevron-down', 'ps-chev')}
@@ -49,7 +50,8 @@ export default {
           <button class="ps-opt" role="option" data-pet="${k}">${sprite(k)}<span class="grow">${petName(k)}</span><span class="ps-check">${icon('check')}</span></button>`).join('')}
         </div>
       </div>
-      <div class="checks"><label class="check-row" data-flag="tamaOn"><span data-box></span>${t('settings.tama')}</label></div>
+      <label class="check-row" data-flag="tamaOn" title="${t('settings.tamaTip')}"><span data-box></span>${t('settings.tama')}</label>
+      </div>
 
       <div class="sec">${t('settings.language')}</div>
       <div class="langs">${locales().map(l => `<button data-locale="${l}">${t(`settings.locales.${l}`)}</button>`).join('')}</div>

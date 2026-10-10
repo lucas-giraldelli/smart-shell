@@ -206,3 +206,9 @@
 /* system: two half-width toggles under the uptime row */
 .cc .sys-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 8px 4px; }
 .cc .sys-actions .btn-s { justify-content: center; }
+/* the pet picker and the Tamagotchi switch side by side, half and half */
+.cc .set .pet-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; margin: 2px 8px 4px; }
+.cc .set .pet-row .pet-select { margin: 0; min-width: 0; }
+.cc .set .pet-row .check-row {
+  min-height: 38px; padding: 0 10px; border-radius: 11px; border: 1px solid var(--menu-strong); background: var(--menu-surface);
+}

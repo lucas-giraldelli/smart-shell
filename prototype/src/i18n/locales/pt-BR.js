@@ -51,7 +51,7 @@ export default {
 
   settings: {
     label: 'Dock', look: 'Aparência', size: 'Tamanho', magnify: 'Ampliação', clock: 'Relógio', dnd: 'Não perturbe', wsStyle: 'Workspaces', wsStyles: { icons: 'Ícones', numbers: 'Números', dots: 'Pontos' },
-    widgets: 'Widgets', pets: 'Pet', weatherFx: 'Clima na dock', tama: 'Modo Tamagotchi (clique no pet)', noPet: 'Nenhum', language: 'Idioma',
+    widgets: 'Widgets', pets: 'Pet', weatherFx: 'Clima na dock', tama: 'Tamagotchi', tamaTip: 'Um clique no pet abre o menu de cuidados', noPet: 'Nenhum', language: 'Idioma',
     locales: { 'pt-BR': 'Português', en: 'English' },
   },
 
