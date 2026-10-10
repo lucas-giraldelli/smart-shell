@@ -4,7 +4,7 @@ import { store } from '../../state.js';
 import { createPet } from './engine.js';
 import { config } from '../../data/config.js';
 import { memStatus, tempStatus } from '../control-center/panes/system.js';
-import { openPopover } from '../../core/popover.js';
+import { openPopover, closePopover, isOpen } from '../../core/popover.js';
 import { setHTML } from '../ui/ui.js';
 import { tick, care, menuHTML, urgent, stage, FOOD, SIGN } from './tama.js';
 
@@ -113,16 +113,19 @@ class Pets extends Component {
     setHTML(this.poops, poops.map(x => `<button class="poop" style="left:${(x * 100).toFixed(1)}%" data-poop>💩</button>`).join(''));
   }
 
-  // wire a new pet up for Tamagotchi mode: a right click opens its care menu
+  // wire a new pet up for Tamagotchi mode: a click (or right click) on it
+  // opens its care menu, another closes it
   adopt(pet) {
     const { el } = pet;
     el.dataset.popover = 'tama';
     el.insertAdjacentHTML('beforeend', '<span class="need"></span><div class="menu tama-menu"></div>');
-    el.addEventListener('contextmenu', e => {
-      if (!store.get().ui.tamaOn) return;
+    const toggle = e => {
+      if (!store.get().ui.tamaOn || e.target.closest('.menu')) return;
       e.preventDefault();
-      openPopover('tama');
-    });
+      isOpen('tama') ? closePopover() : openPopover('tama');
+    };
+    el.addEventListener('click', toggle);
+    el.addEventListener('contextmenu', toggle);
     el.querySelector('.menu').addEventListener('click', e => {
       e.stopPropagation();   // not a click on the pet (heart, word)
       const action = e.target.closest('[data-care]')?.dataset.care;
