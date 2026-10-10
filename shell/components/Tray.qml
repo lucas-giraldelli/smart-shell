@@ -148,8 +148,8 @@ Tile {
             }
         }
 
-        // the pull requests: the PR icon in the worst state's colour, the open
-        // count in a badge on its corner; click lists them (PrList)
+        // the pull requests: the PR icon in the worst state's colour (the count
+        // on hover); click lists them (PrList)
         Item {
             id: prCell
             visible: root.withPrs
@@ -163,24 +163,6 @@ Tile {
                 color: prList.colorOf(root.prWorst)
                 scale: prArea.containsMouse ? 1.2 : 1
                 Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
-            }
-            Rectangle {
-                readonly property bool crit: ["failing", "conflict"].includes(root.prWorst)
-                x: parent.width / 2 + 9 - width + 7
-                y: parent.height / 2 - 9 - 5
-                width: Math.max(13, badge.implicitWidth + 6)
-                height: 13
-                radius: 6.5
-                color: crit ? Theme.crit : Theme.menuStrong
-                Label {
-                    id: badge
-                    anchors.centerIn: parent
-                    text: root.prCount
-                    size: 9
-                    weight: Font.Bold
-                    tnum: true
-                    color: parent.crit ? "#ffffff" : Theme.text
-                }
             }
             Tip {
                 target: prCell

@@ -1,13 +1,7 @@
-/* in the tray: an 18px item, the count in a badge on its corner */
+/* in the tray: an 18px item */
 .prs { position: relative; display: block; width: 18px; height: 18px; cursor: pointer; transition: transform .2s; }
 .prs:hover { transform: scale(1.2); }
 .prs [data-icon] svg.i { width: 18px; height: 18px; display: block; color: var(--pr); }
-.pr-badge {
-  position: absolute; top: -5px; right: -7px; min-width: 13px; height: 13px; padding: 0 3px; border-radius: 99px;
-  background: var(--menu-strong); color: var(--text); font-size: 9px; font-weight: 700; line-height: 13px;
-  text-align: center; font-variant-numeric: tabular-nums;
-}
-.prs[data-crit] .pr-badge { background: var(--crit); color: #fff; }
 
 .prs-menu { width: 440px; padding: 6px; }
 .prs-head { display: flex; align-items: center; gap: 8px; padding: 0 0 2px 0; }

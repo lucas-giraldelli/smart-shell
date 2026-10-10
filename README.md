@@ -144,7 +144,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
 - **Pull requests** - your open PRs in any repo, read with the `gh` CLI's
   own login (`gh auth login`) every hour or from the refresh button.
   It rides in the tray as one more item: the PR icon in the worst state's
-  colour with the open count in a badge (red when a pipeline failed); the popover groups
+  colour, the open count on hover; the popover groups
   them by repo (open when one needs action) and a click opens the PR in the
   default browser. States: pipeline failed or conflict (red), behind the base
   branch (yellow), checks running, pipeline green (one tick), green and

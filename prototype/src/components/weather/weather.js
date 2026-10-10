@@ -5,14 +5,15 @@ import { describe } from '../../data/weather-codes.js';
 import { setHTML } from '../ui/ui.js';
 import './forecast.js';
 
-// Current weather. Click opens the forecast (hours + 7 days).
+// Current weather: icon and temperature, the condition on hover. Click opens
+// the forecast (hours + 7 days).
 class Weather extends Component {
   static slices = ['weather', 'ui'];
 
   render() {
     return `
       <span data-icon></span>
-      <div class="wx-text"><div class="t-big" data-temp></div><div class="t-sub" data-summary></div></div>
+      <div class="wx-text"><div class="t-big" data-temp></div></div>
       <span class="label"></span>
       <ss-forecast></ss-forecast>`;
   }
@@ -33,11 +34,9 @@ class Weather extends Component {
     this.style.setProperty('--wx', look.color);
     setHTML(this.$('[data-icon]'), icon(look.icon, `wx-ic${look.icon === 'sun' ? ' spin' : ''}`));
     this.$('[data-temp]').textContent = `${c.temp}°`;
-    const summary = this.$('[data-summary]');
-    summary.textContent = look.label;
-    // the tooltip only when the summary doesn't fit
+    // the condition, on hover
     this.$('.label').textContent = look.label;
-    this.toggleAttribute('data-tip', summary.scrollWidth > summary.clientWidth);
+    this.toggleAttribute('data-tip', ui.popover !== 'weather');
   }
 }
 

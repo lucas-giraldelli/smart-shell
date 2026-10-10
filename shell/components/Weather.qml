@@ -4,24 +4,22 @@ import ".."
 import "../lib/rules.mjs" as Rules
 
 // Current weather (prototype: components/weather): the condition's icon in its
-// tone (the sun turns slowly), temperature and summary. Click opens the
-// forecast. Hidden until the first forecast arrives. As wide as its content
-// with the tile's padding; a condition longer than 72px ("Nublado") ellipsizes,
-// with the full text on hover.
+// tone (the sun turns slowly) and the temperature; the condition shows on
+// hover. Click opens the forecast. Hidden until the first forecast arrives.
 Tile {
     id: root
 
     readonly property bool shown: Weather.loaded
     readonly property var look: Rules.weatherLook(Panes.i18n, Weather.current.code, Weather.current.isDay)
 
-    // padding 0 11px (+ border), the 26px icon, gap 9, the text
-    implicitWidth: 1 + 11 + 26 + 9 + Math.max(temp.implicitWidth, Math.min(summary.implicitWidth, 72)) + 11 + 1
+    // padding 0 11px (+ border), the 26px icon, gap 9, the temperature
+    implicitWidth: 1 + 11 + 26 + 9 + temp.implicitWidth + 11 + 1
     open: forecast.open
 
     Tip {
         target: root
         text: root.look.label
-        shown: root.hovered && summary.implicitWidth > summary.width
+        shown: root.hovered && !forecast.open
     }
 
     MouseArea {
@@ -61,15 +59,6 @@ Tile {
             tnum: true
             shadow: true
             color: Theme.text
-        }
-        Label {
-            id: summary
-            width: Math.min(implicitWidth, 72)
-            elide: Text.ElideRight
-            text: root.look.label
-            size: 11
-            shadow: true
-            color: Theme.sub
         }
     }
 

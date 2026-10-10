@@ -8,7 +8,7 @@ import { savePref } from '../../core/prefs.js';
 import { prStatus, worst, byRepo } from '../../data/prs.js';
 
 // The user's open pull requests (`gh`, every hour or on refresh), as an item
-// of the tray: the PR icon in the worst state's colour with a count badge;
+// of the tray: the PR icon in the worst state's colour (the count on hover);
 // click lists them by repo, title only.
 const LOOK = {
   failing: { icon: 'circle-x', color: 'var(--crit)' },
@@ -106,8 +106,7 @@ class Prs extends Component {
   static slices = ['prs', 'ui'];
 
   render() {
-    return `<span data-icon>${icon('git-pull-request')}</span><b class="pr-badge" data-count></b>
-      <ss-pr-list></ss-pr-list>`;
+    return `<span data-icon>${icon('git-pull-request')}</span><ss-pr-list></ss-pr-list>`;
   }
 
   setup() {
@@ -125,9 +124,7 @@ class Prs extends Component {
     const w = worst(shown);
     this.toggleAttribute('data-open', ui.popover === 'prs');
     this.style.setProperty('--pr', w ? LOOK[w].color : 'var(--menu-sub)');
-    this.$('[data-count]').textContent = open.length;
     this.title = t('prs.tile', { n: open.length });
-    this.toggleAttribute('data-crit', ['failing', 'conflict'].includes(w));
   }
 }
 define('ss-prs', Prs);
