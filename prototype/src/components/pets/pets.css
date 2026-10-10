@@ -71,8 +71,8 @@ ss-pets { display: contents; }
 
 /* dancing to YouTube Music (~120 bpm): every species its own dance; the
    legs keep the beat */
-.pet.dance .la { animation: legA .5s ease-in-out infinite; }
-.pet.dance .lb { animation: legB .5s ease-in-out infinite; }
+.pet.dance .la { animation: legA calc(.5s * var(--slow, 1)) ease-in-out infinite; }
+.pet.dance .lb { animation: legB calc(.5s * var(--slow, 1)) ease-in-out infinite; }
 .pet.dance svg { transform-origin: 50% 100%; }
 @keyframes sway { 0%, 100% { transform: rotate(-8deg); } 50% { transform: rotate(8deg); } }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -83,24 +83,24 @@ ss-pets { display: contents; }
 @keyframes wiggle { 0%, 100% { transform: rotate(-6deg) translateY(0); } 50% { transform: rotate(6deg) translateY(-3px); } }
 @keyframes spook { 0%, 100% { transform: translateY(-3px) rotate(-6deg); } 50% { transform: translateY(-9px) rotate(6deg); } }
 @keyframes sidehop { 0% { transform: translate(-4px, 0); } 25% { transform: translate(0, -6px); } 50% { transform: translate(4px, 0); } 75% { transform: translate(0, -6px); } 100% { transform: translate(-4px, 0); } }
-.pet.dance[data-kind="cat"] svg { animation: sway 1s ease-in-out infinite; }       /* sways, paws going */
-.pet.dance[data-kind="shiba"] svg { animation: bounce .5s ease-in-out infinite; }  /* bounces on the beat */
-.pet.dance[data-kind="fox"] svg { animation: sidestep 1s ease-in-out infinite; }   /* side to side */
-.pet.dance[data-kind="penguin"] svg { animation: rock 1s ease-in-out infinite; }   /* a big waddle */
-.pet.dance[data-kind="bunny"] svg { animation: skip .5s ease-out infinite; }       /* hops in place */
-.pet.dance[data-kind="capy"] svg { animation: nod 2s ease-in-out infinite; }       /* chill: half-time nod */
-.pet.dance[data-kind="frog"] svg { animation: sidehop 1s linear infinite; }        /* hops side to side */
-.pet.dance[data-kind="duck"] svg { animation: rock .8s ease-in-out infinite; }      /* a quick waddle */
-.pet.dance[data-kind="corgi"] svg { animation: bounce .4s ease-in-out infinite; }   /* bounces double time */
-.pet.dance[data-kind="panda"] svg { animation: nod 2s ease-in-out infinite; }       /* slow nod */
-.pet.dance[data-kind="owl"] svg { animation: sway .8s ease-in-out infinite; }       /* head-bob sway */
-.pet.dance[data-kind="turtle"] svg { animation: nod 3s ease-in-out infinite; }      /* the slowest groove */
-.pet.dance[data-kind="octopus"] svg { animation: wiggle .5s ease-in-out infinite; } /* wiggles */
-.pet.dance[data-kind="macaw"] svg { animation: skip .5s ease-out infinite; }        /* hops on the beat */
-.pet.dance[data-kind="anteater"] svg { animation: sidestep 1.2s ease-in-out infinite; } /* side to side */
-.pet.dance[data-kind="ghost"] svg { animation: spook 1s ease-in-out infinite; }     /* floats up and sways */
-.pet.dance[data-kind="blackcat"] svg { animation: sway 1s ease-in-out infinite; }   /* sways, paws going */
-.pet.dance[data-kind="frog"] .pouch { animation: croak .25s ease-in-out infinite alternate; }
+.pet.dance[data-kind="cat"] svg { animation: sway calc(1s * var(--slow, 1)) ease-in-out infinite; }       /* sways, paws going */
+.pet.dance[data-kind="shiba"] svg { animation: bounce calc(.5s * var(--slow, 1)) ease-in-out infinite; }  /* bounces on the beat */
+.pet.dance[data-kind="fox"] svg { animation: sidestep calc(1s * var(--slow, 1)) ease-in-out infinite; }   /* side to side */
+.pet.dance[data-kind="penguin"] svg { animation: rock calc(1s * var(--slow, 1)) ease-in-out infinite; }   /* a big waddle */
+.pet.dance[data-kind="bunny"] svg { animation: skip calc(.5s * var(--slow, 1)) ease-out infinite; }       /* hops in place */
+.pet.dance[data-kind="capy"] svg { animation: nod calc(2s * var(--slow, 1)) ease-in-out infinite; }       /* chill: half-time nod */
+.pet.dance[data-kind="frog"] svg { animation: sidehop calc(1s * var(--slow, 1)) linear infinite; }        /* hops side to side */
+.pet.dance[data-kind="duck"] svg { animation: rock calc(.8s * var(--slow, 1)) ease-in-out infinite; }      /* a quick waddle */
+.pet.dance[data-kind="corgi"] svg { animation: bounce calc(.4s * var(--slow, 1)) ease-in-out infinite; }   /* bounces double time */
+.pet.dance[data-kind="panda"] svg { animation: nod calc(2s * var(--slow, 1)) ease-in-out infinite; }       /* slow nod */
+.pet.dance[data-kind="owl"] svg { animation: sway calc(.8s * var(--slow, 1)) ease-in-out infinite; }       /* head-bob sway */
+.pet.dance[data-kind="turtle"] svg { animation: nod calc(3s * var(--slow, 1)) ease-in-out infinite; }      /* the slowest groove */
+.pet.dance[data-kind="octopus"] svg { animation: wiggle calc(.5s * var(--slow, 1)) ease-in-out infinite; } /* wiggles */
+.pet.dance[data-kind="macaw"] svg { animation: skip calc(.5s * var(--slow, 1)) ease-out infinite; }        /* hops on the beat */
+.pet.dance[data-kind="anteater"] svg { animation: sidestep calc(1.2s * var(--slow, 1)) ease-in-out infinite; } /* side to side */
+.pet.dance[data-kind="ghost"] svg { animation: spook calc(1s * var(--slow, 1)) ease-in-out infinite; }     /* floats up and sways */
+.pet.dance[data-kind="blackcat"] svg { animation: sway calc(1s * var(--slow, 1)) ease-in-out infinite; }   /* sways, paws going */
+.pet.dance[data-kind="frog"] .pouch { animation: croak calc(.25s * var(--slow, 1)) ease-in-out infinite alternate; }
 
 /* the music notes a dancing pet sends up */
 .pet .note {

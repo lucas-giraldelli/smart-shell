@@ -36,14 +36,32 @@ Item {
     readonly property bool active: s.moving && s.pose !== "dance" && s.pose !== "work"
     readonly property int hot: active ? level(Rules.tempStatus(SystemStats, Config.thresholds)) : 0
     readonly property bool dancing: Media.dancing && !working
+    // how into the music it is (0..1). A song starts: it stops and looks
+    // around for ~1.4 s, then eases in over ~2 s; the song stops: it keeps
+    // going ~1.2 s, then winds down in ~1 s. With cava it follows the
+    // loudness, without it holds at 0.6
+    property real groove: 0
+    property real heardAt: -10      // clock when the music started / stopped
+    property real quietAt: -10
+    onDancingChanged: dancing ? heardAt = clock : quietAt = clock
+    readonly property bool listening: dancing && clock - heardAt < 1.4
+    readonly property bool grooving: groove > 0.04 && !working
+    function tickGroove(dt) {
+        if (!dancing && clock - quietAt < 1.2)
+            return;
+        const want = !dancing || listening ? 0 : Beat.active ? Math.min(1, 0.15 + 1.1 * Beat.level) : 0.6;
+        groove += (want - groove) * (1 - Math.exp(-dt / (want > groove ? 0.7 : 0.35)));
+    }
     readonly property var dance: Engine.DANCES[kind] ?? null
-    // where in its dance loop the pet is (one beat = 0.5 s)
-    readonly property real dancePhase: dance ? (clock % (0.5 * dance.beats)) / (0.5 * dance.beats) : 0
+    // the dance's own clock: slow while it warms up, double time at full
+    // groove (one beat = 0.5 s at 0.6)
+    property real danceClock: 0
+    readonly property real dancePhase: dance ? (danceClock % (0.5 * dance.beats)) / (0.5 * dance.beats) : 0
     readonly property var move: {
-        if (!dancing || !dance || s.pose !== "dance")
+        if (!grooving || !dance || s.pose !== "dance")
             return {};
-        // with cava, the moves get bigger with the music's loudness
-        const m = dance.at(dancePhase), k = Beat.active ? 0.6 + 0.8 * Beat.level : 1;
+        // the moves grow with the groove
+        const m = dance.at(dancePhase), k = Math.min(1.4, groove / 0.6);
         return { dx: (m.dx ?? 0) * k, dy: (m.dy ?? 0) * k, rot: (m.rot ?? 0) * k };
     }
 
@@ -108,8 +126,10 @@ Item {
         onTriggered: {
             const dt = Math.min(frameTime, 0.05);
             root.clock += dt;
-            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.dancing ? "dance" : null, root.floor.width,
-                { cpu: Config.thresholds.cpu, heavy: root.heavy });
+            root.tickGroove(dt);
+            root.danceClock += dt * (0.3 + 1.2 * root.groove);
+            root.s = root.engine.step(dt, SystemStats.load, root.working ? "work" : root.listening ? "listen" : root.grooving ? "dance" : null, root.floor.width,
+                { cpu: Config.thresholds.cpu, heavy: root.heavy, groove: root.groove });
             root.tickNotes();
         }
     }
@@ -124,7 +144,7 @@ Item {
             : s.pose === "dance" && root.kind === "frog" ? 1 + 0.7 * (0.5 - 0.5 * Math.cos(t / 0.25 * Math.PI)) : 1;
         return {
             // walking legs follow the stride; dancing ones the beat
-            leg: s.pose === "dance" ? ((t % 0.5) < 0.25 ? 1 : -1)
+            leg: s.pose === "dance" ? ((root.danceClock % 0.5) < 0.25 ? 1 : -1)
                 : s.moving && !root.species?.hop ? (phase < 0.25 || phase >= 0.75 ? 1 : -1) : 0,
             lie: root.lying,
             closed: root.sleeping || blink,

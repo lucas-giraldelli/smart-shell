@@ -40,15 +40,29 @@ class Pets extends Component {
 
   setup() {
     this.pets = [];
+    // how into the music they are (0..1). A song starts: they look around
+    // for ~1.4 s, then ease in over ~2 s; it stops: they keep going ~1.2 s,
+    // then wind down in ~1 s (the mock has no cava, so it holds at 0.6). It
+    // sets the dance's tempo (--slow) and how far they stroll
+    let groove = 0, clock = 0, heard = false, changedAt = -10;
     this.stopLoop = onFrame(dt => {
       const { system, agenda } = store.get();
       // what the user is busy with right now: a work meeting wins over music
       const work = agenda.ongoing?.category === 'work';
-      const activity = work ? 'work' : dancing(store.get().media) ? 'dance' : null;
+      clock += dt;
+      const hears = dancing(store.get().media);
+      if (hears !== heard) { heard = hears; changedAt = clock; }
+      const listening = hears && clock - changedAt < 1.4;
+      if (hears || clock - changedAt >= 1.2) {
+        const want = hears && !listening ? .6 : 0;
+        groove += (want - groove) * (1 - Math.exp(-dt / (want > groove ? .7 : .35)));
+      }
+      this.parentElement?.style.setProperty('--slow', (1.02 / (.3 + 1.2 * groove)).toFixed(2));
+      const activity = work ? 'work' : listening ? 'listen' : groove > .04 ? 'dance' : null;
       // config.thresholds: CPU drives what it does; low free RAM makes it
       // heavy, heat turns it reddish (1 = warn, 2 = crit)
       const level = st => (st === 'crit' ? 2 : st === 'warn' ? 1 : 0);
-      const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)) };
+      const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)), groove };
       for (const pet of this.pets) pet.step(dt, system.load, activity, opts);
     });
   }

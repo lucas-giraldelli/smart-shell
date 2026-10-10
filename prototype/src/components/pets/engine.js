@@ -67,8 +67,12 @@ export function createPet(kind, species, host) {
   }
 
   // dancing, every 1.5-4 s it does something: turns around (half the time),
-  // takes a few steps (a third) or just keeps dancing
+  // takes a few steps (a third) or just keeps dancing; opts.groove (0..1, how
+  // loud the music is) makes that more often, and the steps longer and faster
+  // (a run near the top)
   let danceNextIn = 1.5 + Math.random() * 2.5, danceWalkLeft = 0;
+  // a song just started: it stops and looks left and right before it dances
+  let listenFlip = 0;
 
   function pickAct() {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
@@ -108,7 +112,7 @@ export function createPet(kind, species, host) {
     for (let i = 0; i < count; i++) setTimeout(note, i * 120);
   }
 
-  // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit) }
+  // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit), groove: 0..1 while dancing }
   function step(dt, load, activity = null, opts = {}) {
     if (opts.cpu) cpu = opts.cpu;
     if (activity === 'dance') {
@@ -133,12 +137,17 @@ export function createPet(kind, species, host) {
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
     if (pose) target = 0;
+    if (activity === 'listen') {
+      target = 0;
+      if ((listenFlip -= dt) <= 0) { dir = -dir; listenFlip = .4 + Math.random() * .25; }
+    } else listenFlip = .15;
     if (activity === 'dance') {
+      const g = opts.groove ?? .6;
       if (danceWalkLeft > 0) {
         danceWalkLeft -= dt;
-        target = 30;
+        target = 25 + 110 * g * g;
       } else if ((danceNextIn -= dt) <= 0) {
-        danceNextIn = 1.5 + Math.random() * 2.5;
+        danceNextIn = (1.5 + Math.random() * 2.5) * (1.3 - .6 * g);
         const r = Math.random();
         if (r < .5) dir = -dir;
         else if (r < .83) {
