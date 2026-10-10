@@ -55,9 +55,11 @@ Rectangle {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         onClicked: {
+            // the app's own default action (opens the chat), and its window to the front
             const def = root.n.actions.find(a => a.identifier === "default");
             if (def)
                 def.invoke();
+            Notifications.focusApp(root.modelData);
             Notifications.dismiss(root.modelData.id);
         }
     }

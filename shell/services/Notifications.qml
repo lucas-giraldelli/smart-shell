@@ -29,6 +29,16 @@ Singleton {
             return n.expireTimeout;
         return n.urgency === NotificationUrgency.Critical ? 0 : n.urgency === NotificationUrgency.Low ? 3000 : 5000;
     }
+    // bring the sender's window forward (its workspace, then the window): the
+    // first client whose class contains the app's name (a rule's `app`, e.g.
+    // WhatsApp), its own app name or its desktop entry
+    function focusApp(p) {
+        const names = [p.appName, p.notif.appName, p.notif.desktopEntry].filter(s => s).map(s => s.toLowerCase());
+        Quickshell.execDetached(["sh", "-c",
+            'addr=$(hyprctl clients -j | jq -r --argjson names "$1" \'first(.[] | select(.class | ascii_downcase | . as $c | any($names[]; . as $n | $c | contains($n)))) | .address\'); '
+            + '[ -n "$addr" ] && [ "$addr" != null ] && hyprctl dispatch focuswindow "address:$addr" >/dev/null',
+            "sh", JSON.stringify(names)]);
+    }
     function dismiss(id) {
         const p = popups.find(x => x.id === id);
         popups = popups.filter(x => x.id !== id);

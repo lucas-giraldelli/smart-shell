@@ -156,7 +156,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,
   or the app's icon, or a bell; the title, the message in up to 2 lines and the
   actions. They last 5 s (3 s low, critical until closed); hover holds them and
-  shows ×; a click runs the default action. `notifications.rules` restyle some,
+  shows ×; a click runs the default action and brings the app's window
+  forward (its workspace, then the window). `notifications.rules` restyle some,
   matched as substrings on `appName` / `summary` / `body`: `title`, `app`,
   `icon` (an icon name or path, e.g. `claude-desktop` for Claude Code's kitty
   notifications),
