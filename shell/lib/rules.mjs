@@ -206,3 +206,9 @@ export function webTrack(title, artist, url) {
   if (parts.length > 1 && isSite(parts[parts.length - 1])) return { title: parts.slice(0, -1).join(' - '), artist: where === host ? site : where };
   return { title, artist: where === host ? site : where };
 }
+
+// a YouTube video's thumbnail, from its watch / youtu.be / shorts url
+export function youtubeThumb(url) {
+  const m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? `https://i.ytimg.com/vi/${m[1]}/mqdefault.jpg` : '';
+}

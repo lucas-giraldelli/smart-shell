@@ -91,7 +91,7 @@ export function createPet(species, width) {
         if (r < .5) dir = -dir;
         else if (r < .83) {
           if (Math.random() < .5) dir = -dir;
-          danceWalkLeft = .6 + Math.random() * .9;
+          danceWalkLeft = 1.2 + Math.random() * 2.3;   // a short to a long stroll
         }
       }
     }

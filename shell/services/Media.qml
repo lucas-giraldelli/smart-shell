@@ -65,7 +65,9 @@ Singleton {
     // the cover: Chromium writes it to an extension-less file in /tmp that it
     // rewrites under the same name for the next track, so the track is added
     // to the URL (ignored for a local file) to make the image load again
-    readonly property string art: player?.trackArtUrl ?? ""
+    // the player's cover, else a YouTube video's thumbnail from its url (Zen
+    // reports no artwork for YouTube tabs)
+    readonly property string art: player?.trackArtUrl || Rules.youtubeThumb(player?.metadata?.["xesam:url"] ?? "")
     readonly property string album: player?.trackAlbum ?? ""
     readonly property string source: player?.identity ?? ""
     // track length in seconds: Firefox / Zen sometimes leave lengthSupported
