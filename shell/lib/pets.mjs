@@ -37,7 +37,7 @@ export function createPet(species, width) {
   let x = 20 + Math.random() * Math.max(0, width - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, sleepT = 0, jumpLeft = 0;
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
   // below `walk` it walks, above it runs
@@ -88,9 +88,12 @@ export function createPet(species, width) {
     }
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    // the species' own pose (poses.js); one with a speed moves while it plays
-    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
-    if (pose && !(own && act.speed)) target = 0;
+    // the species' own pose (poses.js); one with a speed moves while it plays.
+    // Asleep, a species with a `snore` pose plays it (the ghost's boo)
+    sleepT = state === 'sleep' ? sleepT + dt : 0;
+    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose
+      : state === 'sleep' && pose === 'lie sleep' && species.poses?.snore ? 'snore' : '';
+    if (pose && !(own && act?.speed)) target = 0;
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = state === 'idle' && !activity && act?.say ? act.say : '';
     if (activity === 'listen') {
@@ -130,7 +133,7 @@ export function createPet(species, width) {
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
       x, dir, moving, fast: v > 90, pose: pose === 'dance' || own || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
-      own, poseT: own ? actT : 0, say,
+      own, poseT: own === 'snore' ? sleepT : own ? actT : 0, say,
       // legs keep pace with the body: faster walk, shorter step
       step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
       mood,

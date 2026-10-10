@@ -97,7 +97,8 @@ Item {
     }
     // the species' own pose (lib/poses.mjs): its frame and its motion
     readonly property var poseDef: s.own ? species?.poses?.[s.own] ?? null : null
-    readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
+    // (the snore keeps time with the drifting words, on the clock)
+    readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.own === "snore" ? clock : s.poseT) : ""
     readonly property var poseMove: poseDef ? Engine.moveAt(poseDef, s.poseT) : ({})
     readonly property bool lying: s.pose.includes("lie") || (poseDef?.low ?? false)
     readonly property bool sleeping: s.pose.includes("sleep")

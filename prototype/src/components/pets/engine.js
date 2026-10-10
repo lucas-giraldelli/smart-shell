@@ -57,7 +57,7 @@ export function createPet(kind, species, host) {
   let x = 20 + Math.random() * Math.max(0, host.offsetWidth - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, sleepT = 0, jumpLeft = 0;
   let lastCls = '', lastStep = '', lastDir = 0, lastMood = '';
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
@@ -143,9 +143,12 @@ export function createPet(kind, species, host) {
     }
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    // the species' own pose (poses.js); one with a speed moves while it plays
-    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
-    if (pose && !(own && act.speed)) target = 0;
+    // the species' own pose (poses.js); one with a speed moves while it plays.
+    // Asleep, a species with a `snore` pose plays it (the ghost's boo)
+    sleepT = state === 'sleep' ? sleepT + dt : 0;
+    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose
+      : state === 'sleep' && pose === 'lie sleep' && species.poses?.snore ? 'snore' : '';
+    if (pose && !(own && act?.speed)) target = 0;
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = state === 'idle' && !activity && act?.say ? act.say : '';
     if (activity === 'listen') {
@@ -182,7 +185,7 @@ export function createPet(kind, species, host) {
     el.style.left = x.toFixed(1) + 'px';
     // the species' own pose: its parts, frame and motion (poses.js)
     const def = own ? species.poses[own] : null;
-    const pt = def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
+    const pt = own === 'snore' ? sleepT : def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
     const part = def ? `${own}:${frameAt(def, pt)}` : '';
     if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
     const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';
