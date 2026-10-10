@@ -252,6 +252,7 @@ PaneScroll {
                 clip: true
 
                 Flickable {
+                    id: petFlick
                     x: 1
                     y: 1
                     width: parent.width - 2
@@ -259,6 +260,13 @@ PaneScroll {
                     contentHeight: opts.height
                     clip: true
                     boundsBehavior: Flickable.StopAtBounds
+                    // the wheel, handled here: the popup window doesn't pass it on
+                    WheelHandler {
+                        onWheel: event => {
+                            const dy = event.angleDelta.y !== 0 ? -event.angleDelta.y / 120 * 39 : -event.pixelDelta.y;
+                            petFlick.contentY = Math.max(0, Math.min(petFlick.contentHeight - petFlick.height, petFlick.contentY + dy));
+                        }
+                    }
                     Column {
                         id: opts
                         width: parent.width
