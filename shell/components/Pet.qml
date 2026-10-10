@@ -97,8 +97,7 @@ Item {
     }
     // the species' own pose (lib/poses.mjs): its frame and its motion
     readonly property var poseDef: s.own ? species?.poses?.[s.own] ?? null : null
-    // (the snore keeps time with the drifting words, on the clock)
-    readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.own === "snore" ? clock : s.poseT) : ""
+    readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
     readonly property var poseMove: poseDef ? Engine.moveAt(poseDef, s.poseT) : ({})
     readonly property bool lying: s.pose.includes("lie") || (poseDef?.low ?? false)
     readonly property bool sleeping: s.pose.includes("sleep")
@@ -240,7 +239,7 @@ Item {
             y: -6 + 4 - 20 * p
             scale: 0.7 + 0.45 * p
             opacity: p < 0.3 ? p / 0.3 * 0.9 : 0.9 * (1 - (p - 0.3) / 0.7)
-            text: root.species?.snore ?? "z"
+            text: "z"
             color: Theme.text
             font { family: Theme.font; pixelSize: 11; weight: Font.Bold }
         }

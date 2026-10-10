@@ -42,7 +42,7 @@ export function createPet(kind, species, host) {
   const el = document.createElement('div');
   el.className = base;
   el.dataset.kind = kind;
-  el.innerHTML = `<span class="bubble"></span><span class="say"></span><span class="zzz">${species.snore ?? 'z'}</span><span class="zzz">${species.snore ?? 'z'}</span>
+  el.innerHTML = `<span class="bubble"></span><span class="say"></span><span class="zzz">z</span><span class="zzz">z</span>
     <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
   host.append(el);
   const flip = el.querySelector('.flip');
@@ -57,7 +57,7 @@ export function createPet(kind, species, host) {
   let x = 20 + Math.random() * Math.max(0, host.offsetWidth - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, actT = 0, sleepT = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
   let lastCls = '', lastStep = '', lastDir = 0, lastMood = '';
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
@@ -65,7 +65,7 @@ export function createPet(kind, species, host) {
   let cpu = { sleep: 10, idle: 40, walk: 72 };
   function loadState(load) {
     const l = load + jitter;
-    if (l < cpu.sleep) return 'sleep';
+    if (l < cpu.sleep) return species.sleepless ? 'idle' : 'sleep';
     if (l < cpu.idle) return 'idle';
     if (l < cpu.walk || species.chill) return 'walk';
     return 'run';
@@ -143,11 +143,8 @@ export function createPet(kind, species, host) {
     }
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    // the species' own pose (poses.js); one with a speed moves while it plays.
-    // Asleep, a species with a `snore` pose plays it (the ghost's boo)
-    sleepT = state === 'sleep' ? sleepT + dt : 0;
-    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose
-      : state === 'sleep' && pose === 'lie sleep' && species.poses?.snore ? 'snore' : '';
+    // the species' own pose (poses.js); one with a speed moves while it plays
+    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
     if (pose && !(own && act?.speed)) target = 0;
     // a word in a speech bubble (act.say, a key under pets.says)
     const say = state === 'idle' && !activity && act?.say ? act.say : '';
@@ -185,7 +182,7 @@ export function createPet(kind, species, host) {
     el.style.left = x.toFixed(1) + 'px';
     // the species' own pose: its parts, frame and motion (poses.js)
     const def = own ? species.poses[own] : null;
-    const pt = own === 'snore' ? sleepT : def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
+    const pt = def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
     const part = def ? `${own}:${frameAt(def, pt)}` : '';
     if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
     const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';

@@ -175,7 +175,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   |---|---|---|
   | a work meeting is on (an event in the `work` category, see Clock) | types on a laptop | `events.categories` |
   | YouTube Music plays | looks around for a moment, then eases into its own dance with music notes, every 1.5-4 s turning around or taking a few steps; when the song stops it keeps going a second, then winds down. With `cava` the loudness sets the tempo, the size of the moves and the strolls (a run when it's loud) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
-  | CPU below 10% / 40% / 72% / above | sleeps (the ghost says "boo" instead of "z") / idles: strolls, naps and plays its own tricks (the frog catches a fly, the fox dives into the snow, the capybara takes a bath, the pig rolls in the mud...) and says its word in a bubble / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
+  | CPU below 10% / 40% / 72% / above | sleeps (the ghost never does: it keeps haunting) / idles: strolls, naps and plays its own tricks (the frog catches a fly, the fox dives into the snow, the capybara takes a bath, the pig rolls in the mud...) and says its word in a bubble / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
   | free RAM below 8 GiB / 4 GiB | heavy: 0.6x speed, lower hops, squashed; at 4 GiB a sweat drop | `thresholds.memFreeGiB.warn` / `.crit` |
   | die temperature (Tccd1) from 85 °C / 99 °C, while it walks or runs | reddish; at 99 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
 
