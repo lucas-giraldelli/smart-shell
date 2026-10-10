@@ -28,6 +28,8 @@ ln -s ~/projects/smart-shell/bin/smart-shell ~/.local/bin/   # once
 smart-shell install full          # core + every widget's packages and setup
 smart-shell install core          # just the dock
 smart-shell install docker events # only what some widgets need
+                                  # (brightness nightlight docker bluetooth events
+                                  #  system pets vpn prs music recording)
 smart-shell hyprland              # add the exec-once and blur lines (asks first)
 smart-shell doctor                # what each widget is still missing
 smart-shell restart               # also: start, stop, log
@@ -35,7 +37,15 @@ smart-shell restart               # also: start, stop, log
 
 `install` also loads `i2c-dev` and adds you to the `i2c` / `docker` groups
 for brightness / Docker, enables the bluetooth and docker services, installs
-the calendar export timer and copies the example config if you have none.
+the calendar export timer, runs `gh auth login` for the PRs and copies the
+example config if you have none. `doctor` checks each widget, including the
+`gh` login, YouTube Music's debug port and another notification daemon
+still running.
+
+To add a widget later: install its packages (`smart-shell install <widget>`),
+then add its id to a group in `dock` (or `quick`) in the config - see
+[Making it yours](#making-it-yours). A widget whose backend is missing stays
+visible but disabled and says what to install.
 
 The manual way - dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't list):
 
@@ -47,13 +57,18 @@ The manual way - dependencies (Arch / CachyOS; `paru -S` what `paru -Q` doesn't 
 | `qt6-5compat` | app icon reflections |
 | `qt6-shadertools` | only to rebuild `shell/shaders/*.qsb` after editing a shader |
 | `networkmanager`, `iputils`, `curl` | network status, weather |
+| `jq`, `libnotify` | bringing a window forward from a notification or the player; merged-PR notifications |
 | `ddcutil` | monitor brightness (optional) |
 | `hyprsunset` | night light (optional) |
 | `docker` | Docker tab (optional) |
 | `bluez`, `bluez-utils`, `blueman` | Bluetooth tile and its "open manager" row (optional) |
 | `python-bluetooth-battery` (AUR) | headset battery for headsets that don't report it to BlueZ (optional) |
 | `btop`, `lazydocker`, `kitty` | the default commands behind the btop / lazydocker buttons |
-| `cava` | optional: pets dance to the beat |
+| `openvpn3` | VPN switch in the Network tab (optional) |
+| `github-cli` | pull requests in the tray (optional; `gh auth login`) |
+| `nodejs` (22+) | YouTube Music's like state (optional) |
+| `gpu-screen-recorder` | the recording indicator (optional) |
+| `cava` | pets dance to the music's loudness, the player's eq follows it (optional) |
 
 Run it:
 
@@ -104,7 +119,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   (bats) also animate particles, and midnight / neon / snowy / halloween tint
   the glass - all of it inside the dock only, at 30 fps, paused while a
   fullscreen window is focused. Hyprland's blur applies to every theme.
-- **Pet** - one per dock, picked in the dock settings ("Nenhum" for none). It
+- **Pet** - one per dock, picked in the dock settings ("Nenhum" for none):
+  cat, shiba, fox, penguin, bunny, capybara, frog, duck, corgi, panda, owl,
+  turtle, octopus, macaw, anteater, ghost and black cat. It
   walks on the dock's top edge. Hover for its mood, click for a heart; it
   holds still while a fullscreen window is focused. What it does, in order of
   priority:
@@ -112,7 +129,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   | When | The pet | Config |
   |---|---|---|
   | a work meeting is on (an event in the `work` category, see Clock) | types on a laptop | `events.categories` |
-  | YouTube Music plays | dances its own dance with music notes, every 1.5-4 s turning around or taking a few steps (with `cava` installed, to the beat) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
+  | YouTube Music plays | looks around for a moment, then eases into its own dance with music notes, every 1.5-4 s turning around or taking a few steps; when the song stops it keeps going a second, then winds down. With `cava` the loudness sets the tempo, the size of the moves and the strolls (a run when it's loud) | `pets.danceWith` (default `["music.youtube.com"]`, matched against a player's url, identity, desktop entry or command line) |
   | CPU below 10% / 40% / 72% / above | sleeps / idles and strolls / walks / runs | `thresholds.cpu.sleep` / `.idle` / `.walk` |
   | free RAM below 8 GiB / 4 GiB | heavy: 0.6x speed, lower hops, squashed; at 4 GiB a sweat drop | `thresholds.memFreeGiB.warn` / `.crit` |
   | die temperature (Tccd1) from 85 °C / 99 °C, while it walks or runs | reddish; at 99 °C heat waves above it | `thresholds.tempC.warn` / `.crit` |
@@ -136,7 +153,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   A browser tab with no media metadata (Reddit) shows the site and where on
   it (r/subreddit) instead of the page title.
   Hover shows the full title and artist; the progress bar follows
-  the position once a second. Right-click focuses the player's window, or,
+  the position once a second. With `cava` installed the four eq bars follow
+  the audio (bass to treble); without it they bounce. Right-click focuses the player's window, or,
   for YouTube Music, opens its volume, controls and like. The heart turns red
   when the song is liked: start the app with `--remote-debugging-port=9223`
   (listens on localhost only; `YTM_DEBUG_PORT` changes it) and
@@ -198,7 +216,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
     inside a compose project that's still up, or a non-compose container with
     a restart policy that exited with an error. Containers are grouped by
     compose project. `commands.docker` is the lazydocker button.
-  - Network: NetworkManager. Online = `nmcli networking connectivity` is
+  - Network: NetworkManager. The tab says "Connected" or "No internet", the
+    link kind and speed, and copies the IP from the button beside it.
+    Online = `nmcli networking connectivity` is
     `full`, else a ping to 1.1.1.1 or 8.8.8.8 answers; it only shows offline
     after 3 failed checks in a row (~30 s).
     VPN: [openvpn3](https://openvpn.net/openvpn-3-linux/) profiles (they do

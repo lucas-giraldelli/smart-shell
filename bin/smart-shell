@@ -18,12 +18,11 @@ SHELL_DIR="$REPO/shell"
 HYPR_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/config.json"
 
-WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs)
+WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs music recording)
 
 # packages per widget; core is always installed
 declare -A PKGS=(
-  [prs]="github-cli"
-  [core]="quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl"
+  [core]="quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify"
   [brightness]="ddcutil"
   [nightlight]="hyprsunset"
   [docker]="docker lazydocker"
@@ -32,6 +31,9 @@ declare -A PKGS=(
   [system]="btop kitty"
   [pets]="cava"
   [vpn]="openvpn3"
+  [prs]="github-cli"
+  [music]="nodejs"
+  [recording]="gpu-screen-recorder"
 )
 
 bold() { printf '\033[1m%s\033[0m\n' "$*"; }
@@ -67,6 +69,15 @@ setup_widget() {
       "$REPO/tools/install-services.sh"
       command -v thunderbird >/dev/null || note "events are read from Thunderbird's calendars - install it"
       note "Thunderbird: turn on 'Offline support' for each calendar listed in events.calendars"
+      ;;
+    prs)
+      gh auth status >/dev/null 2>&1 || gh auth login
+      ;;
+    music)
+      note "YouTube Music's like: start the app with --remote-debugging-port=9223"
+      ;;
+    recording)
+      note "your recording script runs: qs ipc -p $SHELL_DIR call recording started|stopped"
       ;;
   esac
   return 0
@@ -151,8 +162,25 @@ cmd_doctor() {
     if [ "$n" -gt 0 ]; then ok "$n openvpn3 profile(s)"; else note "no profile - openvpn3 config-import --config file.ovpn --name X --persistent"; fi
   fi
 
-  bold "pets (optional)"
-  if command -v cava >/dev/null; then ok "cava - they dance to the beat"; else note "no cava - they dance at a fixed tempo (smart-shell install pets)"; fi
+  bold "prs"
+  check_pkgs "${PKGS[prs]}"
+  if gh auth status >/dev/null 2>&1; then ok "gh logged in"; else miss "gh not logged in (gh auth login)"; fi
+
+  bold "music"
+  check_pkgs "${PKGS[music]}"
+  if curl -s -m 1 "http://127.0.0.1:${YTM_DEBUG_PORT:-9223}/json/version" >/dev/null; then ok "YouTube Music debug port - the like is read"
+  else note "no YouTube Music debug port - the like is sent blind (--remote-debugging-port=9223)"; fi
+
+  bold "recording"
+  check_pkgs "${PKGS[recording]}"
+
+  bold "notifications"
+  if pgrep -x mako >/dev/null || pgrep -x dunst >/dev/null || pgrep -x swaync >/dev/null; then
+    miss "another notification daemon runs (mako / dunst / swaync) - drop it from hyprland.conf"
+  else ok "the dock is the notification server"; fi
+
+  bold "pets + music eq (optional)"
+  if command -v cava >/dev/null; then ok "cava - pets dance to the music, the eq follows it"; else note "no cava - fixed tempo and a fake eq (smart-shell install pets)"; fi
 }
 
 # --- hyprland ----------------------------------------------------------------
