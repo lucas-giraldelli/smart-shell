@@ -35,8 +35,7 @@ export default {
         <div>${icon('arrow-up')} ${t('network.upload')}<b data-rate="up"></b>${spark('up')}</div>
       </div>
       <div class="sec">${t('network.connections')}</div>
-      <div data-vpn></div>
-      ${row({ icon: 'copy', title: t('network.copyIp'), trailing: '<span class="meta" data-copied></span>', attrs: 'data-copy' })}`;
+      <div data-vpn></div>`;
   },
 
   update(root, { network: n }) {
@@ -44,7 +43,8 @@ export default {
     online.dataset.status = n.online ? 'ok' : 'crit';
     setHTML(online, `<span class="big">${icon('network')}</span><span class="grow">
       <b>${t(n.online ? 'network.connected' : 'network.offline')}</b>
-      <div class="meta">${n.kind} · ${n.speed}</div></span>`);
+      <div class="meta">${n.kind} · ${n.speed}</div></span>
+      ${n.online ? `<button class="ib flat" data-copy title="${t('network.copyIp')}">${icon('copy')}</button>` : ''}`);
     for (const key of ['down', 'up']) {
       root.querySelector(`[data-rate="${key}"]`).textContent = fmtRate(n[key].at(-1));
       root.querySelector(`[data-line="${key}"]`).setAttribute('points', points(n[key]));
@@ -69,9 +69,9 @@ export default {
     }
     if (target.closest('[data-copy]')) {
       try { navigator.clipboard.writeText(store.get().network.ip); } catch {}
-      const note = root.querySelector('[data-copied]');
-      note.textContent = t('common.copied');
-      setTimeout(() => { note.textContent = ''; }, 1500);
+      const btn = target.closest('[data-copy]');
+      btn.innerHTML = icon('check');
+      setTimeout(() => { btn.innerHTML = icon('copy'); }, 1500);
     }
   },
 };

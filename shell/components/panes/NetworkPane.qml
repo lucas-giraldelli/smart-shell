@@ -36,7 +36,7 @@ PaneScroll {
         Column {
             x: 54
             anchors.verticalCenter: big.verticalCenter
-            width: parent.width - x - 8
+            width: copyBtn.x - x - 8
             Label {
                 text: I18n.t(Network.online ? "network.connected" : "network.offline")
                 size: 13
@@ -50,6 +50,21 @@ PaneScroll {
                 text: `${Network.kind} · ${Network.speed}`
                 size: 11
                 color: Theme.menuSub
+            }
+        }
+        // copies the IP; a check for 1.5 s after
+        IconButton {
+            id: copyBtn
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.verticalCenter: big.verticalCenter
+            icon: root.copied ? "check" : "copy"
+            flat: true
+            visible: Network.online
+            onClicked: {
+                Network.copyIp();
+                root.copied = true;
+                copiedTimer.restart();
             }
         }
     }
@@ -181,21 +196,6 @@ PaneScroll {
             }
         }
     }
-    MenuRow {
-        icon: "copy"
-        title: I18n.t("network.copyIp")
-        onClicked: {
-            Network.copyIp();
-            root.copied = true;
-            copiedTimer.restart();
-        }
-        Label {
-            size: 11
-            color: Theme.menuSub
-            text: root.copied ? I18n.t("common.copied") : ""
-        }
-    }
-
     Timer {
         id: copiedTimer
         interval: 1500

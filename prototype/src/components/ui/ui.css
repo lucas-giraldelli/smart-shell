@@ -58,6 +58,8 @@
 .ib:hover { background: var(--menu-strong); }
 span.ib { cursor: default; }
 span.ib:hover { background: var(--menu-hover); }
+.ib.flat { background: transparent; color: var(--menu-sub); }
+.ib.flat:hover { background: var(--menu-strong); color: var(--menu-text); }
 .ib.off { color: var(--crit); background: rgba(251, 113, 133, .14); }
 .ib.liked { color: var(--crit); background: rgba(251, 113, 133, .14); }
 .ib.liked svg { fill: currentColor; }
