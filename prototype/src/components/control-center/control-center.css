@@ -111,44 +111,21 @@
 }
 .cc .set .chk svg.i { width: 12px; height: 12px; stroke-width: 3; }
 .cc .set .chk.on { background: var(--menu-accent); border-color: var(--menu-accent); color: var(--menu-bg); }
-/* pet picker: a dropdown whose list opens in the flow (the pane scrolls, so a
-   floating list would be clipped) */
-.cc .pet-select { position: relative; margin: 2px 8px 4px; border-radius: 11px; border: 1px solid var(--menu-strong); background: var(--menu-surface); }
-.cc .pet-select .ps-trigger, .cc .pet-select .ps-opt {
-  width: 100%; display: flex; align-items: center; gap: 10px; padding: 5px 10px; cursor: pointer;
-  font: inherit; font-size: 12.5px; color: var(--menu-text); background: none; border: 0; text-align: left;
+/* the pet grid: every pet at rest, six to a row; "none" sits on the care row */
+.cc .pet-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin: 2px 8px 4px; }
+.cc .pg-cell {
+  height: 42px; display: grid; place-items: center; padding: 0; border-radius: 9px; cursor: pointer;
+  border: 1px solid transparent; background: var(--menu-surface); color: var(--menu-sub); font: inherit;
 }
-.cc .pet-select [data-ps-current] { display: contents; }
-.cc .pet-select .ps-trigger:hover, .cc .pet-select .ps-opt:hover { background: var(--menu-hover); }
-.cc .pet-select .ps-chev { width: 16px; height: 16px; color: var(--menu-sub); transition: transform .2s; }
-.cc .pet-select.open .ps-chev { transform: rotate(180deg); }
-.cc .pet-select .ps-trigger { border-radius: 10px; }
-.cc .pet-select .ps-list { display: none; }   /* the template; settings.js floats a copy (.ps-float) */
-/* the floating pet list, on <body> while open */
-.ps-float {
-  position: fixed; z-index: 100; max-height: 214px; overflow-y: auto; border-radius: 11px;
-  border: 1px solid var(--menu-strong); color: var(--menu-text);
-  background: linear-gradient(var(--menu-surface), var(--menu-surface)), linear-gradient(var(--menu-bg), var(--menu-bg)), var(--menu-bg);
-  backdrop-filter: blur(var(--blur)) saturate(var(--sat)); box-shadow: 0 12px 30px rgba(0, 0, 0, .45);
-  scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent;
-}
-.ps-float .ps-opt {
-  width: 100%; display: flex; align-items: center; gap: 10px; padding: 5px 10px; cursor: pointer;
-  font: inherit; font-size: 12.5px; color: var(--menu-text); background: none; border: 0; text-align: left;
-}
-.ps-float .ps-opt:hover { background: var(--menu-hover); }
-.ps-float .ps-check { display: grid; color: var(--menu-accent); opacity: 0; }
-.ps-float .ps-check svg.i { width: 14px; height: 14px; stroke-width: 3; }
-.ps-float .ps-opt.on { background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
-.ps-float .ps-opt.on .ps-check { opacity: 1; }
-.cc .pet-select .ps-check { display: grid; color: var(--menu-accent); opacity: 0; }
-.cc .pet-select .ps-check svg.i { width: 14px; height: 14px; stroke-width: 3; }
-.cc .pet-select .ps-opt.on { background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
-.cc .pet-select .ps-opt.on .ps-check { opacity: 1; }
+.cc .pg-cell:hover { background: var(--menu-hover); }
+.cc .pg-cell.on { border-color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 14%, transparent); }
+.cc .pg-cell .pet-mini { width: 42px; height: 33px; }
+.cc .pet-care { display: flex; align-items: center; justify-content: space-between; margin: 0 8px; }
+.cc .pet-care .meta { margin-left: auto; margin-right: 8px; }
 /* the sprite at rest: no closed eyes, no tongue */
-.cc .pet-mini, .ps-float .pet-mini { flex: none; width: 38px; height: 29px; display: grid; place-items: center; }
-.cc .pet-mini svg, .ps-float .pet-mini svg { width: 100%; height: 100%; overflow: visible; }
-.cc .pet-mini .closed, .cc .pet-mini .tongue, .ps-float .pet-mini .closed, .ps-float .pet-mini .tongue { display: none; }
+.cc .pet-mini { flex: none; width: 38px; height: 29px; display: grid; place-items: center; }
+.cc .pet-mini svg { width: 100%; height: 100%; overflow: visible; }
+.cc .pet-mini .closed, .cc .pet-mini .tongue { display: none; }
 .cc .pet-mini.empty { border: 1.5px dashed var(--menu-faint); border-radius: 8px; width: 30px; height: 24px; margin: 0 4px; }
 .cc .set .langs { display: flex; gap: 6px; padding: 2px 8px 4px; }
 /* segmented controls (workspaces style, clock format), styled like the tab bar */
@@ -223,9 +200,3 @@
 /* system: two half-width toggles under the uptime row */
 .cc .sys-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 0 8px 4px; }
 .cc .sys-actions .btn-s { justify-content: center; }
-/* the pet picker and the Tamagotchi switch side by side, half and half */
-.cc .set .pet-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; margin: 2px 8px 4px; }
-.cc .set .pet-row .pet-select { margin: 0; min-width: 0; }
-.cc .set .pet-row .check-row {
-  min-height: 38px; padding: 0 10px; border-radius: 11px; border: 1px solid var(--menu-strong); background: var(--menu-surface);
-}

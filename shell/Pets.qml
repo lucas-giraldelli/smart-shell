@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import "lib/pets/index.mjs" as Species
+import "lib/poses.mjs" as Poses
 
 // The pet species (prototype: components/pets/species, which lib/pets links to;
 // species/index.js lists them).
@@ -17,7 +18,7 @@ Singleton {
         const s = species[name];
         if (!s)
             return "";
-        let body = s.svg;
+        let body = Poses.partsFor(s.svg, "", "");   // no pose's parts
         if (rest)
             body = body.replace(/<[a-z]+ class="(closed|tongue)[^"]*"[^>]*\/>/g, "");
         return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 36">${body}</svg>`);

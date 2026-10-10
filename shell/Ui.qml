@@ -34,9 +34,6 @@ Singleton {
     property string popover: ""              // "control-center" | "tray" | ""
     property string ccTab: "volume"
     property var dockerOpen: ({})           // compose project -> expanded, as the user left it
-    // windows floating out of the open popover (the pet list): clicks in them
-    // don't close it
-    property var popoverExtras: []
 
     // the screen the open popover belongs to: with a dock per screen, only
     // that screen's popover opens (two would fight over the focus grab)

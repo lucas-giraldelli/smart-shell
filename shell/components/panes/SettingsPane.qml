@@ -12,7 +12,8 @@ PaneScroll {
     id: root
 
     readonly property var toggleable: ["workspaces", "capslock", "apps", "music", "weather", "bluetooth", "tray", "clock"]
-    property bool petOpen: false
+
+    property string petHover: ""   // the pet under the mouse in the grid
 
     function petName(k) {
         return I18n.t(k && Pets.species[k] ? `pets.names.${k}` : "settings.noPet");
@@ -168,23 +169,85 @@ PaneScroll {
     }
 
     Section { text: I18n.t("settings.pets") }
-    // .pet-select: the pet picker, and beside it, half and half, the care
-    // switch (.pet-row)
+    // .pet-grid: every pet at rest, six to a row; a click picks it ("none"
+    // sits on the care row below)
     Item {
-        id: petRow
         width: parent.width
-        height: select.height
-        z: 10
-
+        height: petGrid.height
+        Grid {
+            id: petGrid
+            x: 8
+            columns: 6
+            spacing: 4
+            Repeater {
+                model: Pets.names
+                Rectangle {
+                    id: petCell
+                    required property string modelData
+                    readonly property bool on: (Ui.pet || "") === modelData
+                    width: (404 - 16 - 4 * 5) / 6
+                    height: 42
+                    radius: 9
+                    color: on ? Theme.mix(Theme.menuAccent, 0.14) : cellArea.containsMouse ? Theme.menuHover : Theme.menuSurface
+                    border.color: on ? Theme.menuAccent : "transparent"
+                    Image {
+                        visible: petCell.modelData !== ""
+                        anchors.centerIn: parent
+                        width: 42
+                        height: 42 * 36 / 46
+                        sourceSize: Qt.size(84, 66)
+                        source: Pets.sprite(petCell.modelData, true)
+                    }
+                    Label {
+                        visible: petCell.modelData === ""
+                        anchors.centerIn: parent
+                        size: 11
+                        color: Theme.menuSub
+                        text: I18n.t("settings.noPet")
+                    }
+                    MouseArea {
+                        id: cellArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Ui.pet = petCell.modelData
+                        onContainsMouseChanged: root.petHover = containsMouse ? petCell.modelData : ""
+                    }
+                }
+            }
+        }
+    }
+    // care mode (services/Tama.qml); on the right, the pet's name (the one
+    // under the mouse, else the chosen one)
+    Item {
+        width: parent.width
+        height: 29
+        Row {
+            anchors.right: parent.right
+            anchors.rightMargin: 8
+            anchors.verticalCenter: parent.verticalCenter
+            spacing: 8
+            Label {
+                anchors.verticalCenter: parent.verticalCenter
+                size: 12
+                color: Theme.menuSub
+                text: root.petName(root.petHover || Ui.pet)
+            }
+            SmallButton {
+                anchors.verticalCenter: parent.verticalCenter
+                text: I18n.t("settings.noPet")
+                active: !Ui.pet
+                onClicked: Ui.pet = ""
+            }
+        }
         Rectangle {
-            x: select.x + select.width + 8
-            width: select.width
-            height: 41
-            radius: 11
-            color: tamaArea.containsMouse ? Theme.menuHover : Theme.menuSurface
-            border.color: Theme.menuStrong
+            x: 8
+            width: (404 - 16 - 10) / 2
+            height: 29
+            radius: 8
+            color: tamaArea.containsMouse ? Theme.menuHover : "transparent"
             Row {
-                x: 10
+                x: 4
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 9
                 Check {
@@ -204,88 +267,6 @@ PaneScroll {
                 hoverEnabled: true
                 cursorShape: Qt.PointingHandCursor
                 onClicked: Ui.tamaOn = !Ui.tamaOn
-            }
-        }
-        Rectangle {
-            id: select
-            x: 8
-            width: (parent.width - 16 - 8) / 2
-            height: 41
-            radius: 11
-            color: Theme.menuSurface
-            border.color: Theme.menuStrong
-
-            PetOption {
-                x: 1
-                y: 1
-                width: parent.width - 2
-                pet: Ui.pet
-                label: root.petName(Ui.pet)
-                chevron: true
-                open: root.petOpen
-                onClicked: root.petOpen = !root.petOpen
-            }
-        }
-
-        // the list: a window of its own, floating out of the popover (it
-        // neither pushes nor scrolls the pane), below the picker or, without
-        // room, above; as wide as the row
-        PopupWindow {
-            id: petList
-            visible: root.petOpen
-            anchor.item: select
-            anchor.rect.x: 0
-            anchor.rect.y: select.height + 4
-            anchor.edges: Edges.Top | Edges.Left
-            anchor.gravity: Edges.Bottom | Edges.Right
-            anchor.adjustment: PopupAdjustment.FlipY
-            implicitWidth: petRow.width - 16
-            implicitHeight: Math.min(214, opts.height + 2)
-            color: "transparent"
-            onVisibleChanged: Ui.popoverExtras = visible ? [petList] : []
-
-            Rectangle {
-                anchors.fill: parent
-                radius: 11
-                color: Qt.rgba(Theme.menuBg.r, Theme.menuBg.g, Theme.menuBg.b, 0.97)
-                border.color: Theme.menuStrong
-                clip: true
-
-                Flickable {
-                    id: petFlick
-                    x: 1
-                    y: 1
-                    width: parent.width - 2
-                    height: parent.height - 2
-                    contentHeight: opts.height
-                    clip: true
-                    boundsBehavior: Flickable.StopAtBounds
-                    // the wheel, handled here: the popup window doesn't pass it on
-                    WheelHandler {
-                        onWheel: event => {
-                            const dy = event.angleDelta.y !== 0 ? -event.angleDelta.y / 120 * 39 : -event.pixelDelta.y;
-                            petFlick.contentY = Math.max(0, Math.min(petFlick.contentHeight - petFlick.height, petFlick.contentY + dy));
-                        }
-                    }
-                    Column {
-                        id: opts
-                        width: parent.width
-                        Repeater {
-                            model: [...Pets.names, "none"]
-                            PetOption {
-                                required property string modelData
-                                width: opts.width
-                                pet: modelData === "none" ? "" : modelData
-                                label: root.petName(pet)
-                                selected: (Ui.pet || "") === pet
-                                onClicked: {
-                                    root.petOpen = false;
-                                    Ui.pet = pet;
-                                }
-                            }
-                        }
-                    }
-                }
             }
         }
     }

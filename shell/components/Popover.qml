@@ -87,7 +87,7 @@ PopupWindow {
     HyprlandFocusGrab {
         // grab once the popup is mapped, or the compositor clears it at once
         active: root.open && root.backingWindowVisible
-        windows: [root, root.owner.QsWindow.window].concat(Ui.popoverExtras)
+        windows: [root, root.owner.QsWindow.window]
         onCleared: if (root.open) Ui.closePopover()
     }
 
