@@ -68,10 +68,16 @@ Singleton {
     }
     Process {
         id: read
-        command: ["sh", "-c", "ddcutil detect --brief 2>/dev/null | sed -n 's/^ *Monitor: *[^:]*:\\([^:]*\\):.*/\\1/p' | head -1; ddcutil getvcp 10 --brief"]
+        // never while a screen is off: DDC traffic to a sleeping OLED (in its
+        // panel-care cycle) can drop it off the bus; the name is read once
+        command: ["sh", "-c", "hyprctl monitors -j | jq -e 'all(.dpmsStatus)' >/dev/null || exit 0; "
+            + (root.name ? "echo '" + root.name.replace(/'/g, "") + "'" : "ddcutil detect --brief 2>/dev/null | sed -n 's/^ *Monitor: *[^:]*:\\([^:]*\\):.*/\\1/p' | head -1")
+            + "; ddcutil getvcp 10 --brief"]
         stdout: StdioCollector {
             onStreamFinished: {
                 const lines = text.trim().split("\n");
+                if (lines.length < 2)
+                    return;     // skipped: a screen is off
                 root.name = lines[0] ?? "";
                 const m = (lines[1] ?? "").match(/^VCP 10 C (\d+) (\d+)/);
                 if (m) {
