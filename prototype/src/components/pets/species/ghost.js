@@ -5,6 +5,8 @@ export default {
   speed: .7,
   float: true,
   sleepless: true,
+  food: '🍬',            // what it eats (Tamagotchi mode)
+  pace: { clean: 0 },   // how fast its needs run down against the default 1
   acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'fade', w: 1, dur: [2.4, 3.6], pose: 'fade' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'boo', pose: 'shout' }, { name: 'flip', w: .7, dur: [1.6, 2.6], pose: 'flip' }],
   poses: {
     // fades nearly out and back

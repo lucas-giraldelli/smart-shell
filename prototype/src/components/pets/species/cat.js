@@ -2,6 +2,8 @@
 export default {
   color: '#f2a65a',
   mouth: [39.4, 17.8],   // where it opens its mouth to yawn
+  food: '🐟',            // what it eats (Tamagotchi mode)
+  bath: -1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'lick', w: 1.2, dur: [2, 3.5], pose: 'lick' }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'meow' }, { name: 'stretch', w: 1, dur: [1.8, 2.6], pose: 'stretch' }],
   poses: {
     // licks a raised paw, eyes shut

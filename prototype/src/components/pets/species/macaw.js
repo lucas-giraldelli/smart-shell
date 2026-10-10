@@ -4,6 +4,7 @@ export default {
   speed: .95,
   hop: true,
   mouth: [38.6, 14.8],   // where it opens its mouth to yawn
+  food: '🌰',            // what it eats (Tamagotchi mode)
   acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.2], jump: true }, { name: 'turn', w: 1, dur: [1, 2], turn: true }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.4, 2], say: 'hello' }, { name: 'hang', w: .8, dur: [2.6, 4], pose: 'hang' }],
   poses: {
     // flaps its wings

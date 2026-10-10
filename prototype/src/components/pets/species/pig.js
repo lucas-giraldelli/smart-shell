@@ -3,6 +3,9 @@ export default {
   color: '#f9a8c0',
   speed: .8,
   mouth: [42.8, 21.2],   // where it opens its mouth to yawn
+  food: '🍎',            // what it eats (Tamagotchi mode)
+  pace: { clean: 1.5 },   // how fast its needs run down against the default 1
+  bath: -1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'lie', w: 1.6, dur: [4, 9], pose: 'lie' }, { name: 'sniff', w: 1.4, dur: [1.5, 3], speed: 10 }, { name: 'mud', w: 1.4, dur: [4, 7], pose: 'mud' }, { name: 'talk', w: .7, dur: [1.2, 1.8], say: 'oink' }, { name: 'happy', w: 1, dur: [1.6, 2.6], pose: 'happy' }],
   poses: {
     // rolls in the mud: a puddle, muddy spots, rocking happily

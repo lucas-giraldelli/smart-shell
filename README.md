@@ -362,7 +362,7 @@ See [docs/architecture.md](docs/architecture.md) for how the pieces fit.
 ## Adding a pet
 
 A pet is one file in `prototype/src/components/pets/species/`, shared by the
-prototype and the shell (linked as `shell/lib/pets/<name>.mjs`). It exports:
+prototype and the shell. It exports:
 
 - `svg` - the drawing, facing right in a 56x36 box with its feet on y=33.
   The animator looks for these classes: `legs` holding `la` / `lb` (legs
@@ -395,11 +395,15 @@ what Qt's QML JavaScript engine handles: no spread (`...`), no optional calls
 change, `smart-shell restart` and check `qs log` and
 `~/.cache/quickshell/crashes/`.
 
-Then register it: an import in `shell/Pets.qml` and
-`prototype/src/components/pets/pets.js`, its id in `pets.available`
-(`shell/Config.qml`, `prototype/src/data/config.js`), its name, moods and
-words in `prototype/src/i18n/locales/`, and its dance in `DANCES`
-(`shell/lib/pets.mjs`) and `pets.css`.
+- `food` (an emoji), `pace` (how fast each need runs down against 1, e.g.
+  `{ food: 1.5 }`) and `bath` (1 loves one, -1 sulks) for Tamagotchi mode.
+
+Then register it: one line in `prototype/src/components/pets/species/index.js`
+(the shell and the prototype both read that list; `shell/lib/pets` links to
+the folder), its name, moods and words in `prototype/src/i18n/locales/`, and,
+optionally, its dance in `DANCES` (`shell/lib/pets.mjs`) and `pets.css`.
+Everything else - walking, tricks, dancing, yawning, Tamagotchi care - comes
+from the shared engine.
 
 ## Calendar events
 

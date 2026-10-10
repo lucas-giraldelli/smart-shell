@@ -1,1 +1,0 @@
-../../../prototype/src/components/pets/species/octopus.js

@@ -3,6 +3,7 @@ export default {
   color: '#f97316',
   speed: 1.3,
   mouth: [43.2, 18.2],   // where it opens its mouth to yawn
+  food: '🍗',            // what it eats (Tamagotchi mode)
   acts: [{ name: 'stroll', w: 5, dur: [3, 7], speed: 30 }, { name: 'pounce', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'dive', w: 1, dur: [2.6, 3], pose: 'dive' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'yip' }],
   poses: {
     // a mousing dive: crouch, a high arc, nose buried in the snow

@@ -4,6 +4,8 @@ export default {
   speed: .55,
   chill: true,
   mouth: [42.2, 18.4],   // where it opens its mouth to yawn
+  food: '🍊',            // what it eats (Tamagotchi mode)
+  pace: { food: .7, fun: .6, energy: .7, clean: .7 },   // how fast its needs run down against the default 1
   acts: [{ name: 'lie', w: 4, dur: [6, 14], pose: 'lie' }, { name: 'nap', w: 2, dur: [8, 16], pose: 'sleep' }, { name: 'bath', w: 1.6, dur: [6, 10], pose: 'bath' }, { name: 'talk', w: .6, dur: [2, 3], say: 'pullup' }],
   poses: {
     // a hot bath: sits in the water, eyes shut, its orange floats beside it

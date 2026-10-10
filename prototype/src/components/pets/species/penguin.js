@@ -4,6 +4,8 @@ export default {
   speed: .7,
   waddle: true,
   mouth: [34.4, 14.4],   // where it opens its mouth to yawn
+  food: '🐟',            // what it eats (Tamagotchi mode)
+  bath: 1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'stand', w: 5, dur: [3, 6] }, { name: 'slide', w: 1.2, dur: [1.6, 2.6], pose: 'slide', speed: 60 }, { name: 'talk', w: .7, dur: [1.4, 2], say: 'noot' }, { name: 'flap', w: 1, dur: [1.2, 2], pose: 'flap' }],
   poses: {
     // slides on its belly

@@ -4,6 +4,8 @@ export default {
   speed: .8,
   waddle: true,
   mouth: [41.2, 14.4],   // where it opens its mouth to yawn
+  food: '🍞',            // what it eats (Tamagotchi mode)
+  bath: 1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'stand', w: 4, dur: [2, 5] }, { name: 'flap', w: 1.2, dur: [1.2, 2], pose: 'flap' }, { name: 'talk', w: .8, dur: [1.2, 1.8], say: 'quack' }, { name: 'ducklings', w: 1, dur: [3, 5], pose: 'ducklings', speed: 14 }],
   poses: {
     // flaps its wings

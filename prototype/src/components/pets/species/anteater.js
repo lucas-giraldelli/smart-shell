@@ -3,6 +3,7 @@ export default {
   color: '#78716c',
   speed: .7,
   mouth: [46.2, 22.2],   // where it opens its mouth to yawn
+  food: '🐜',            // what it eats (Tamagotchi mode)
   acts: [{ name: 'stroll', w: 5, dur: [4, 8], speed: 22 }, { name: 'ants', w: 1.4, dur: [2.4, 3.6], pose: 'ants' }, { name: 'hug', w: .8, dur: [1.8, 2.6], say: 'hug', pose: 'hug' }],
   poses: {
     // snout down, its long tongue flicking at ants

@@ -3,6 +3,8 @@ export default {
   color: '#f4f4f5',
   speed: .65,
   mouth: [37.2, 18.8],   // where it opens its mouth to yawn
+  food: '🎋',            // what it eats (Tamagotchi mode)
+  pace: { food: 1.5 },   // how fast its needs run down against the default 1
   acts: [{ name: 'lie', w: 2, dur: [5, 9], pose: 'lie' }, { name: 'nap', w: 2, dur: [7, 14], pose: 'sleep' }, { name: 'bamboo', w: 1.4, dur: [3, 5], pose: 'bamboo' }, { name: 'talk', w: .5, dur: [1.4, 2], say: 'munch' }, { name: 'roll', w: 1, dur: [2, 3.4], pose: 'roll' }, { name: 'scratch', w: 1, dur: [1.6, 2.6], pose: 'scratch' }],
   poses: {
     // munches a bamboo stalk

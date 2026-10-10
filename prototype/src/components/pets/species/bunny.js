@@ -4,6 +4,7 @@ export default {
   speed: 1.1,
   hop: true,
   mouth: [42.6, 18.4],   // where it opens its mouth to yawn
+  food: '🥕',            // what it eats (Tamagotchi mode)
   acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }, { name: 'binky', w: 1, dur: [1.2, 2.2], pose: 'binky' }, { name: 'nose', w: 1, dur: [1.5, 3], pose: 'nose' }, { name: 'scratch', w: 1, dur: [1.6, 2.4], pose: 'scratch' }, { name: 'talk', w: .5, dur: [1.2, 1.8], say: 'squeak' }],
   poses: {
     // a happy twisting hop

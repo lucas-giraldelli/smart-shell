@@ -2,6 +2,8 @@
 export default {
   color: '#27272a',
   mouth: [39.4, 17.8],   // where it opens its mouth to yawn
+  food: '🐟',            // what it eats (Tamagotchi mode)
+  bath: -1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [{ name: 'lie', w: 2, dur: [5, 10], pose: 'lie' }, { name: 'nap', w: 1, dur: [6, 12], pose: 'sleep' }, { name: 'pounce', w: .6, dur: [.5, .9], jump: true }, { name: 'arch', w: 1, dur: [1.4, 2.4], pose: 'arch' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'hiss' }, { name: 'dark', w: 1, dur: [2.4, 4], pose: 'dark' }],
   poses: {
     // spooked: back arched, fur on end, trembling

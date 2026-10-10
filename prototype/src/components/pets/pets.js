@@ -2,40 +2,20 @@ import { Component, define } from '../../core/component.js';
 import { onFrame } from '../../core/loop.js';
 import { store } from '../../state.js';
 import { createPet } from './engine.js';
+import { species } from './species/index.js';
 import { config } from '../../data/config.js';
 import { memStatus, tempStatus } from '../control-center/panes/system.js';
 import { openPopover, closePopover, isOpen } from '../../core/popover.js';
 import { setHTML } from '../ui/ui.js';
-import { tick, care, menuHTML, urgent, stage, FOOD, SIGN } from './tama.js';
+import { tick, care, menuHTML, urgent, stage, foodOf, SIGN } from './tama.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
 const dancing = media => media.playing
   && (config.pets?.danceWith ?? []).some(w => `${media.url ?? ''} ${media.source ?? ''}`.toLowerCase().includes(w.toLowerCase()));
-import cat from './species/cat.js';
-import shiba from './species/shiba.js';
-import fox from './species/fox.js';
-import penguin from './species/penguin.js';
-import bunny from './species/bunny.js';
-import capy from './species/capy.js';
-import frog from './species/frog.js';
-import duck from './species/duck.js';
-import corgi from './species/corgi.js';
-import pig from './species/pig.js';
-import panda from './species/panda.js';
-import owl from './species/owl.js';
-import turtle from './species/turtle.js';
-import octopus from './species/octopus.js';
-import macaw from './species/macaw.js';
-import anteater from './species/anteater.js';
-import ghost from './species/ghost.js';
-import blackcat from './species/blackcat.js';
 
 // Every sprite faces right in a 46x36 box with its feet on y=33.
-export const species = {
-  cat, shiba, fox, penguin, bunny, capy, frog,
-  duck, corgi, panda, owl, turtle, octopus, macaw, anteater, ghost, blackcat, pig,
-};
+export { species };
 
 // The pet walking on top of the dock (one per dock, ui.pet). Must sit inside
 // .dock-wrap, which is its floor.
@@ -105,7 +85,7 @@ class Pets extends Component {
       pet.setFlags([ui.tamaOn && 'tama', ui.tamaOn && tama.sick && 'sick', ui.tamaOn && stage(tama) === 'baby' && 'baby'].filter(Boolean).join(' '));
       el.toggleAttribute('data-open', ui.tamaOn && ui.popover === 'tama');
       const need = ui.tamaOn ? urgent(tama) : '';
-      el.querySelector('.need').textContent = need === 'food' ? FOOD[pet.kind] ?? SIGN.food : SIGN[need] ?? '';
+      el.querySelector('.need').textContent = need === 'food' ? foodOf(pet.kind) : SIGN[need] ?? '';
       if (ui.tamaOn && ui.popover === 'tama') setHTML(el.querySelector('.menu'), menuHTML(pet.kind, tama));
     }
     const poops = ui.tamaOn && this.pets.length ? tama.poops : [];
@@ -138,7 +118,7 @@ class Pets extends Component {
     if (say) pet.speak(say);
     if (!effect) return;
     if (effect === 'pet') pet.love();   // a heart and its word
-    pet.perform(effect, FOOD[pet.kind] ?? '🍖');
+    pet.perform(effect, foodOf(pet.kind));
   }
 }
 

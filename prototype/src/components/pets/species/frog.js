@@ -5,6 +5,8 @@ export default {
   hop: true,
   mouth: [33, 22.4],   // where it opens its mouth to yawn
   click: 'croak',
+  food: '🪰',            // what it eats (Tamagotchi mode)
+  bath: 1,              // a bath: 1 loves it, -1 sulks (default 0, doesn't mind)
   acts: [
     { name: 'stand', w: 4, dur: [2, 5] },
     { name: 'croak', w: 2, dur: [1.5, 3], pose: 'croak' },

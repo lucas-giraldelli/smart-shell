@@ -3,6 +3,7 @@ export default {
   color: '#c084fc',
   speed: .75,
   mouth: [23.3, 19.6],   // where it opens its mouth to yawn
+  food: '🦐',            // what it eats (Tamagotchi mode)
   acts: [{ name: 'turn', w: 2, dur: [.8, 1.6], turn: true }, { name: 'ink', w: 1, dur: [1.6, 2], pose: 'ink' }, { name: 'wave', w: 1.2, dur: [1.6, 2.6], pose: 'wave' }, { name: 'camo', w: 1, dur: [2.4, 3.6], pose: 'camo' }, { name: 'talk', w: .6, dur: [1.2, 1.8], say: 'blub' }],
   poses: {
     // squirts a puff of ink behind it

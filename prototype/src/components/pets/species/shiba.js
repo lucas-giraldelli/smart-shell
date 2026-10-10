@@ -3,6 +3,8 @@ export default {
   color: '#e0a15e',
   speed: 1.15,
   mouth: [42.6, 18.4],   // where it opens its mouth to yawn
+  food: '🦴',            // what it eats (Tamagotchi mode)
+  pace: { fun: 1.3, energy: 1.3 },   // how fast its needs run down against the default 1
   acts: [{ name: 'zoomies', w: 1.2, dur: [1.4, 2.4], speed: 150 }, { name: 'jump', w: 1, dur: [.7, 1.2], jump: true }, { name: 'sit', w: 1.2, dur: [3, 6], pose: 'sit' }, { name: 'talk', w: .6, dur: [1.6, 2.2], say: 'wow' }, { name: 'wag', w: 1.2, dur: [1.6, 2.6], pose: 'wag' }],
   poses: {
     // sits back, eyes shut, smug

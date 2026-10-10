@@ -3,6 +3,7 @@ import { savePref } from '../../core/prefs.js';
 import { t } from '../../i18n/index.js';
 import { notify } from '../notifications/notifications.js';
 import { fresh } from './tama-fresh.js';
+import { species } from './species/index.js';
 
 // Tamagotchi mode (ui.tamaOn, off by default): the pet has needs that run down
 // over hours, and a right click on it opens its care menu.
@@ -15,30 +16,19 @@ import { fresh } from './tama-fresh.js';
 // It drops one every 2.5-4.5 h while fed; dirt, droppings or a hot PC can make
 // it sick (Medicine cures it).
 // It grows: a baby the first day (drawn smaller), young up to 3 days, then adult.
-// Each species has its own pace (TRAITS); a loaded CPU tires it a little, a hot
+// Each species has its own pace (its `pace` and `bath`); a loaded CPU tires it a little, a hot
 // one tires it and makes it sweat (and can make it sick), a work meeting bores it a little, music cheers it up, and at night (22-6 h) it
 // tires faster and asks for bed sooner. Most dislike a bath (the duck, penguin
 // and frog love one; the pig would rather have mud), and petting it over and
 // over pleases it less each time (a cat ends up hissing).
 export const NEEDS = ['food', 'fun', 'clean', 'energy', 'health'];
-// how fast each need runs down against the default (1), and how it takes a
-// bath: 1 loves it, 0 doesn't mind, -1 sulks
-const TRAITS = {
-  panda: { food: 1.5 }, corgi: { fun: 1.4, energy: 1.4 }, shiba: { fun: 1.3, energy: 1.3 },
-  capy: { food: .7, fun: .6, energy: .7, clean: .7 }, turtle: { food: .6, fun: .6, energy: .6, clean: .6 },
-  ghost: { clean: 0 }, cat: { bath: -1 }, blackcat: { bath: -1 }, pig: { bath: -1, clean: 1.5 },
-  duck: { bath: 1 }, penguin: { bath: 1 }, frog: { bath: 1 },
-};
-const trait = (kind, k) => TRAITS[kind]?.[k] ?? (k === 'bath' ? 0 : 1);
+// a species' pace for a need (species.pace, default 1) and how it takes a bath
+// (species.bath: 1 loves it, -1 sulks, default 0)
+const trait = (kind, k) => (k === 'bath' ? species[kind]?.bath ?? 0 : species[kind]?.pace?.[k] ?? 1);
+export const foodOf = kind => species[kind]?.food ?? '🍖';
 const night = () => { const h = new Date().getHours(); return h >= 22 || h < 6; };
 // recent pets (ms), for the diminishing returns; session only
 let petted = [];
-// what each species eats
-export const FOOD = {
-  cat: '🐟', blackcat: '🐟', penguin: '🐟', shiba: '🦴', corgi: '🦴', fox: '🍗', bunny: '🥕', capy: '🍊',
-  frog: '🪰', duck: '🍞', panda: '🎋', owl: '🐭', turtle: '🥬', octopus: '🦐', macaw: '🌰', anteater: '🐜',
-  ghost: '🍬', pig: '🍎',
-};
 // the sign over its head for its most urgent need
 export const SIGN = { food: '🍖', fun: '🎾', clean: '🧼', energy: '💤', sick: '🤒' };
 
@@ -160,7 +150,7 @@ export function menuHTML(kind, s) {
     ${NEEDS.map(bar).join('')}
     <div class="tm-acts">
       ${btn('pet', '💗', t('tama.pet'))}
-      ${btn('feed', FOOD[kind] ?? '🍖', t('tama.feed'))}
+      ${btn('feed', foodOf(kind), t('tama.feed'))}
       ${btn('play', '🎾', t('tama.play'))}
       ${btn('clean', '🧼', t('tama.wash'))}
       ${btn('medicine', '💊', t('tama.medicine'), !s.sick)}

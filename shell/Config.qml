@@ -34,7 +34,7 @@ Singleton {
         },
         // pets dance while one of these players plays (substrings of its url,
         // identity, desktop entry or command line): YouTube Music
-        pets: { available: ["cat", "shiba", "fox", "penguin", "bunny", "capy", "frog", "duck", "corgi", "panda", "owl", "turtle", "octopus", "macaw", "anteater", "ghost", "blackcat", "pig"], danceWith: ["music.youtube.com"] },
+        pets: { danceWith: ["music.youtube.com"] },
         locale: null,
         theme: "glass",
         // holiday regions marked on the calendar (lib/calendar.mjs)
@@ -94,7 +94,6 @@ Singleton {
     readonly property var dock: data.dock
     readonly property var quick: data.quick
     readonly property var commands: data.commands
-    readonly property var pets: data.pets.available
     readonly property var petsConfig: data.pets
     readonly property var trayHidden: data.tray.hidden
     readonly property var trayRedBadge: data.tray.redBadge ?? []
