@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'YouTube Music volume', notPlaying: 'YouTube Music isn\'t open' },
 
-  keyboard: { recording: 'Recording the screen · click or Alt+Print to stop', resize: 'Resize mode · Esc to exit' },
+  keyboard: { recording: 'Click to stop recording', resize: 'Resize · Esc exits' },
 
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
@@ -22,9 +22,9 @@ export default {
   system: {
     label: 'System', cpu: 'CPU', memory: 'Memory', temp: 'Die (Tccd1) at {temp}°C',
     free: '{free} GiB', used: '{used} of {total} GiB in use',
-    uptime: 'Up for {time}', screen: 'Screen', screenOff: 'Turn off the screen', since: 'On since {date}',
-    top: 'Top memory', kill: 'Quit', killArm: 'Click again to quit',
-    killWait: 'Quitting…', killForce: 'Still running · click to force',
+    uptime: 'Up for {time}', screen: 'Screen', screenOff: 'Turn off screen', since: 'On since {date}',
+    top: 'Top memory', kill: 'Quit', killArm: 'Click again',
+    killWait: 'Quitting…', killForce: 'Click to force',
     uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
 
@@ -59,7 +59,7 @@ export default {
     label: 'Network', connected: '{kind} connected', offline: 'No internet',
     internetOk: 'internet ok', noPing: 'ping gets no reply',
     ip: 'IP', gateway: 'Gateway', dockerNet: 'Docker network',
-    download: 'Download', upload: 'Upload', connections: 'Connections', vpn: 'VPN', vpnStates: { off: 'Off', authenticating: 'Waiting for approval in the browser', connecting: 'Connecting…', on: 'On · {server}', error: 'Couldn\'t connect' }, vpnOnTip: 'VPN on · {server}', profile: 'Profile', copyIp: 'Copy IP',
+    download: 'Download', upload: 'Upload', connections: 'Connections', vpn: 'VPN', vpnStates: { off: 'Off', authenticating: 'Approve in the browser', connecting: 'Connecting…', on: 'On · {server}', error: 'Couldn\'t connect' }, vpnOnTip: 'VPN · {server}', profile: 'Profile', copyIp: 'Copy IP',
   },
 
   docker: {
@@ -76,8 +76,8 @@ export default {
 
   notifications: { close: 'Close' },
   prs: {
-    title: 'Pull requests', tile: '{n} open PRs', refresh: 'Refresh', none: 'No open PRs',
-    hide: 'Hide this repo', dismiss: 'Dismiss', unhide: 'Show this repo again',
+    title: 'Pull requests', tile: '{n} PRs', refresh: 'Refresh', none: 'No open PRs',
+    hide: 'Hide', dismiss: 'Dismiss', unhide: 'Show',
     showHidden: 'Show hidden ({n})', hideHidden: 'Hide hidden ({n})',
     updated: 'updated at {time}', sample: 'sample',
     status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',
@@ -113,7 +113,7 @@ export default {
     },
   },
 
-  reminder: { join: 'click to join the Meet', soon: 'in {minutes} min', now: 'now' },
+  reminder: { join: 'Join the Meet', soon: 'in {minutes} min', now: 'now' },
 
   categories: { work: 'Work', health: 'Health', personal: 'Personal' },
 
@@ -139,7 +139,7 @@ export default {
 
   pets: {
     names: { cat: 'Cat', shiba: 'Shiba', fox: 'Fox', penguin: 'Penguin', bunny: 'Bunny', capy: 'Capybara', frog: 'Frog' },
-    bubble: '{name} · {mood} · CPU {load}%',
+    bubble: '{mood} · CPU {load}%',
     chill: "Couldn't care less about the CPU",
     moods: {
       sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',

@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'Volume do YouTube Music', notPlaying: 'YouTube Music não está aberto' },
 
-  keyboard: { resize: 'Modo redimensionar · Esc sai', recording: 'Gravando a tela · clique ou Alt+Print para parar' },
+  keyboard: { resize: 'Redimensionar · Esc sai', recording: 'Clique para parar gravação' },
 
   capslock: { on: 'Caps Lock ligado', off: 'Caps Lock desligado' },
 
@@ -22,9 +22,9 @@ export default {
   system: {
     label: 'Sistema', cpu: 'CPU', memory: 'Memória', temp: 'Die (Tccd1) a {temp}°C',
     free: '{free} GiB', used: '{used} de {total} GiB em uso',
-    uptime: 'Ligado há {time}', screen: 'Tela', screenOff: 'Desligar a tela', since: 'Ligado desde {date}',
-    top: 'Mais memória', kill: 'Encerrar', killArm: 'Clique de novo para encerrar',
-    killWait: 'Encerrando…', killForce: 'Ainda aberto · clique para forçar',
+    uptime: 'Ligado há {time}', screen: 'Tela', screenOff: 'Desligar tela', since: 'Ligado desde {date}',
+    top: 'Mais memória', kill: 'Encerrar', killArm: 'Clique de novo',
+    killWait: 'Encerrando…', killForce: 'Clique para forçar',
     uptimeDays: '{d} d {h} h', uptimeHours: '{h} h {m} min', uptimeMinutes: '{m} min',
   },
 
@@ -59,7 +59,7 @@ export default {
     label: 'Rede', connected: '{kind} conectada', offline: 'Sem internet',
     internetOk: 'internet ok', noPing: 'o ping não responde',
     ip: 'IP', gateway: 'Gateway', dockerNet: 'Rede Docker',
-    download: 'Download', upload: 'Upload', connections: 'Conexões', vpn: 'VPN', vpnStates: { off: 'Desligada', authenticating: 'Aguardando aprovação no navegador', connecting: 'Conectando…', on: 'Ligada · {server}', error: 'Erro ao conectar' }, vpnOnTip: 'VPN ligada · {server}', profile: 'Perfil', copyIp: 'Copiar IP',
+    download: 'Download', upload: 'Upload', connections: 'Conexões', vpn: 'VPN', vpnStates: { off: 'Desligada', authenticating: 'Aprove no navegador', connecting: 'Conectando…', on: 'Ligada · {server}', error: 'Erro ao conectar' }, vpnOnTip: 'VPN · {server}', profile: 'Perfil', copyIp: 'Copiar IP',
   },
 
   docker: {
@@ -76,8 +76,8 @@ export default {
 
   notifications: { close: 'Fechar' },
   prs: {
-    title: 'Pull requests', tile: '{n} PRs abertos', refresh: 'Atualizar', none: 'Nenhum PR aberto',
-    hide: 'Ocultar este repo', dismiss: 'Dispensar', unhide: 'Mostrar este repo de novo',
+    title: 'Pull requests', tile: '{n} PRs', refresh: 'Atualizar', none: 'Nenhum PR aberto',
+    hide: 'Ocultar', dismiss: 'Dispensar', unhide: 'Mostrar',
     showHidden: 'Mostrar ocultos ({n})', hideHidden: 'Esconder ocultos ({n})',
     updated: 'atualizado às {time}', sample: 'exemplo',
     status: { failing: 'pipeline quebrada', conflict: 'conflito com a base', behind: 'desatualizado com a main',
@@ -113,7 +113,7 @@ export default {
     },
   },
 
-  reminder: { soon: 'em {minutes} min', now: 'agora', join: 'clique para entrar no Meet' },
+  reminder: { soon: 'em {minutes} min', now: 'agora', join: 'Entrar no Meet' },
 
   categories: { work: 'Trabalho', health: 'Saúde', personal: 'Pessoal' },
 
@@ -139,7 +139,7 @@ export default {
 
   pets: {
     names: { cat: 'Gato', shiba: 'Shiba', fox: 'Raposa', penguin: 'Pinguim', bunny: 'Coelho', capy: 'Capivara', frog: 'Sapo' },
-    bubble: '{name} · {mood} · CPU {load}%',
+    bubble: '{mood} · CPU {load}%',
     chill: 'Nem aí pra CPU',
     moods: {
       sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
