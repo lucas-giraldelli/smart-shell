@@ -5,7 +5,7 @@ export default {
   hop: true,
   acts: [{ name: 'jump', w: 1.5, dur: [.7, 1.1], jump: true }, { name: 'lie', w: 1, dur: [4, 8], pose: 'lie' }],
   svg: `
-    <g class="legs" fill="#d4d9e1">
+    <g class="legs" fill="#e2e8f0">
       <rect class="la" x="13" y="27" width="5" height="6" rx="2.5"/><rect class="lb" x="18" y="27" width="5" height="6" rx="2.5"/>
       <rect class="lb" x="27" y="27" width="4.5" height="6" rx="2.2"/><rect class="la" x="31.5" y="27" width="4.5" height="6" rx="2.2"/>
     </g>
@@ -17,9 +17,10 @@ export default {
       <ellipse cx="38.5" cy="4" rx="2.6" ry="7" transform="rotate(10 38.5 4)" fill="#f1f5f9"/>
       <ellipse cx="38.5" cy="4.5" rx="1.2" ry="5" transform="rotate(10 38.5 4.5)" fill="#fbcfe8"/>
       <circle cx="36" cy="15" r="7.5" fill="#f1f5f9"/>
-      <ellipse class="eye" cx="34" cy="14" rx="1.1" ry="1.6" fill="#1c1917"/><ellipse class="eye" cx="39" cy="14" rx="1.1" ry="1.6" fill="#1c1917"/>
-      <path class="closed" d="M32.8 14.4 q1.2 1 2.4 0 M37.8 14.4 q1.2 1 2.4 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <ellipse class="eye" cx="33.8" cy="14" rx="1.5" ry="2" fill="#1c1917"/><ellipse class="eye" cx="39" cy="14" rx="1.5" ry="2" fill="#1c1917"/><circle class="eye" cx="34.3" cy="13.2" r=".55" fill="#ffffff"/><circle class="eye" cx="39.5" cy="13.2" r=".55" fill="#ffffff"/>
+      <path class="closed" d="M32.1 14.4 q1.7 1.3 3.4 0 M37.3 14.4 q1.7 1.3 3.4 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <circle cx="42.6" cy="16.5" r="1" fill="#f472b6"/>
-      <circle cx="33" cy="17.5" r="1.2" fill="#f9a8d4" opacity=".7"/>
+      <path d="M41.6 17.7 q.5 .7 1 0 q.5 .7 1 0" stroke="#1c1917" stroke-width=".7" fill="none" stroke-linecap="round"/>
+      <circle cx="32.6" cy="17.6" r="1.3" fill="#f9a8d4" opacity=".65"/>
     </g>`,
 };

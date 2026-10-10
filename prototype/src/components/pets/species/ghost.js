@@ -3,6 +3,7 @@ export default {
   color: '#f8fafc',
   speed: .7,
   float: true,
+  snore: 'boo',            // what floats up while it sleeps (default z)
   acts: [{ name: 'stand', w: 3, dur: [2, 5] }, { name: 'turn', w: 1, dur: [1, 2], turn: true }],
   svg: `
     <g class="body-g" opacity=".92">

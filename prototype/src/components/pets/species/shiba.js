@@ -16,9 +16,10 @@ export default {
       <polygon points="32,8 32,3.5 35,6.5" fill="#fbd5ad"/><polygon points="39.5,6.5 42,3.5 42,8.5" fill="#fbd5ad"/>
       <circle cx="37" cy="13" r="8" fill="#e0a15e"/>
       <ellipse cx="40" cy="16.5" rx="5" ry="3.2" fill="#fbf1e3"/>
-      <circle cx="33.6" cy="15.6" r="1.3" fill="#f9a8d4" opacity=".7"/>
-      <ellipse class="eye" cx="34.8" cy="11.5" rx="1.2" ry="1.6" fill="#1c1917"/><ellipse class="eye" cx="40" cy="11.5" rx="1.2" ry="1.6" fill="#1c1917"/>
-      <path class="closed" d="M33.4 11.9 q1.4 1.2 2.8 0 M38.6 11.9 q1.4 1.2 2.8 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+      <circle cx="33.4" cy="15.4" r="1.3" fill="#f9a8d4" opacity=".65"/>
+      <ellipse class="eye" cx="34.6" cy="11.5" rx="1.5" ry="1.9" fill="#1c1917"/><ellipse class="eye" cx="40.2" cy="11.5" rx="1.5" ry="1.9" fill="#1c1917"/><circle class="eye" cx="35.1" cy="10.7" r=".55" fill="#ffffff"/><circle class="eye" cx="40.7" cy="10.7" r=".55" fill="#ffffff"/>
+      <path class="closed" d="M32.9 11.9 q1.7 1.3 3.4 0 M38.5 11.9 q1.7 1.3 3.4 0" stroke="#1c1917" stroke-width="1.1" fill="none" stroke-linecap="round"/>
       <ellipse cx="44.2" cy="15.4" rx="1.4" ry="1.1" fill="#1c1917"/>
+      <path d="M41 17.4 q1.6 1.5 3.2 -.1" stroke="#1c1917" stroke-width=".8" fill="none" stroke-linecap="round"/>
     </g>`,
 };
