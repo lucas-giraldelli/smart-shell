@@ -37,8 +37,8 @@ Singleton {
                     return;
                 const level = bars.reduce((a, b) => a + b, 0) / bars.length / 100;
                 const now = Date.now();
-                // a beat: the level jumps up past a floor, at most ~4 a second
-                if (level > 0.35 && level - root.last > 0.15 && now - root.lastBeat > 250) {
+                // a beat: the level jumps up past a floor, at most ~4.5 a second
+                if (level > 0.25 && level - root.last > 0.1 && now - root.lastBeat > 220) {
                     root.lastBeat = now;
                     root.beat();
                 }
