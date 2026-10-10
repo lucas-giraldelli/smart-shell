@@ -1,4 +1,5 @@
 import { t } from '../../i18n/index.js';
+import { frameAt, moveAt, showParts } from './poses.js';
 
 // Behaviour shared by every pet. A pet reacts to CPU load:
 //   sleep (< 10%)  ·  idle (< 40%)  ·  walk (< 72%)  ·  run
@@ -41,18 +42,22 @@ export function createPet(kind, species, host) {
   const el = document.createElement('div');
   el.className = base;
   el.dataset.kind = kind;
-  el.innerHTML = `<span class="bubble"></span><span class="zzz">${species.snore ?? 'z'}</span><span class="zzz">${species.snore ?? 'z'}</span>
+  el.innerHTML = `<span class="bubble"></span><span class="say"></span><span class="zzz">${species.snore ?? 'z'}</span><span class="zzz">${species.snore ?? 'z'}</span>
     <svg viewBox="0 0 46 36"><g class="flip">${species.svg}${LAPTOP}</g></svg>`;
   host.append(el);
   const flip = el.querySelector('.flip');
   const bubble = el.querySelector('.bubble');
+  const sayEl = el.querySelector('.say');
+  const svgEl = el.querySelector('svg');
+  showParts(flip);
+  let lastPart = '', lastSay = '', lastMove = '';
 
   // each pet reacts at slightly different loads, so they don't all switch at once
   const jitter = (Math.random() - .5) * 12;
   let x = 20 + Math.random() * Math.max(0, host.offsetWidth - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
   let lastCls = '', lastStep = '', lastDir = 0, lastMood = '';
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
@@ -78,6 +83,7 @@ export function createPet(kind, species, host) {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
     act = acts.find(a => (r -= a.w) < 0) ?? acts[0];
     actLeft = act.dur[0] + Math.random() * (act.dur[1] - act.dur[0]);
+    actT = 0;
     if (act.turn) dir = -dir;
     if (act.jump) jumpLeft = .55;
   }
@@ -128,6 +134,7 @@ export function createPet(kind, species, host) {
     let target, pose = '';
     if (state === 'idle') {
       if (!act || (actLeft -= dt) <= 0) pickAct();
+      else actT += dt;
       target = act.speed ?? 0;
       if (act.pose) pose = act.pose === 'sleep' ? 'lie sleep' : act.pose;
     } else {
@@ -136,7 +143,11 @@ export function createPet(kind, species, host) {
     }
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    if (pose) target = 0;
+    // the species' own pose (poses.js); one with a speed moves while it plays
+    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
+    if (pose && !(own && act.speed)) target = 0;
+    // a word in a speech bubble (act.say, a key under pets.says)
+    const say = state === 'idle' && !activity && act?.say ? act.say : '';
     if (activity === 'listen') {
       target = 0;
       if ((listenFlip -= dt) <= 0) { dir = -dir; listenFlip = .4 + Math.random() * .25; }
@@ -169,10 +180,19 @@ export function createPet(kind, species, host) {
     if (x > max) { x = max; dir = -1; }
     if (x < 14) { x = 14; dir = 1; }
     el.style.left = x.toFixed(1) + 'px';
-    if (dir !== lastDir) { flip.style.transform = dir < 0 ? 'scaleX(-1)' : ''; lastDir = dir; }
+    // the species' own pose: its parts, frame and motion (poses.js)
+    const def = own ? species.poses[own] : null;
+    const pt = def ? actT : 0, m = moveAt(def, pt), face = m.flip ? -dir : dir;
+    const part = def ? `${own}:${frameAt(def, pt)}` : '';
+    if (part !== lastPart) { showParts(flip, own, part.split(':')[1]); lastPart = part; }
+    const mv = def ? `translate(${m.dx ?? 0}px, ${m.dy ?? 0}px) rotate(${m.rot ?? 0}deg)|${m.opacity ?? 1}` : '';
+    if (mv !== lastMove) { const [tf, op] = mv.split('|'); svgEl.style.transform = tf ?? ''; svgEl.style.opacity = op ?? ''; lastMove = mv; }
+    if (face !== lastDir) { flip.style.transform = face < 0 ? 'scaleX(-1)' : ''; lastDir = face; }
+    if (say !== lastSay) { sayEl.textContent = say ? t(`pets.says.${say}`) : ''; lastSay = say; }
 
     const moving = v > 4;
-    const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
+    const cls = [base, moving && 'moving', v > 90 && 'fast', (pose === 'dance' || own || (pose && v < 3)) && pose, jumpLeft > 0 && 'jump',
+      def?.shut && 'shut', def?.low && 'lie', def?.move && 'posed', say && 'talking',
       opts.heavy && 'heavy', opts.heavy === 2 && 'sweat',
       // the heat only shows while it walks or runs - not dancing, at the laptop, asleep or idling
       moving && !pose && opts.hot && 'hot', moving && !pose && opts.hot === 2 && 'scorch']

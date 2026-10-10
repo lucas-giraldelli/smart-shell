@@ -24,7 +24,8 @@ function actionsFor(species) {
   return [...byName.values()];
 }
 
-// step(dt, load, activity, width, opts) -> { x, dir, moving, fast, pose, jump, step, mood }
+// step(dt, load, activity, width, opts) -> { x, dir, moving, fast, pose, own, poseT, say, jump, step, mood }
+// (own: the species' own pose playing, poseT seconds in; say: a pets.says key)
 // opts: { cpu: config thresholds.cpu, heavy: 0 | 1 | 2 (free RAM warn / crit: slower),
 //         groove: 0..1 while dancing }
 // (`mood` is a translation key under pets.moods, or 'chill')
@@ -36,7 +37,7 @@ export function createPet(species, width) {
   let x = 20 + Math.random() * Math.max(0, width - 100);
   let dir = Math.random() < .5 ? -1 : 1, v = 0;
   let state = 'idle', pending = null, pendingT = 0;
-  let act = null, actLeft = 0, jumpLeft = 0;
+  let act = null, actLeft = 0, actT = 0, jumpLeft = 0;
 
   // config thresholds.cpu: below `sleep` it sleeps, below `idle` it idles,
   // below `walk` it walks, above it runs
@@ -61,6 +62,7 @@ export function createPet(species, width) {
     let r = Math.random() * acts.reduce((t, a) => t + a.w, 0);
     act = acts.find(a => (r -= a.w) < 0) ?? acts[0];
     actLeft = act.dur[0] + Math.random() * (act.dur[1] - act.dur[0]);
+    actT = 0;
     if (act.turn) dir = -dir;
     if (act.jump) jumpLeft = .55;
   }
@@ -77,6 +79,7 @@ export function createPet(species, width) {
     let target, pose = '';
     if (state === 'idle') {
       if (!act || (actLeft -= dt) <= 0) pickAct();
+      else actT += dt;
       target = act.speed ?? 0;
       if (act.pose) pose = act.pose === 'sleep' ? 'lie sleep' : act.pose;
     } else {
@@ -85,7 +88,11 @@ export function createPet(species, width) {
     }
     if (activity === 'work') pose = 'work';
     else if (activity === 'dance') pose = 'dance';
-    if (pose) target = 0;
+    // the species' own pose (poses.js); one with a speed moves while it plays
+    const own = state === 'idle' && pose && pose === act.pose && species.poses?.[pose] ? pose : '';
+    if (pose && !(own && act.speed)) target = 0;
+    // a word in a speech bubble (act.say, a key under pets.says)
+    const say = state === 'idle' && !activity && act?.say ? act.say : '';
     if (activity === 'listen') {
       target = 0;
       if ((listenFlip -= dt) <= 0) { dir = -dir; listenFlip = .4 + Math.random() * .25; }
@@ -122,7 +129,8 @@ export function createPet(species, width) {
     let mood = activity === 'work' || activity === 'dance' ? activity : state === 'idle' ? act?.name ?? 'stand' : state;
     if (species.chill && load + jitter >= 72) mood = 'chill';
     return {
-      x, dir, moving, fast: v > 90, pose: pose === 'dance' || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
+      x, dir, moving, fast: v > 90, pose: pose === 'dance' || own || (pose && v < 3) ? pose : '', jump: jumpLeft > 0,
+      own, poseT: own ? actT : 0, say,
       // legs keep pace with the body: faster walk, shorter step
       step: moving ? Math.round(Math.min(.6, Math.max(.16, 14 / v)) * 25) / 25 : .42,
       mood,
@@ -142,6 +150,9 @@ const LAPTOP = (screen) => `
   </g>`;
 export const SCREEN_COLORS = ['#7dd3fc', '#a5f3fc', '#93c5fd', '#bae6fd'];
 
+import { partsFor } from './poses.mjs';
+export { frameAt, moveAt } from './poses.mjs';
+
 const drop = (svg, cls) => svg.replace(new RegExp(`<[a-z]+ class="${cls}[^"]*"[^>]*/>`, 'g'), '');
 
 // One look of a sprite as an SVG data URL:
@@ -153,12 +164,13 @@ const drop = (svg, cls) => svg.replace(new RegExp(`<[a-z]+ class="${cls}[^"]*"[^
 //   bob     body raised (fast run, typing)
 //   screen  the laptop's screen colour, or '' for no laptop
 //   wag     the tail's angle (deg), turned around where it starts (its path's M)
+//   pose / frame  the species' own pose playing and its frame (poses.js)
 export function look(species, opts) {
   const key = JSON.stringify(opts);
   if (!species.__looks) species.__looks = new Map();
   if (species.__looks.has(key)) return species.__looks.get(key);
-  const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '', wag = 0 } = opts;
-  let svg = species.svg;
+  const { leg = 0, lie = false, closed = false, tongue = false, pouch = 1, bob = 0, screen = '', wag = 0, pose = '', frame = '' } = opts;
+  let svg = partsFor(species.svg, pose, frame);
   if (wag) svg = svg.replace(/<path class="tail" d="M\s*([\d.]+)[ ,]([\d.]+)/, (m, x, y) => `<path class="tail" transform="rotate(${wag} ${x} ${y})" d="M${x} ${y}`);
   if (leg) {
     svg = svg.replace(/<rect class="(la|lb)" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)"([^>]*)\/>/g,

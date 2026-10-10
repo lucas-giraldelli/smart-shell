@@ -95,7 +95,11 @@ Item {
         if (live.length !== notes.length || due.length)
             notes = live;
     }
-    readonly property bool lying: s.pose.includes("lie")
+    // the species' own pose (lib/poses.mjs): its frame and its motion
+    readonly property var poseDef: s.own ? species?.poses?.[s.own] ?? null : null
+    readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
+    readonly property var poseMove: poseDef ? Engine.moveAt(poseDef, s.poseT) : ({})
+    readonly property bool lying: s.pose.includes("lie") || (poseDef?.low ?? false)
     readonly property bool sleeping: s.pose.includes("sleep")
 
     visible: species !== null
@@ -139,7 +143,9 @@ Item {
             leg: s.pose === "dance" ? ((root.danceClock % 0.5) < 0.25 ? 1 : -1)
                 : s.moving && !root.species?.hop ? (phase < 0.25 || phase >= 0.75 ? 1 : -1) : 0,
             lie: root.lying,
-            closed: root.sleeping || blink,
+            closed: root.sleeping || blink || (root.poseDef?.shut ?? false),
+            pose: root.poseDef ? root.s.own : "",
+            frame: root.frame,
             tongue,
             pouch: Math.round(croak * 10) / 10,
             // the tail wags -12..14deg (pets.css .tail): 1.6 s, fast .25 s, lying 4 s
@@ -155,10 +161,13 @@ Item {
         height: 36
         // hop (frog, bunny) and jump lift the whole sprite; waddle (penguin) rocks
         // it; float (ghost) bobs it in the air
-        x: root.move.dx ?? 0
+        x: root.move.dx ?? root.poseMove.dx ?? 0
+        opacity: root.poseMove.opacity ?? 1
         y: {
             if (root.move.dy !== undefined)
                 return root.move.dy;
+            if (root.poseMove.dy !== undefined)
+                return root.poseMove.dy;
             if (root.s.jump)
                 return -16 * Math.sin(Math.min(1, (root.clock % 0.55) / 0.55) * Math.PI);
             if (root.species?.hop && root.s.moving)    // heavy: lower hops
@@ -168,6 +177,7 @@ Item {
             return 0;
         }
         rotation: root.move.rot !== undefined ? root.move.rot
+            : root.poseMove.rot !== undefined ? root.poseMove.rot
             : root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
         transformOrigin: Item.Bottom
 
@@ -185,16 +195,42 @@ Item {
             smooth: true
             source: root.species ? Engine.look(root.species, root.lookOpts) : ""
             // faces right; flip around the sprite box when walking left
-            transform: Scale { origin.x: 23; xScale: root.s.dir < 0 ? -1 : 1 }
+            transform: Scale { origin.x: 23; xScale: root.face < 0 ? -1 : 1 }
         }
         // heat: reddish from warn, more at crit
         MultiEffect {
             visible: root.hot > 0
             anchors.fill: spriteImage
             source: spriteImage
-            transform: Scale { origin.x: 23; xScale: root.s.dir < 0 ? -1 : 1 }
+            transform: Scale { origin.x: 23; xScale: root.face < 0 ? -1 : 1 }
             colorization: root.hot === 2 ? 0.45 : 0.25
             colorizationColor: "#f97316"
+        }
+    }
+
+    // faces where it walks; a pose can turn it around (flip)
+    readonly property int face: poseMove.flip ? -s.dir : s.dir
+
+    // a word in a speech bubble (an action's `say`, under pets.says)
+    Rectangle {
+        id: sayBubble
+        readonly property bool on: !!root.s.say
+        anchors.horizontalCenter: parent.horizontalCenter
+        y: -16
+        width: sayText.implicitWidth + 14
+        height: 16
+        radius: 8
+        color: "#f8fafc"
+        opacity: on ? 1 : 0
+        scale: on ? 1 : 0.6
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        Behavior on scale { NumberAnimation { duration: 200 } }
+        Text {
+            id: sayText
+            anchors.centerIn: parent
+            text: root.s.say ? I18n.t(`pets.says.${root.s.say}`) : ""
+            color: "#1c1917"
+            font { family: Theme.font; pixelSize: 10; weight: Font.Bold }
         }
     }
 
