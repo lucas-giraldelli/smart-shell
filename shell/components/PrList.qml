@@ -130,12 +130,6 @@ Popover {
                             rotation: group.open ? 90 : 0
                             Behavior on rotation { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
                         }
-                        Icon {
-                            anchors.verticalCenter: parent.verticalCenter
-                            name: root.looks[group.status].icon
-                            size: 16
-                            color: root.looks[group.status].color
-                        }
                         Label {
                             anchors.verticalCenter: parent.verticalCenter
                             size: 12.5

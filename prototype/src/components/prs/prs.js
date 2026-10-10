@@ -78,11 +78,10 @@ class PrList extends Component {
         <button class="ib${prs.loading ? ' spinning' : ''}" data-refresh title="${t('prs.refresh')}">${icon('refresh-cw')}</button>
       </div>
       ${visible(prs).length ? byRepo(visible(prs)).map(g => {
-        const status = worst(g.prs), look = LOOK[status];
+        const status = worst(g.prs);
         return `
         <div class="pr-group${isExpanded(g.repo, status) ? ' open' : ''}${prs.hidden.includes(g.repo) ? ' hidden-repo' : ''}" data-repo="${g.repo}">
           <div class="pr-repo" title="${g.repo}">${icon('chevron-right', 'pr-chev')}
-            <span class="pr-ic" style="color:${look.color}">${icon(look.icon)}</span>
             <span class="grow">${g.repo.split('/')[1]}</span>
             <button class="pr-hide" data-hide="${g.repo}" title="${t(prs.hidden.includes(g.repo) ? 'prs.unhide' : 'prs.hide')}">${icon(prs.hidden.includes(g.repo) ? 'eye' : 'eye-off')}</button>
             <span class="pr-count">${g.prs.length}</span>
