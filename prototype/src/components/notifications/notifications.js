@@ -11,7 +11,7 @@ import { config } from '../../data/config.js';
 // the app's icon) with the app's icon as a badge, the app and time, the title,
 // the message in up to 2 lines and the actions. A click runs the default
 // action (opens the chat); hover holds the timer. config.notifications.rules
-// restyle some (match on app / summary): a title, an app name, a `love`
+// restyle some (match on app / summary): a title, an app name, an icon, a `love`
 // look, a timeout.
 const timeoutOf = n => n.timeout ?? (n.urgency === 'critical' ? 0 : n.urgency === 'low' ? 3000 : 5000);
 
@@ -33,7 +33,7 @@ export function dismiss(id) {
 let nextId = 1;
 export function notify(n) {
   const rule = ruleFor(n);
-  const full = { id: nextId++, time: new Date(), urgency: 'normal', actions: [], ...n, ...(rule ? { style: rule.style, timeout: rule.timeout, summary: rule.title ?? n.summary, appName: rule.app ?? n.appName } : {}) };
+  const full = { id: nextId++, time: new Date(), urgency: 'normal', actions: [], ...n, ...(rule ? { style: rule.style, timeout: rule.timeout, summary: rule.title ?? n.summary, appName: rule.app ?? n.appName, appIcon: rule.icon ?? n.appIcon } : {}) };
   update('notifications', s => ({ list: [...s.list, full].slice(-4) }));
   arm(full);
 }

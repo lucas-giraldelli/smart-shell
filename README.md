@@ -158,6 +158,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   actions. They last 5 s (3 s low, critical until closed); hover holds them and
   shows ×; a click runs the default action. `notifications.rules` restyle some,
   matched as substrings on `appName` / `summary` / `body`: `title`, `app`,
+  `icon` (an icon name or path, e.g. `claude-desktop` for Claude Code's kitty
+  notifications),
   `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
   closed).
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth

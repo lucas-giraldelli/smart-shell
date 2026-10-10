@@ -8,7 +8,8 @@ import ".."
 // Notifications window (prototype: components/notifications). Apps get
 // bodies, images, actions and markup. config.notifications.rules restyle
 // some (matched as substrings on appName / summary / body): `title`, `app`,
-// `style` ("love"), `timeout` (ms, 0 = until closed). At most 4 popups.
+// `icon` (an icon name or path), `style` ("love"), `timeout` (ms, 0 = until
+// closed). At most 4 popups.
 Singleton {
     id: root
 
@@ -52,7 +53,7 @@ Singleton {
             const rule = root.ruleFor(n);
             const p = {
                 id: root.nextId++, notif: n,
-                appName: rule?.app ?? n.appName, summary: rule?.title ?? n.summary,
+                appName: rule?.app ?? n.appName, summary: rule?.title ?? n.summary, icon: rule?.icon ?? "",
                 style: rule?.style ?? "", timeout: root.timeoutOf(n, rule),
                 critical: n.urgency === NotificationUrgency.Critical
             };

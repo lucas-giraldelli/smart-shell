@@ -15,8 +15,10 @@ Rectangle {
     required property var modelData
     readonly property var n: modelData.notif
     readonly property bool love: modelData.style === "love"
-    readonly property string appIconSource: n.appIcon
-        ? (n.appIcon.startsWith("/") || n.appIcon.includes("://") ? n.appIcon : Quickshell.iconPath(n.appIcon, true))
+    // a rule's icon, else the app's (a name, a path or a url), else its desktop entry's
+    readonly property string iconName: modelData.icon || n.appIcon
+    readonly property string appIconSource: iconName
+        ? (iconName.startsWith("/") || iconName.includes("://") ? iconName : Quickshell.iconPath(iconName, true))
         : (n.desktopEntry ? Quickshell.iconPath(DesktopEntries.byId(n.desktopEntry)?.icon ?? "", true) : "")
     readonly property var actions: n.actions.filter(a => a.identifier !== "default")
     property date time: new Date()
