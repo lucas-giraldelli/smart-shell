@@ -17,8 +17,8 @@ Popover {
         conflict: { icon: "circle-x", color: Theme.crit },
         behind: { icon: "triangle-alert", color: Theme.warn },
         pending: { icon: "circle-dashed", color: Theme.menuSub },
-        review: { icon: "clock", color: Theme.menuSub },
-        ready: { icon: "circle-check", color: Theme.ok },
+        green: { icon: "check", color: Theme.ok },
+        approved: { icon: "check-check", color: Theme.ok },
         merged: { icon: "git-merge", color: "#a78bfa" }
     })
     function colorOf(status) {

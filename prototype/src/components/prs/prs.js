@@ -14,8 +14,8 @@ const LOOK = {
   conflict: { icon: 'circle-x', color: 'var(--crit)' },
   behind: { icon: 'triangle-alert', color: 'var(--warn)' },
   pending: { icon: 'circle-dashed', color: 'var(--menu-sub)' },
-  review: { icon: 'clock', color: 'var(--menu-sub)' },
-  ready: { icon: 'circle-check', color: 'var(--ok)' },
+  green: { icon: 'check', color: 'var(--ok)' },
+  approved: { icon: 'check-check', color: 'var(--ok)' },
   merged: { icon: 'git-merge', color: '#a78bfa' },
 };
 

@@ -80,7 +80,7 @@ export default {
     showHidden: 'Show hidden ({n})', hideHidden: 'Hide hidden ({n})',
     updated: 'updated at {time}', sample: 'sample',
     status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',
-      pending: 'pipeline running', review: 'waiting for review', ready: 'ready', merged: 'merged' },
+      pending: 'pipeline running', green: 'pipeline green', approved: 'pipeline green and approved', merged: 'merged' },
   },
   weather: {
     feels: 'Feels like {temp}°', nextHours: 'Next hours', days: '7 days',

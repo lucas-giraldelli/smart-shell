@@ -80,7 +80,7 @@ export default {
     showHidden: 'Mostrar ocultos ({n})', hideHidden: 'Esconder ocultos ({n})',
     updated: 'atualizado às {time}', sample: 'exemplo',
     status: { failing: 'pipeline quebrada', conflict: 'conflito com a base', behind: 'desatualizado com a main',
-      pending: 'pipeline rodando', review: 'aguardando review', ready: 'pronto', merged: 'mergeado' },
+      pending: 'pipeline rodando', green: 'pipeline verde', approved: 'pipeline verde e aprovado', merged: 'mergeado' },
   },
   weather: {
     feels: 'Sensação {temp}°', nextHours: 'Próximas horas', days: '7 dias',

@@ -2,9 +2,9 @@
 // (shell/lib/prs.mjs links here).
 //   failing   checks failed            conflict  merge conflict with base
 //   behind    base moved on (stale)    pending   checks running
-//   review    waiting for a review     ready     green and approved / mergeable
+//   green     pipeline green (one tick) approved  green and approved (two ticks)
 //   merged    merged since last look
-export const ORDER = ['failing', 'conflict', 'behind', 'pending', 'review', 'ready', 'merged'];
+export const ORDER = ['failing', 'conflict', 'behind', 'pending', 'green', 'approved', 'merged'];
 
 export function prStatus(pr) {
   if (pr.merged) return 'merged';
@@ -12,8 +12,7 @@ export function prStatus(pr) {
   if (pr.mergeState === 'DIRTY') return 'conflict';
   if (pr.mergeState === 'BEHIND') return 'behind';
   if (pr.checks === 'PENDING' || pr.checks === 'EXPECTED') return 'pending';
-  if (pr.review === 'REVIEW_REQUIRED' || pr.review === 'CHANGES_REQUESTED') return 'review';
-  return 'ready';
+  return pr.review === 'APPROVED' ? 'approved' : 'green';
 }
 
 export const worst = list => list.map(prStatus).sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))[0] ?? null;
