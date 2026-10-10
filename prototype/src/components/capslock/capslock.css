@@ -35,3 +35,19 @@
 }
 .caps.resizing .resize { opacity: 1; transform: none; pointer-events: auto; }
 .caps .resize .label { bottom: calc(100% + 14px); }
+
+/* a screen recording: a red pill with a pulsing dot and the elapsed time,
+   after the resize indicator */
+.caps.recording { margin-right: 94px; }
+.caps.recording.resizing { margin-right: 124px; }
+.caps .rec {
+  position: absolute; left: 30px; top: 1px; height: 22px; display: flex; align-items: center; gap: 6px; padding: 0 9px 0 8px;
+  border-radius: 99px; background: color-mix(in srgb, var(--crit) 16%, transparent); border: 1px solid color-mix(in srgb, var(--crit) 45%, transparent);
+  color: var(--crit); font-size: 11.5px; font-variant-numeric: tabular-nums; cursor: pointer;
+  opacity: 0; transform: scale(.6); pointer-events: none; transition: opacity .2s, transform .25s cubic-bezier(.3, 1.4, .5, 1), left .25s ease;
+}
+.caps.resizing .rec { left: 60px; }
+.caps.recording .rec { opacity: 1; transform: none; pointer-events: auto; }
+.caps .rec i { width: 8px; height: 8px; border-radius: 99px; background: var(--crit); animation: rec-pulse 1.4s ease-in-out infinite; }
+@keyframes rec-pulse { 50% { opacity: .3; } }
+.caps .rec .label { bottom: calc(100% + 14px); }

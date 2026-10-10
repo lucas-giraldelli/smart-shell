@@ -11,7 +11,8 @@ class CapsLock extends Component {
 
   render() {
     return `${icon('arrow-big-up-dash')}<span class="label"></span>
-      <span class="resize" data-tip>${icon('scaling')}<span class="label">${t('keyboard.resize')}</span></span>`;
+      <span class="resize" data-tip>${icon('scaling')}<span class="label">${t('keyboard.resize')}</span></span>
+      <span class="rec" data-tip><i></i><b data-rec-time>0:00</b><span class="label">${t('keyboard.recording')}</span></span>`;
   }
 
   setup() {
@@ -27,6 +28,17 @@ class CapsLock extends Component {
     this.dataset.status = on ? 'ok' : 'off';
     this.$(':scope > .label').textContent = t(on ? 'capslock.on' : 'capslock.off');
     this.classList.toggle('resizing', keyboard.submap === 'resize');
+    // recording: a red dot and the elapsed time (click stops it in the shell)
+    if (!!keyboard.recording !== this.classList.contains('recording')) {
+      this.classList.toggle('recording', !!keyboard.recording);
+      clearInterval(this.recTimer);
+      if (keyboard.recording) {
+        const since = Date.now();
+        const tick = () => { const s = Math.round((Date.now() - since) / 1000); this.$('[data-rec-time]').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+        tick();
+        this.recTimer = setInterval(tick, 1000);
+      }
+    }
   }
 }
 

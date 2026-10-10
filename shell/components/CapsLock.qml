@@ -7,7 +7,9 @@ import ".."
 // components/capslock): always visible, white when off and the ok-green with
 // a glow when on, giving a small hop now and then. Same footprint in both
 // states, so toggling never shifts the dock. While Hyprland's resize submap
-// is on (Alt+R) a resize indicator shows to its right, in the same style.
+// is on (Alt+R) a resize indicator shows to its right, in the same style;
+// while the screen is being recorded, a red dot and the elapsed time follow
+// (click stops the recording).
 Item {
     id: root
 
@@ -15,7 +17,9 @@ Item {
     readonly property bool hovered: hover.hovered
 
     readonly property bool resizing: Keyboard.submap === "resize"
-    implicitWidth: resizing ? 24 + 6 + 24 : 24
+    readonly property bool recording: Recording.active
+    readonly property real recX: 24 + 6 + (resizing ? 24 + 6 : 0)
+    implicitWidth: recording ? recX + rec.width : resizing ? 24 + 6 + 24 : 24
     Behavior on implicitWidth { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
     implicitHeight: Theme.size
 
@@ -53,6 +57,62 @@ Item {
             target: resize
             text: I18n.t("keyboard.resize")
             shown: resizeHover.hovered
+        }
+    }
+
+    // recording: a pulsing red dot and mm:ss; click stops it
+    Rectangle {
+        id: rec
+        x: root.recX
+        anchors.verticalCenter: parent.verticalCenter
+        width: 8 + 8 + 6 + time.implicitWidth + 9
+        height: 22
+        radius: 11
+        color: recArea.containsMouse ? Theme.mix(Theme.crit, 0.28) : Theme.mix(Theme.crit, 0.16)
+        border.width: 1
+        border.color: Theme.mix(Theme.crit, 0.45)
+        opacity: root.recording ? 1 : 0
+        scale: root.recording ? 1 : 0.6
+        visible: opacity > 0
+        Behavior on x { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+        Behavior on opacity { NumberAnimation { duration: 200 } }
+        Behavior on scale { NumberAnimation { duration: 250; easing.type: Easing.OutBack } }
+
+        Rectangle {
+            x: 8
+            anchors.verticalCenter: parent.verticalCenter
+            width: 8
+            height: 8
+            radius: 4
+            color: Theme.crit
+            SequentialAnimation on opacity {
+                running: root.recording
+                loops: Animation.Infinite
+                NumberAnimation { to: 0.3; duration: 700; easing.type: Easing.InOutSine }
+                NumberAnimation { to: 1; duration: 700; easing.type: Easing.InOutSine }
+            }
+        }
+        Label {
+            id: time
+            x: 22
+            anchors.verticalCenter: parent.verticalCenter
+            size: 11.5
+            weight: Font.DemiBold
+            tnum: true
+            color: Theme.crit
+            text: `${Math.floor(Recording.seconds / 60)}:${String(Recording.seconds % 60).padStart(2, "0")}`
+        }
+        MouseArea {
+            id: recArea
+            anchors.fill: parent
+            hoverEnabled: true
+            cursorShape: Qt.PointingHandCursor
+            onClicked: Recording.stop()
+        }
+        Tip {
+            target: rec
+            text: I18n.t("keyboard.recording")
+            shown: recArea.containsMouse
         }
     }
 

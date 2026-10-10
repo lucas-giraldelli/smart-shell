@@ -34,6 +34,7 @@ class DevPanel extends Component {
         ${check('data-opt', 'cpuAuto', t('dev.cpuAuto'))}
         ${check('data-opt', 'musicPlaying', t('dev.musicPlaying'))}
         ${check('data-opt', 'resizeSubmap', t('dev.resizeSubmap'))}
+        ${check('data-opt', 'recording', t('dev.recording'))}
         ${check('data-opt', 'liveWallpaper', t('dev.liveWallpaper'))}
         <h2>${t('dev.notify')}</h2>
         <div class="dp-btns">${Object.keys(samples).map(k => `<button class="btn-s" data-notify="${k}">${k}</button>`).join('')}</div>
@@ -66,6 +67,7 @@ class DevPanel extends Component {
         }));
       }
       if (opt === 'resizeSubmap') update('keyboard', { submap: on ? 'resize' : '' });
+      else if (opt === 'recording') update('keyboard', { recording: on });
       else if (opt === 'musicPlaying') update('media', { playing: on });
       else if (opt === 'cpuAuto') update('system', { auto: on });
       else if (opt) update('ui', { [opt]: on });

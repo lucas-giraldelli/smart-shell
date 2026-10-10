@@ -20,7 +20,9 @@ Singleton {
         quick: ["volume", "brightness", "docker", "network", "system", "settings"],
         commands: {
             monitor: "kitty --class=btop-float -e btop",
-            docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'"
+            docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'",
+            // starts / stops a screen recording (the dock's record indicator stops it)
+            record: "~/.config/hypr/scripts/record-toggle.sh"
         },
         // tray items left out, matched against their id, title or icon name;
         // fcitx5's menu can quit the input method, which breaks typing

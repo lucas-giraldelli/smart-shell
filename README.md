@@ -163,6 +163,11 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   notifications),
   `style: "love"` (wine glass, beating heart) and `timeout` (ms, 0 = until
   closed).
+- **Screen recording** - while `gpu-screen-recorder` runs, a red dot and the
+  elapsed time show after the caps lock; a click stops it by running
+  `commands.record`. The recording script tells the dock with
+  `qs ipc -p <shell> call recording started|stopped` (a check every 3 s
+  catches the rest).
 - **Tray** - StatusNotifierItem apps. `tray.hidden` leaves items out (Bluetooth
   has its own tile; fcitx5's menu can quit the input method). Icons are greyed
   except vivid badge pixels; items in `tray.redBadge` (Slack) bounce every 2 s

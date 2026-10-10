@@ -14,7 +14,7 @@ export default {
 
   music: { volume: 'YouTube Music volume', notPlaying: 'YouTube Music isn\'t open' },
 
-  keyboard: { resize: 'Resize mode · Esc to exit' },
+  keyboard: { recording: 'Recording the screen · click or Alt+Print to stop', resize: 'Resize mode · Esc to exit' },
 
   capslock: { on: 'Caps Lock on', off: 'Caps Lock off' },
 
@@ -149,7 +149,7 @@ export default {
   },
 
   dev: {
-    notify: 'Simulate a notification',
+    notify: 'Simulate a notification', recording: 'Recording the screen (Alt+Print)',
     show: 'Show panel (H)', title: 'smart-shell · prototype',
     intro: 'HTML mock-up. The real shell runs on Quickshell (QML) with the same look.',
     backends: 'Installed backends (simulated)', failures: 'Simulate failures',
