@@ -136,6 +136,7 @@ class Pets extends Component {
 
   // what the pet does about a care action: a word, a hop, a little effect
   react(pet, { say, effect } = {}) {
+    if (effect === 'love') return pet.love();
     if (say) pet.speak(say);
     if (effect === 'feed' || effect === 'play') pet.hop();
     const glyph = { feed: FOOD[pet.kind] ?? '🍖', play: '🎾', clean: '✨', medicine: '💊' }[effect];

@@ -7,7 +7,7 @@ import { fresh } from './tama-fresh.js';
 // Tamagotchi mode (ui.tamaOn, off by default): the pet has needs that run down
 // over hours, and a right click on it opens its care menu.
 //   food    fed by Feed; down 12/h
-//   fun     raised by Play (costs energy); down 10/h
+//   fun     raised by Play (costs energy) and a little by Pet; down 10/h
 //   clean   down 4/h, and 10/h more per dropping on the dock; Clean restores it
 //   energy  down 6/h awake, up 30/h asleep (low CPU, or put to bed)
 //   health  falls while it's sick or a need is nearly empty, recovers when fed
@@ -86,6 +86,9 @@ export function care(action) {
     if (s.energy < 15) return { say: 'no' };
     Object.assign(n, { fun: clamp(s.fun + 30), energy: clamp(s.energy - 10), food: clamp(s.food - 5) });
     out = { say: 'yay', effect: 'play' };
+  } else if (action === 'pet') {
+    Object.assign(n, { fun: clamp(s.fun + 8), health: clamp(s.health + 2) });
+    out = { effect: 'love' };
   } else if (action === 'clean') {
     Object.assign(n, { clean: 100, poops: [] });
     out = { effect: 'clean' };
@@ -124,6 +127,7 @@ export function menuHTML(kind, s) {
     <div class="tm-head"><b>${t(`pets.names.${kind}`)}</b><span class="meta">${t(`tama.${stage(s)}`)} · ${age}</span>${s.sick ? `<span class="tm-sick">${t('tama.sick')}</span>` : ''}</div>
     ${NEEDS.map(bar).join('')}
     <div class="tm-acts">
+      ${btn('pet', '💗', t('tama.pet'))}
       ${btn('feed', FOOD[kind] ?? '🍖', t('tama.feed'))}
       ${btn('play', '🎾', t('tama.play'))}
       ${btn('clean', '🧼', t('tama.wash'))}

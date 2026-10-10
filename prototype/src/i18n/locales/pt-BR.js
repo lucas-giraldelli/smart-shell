@@ -152,7 +152,7 @@ export default {
 
   tama: {
     food: 'Alimentação', fun: 'Diversão', clean: 'Higiene', energy: 'Energia', health: 'Saúde',
-    feed: 'Alimentar', play: 'Brincar', wash: 'Limpar', medicine: 'Remédio', sleep: 'Dormir', wake: 'Acordar',
+    pet: 'Carinho', feed: 'Alimentar', play: 'Brincar', wash: 'Limpar', medicine: 'Remédio', sleep: 'Dormir', wake: 'Acordar',
     baby: 'Filhote', young: 'Jovem', adult: 'Adulto', hours: '{h} h', days: '{d} dias',
     sick: 'Doente', mistakes: 'Erros de cuidado: {n}',
     ranAway: '{name} fugiu', ranAwayBody: 'Sem cuidados, ele foi embora… e voltou como fantasma.',

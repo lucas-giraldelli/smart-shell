@@ -103,16 +103,19 @@ export function createPet(kind, species, host) {
     if (act.jump) jumpLeft = .55;
   }
 
-  el.addEventListener('click', () => {
+  // a click: a heart floats up and it says its word (species.click, else its
+  // talk action's). In Tamagotchi mode a click opens its care menu instead,
+  // where "Pet" does this
+  function love() {
     const heart = document.createElement('span');
     heart.className = 'heart';
     heart.textContent = '♥';
     el.append(heart);
     setTimeout(() => heart.remove(), 1000);
-    // and says its word (species.click, else its talk action's)
     const word = clickWord(species);
     if (word) speak(word);
-  });
+  }
+  el.addEventListener('click', () => { if (!el.classList.contains('tama')) love(); });
 
   // dancing: bursts of 2-4 music notes over the pet's head every 1.2-1.8 s,
   // staggered 120 ms, each drifting up and sideways and fading in 1.5 s
@@ -265,5 +268,5 @@ export function createPet(kind, species, host) {
     if (text !== lastMood) { bubble.textContent = text; lastMood = text; }
   }
 
-  return { kind, el, step, speak, hop: () => { jumpLeft = .55; }, remove: () => el.remove() };
+  return { kind, el, step, speak, love, hop: () => { jumpLeft = .55; }, remove: () => el.remove() };
 }
