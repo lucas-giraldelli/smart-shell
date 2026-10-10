@@ -167,7 +167,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
 - **Pet** - one per dock, picked in the dock settings ("Nenhum" for none):
   cat, shiba, fox, penguin, bunny, capybara, frog, duck, corgi, panda, owl,
   turtle, octopus, macaw, anteater, ghost, black cat and pig. It
-  walks on the dock's top edge. Hover for its mood, click for a heart; it
+  walks on the dock's top edge. Hover for its mood, click for a heart and its word; it
   holds still while a fullscreen window is focused. What it does, in order of
   priority:
 
