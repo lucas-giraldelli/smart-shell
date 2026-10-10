@@ -1,7 +1,7 @@
-/* as wide as its content, with the tile's padding; a long condition stops at
-   the width of "Trovoada com granizo" and ellipsizes (full text in the tooltip) */
+/* as wide as its content, with the tile's padding; a condition longer than
+   72px ("Nublado") ellipsizes (full text in the tooltip) */
 .weather { cursor: pointer; }
-.weather .wx-text { min-width: 0; max-width: 118px; }
+.weather .wx-text { min-width: 0; max-width: 72px; }
 .weather [data-summary] { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .weather .wx-ic { width: 26px; height: 26px; color: var(--wx); }
 .weather .wx-ic.spin { animation: spin 22s linear infinite; }
