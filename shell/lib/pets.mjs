@@ -212,4 +212,5 @@ export const DANCES = {
   anteater: { beats: 2.4, at: p => ({ dx: -3 * Math.cos(p * Math.PI * 2), rot: -4 * Math.cos(p * Math.PI * 2) }) }, // side to side
   ghost: { beats: 2, at: p => ({ dy: -6 + -3 * Math.cos(p * Math.PI * 2), rot: -6 * Math.cos(p * Math.PI * 2) }) }, // floats and sways
   blackcat: { beats: 2, at: p => ({ rot: -8 * Math.cos(p * Math.PI * 2) }) },         // sways
+  pig: { beats: 1, at: p => ({ dx: -2 * Math.cos(p * Math.PI * 2), dy: -4 * tri(p) }) }, // a trotting bounce
 };

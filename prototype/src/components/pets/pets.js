@@ -18,6 +18,7 @@ import capy from './species/capy.js';
 import frog from './species/frog.js';
 import duck from './species/duck.js';
 import corgi from './species/corgi.js';
+import pig from './species/pig.js';
 import panda from './species/panda.js';
 import owl from './species/owl.js';
 import turtle from './species/turtle.js';
@@ -30,7 +31,7 @@ import blackcat from './species/blackcat.js';
 // Every sprite faces right in a 46x36 box with its feet on y=33.
 export const species = {
   cat, shiba, fox, penguin, bunny, capy, frog,
-  duck, corgi, panda, owl, turtle, octopus, macaw, anteater, ghost, blackcat,
+  duck, corgi, panda, owl, turtle, octopus, macaw, anteater, ghost, blackcat, pig,
 };
 
 // The pet walking on top of the dock (one per dock, ui.pet). Must sit inside

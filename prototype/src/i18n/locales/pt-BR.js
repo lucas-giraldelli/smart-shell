@@ -139,12 +139,12 @@ export default {
   pets: {
     names: { cat: 'Gato', shiba: 'Shiba', fox: 'Raposa', penguin: 'Pinguim', bunny: 'Coelho', capy: 'Capivara', frog: 'Sapo',
       duck: 'Pato', corgi: 'Corgi', panda: 'Panda', owl: 'Coruja', turtle: 'Tartaruga', octopus: 'Polvo',
-      macaw: 'Arara-azul', anteater: 'Tamanduá', ghost: 'Fantasma', blackcat: 'Gato preto' },
+      macaw: 'Arara-azul', anteater: 'Tamanduá', ghost: 'Fantasma', blackcat: 'Gato preto', pig: 'Porco' },
     bubble: '{mood} · CPU {load}%',
     chill: 'Nem aí pra CPU',
     moods: {
       sleep: 'Dormindo', walk: 'Andando', run: 'Correndo!', stand: 'De boa', stroll: 'Passeando',
-      turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', zoomies: 'Zoomies!', jump: 'Pulando',
+      turn: 'Olhando em volta', lie: 'Deitado', nap: 'Cochilando', sniff: 'Fuçando', zoomies: 'Zoomies!', jump: 'Pulando',
       pounce: 'Dando o bote', croak: 'Coaxando', tongue: 'Pegando mosca', work: 'Em reunião', dance: 'Dançando',
     },
   },

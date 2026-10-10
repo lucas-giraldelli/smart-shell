@@ -139,12 +139,12 @@ export default {
   pets: {
     names: { cat: 'Cat', shiba: 'Shiba', fox: 'Fox', penguin: 'Penguin', bunny: 'Bunny', capy: 'Capybara', frog: 'Frog',
       duck: 'Duck', corgi: 'Corgi', panda: 'Panda', owl: 'Owl', turtle: 'Turtle', octopus: 'Octopus',
-      macaw: 'Hyacinth macaw', anteater: 'Anteater', ghost: 'Ghost', blackcat: 'Black cat' },
+      macaw: 'Hyacinth macaw', anteater: 'Anteater', ghost: 'Ghost', blackcat: 'Black cat', pig: 'Pig' },
     bubble: '{mood} · CPU {load}%',
     chill: "Couldn't care less about the CPU",
     moods: {
       sleep: 'Sleeping', walk: 'Walking', run: 'Running!', stand: 'Chilling', stroll: 'Strolling',
-      turn: 'Looking around', lie: 'Lying down', nap: 'Napping', zoomies: 'Zoomies!', jump: 'Jumping',
+      turn: 'Looking around', lie: 'Lying down', nap: 'Napping', sniff: 'Sniffing around', zoomies: 'Zoomies!', jump: 'Jumping',
       pounce: 'Pouncing', croak: 'Croaking', tongue: 'Catching a fly', work: 'In a meeting', dance: 'Dancing',
     },
   },

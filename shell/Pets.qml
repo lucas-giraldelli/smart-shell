@@ -11,6 +11,7 @@ import "lib/pets/capy.mjs" as Capy
 import "lib/pets/frog.mjs" as Frog
 import "lib/pets/duck.mjs" as Duck
 import "lib/pets/corgi.mjs" as Corgi
+import "lib/pets/pig.mjs" as Pig
 import "lib/pets/panda.mjs" as Panda
 import "lib/pets/owl.mjs" as Owl
 import "lib/pets/turtle.mjs" as Turtle
@@ -26,7 +27,7 @@ Singleton {
     readonly property var species: ({
         cat: Cat.default, shiba: Shiba.default, fox: Fox.default, penguin: Penguin.default,
         bunny: Bunny.default, capy: Capy.default, frog: Frog.default,
-        duck: Duck.default, corgi: Corgi.default, panda: Panda.default, owl: Owl.default, turtle: Turtle.default, octopus: Octopus.default, macaw: Macaw.default, anteater: Anteater.default, ghost: Ghost.default, blackcat: Blackcat.default
+        duck: Duck.default, corgi: Corgi.default, panda: Panda.default, owl: Owl.default, turtle: Turtle.default, octopus: Octopus.default, macaw: Macaw.default, anteater: Anteater.default, ghost: Ghost.default, blackcat: Blackcat.default, pig: Pig.default
     })
     readonly property var names: Object.keys(species)
 

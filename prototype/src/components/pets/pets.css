@@ -100,6 +100,7 @@ ss-pets { display: contents; }
 .pet.dance[data-kind="anteater"] svg { animation: sidestep calc(1.2s * var(--slow, 1)) ease-in-out infinite; } /* side to side */
 .pet.dance[data-kind="ghost"] svg { animation: spook calc(1s * var(--slow, 1)) ease-in-out infinite; }     /* floats up and sways */
 .pet.dance[data-kind="blackcat"] svg { animation: sway calc(1s * var(--slow, 1)) ease-in-out infinite; }   /* sways, paws going */
+.pet.dance[data-kind="pig"] svg { animation: bounce calc(.5s * var(--slow, 1)) ease-in-out infinite; }       /* a trotting bounce */
 .pet.dance[data-kind="frog"] .pouch { animation: croak calc(.25s * var(--slow, 1)) ease-in-out infinite alternate; }
 
 /* the music notes a dancing pet sends up */
