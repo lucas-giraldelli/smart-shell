@@ -14,7 +14,7 @@
 // it sick (Medicine cures it). Each species has its own pace (`pace`) and
 // taste for baths (`bath`); a busy CPU tires it a little, a hot one tires it
 // and makes it sweat (and can make it sick), a work meeting bores it a little,
-// music cheers it up, and at night (22-6 h) it tires faster and asks for bed
+// music cheers it up but dancing tires it, and at night (22-6 h) it tires faster and asks for bed
 // sooner. It refuses what it doesn't need, and petting it over and over
 // pleases it less each time (a cat ends up hissing).
 
@@ -48,7 +48,7 @@ export function urgent(s, now) {
 //   ctx: { sp (its species), asleep, hot, load (CPU %), music, meeting, now, speed }
 export function decay(s, dt, ctx) {
   const sp = ctx.sp, h = dt * (ctx.speed || 1) / 3600;
-  const tired = 6 * pace(sp, 'energy') * (night(ctx.now) ? 1.6 : 1) + (ctx.load > 72 ? 1.5 : 0) + (ctx.hot ? 1.5 : 0);
+  const tired = 6 * pace(sp, 'energy') * (night(ctx.now) ? 1.6 : 1) + (ctx.load > 72 ? 1.5 : 0) + (ctx.hot ? 1.5 : 0) + (ctx.music ? 3 : 0);
   const n = Object.assign({}, s, {
     food: clamp(s.food - 12 * pace(sp, 'food') * h),
     fun: clamp(s.fun - (10 * pace(sp, 'fun') + (ctx.meeting ? 2 : 0) - (ctx.music ? 6 : 0)) * h),
