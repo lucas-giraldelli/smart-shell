@@ -122,16 +122,20 @@ Tile {
             Behavior on opacity { NumberAnimation { duration: 300; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
         }
 
-        // .sub-line: one 15px line that ticks up to the event
+        // .sub-line: one 15px line that ticks up to the event. The clip is
+        // only for that tick: 4px of room on each side, or a glyph's edge on
+        // the line's start (Domingo's "D") gets cut
         Item {
+            x: -4
             y: 26
-            width: parent.width
+            width: parent.width + 8
             height: 15
             clip: true
 
             Column {
+                x: 4
                 y: root.reminding ? -15 : 0
-                width: parent.width
+                width: parent.width - 8
                 Behavior on y { NumberAnimation { duration: 400; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.9, 0.4, 1, 1, 1] } }
 
                 Label {
