@@ -198,7 +198,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   dirty or when the PC runs hot (Medicine cures it; it shows greenish with a
   🤒), and wears a sign over its head for its most urgent need. A busy or hot
   CPU tires it a little more, a hot one makes it sweat, a work meeting bores
-  it a little, music cheers it up but dancing tires it, and at night it gets sleepy sooner. It
+  it a little, music cheers it up but dancing tires it, and at night it gets sleepy sooner.
+  Tired, it stops dancing; exhausted, it falls asleep by itself until it's
+  rested (woken up, it drops off again a minute later). It
   refuses what it doesn't need (food when full, play when tired, bed when not
   sleepy, medicine when well); most sulk at a bath while the duck, penguin and
   frog love one (the pig takes a mud bath); petting it again and again pleases

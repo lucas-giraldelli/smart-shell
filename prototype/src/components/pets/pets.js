@@ -7,7 +7,7 @@ import { config } from '../../data/config.js';
 import { memStatus, tempStatus } from '../control-center/panes/system.js';
 import { openPopover, closePopover, isOpen } from '../../core/popover.js';
 import { setHTML } from '../ui/ui.js';
-import { tick, care, menuHTML, urgent, foodOf, SIGN } from './tama.js';
+import { tick, care, menuHTML, urgent, foodOf, tooTired, SIGN } from './tama.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
@@ -41,7 +41,9 @@ class Pets extends Component {
       // what the user is busy with right now: a work meeting wins over music
       const work = agenda.ongoing?.category === 'work';
       clock += dt;
-      const hears = dancing(store.get().media);
+      // in care mode a tired (or sleeping) pet hears the music but doesn't dance
+      const music = dancing(store.get().media);
+      const hears = music && !(ui.tamaOn && tooTired(tama));
       if (hears !== heard) { heard = hears; changedAt = clock; }
       const listening = hears && clock - changedAt < 1.4;
       if (hears || clock - changedAt >= 1.2) {
@@ -62,7 +64,7 @@ class Pets extends Component {
       if (ui.tamaOn && this.pets.length && (tamaIn -= dt) <= 0) {
         tamaIn = 1;
         tick(1, { kind: ui.pet, asleep: napping || system.load < config.thresholds.cpu.sleep, hot: opts.hot === 2 || opts.heavy === 2,
-          load: system.load, music: hears, meeting: work });
+          load: system.load, music, dancing: activity === 'dance', meeting: work });
       }
     });
   }

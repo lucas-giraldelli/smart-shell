@@ -15,7 +15,9 @@
 // taste for baths (`bath`); a busy CPU tires it a little, a hot one tires it
 // and makes it sweat (and can make it sick), a work meeting bores it a little,
 // music cheers it up but dancing tires it, and at night (22-6 h) it tires faster and asks for bed
-// sooner. It refuses what it doesn't need, and petting it over and over
+// sooner. Tired (energy under 25) it stops dancing; exhausted (under 10) it
+// falls asleep by itself until it's full, and woken up it drops off again a
+// minute later if it's still exhausted. It refuses what it doesn't need, and petting it over and over
 // pleases it less each time (a cat ends up hissing).
 
 export const NEEDS = ['food', 'fun', 'clean', 'energy', 'health'];
@@ -32,6 +34,8 @@ const pace = (sp, k) => (sp && sp.pace && sp.pace[k] !== undefined ? sp.pace[k] 
 const bathOf = sp => (sp && sp.bath !== undefined ? sp.bath : 0);
 const night = now => { const h = new Date(now).getHours(); return h >= 22 || h < 6; };
 export const foodOf = sp => (sp && sp.food) || '🍖';
+// too tired to dance: asleep, or energy under 25
+export const tooTired = s => s.napping || s.energy < 25;
 
 // `speed` speeds time up (the prototype's dev panel); 1 is real time
 export const ageDays = (s, now, speed) => (now - s.bornAt) * (speed || 1) / 864e5;
@@ -45,10 +49,11 @@ export function urgent(s, now) {
 }
 
 // `dt` seconds pass (times `speed`): the new state, or null when it ran away
-//   ctx: { sp (its species), asleep, hot, load (CPU %), music, meeting, now, speed }
+//   ctx: { sp (its species), asleep, hot, load (CPU %), music (it hears some),
+//          dancing, meeting, now, speed }
 export function decay(s, dt, ctx) {
   const sp = ctx.sp, h = dt * (ctx.speed || 1) / 3600;
-  const tired = 6 * pace(sp, 'energy') * (night(ctx.now) ? 1.6 : 1) + (ctx.load > 72 ? 1.5 : 0) + (ctx.hot ? 1.5 : 0) + (ctx.music ? 3 : 0);
+  const tired = 6 * pace(sp, 'energy') * (night(ctx.now) ? 1.6 : 1) + (ctx.load > 72 ? 1.5 : 0) + (ctx.hot ? 1.5 : 0) + (ctx.dancing ? 3 : 0);
   const n = Object.assign({}, s, {
     food: clamp(s.food - 12 * pace(sp, 'food') * h),
     fun: clamp(s.fun - (10 * pace(sp, 'fun') + (ctx.meeting ? 2 : 0) - (ctx.music ? 6 : 0)) * h),
@@ -64,6 +69,8 @@ export function decay(s, dt, ctx) {
   const low = ['food', 'fun', 'clean', 'energy'].filter(k => n[k] < 15).length;
   n.health = clamp(s.health - (s.sick ? 10 : 0) * h - 5 * low * h + (!low && !s.sick && n.food > 50 && n.fun > 50 ? 4 : 0) * h);
   if (s.napping && n.energy >= 100) n.napping = false;
+  // exhausted: it falls asleep by itself (not within a minute of being woken)
+  if (!s.napping && n.energy < 10 && !(s.wokeAt && ctx.now - s.wokeAt < 60e3)) n.napping = true;
   return n.health === 0 ? null : n;
 }
 
@@ -97,7 +104,7 @@ export function care(s, action, ctx) {
   if (action === 'sleep') {
     // not sleepy yet: it won't go to bed
     if (!s.napping && s.energy > 70) return { n: null, say: 'no' };
-    return { n: Object.assign(n, { napping: !s.napping }) };
+    return { n: Object.assign(n, { napping: !s.napping, wokeAt: s.napping ? ctx.now : 0 }) };
   }
   if (action === 'poop') {
     // one dropping clicked away

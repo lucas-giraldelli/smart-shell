@@ -24,6 +24,8 @@ Singleton {
     readonly property bool on: Ui.tamaOn && species !== null
     readonly property string need: on ? Rules.urgent(s, Date.now()) : ""
     readonly property string food: Rules.foodOf(species)
+    // too tired to dance (Pet.qml): asleep, or low on energy
+    readonly property bool tired: on && Rules.tooTired(s)
 
     // a word (pets.says) and a care animation (poses.js carePose)
     signal acted(string say, string effect)
@@ -60,6 +62,7 @@ Singleton {
                 hot: Status.tempStatus(SystemStats, thresholds) === "crit" || Status.memStatus(SystemStats, thresholds) === "crit",
                 load: SystemStats.load,
                 music: Media.dancing,
+                dancing: Media.dancing && !root.tired,
                 meeting: (Events.ongoing?.category ?? "") === "work",
                 now: Date.now(),
                 speed: 1

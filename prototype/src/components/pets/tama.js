@@ -12,6 +12,7 @@ export const { NEEDS, SIGN } = rules;
 export const foodOf = kind => rules.foodOf(species[kind]);
 const speed = () => store.get().tama.speed || 1;
 export const urgent = s => rules.urgent(s, Date.now());
+export const tooTired = s => rules.tooTired(s);
 const ageDays = s => rules.ageDays(s, Date.now(), speed());
 // recent pets (ms), for the diminishing returns; session only
 let petted = [];
@@ -27,7 +28,7 @@ function set(n) {
 }
 
 // time passes: `dt` seconds of real time
-//   ctx: { kind, asleep, hot, load (CPU %), music, meeting }
+//   ctx: { kind, asleep, hot, load (CPU %), music, dancing, meeting }
 export function tick(dt, ctx) {
   const s = store.get().tama;
   const n = rules.decay(s, dt, Object.assign({}, ctx, { sp: species[ctx.kind], now: Date.now(), speed: speed() }));

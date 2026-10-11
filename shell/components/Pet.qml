@@ -36,7 +36,7 @@ Item {
     // laptop, asleep or idling
     readonly property bool active: s.moving && s.pose !== "dance" && s.pose !== "work"
     readonly property int hot: active ? level(Rules.tempStatus(SystemStats, Config.thresholds)) : 0
-    readonly property bool dancing: Media.dancing && !working
+    readonly property bool dancing: Media.dancing && !working && !Tama.tired
     // how into the music it is (0..1). A song starts: it stops and looks
     // around for ~1.4 s, then eases in over ~2 s; the song stops: it keeps
     // going ~1.2 s, then winds down in ~1 s. With cava it follows the
