@@ -213,7 +213,12 @@ layerrule {
 
 # --- run ---------------------------------------------------------------------
 
-cmd_stop() { pkill -x qs 2>/dev/null || true; pkill -x quickshell 2>/dev/null || true; }
+# waits (up to 5 s) for the dock to exit: started with -n, a new one would
+# otherwise see the old one still running and quit
+cmd_stop() {
+  pkill -x qs 2>/dev/null || true; pkill -x quickshell 2>/dev/null || true
+  for _ in $(seq 50); do pgrep -x qs >/dev/null || pgrep -x quickshell >/dev/null || return 0; sleep 0.1; done
+}
 cmd_start() {
   if command -v hyprctl >/dev/null && [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
     hyprctl dispatch exec "qs -p $SHELL_DIR -n" >/dev/null
@@ -228,7 +233,7 @@ case "${1:-}" in
   hyprland) cmd_hyprland ;;
   start) cmd_start ;;
   stop) cmd_stop ;;
-  restart) cmd_stop; sleep 0.5; cmd_start ;;
+  restart) cmd_stop; cmd_start ;;
   log) exec qs log -p "$SHELL_DIR" ;;
   # a test event in memory only (the reminder, the pet's meeting), never written
   fake-event)
