@@ -57,7 +57,7 @@ class Pets extends Component {
       // heavy, heat turns it reddish (1 = warn, 2 = crit)
       const level = st => (st === 'crit' ? 2 : st === 'warn' ? 1 : 0);
       const opts = { cpu: config.thresholds.cpu, heavy: level(memStatus(system)), hot: level(tempStatus(system)), groove,
-        hold: ui.popover === 'tama' };
+        hold: ui.popover === 'tama' || isRinging(ui.timer) };
       // Tamagotchi mode: put to bed, it sleeps whatever the CPU does; its
       // needs run down once a second
       const napping = ui.tamaOn && tama.napping;

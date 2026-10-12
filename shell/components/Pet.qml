@@ -128,10 +128,11 @@ Item {
             root.clock += dt;
             root.tickGroove(dt);
             root.danceClock += dt * (0.3 + 1.2 * root.groove);
-            // pet care: put to bed, it sleeps whatever the CPU does; its menu holds it still
+            // pet care: put to bed, it sleeps whatever the CPU does; its menu or a
+            // ringing clock timer holds it still
             const load = Tama.on && Tama.s.napping ? 0 : SystemStats.load;
             root.s = root.engine.step(dt, load, root.working ? "work" : root.listening ? "listen" : root.grooving ? "dance" : null, root.floor.width,
-                { cpu: Config.thresholds.cpu, heavy: root.heavy, groove: root.groove, hold: Ui.popover === "tama" });
+                { cpu: Config.thresholds.cpu, heavy: root.heavy, groove: root.groove, hold: Ui.popover === "tama" || Countdown.ringing });
             root.tickNotes();
         }
     }

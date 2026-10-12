@@ -175,7 +175,7 @@ class Clock extends Component {
     this.classList.toggle('ringing', isRinging(ui.timer));
     this.classList.toggle('reminding', !!event || this.timing);
     this.classList.toggle('timing', this.timing);
-    this.toggleAttribute('data-tip', !!event || this.timing);
+    this.toggleAttribute('data-tip', !!event || (this.timing && !isRinging(ui.timer)));
     this.style.removeProperty('--status');
     if (this.timing) {
       this.dataset.status = 'timer';
@@ -183,7 +183,7 @@ class Clock extends Component {
       this.classList.remove('has-meet');
       setHTML(this.$('.cat'), icon(isRinging(ui.timer) ? 'bell-ring' : isPaused(ui.timer) ? 'pause' : 'timer'));
       this.showTimer(ui.timer);
-      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${isRinging(ui.timer) ? t('timer.ringing') : isPaused(ui.timer) ? t('timer.paused') : t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
+      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${isPaused(ui.timer) ? t('timer.paused') : t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
       return;
     }
     this.$('.rtext').classList.remove('tnum');

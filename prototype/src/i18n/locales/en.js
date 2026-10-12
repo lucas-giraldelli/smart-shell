@@ -113,7 +113,7 @@ export default {
   },
 
   reminder: { join: 'Join the Meet', soon: 'in {minutes} min', now: 'now' },
-  timer: { title: 'Timer', minutes: 'min', name: 'Name (optional)', start: 'Start', pause: 'Pause', resume: 'Resume', stop: 'Stop', paused: 'paused', ringing: 'done, click to stop', ends: 'ends at {time}' },
+  timer: { title: 'Timer', minutes: 'min', name: 'Name (optional)', start: 'Start', pause: 'Pause', resume: 'Resume', stop: 'Stop', paused: 'paused', ends: 'ends at {time}' },
 
   categories: { work: 'Work', health: 'Health', personal: 'Personal' },
 

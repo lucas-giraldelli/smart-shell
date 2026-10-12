@@ -75,8 +75,8 @@ Tile {
 
     Tip {
         target: root
-        shown: root.hovered && root.reminding
-        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${Countdown.ringing ? I18n.t("timer.ringing") : Countdown.paused ? I18n.t("timer.paused") : I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
+        shown: root.hovered && root.reminding && !Countdown.ringing
+        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${Countdown.paused ? I18n.t("timer.paused") : I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
             : root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
             Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}${
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
