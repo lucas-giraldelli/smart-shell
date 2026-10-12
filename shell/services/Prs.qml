@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import ".."
+import "../lib/prs.mjs" as PrRules
 
 // The open pull requests of the user, from any repo (`gh api graphql`, with the
 // login of the gh CLI). Read every hour or on refresh. A PR that leaves
@@ -20,7 +21,7 @@ Singleton {
     property bool loaded: false
     property date updatedAt: new Date(0)
 
-    readonly property string query: 'query { search(query: "is:pr is:open author:@me archived:false", type: ISSUE, first: 50) { nodes { ... on PullRequest { number title url createdAt mergeStateStatus reviewDecision repository { nameWithOwner } commits(last: 1) { nodes { commit { statusCheckRollup { state } } } } } } } }'
+    readonly property string query: 'query { search(query: "is:pr is:open author:@me archived:false", type: ISSUE, first: 50) { nodes { ... on PullRequest { number title url createdAt mergeStateStatus reviewDecision repository { nameWithOwner } commits(last: 1) { nodes { commit { statusCheckRollup { contexts(first: 100) { nodes { ... on CheckRun { status conclusion } ... on StatusContext { state } } } } } } } } } } }'
 
     function refresh() {
         if (fetch.running)
@@ -51,7 +52,7 @@ Singleton {
                 }
                 const open = nodes.filter(n => n.number).map(n => ({
                     repo: n.repository.nameWithOwner, number: n.number, title: n.title, url: n.url, created: n.createdAt,
-                    checks: n.commits.nodes[0]?.commit.statusCheckRollup?.state ?? null,
+                    checks: PrRules.checksOf(n.commits.nodes[0]?.commit.statusCheckRollup?.contexts.nodes),
                     mergeState: n.mergeStateStatus, review: n.reviewDecision, merged: false
                 }));
                 const gone = root.loaded ? root.open.filter(p => !open.some(o => o.url === p.url)) : [];

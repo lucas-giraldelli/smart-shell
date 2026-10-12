@@ -15,6 +15,17 @@ export function prStatus(pr) {
   return pr.review === 'APPROVED' ? 'approved' : 'green';
 }
 
+// the checks of a PR's last commit as one state (SUCCESS, PENDING, FAILURE),
+// from its CheckRun / StatusContext nodes: GitHub's own rollup calls a
+// cancelled run a failure, here cancelled, skipped and neutral runs don't count
+export function checksOf(nodes) {
+  if (!nodes || !nodes.length) return null;
+  const states = nodes.map(c => c.state || (c.status !== 'COMPLETED' ? 'PENDING' : c.conclusion));
+  if (states.some(s => ['FAILURE', 'ERROR', 'TIMED_OUT', 'STARTUP_FAILURE', 'ACTION_REQUIRED'].includes(s))) return 'FAILURE';
+  if (states.some(s => ['PENDING', 'EXPECTED'].includes(s))) return 'PENDING';
+  return 'SUCCESS';
+}
+
 export const worst = list => list.map(prStatus).sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))[0] ?? null;
 
 // grouped by repo: repos needing action first, then A-Z; PRs oldest first,
