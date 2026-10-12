@@ -15,6 +15,10 @@
 
 /* the date joins the time on the first line while the event name takes the second */
 .clock.reminding { width: 168px; }
+/* a timer: as wide as its lines, the same 14px on both sides (the date line
+   it hides doesn't count) */
+.clock.reminding.timing { width: max-content; }
+.clock.timing .ticker > [data-date] { width: 0; }
 /* compact: time centered over the date (a tabular "1" leaves room on its
    left, so left-aligned lines looked off); the reminder keeps them left
    and tabular */
@@ -137,5 +141,7 @@
 .tm-run .tm-ic { display: grid; }
 .tm-run .tm-ic svg.i { width: 16px; height: 16px; }
 .tm-run b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.tm-run b.paused { color: var(--menu-sub); }
+.tm-run .ib { width: 30px; height: 30px; flex: none; }
 .tm-run .meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .clock .rtext.tnum { font-variant-numeric: tabular-nums; }

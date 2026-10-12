@@ -6,9 +6,11 @@ import ".."
 
 // The clock timer (prototype: the `timer` in the ui slice, components/clock):
 // minutes, an optional name and a colour, started from the clock right-click
-// popover. The clock shows it on its second line in that colour until it
-// ends; then a notification, and it is gone. Saved in Ui.timer, so it
-// survives a restart (one that ended meanwhile still notifies).
+// popover, which then pauses / resumes or stops it. The clock shows it on its
+// second line in that colour until it ends; then a notification, and it is
+// gone. Saved in Ui.timer ({ end, color, label, left }: `left` is the time
+// left in ms while paused), so it survives a restart (one that ended
+// meanwhile still notifies).
 Singleton {
     id: root
 
@@ -16,8 +18,9 @@ Singleton {
     readonly property real end: Ui.timer?.end ?? 0
     readonly property color color: Ui.timer?.color ?? Theme.warn
     readonly property string label: Ui.timer?.label ?? ""
+    readonly property bool paused: (Ui.timer?.left ?? null) !== null
     property real now: Date.now()
-    readonly property real remaining: running ? Math.max(0, end - now) : 0
+    readonly property real remaining: !running ? 0 : paused ? Ui.timer.left : Math.max(0, end - now)
     // "4:05" / "1:02:30"
     readonly property string remainingText: {
         const s = Math.ceil(remaining / 1000), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), sec = s % 60;
@@ -30,12 +33,21 @@ Singleton {
         Ui.timerLast = { minutes, color, label };
         Ui.timer = { end: now + minutes * 60000, color, label };
     }
+    // play / pause in one
+    function toggle() {
+        const t = Ui.timer;
+        if (!t)
+            return;
+        now = Date.now();
+        Ui.timer = paused ? { end: now + t.left, color: t.color, label: t.label, left: null }
+            : { end: t.end, color: t.color, label: t.label, left: Math.max(0, t.end - now) };
+    }
     function cancel() {
         Ui.timer = null;
     }
 
     Timer {
-        running: root.running
+        running: root.running && !root.paused
         repeat: true
         triggeredOnStart: true
         interval: 1000

@@ -25,7 +25,9 @@ Tile {
 
     // compact: as wide as its widest time and date (fixed per format and
     // language); a reminder widens it to 168px with the Bluetooth tile spring
-    implicitWidth: reminding ? 168 : compactWidth
+    // a timer: as wide as its lines, the same 14px on both sides
+    implicitWidth: timing ? Math.ceil(Math.max(time.implicitWidth + 7 + miniDate.implicitWidth, 17 + timerLine.implicitWidth)) + 14 * 2 + 2
+        : reminding ? 168 : compactWidth
     Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
 
     // the same 14px padding (+ border) on both sides of the wider of the widest
@@ -72,7 +74,7 @@ Tile {
     Tip {
         target: root
         shown: root.hovered && root.reminding
-        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
+        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${Countdown.paused ? I18n.t("timer.paused") : I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
             : root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
             Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}${
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
@@ -120,6 +122,7 @@ Tile {
         }
         // the date joins the time while an event takes the second line
         Label {
+            id: miniDate
             x: time.x + time.implicitWidth + 7 - (root.reminding ? 0 : 4)
             y: 9
             opacity: root.reminding ? 1 : 0
@@ -167,12 +170,13 @@ Tile {
                     spacing: 5
                     Icon {
                         anchors.verticalCenter: parent.verticalCenter
-                        name: root.timing ? "timer" : Cal.categories[root.event?.category]?.icon ?? "user"
+                        name: root.timing ? (Countdown.paused ? "pause" : "timer") : Cal.categories[root.event?.category]?.icon ?? "user"
                         size: 12
                         shadow: true
                         color: root.tint
                     }
                     Label {
+                        id: timerLine
                         width: parent.width - 17 - (root.event?.meet ? 17 : 0)
                         lineHeight: 15
                         elide: Text.ElideRight

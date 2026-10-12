@@ -6,7 +6,7 @@ import "ui"
 
 // The clock timer popover (prototype: .timer-menu in components/clock): minutes
 // (no limit), an optional name and a colour, then Start (or Enter). While one
-// runs it shows what is left and Cancel instead. The next one starts from the
+// runs it shows what is left, play / pause and stop instead. The next one starts from the
 // last minutes, name and colour.
 Popover {
     id: root
@@ -90,7 +90,7 @@ Popover {
                 spacing: 8
                 Icon {
                     anchors.verticalCenter: parent.verticalCenter
-                    name: "timer"
+                    name: Countdown.paused ? "pause" : "timer"
                     size: 16
                     color: Countdown.color
                 }
@@ -100,7 +100,7 @@ Popover {
                     size: 16
                     weight: Font.DemiBold
                     tnum: true
-                    color: Theme.menuText
+                    color: Countdown.paused ? Theme.menuSub : Theme.menuText
                 }
                 Label {
                     anchors.verticalCenter: parent.verticalCenter
@@ -111,12 +111,18 @@ Popover {
                     color: Theme.menuSub
                 }
             }
-            SmallButton {
+            Row {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                icon: "x"
-                text: I18n.t("timer.cancel")
-                onClicked: Countdown.cancel()
+                spacing: 4
+                IconButton {
+                    icon: Countdown.paused ? "play" : "pause"
+                    onClicked: Countdown.toggle()
+                }
+                IconButton {
+                    icon: "square"
+                    onClicked: Countdown.cancel()
+                }
             }
         }
 

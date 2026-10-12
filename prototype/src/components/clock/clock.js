@@ -5,7 +5,7 @@ import { categories } from '../../data/categories.js';
 import { t, dateFormat, formatTime, locale } from '../../i18n/index.js';
 import { setHTML } from '../ui/ui.js';
 import { store } from '../../state.js';
-import { COLORS, startTimer, cancelTimer, remainingText, checkTimer } from './timer.js';
+import { COLORS, startTimer, cancelTimer, toggleTimer, isPaused, remainingText, checkTimer } from './timer.js';
 import './calendar.js';
 
 // Time and date. Shortly before an event (config.events.remindMinutes) the tile
@@ -66,16 +66,18 @@ class Clock extends Component {
       this.querySelectorAll('.tm-sw').forEach(b => b.classList.toggle('on', b === sw));
     }
     if (target.closest('[data-start]')) this.startIt();
-    if (target.closest('[data-cancel]')) cancelTimer();
+    if (target.closest('[data-stop]')) cancelTimer();
+    if (target.closest('[data-toggle]')) toggleTimer();
   }
 
   // the timer popover: minutes (no limit), an optional name and a colour,
-  // then Start (or Enter); while one runs, what's left and Cancel. Rendered
-  // when it opens or the timer starts / stops, so typing isn't wiped.
+  // then Start (or Enter); while one runs, what's left, play / pause and
+  // stop. Rendered when it opens or the timer starts, pauses or stops, so
+  // typing isn't wiped.
   renderTimerMenu(ui) {
     const open = ui.popover === 'timer';
     this.$('.timer-pop').toggleAttribute('data-open', open);
-    const key = `${open}|${!!ui.timer}`;
+    const key = `${open}|${!!ui.timer}|${isPaused(ui.timer)}`;
     if (key === this.timerKey) return;
     this.timerKey = key;
     const menu = this.$('.timer-menu');
@@ -83,10 +85,11 @@ class Clock extends Component {
       setHTML(menu, `
         <div class="sec">${t('timer.title')}</div>
         <div class="tm-run">
-          <span class="tm-ic" style="color:${ui.timer.color}">${icon('timer')}</span>
-          <b data-left>${remainingText(ui.timer)}</b>
+          <span class="tm-ic" style="color:${ui.timer.color}">${icon(isPaused(ui.timer) ? 'pause' : 'timer')}</span>
+          <b data-left${isPaused(ui.timer) ? ' class="paused"' : ''}>${remainingText(ui.timer)}</b>
           <span class="meta grow">${ui.timer.label}</span>
-          <button class="btn-s" data-cancel>${icon('x')}${t('timer.cancel')}</button>
+          <button class="ib" data-toggle title="${t(isPaused(ui.timer) ? 'timer.resume' : 'timer.pause')}">${icon(isPaused(ui.timer) ? 'play' : 'pause')}</button>
+          <button class="ib" data-stop title="${t('timer.stop')}">${icon('square')}</button>
         </div>`);
       return;
     }
@@ -144,15 +147,16 @@ class Clock extends Component {
     // a timer takes the second line when no event does
     this.timing = !event && !!ui.timer;
     this.classList.toggle('reminding', !!event || this.timing);
+    this.classList.toggle('timing', this.timing);
     this.toggleAttribute('data-tip', !!event || this.timing);
     this.style.removeProperty('--status');
     if (this.timing) {
       this.dataset.status = 'timer';
       this.style.setProperty('--status', ui.timer.color);
       this.classList.remove('has-meet');
-      setHTML(this.$('.cat'), icon('timer'));
+      setHTML(this.$('.cat'), icon(isPaused(ui.timer) ? 'pause' : 'timer'));
       this.showTimer(ui.timer);
-      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
+      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${isPaused(ui.timer) ? t('timer.paused') : t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
       return;
     }
     this.$('.rtext').classList.remove('tnum');
