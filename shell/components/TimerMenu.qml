@@ -19,7 +19,7 @@ Popover {
     property color picked: Ui.timerLast?.color ?? colors[0]
 
     function startIt() {
-        const minutes = parseInt(minutesBox.input.text);
+        const minutes = parseInt(minutesBox.input.text) || Ui.timerLast?.minutes || 10;
         if (!(minutes > 0))
             return;
         Countdown.start(minutes, String(root.picked), nameBox.input.text.trim());
@@ -39,6 +39,7 @@ Popover {
         id: box
         property alias input: field
         property string placeholder
+        signal accepted
         height: 30
         radius: 8
         color: Theme.menuSurface
@@ -52,8 +53,8 @@ Popover {
             selectionColor: Theme.menuAccent
             font { family: Theme.font; pixelSize: 12; weight: Font.Medium }
             clip: true
-            Keys.onReturnPressed: root.startIt()
-            Keys.onEnterPressed: root.startIt()
+            Keys.onReturnPressed: box.accepted()
+            Keys.onEnterPressed: box.accepted()
         }
         Label {
             x: 9
@@ -129,6 +130,7 @@ Popover {
                 width: 76
                 input.validator: IntValidator { bottom: 1; top: 9999 }
                 input.width: 34
+                onAccepted: root.startIt()
                 Label {
                     x: 46
                     anchors.verticalCenter: parent.verticalCenter
@@ -141,6 +143,7 @@ Popover {
                 id: nameBox
                 width: parent.width - minutesBox.width - parent.spacing
                 placeholder: I18n.t("timer.name")
+                onAccepted: root.startIt()
             }
         }
         Item {
