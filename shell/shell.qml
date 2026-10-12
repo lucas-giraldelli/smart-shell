@@ -34,11 +34,6 @@ ShellRoot {
 
                 WlrLayershell.namespace: "smart-shell"
                 WlrLayershell.layer: WlrLayer.Top
-                // the timer popover has text fields: while it is open a click
-                // can bring the keyboard here (a popup only gets keys its
-                // layer surface takes)
-                WlrLayershell.keyboardFocus: Ui.popover === "timer" && Ui.popoverScreen === perScreen.modelData.name
-                    ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
 
                 mask: Region {
                     item: dock

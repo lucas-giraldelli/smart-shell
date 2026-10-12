@@ -21,6 +21,9 @@ PopupWindow {
     // the right when there is no room on the left (the pet care menu, which
     // must not cover the pet)
     property bool side: false
+    // takes the keyboard (text fields): an xdg_popup grab instead of the
+    // Hyprland focus grab; the compositor closes it on a click outside
+    property bool keyboard: false
     readonly property int sideGap: 24
     property bool sideRight: false
 
@@ -83,9 +86,12 @@ PopupWindow {
     visible: open || frame.opacity > 0
     mask: Region { item: open ? bubble : null }
 
+    grabFocus: keyboard
+    onBackingWindowVisibleChanged: if (keyboard && !backingWindowVisible && open) Ui.closePopover()
+
     HyprlandFocusGrab {
         // grab once the popup is mapped, or the compositor clears it at once
-        active: root.open && root.backingWindowVisible
+        active: root.open && root.backingWindowVisible && !root.keyboard
         windows: [root, root.owner.QsWindow.window]
         onCleared: if (root.open) Ui.closePopover()
     }

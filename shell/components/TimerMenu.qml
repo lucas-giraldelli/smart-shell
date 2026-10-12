@@ -12,6 +12,7 @@ Popover {
     id: root
     name: "timer"
     bubbleWidth: 284
+    keyboard: true
     padding: 10
 
     // light enough to tint the glass and stay readable as text on it
