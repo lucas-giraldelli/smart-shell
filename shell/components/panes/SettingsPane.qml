@@ -70,30 +70,25 @@ PaneScroll {
             }
         }
     }
-    Slider {
-        icon: "sliders-horizontal"
-        label: I18n.t("settings.size")
-        from: 40
-        to: 72
-        value: Ui.size
-        valueText: `${Ui.size}px`
-        onMoved: v => Ui.size = v
-    }
-    // workspaces style
-    SegmentedRow {
-        label: I18n.t("settings.wsStyle")
-        options: ["icons", "numbers", "dots"].map(value => ({ value, text: I18n.t(`settings.wsStyles.${value}`) }))
-        current: Ui.wsStyle
-        onPicked: value => Ui.setWsStyle(value)
-    }
-    // the current weather drawn inside the dock
+    // the size slider and the weather in the dock share a row, half each
     Item {
         width: parent.width
-        height: 29
+        height: 42
+        Slider {
+            width: parent.width / 2
+            icon: "sliders-horizontal"
+            label: I18n.t("settings.size")
+            from: 40
+            to: 72
+            value: Ui.size
+            valueText: `${Ui.size}px`
+            onMoved: v => Ui.size = v
+        }
         Rectangle {
-            x: 8
-            width: (404 - 16 - 10) / 2
+            x: parent.width / 2 + 2
+            width: parent.width / 2 - 10
             height: 29
+            anchors.verticalCenter: parent.verticalCenter
             radius: 8
             color: wxArea.containsMouse ? Theme.menuHover : "transparent"
             Row {
@@ -120,7 +115,13 @@ PaneScroll {
             }
         }
     }
-
+    // workspaces style
+    SegmentedRow {
+        label: I18n.t("settings.wsStyle")
+        options: ["icons", "numbers", "dots"].map(value => ({ value, text: I18n.t(`settings.wsStyles.${value}`) }))
+        current: Ui.wsStyle
+        onPicked: value => Ui.setWsStyle(value)
+    }
     Section { text: I18n.t("settings.widgets") }
     // .checks: 2 columns, gap 2px 10px, padding 0 8px
     Item {

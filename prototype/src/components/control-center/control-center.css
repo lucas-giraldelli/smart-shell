@@ -102,6 +102,8 @@
 .cc .set .themes button:hover { background: var(--menu-hover); color: var(--menu-text); }
 .cc .set .themes button.on { color: var(--menu-text); border-color: var(--menu-accent); background: color-mix(in srgb, var(--menu-accent) 12%, transparent); }
 .cc .set .sw { width: 22px; height: 22px; border-radius: 7px; border: 1px solid var(--menu-strong); }
+/* the size slider and the weather switch share a row, half each */
+.cc .set .size-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: center; padding-right: 8px; }
 .cc .set .checks { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 10px; padding: 0 8px; }
 .cc .set .check-row { display: flex; align-items: center; gap: 9px; padding: 6px 4px; border-radius: 8px; font-size: 12.5px; cursor: pointer; }
 .cc .set .check-row:hover { background: var(--menu-hover); }

@@ -33,8 +33,10 @@ export default {
           <span class="sw" style="background:${th.swatch}"></span><span>${t(`themes.${th.id}`)}</span>
         </button>`).join('')}
       </div>
-      ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
-      <div class="checks"><label class="check-row" data-flag="weatherFx"><span data-box></span>${t('settings.weatherFx')}</label></div>
+      <div class="size-row">
+        ${slider({ key: 'size', label: t('settings.size'), iconName: 'sliders-horizontal', min: 40, max: 72 })}
+        <label class="check-row" data-flag="weatherFx"><span data-box></span>${t('settings.weatherFx')}</label>
+      </div>
       <div class="seg-row"><span class="grow">${t('settings.wsStyle')}</span><span class="seg">${
         ['icons', 'numbers', 'dots'].map(s => `<button data-ws-style="${s}">${t(`settings.wsStyles.${s}`)}</button>`).join('')}</span></div>
 
