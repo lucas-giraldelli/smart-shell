@@ -154,12 +154,16 @@ PopupWindow {
             height: shade.height
             visible: false
             layer.enabled: true
-            Rectangle {
+            // the bubble with its tail, so no shadow shows through the tail
+            Shape {
                 x: root.shadowX
                 y: root.shadowTop
-                width: bubble.width
-                height: bubble.height
-                radius: bubble.radius
+                preferredRendererType: Shape.CurveRenderer
+                ShapePath {
+                    strokeWidth: -1
+                    fillColor: "white"
+                    PathSvg { path: root.outline(bubble.width, bubble.height, bubble.radius, root.arrowX + 1, root.side ? 0 : 10, 0) }
+                }
             }
         }
 
