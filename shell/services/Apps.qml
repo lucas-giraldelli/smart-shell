@@ -59,6 +59,14 @@ Singleton {
             Quickshell.execDetached([app.id]);
         return true;
     }
+    // the window of a tray item: the most recent toplevel whose app id (its
+    // last dotted part) is a word of the item id, title or icon
+    // ("Slack_status_icon_1" -> slack, "org.mozilla.Thunderbird" -> thunderbird)
+    function windowOf(keys) {
+        const words = keys.toLowerCase().split(/[^a-z0-9]+/);
+        const own = toplevels.filter(t => words.includes((t.appId ?? "").toLowerCase().split(".").pop()));
+        return own[own.length - 1] ?? null;
+    }
     // right click: close its windows
     function close(app) {
         for (const t of app.windows)

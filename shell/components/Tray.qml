@@ -6,7 +6,8 @@ import "../services"
 import "../lib/prs.mjs" as PrRules
 
 // System tray (prototype: components/tray): StatusNotifierItem icons in a
-// two-column grid inside a tile. Click activates an item, middle click runs its
+// two-column grid inside a tile. Click focuses the app window when it has one
+// open (Apps.windowOf), else activates the item; middle click runs its
 // secondary action, scroll goes to the item, right click opens its menu in a
 // popover (TrayMenu). An empty tray hides the tile.
 // Items matching config.tray.hidden (id, title or icon) are left out - Bluetooth
@@ -148,7 +149,7 @@ Tile {
                         if (mouse.button === Qt.MiddleButton)
                             item.secondaryActivate();
                         else if (mouse.button === Qt.LeftButton)
-                            item.activate();
+                            (Apps.windowOf(cell.keys) ?? item).activate();
                     }
                     onWheel: wheel => cell.modelData.scroll(wheel.angleDelta.y || wheel.angleDelta.x, wheel.angleDelta.y === 0)
                 }
