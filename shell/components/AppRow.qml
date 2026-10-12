@@ -14,6 +14,9 @@ Item {
     id: root
 
     property real mouseX: -1            // in row coordinates, -1 = away
+    // icons still easing back after the mouse left
+    property bool settling: false
+    onMouseXChanged: settling = true
     readonly property real range: Theme.size * 2.8
     // the area icons can grow into, for the dock input mask
     readonly property Item hit: hitArea
@@ -35,10 +38,12 @@ Item {
         onHoveredChanged: if (!hovered) root.mouseX = -1
     }
 
-    // ease every icon scale towards its target, every frame
+    // ease every icon scale towards its target, every frame while the mouse
+    // is over the row or the icons are still easing back
     FrameAnimation {
-        running: true
+        running: root.mouseX >= 0 || root.settling
         onTriggered: {
+            let moving = false;
             for (let i = 0; i < apps.count; i++) {
                 const item = apps.itemAt(i);
                 if (!item)
@@ -54,8 +59,12 @@ Item {
                 let s = item.s + (target - item.s) * 0.2;
                 if (Math.abs(target - s) < 0.002)
                     s = target;
+                else
+                    moving = true;
                 item.s = s;
             }
+            if (root.mouseX < 0 && !moving)
+                root.settling = false;
         }
     }
 

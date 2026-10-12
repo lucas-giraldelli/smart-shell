@@ -272,7 +272,7 @@ Tile {
                     }
 
                     SequentialAnimation on level {
-                        running: Media.playing && !Beat.running
+                        running: Media.playing && !Beat.running && !Ui.calm
                         loops: Animation.Infinite
                         NumberAnimation { from: 0.15; to: 1; duration: bar.modelData; easing.type: Easing.InOutQuad }
                         NumberAnimation { from: 1; to: 0.15; duration: bar.modelData; easing.type: Easing.InOutQuad }

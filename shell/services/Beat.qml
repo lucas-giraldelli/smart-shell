@@ -3,6 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import ".."
 
 // The music, from cava when it is installed (optional): while anything plays,
 // cava runs with 4 bars at 30 fps in raw ascii mode. `bars` (0..1, bass to
@@ -12,7 +13,7 @@ import Quickshell.Io
 Singleton {
     id: root
 
-    readonly property bool running: Caps.cava && Media.playing
+    readonly property bool running: Caps.cava && Media.playing && !Ui.calm
     readonly property bool active: running && Media.dancing
     property var bars: [0, 0, 0, 0]
     property real level: 0

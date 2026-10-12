@@ -4,6 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import "services"
 
 // The prototype `ui` slice (prototype/src/state.js): the user dock
 // preferences, saved to the shell state file, plus transient popover state.
@@ -29,8 +30,10 @@ Singleton {
     property alias tamaOn: prefs.tamaOn          // Tamagotchi mode: the pet has needs (services/Tama.qml)
 
     // transient
-    // a fullscreen window is focused: pets and effects hold still
-    readonly property bool calm: Hyprland.focusedMonitor?.activeWorkspace?.hasFullscreen ?? false
+    // a fullscreen window or a game (the game submap) has the focus: the dock
+    // animations hold still - pets, effects, the music eq and cava
+    readonly property bool calm: (Hyprland.focusedMonitor?.activeWorkspace?.hasFullscreen ?? false)
+        || Keyboard.submap === "game"
     property string popover: ""              // "control-center" | "tray" | ""
     property string ccTab: "volume"
     property var dockerOpen: ({})           // compose project -> expanded, as the user left it
