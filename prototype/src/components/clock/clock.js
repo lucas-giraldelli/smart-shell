@@ -128,7 +128,9 @@ class Clock extends Component {
       min.value = Math.max(1, (parseInt(min.value, 10) || 0) + (e.deltaY < 0 ? 1 : -1));
       this.markPreset();
     }, { passive: false });
-    if (open) requestAnimationFrame(() => { min.focus(); min.select(); });
+    // the name field focused, nothing selected
+    const name = this.$('[data-name]');
+    if (open) requestAnimationFrame(() => { name.focus(); name.setSelectionRange(name.value.length, name.value.length); });
   }
 
   teardown() {

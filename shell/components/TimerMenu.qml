@@ -29,13 +29,13 @@ Popover {
         Ui.closePopover();
     }
 
-    // every time it opens: the last values, the minutes selected
+    // every time it opens: the last values, the name field focused
     onOpenChanged: if (open && !Countdown.running) {
         minutesBox.input.text = String(Ui.timerLast?.minutes ?? 10);
         nameBox.input.text = Ui.timerLast?.label ?? "";
         picked = Ui.timerLast?.color ?? colors[0];
-        minutesBox.input.forceActiveFocus();
-        minutesBox.input.selectAll();
+        nameBox.input.forceActiveFocus();
+        nameBox.input.cursorPosition = nameBox.input.text.length;
     }
 
     component Field: Rectangle {
