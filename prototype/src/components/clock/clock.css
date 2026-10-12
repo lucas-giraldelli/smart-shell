@@ -120,7 +120,7 @@
 
 /* timer popover (right click): minutes, name, colour; or what's left */
 .clock .timer-pop { position: absolute; inset: 0; pointer-events: none; }
-.timer-menu { width: 260px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+.timer-menu { width: 284px; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
 .timer-menu .sec { margin: 0 2px; }
 .tm-form { display: flex; gap: 8px; }
 .tm-field {
@@ -145,3 +145,10 @@
 .tm-run .ib { width: 30px; height: 30px; flex: none; }
 .tm-run .meta { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .clock .rtext.tnum { font-variant-numeric: tabular-nums; }
+/* an ended timer rings: a shake every 1.2 s until a click stops it */
+.clock.ringing { animation: clock-ring 1.2s infinite; transform-origin: 50% 100%; }
+@keyframes clock-ring {
+  0% { transform: rotate(0); } 5% { transform: rotate(-4deg); } 12.5% { transform: rotate(4deg); }
+  20% { transform: rotate(-3deg); } 27.5% { transform: rotate(3deg); } 33% { transform: rotate(0); } 100% { transform: rotate(0); }
+}
+@media (prefers-reduced-motion: reduce) { .clock.ringing { animation: none; } }

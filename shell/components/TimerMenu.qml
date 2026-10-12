@@ -11,7 +11,7 @@ import "ui"
 Popover {
     id: root
     name: "timer"
-    bubbleWidth: 260
+    bubbleWidth: 284
     padding: 10
 
     // light enough to tint the glass and stay readable as text on it
@@ -90,7 +90,7 @@ Popover {
                 spacing: 8
                 Icon {
                     anchors.verticalCenter: parent.verticalCenter
-                    name: Countdown.paused ? "pause" : "timer"
+                    name: Countdown.ringing ? "bell-ring" : Countdown.paused ? "pause" : "timer"
                     size: 16
                     color: Countdown.color
                 }
@@ -116,6 +116,7 @@ Popover {
                 anchors.verticalCenter: parent.verticalCenter
                 spacing: 4
                 IconButton {
+                    visible: !Countdown.ringing
                     icon: Countdown.paused ? "play" : "pause"
                     onClicked: Countdown.toggle()
                 }

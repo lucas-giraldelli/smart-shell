@@ -5,15 +5,16 @@ import { categories } from '../../data/categories.js';
 import { t, dateFormat, formatTime, locale } from '../../i18n/index.js';
 import { setHTML } from '../ui/ui.js';
 import { store } from '../../state.js';
-import { COLORS, startTimer, cancelTimer, toggleTimer, isPaused, remainingText, checkTimer } from './timer.js';
+import { COLORS, startTimer, cancelTimer, toggleTimer, isPaused, isRinging, remainingText, checkTimer } from './timer.js';
 import './calendar.js';
 
 // Time and date. Shortly before an event (config.events.remindMinutes) the tile
 // turns orange (warn); while an event runs it turns green (ok). Either way the
 // date moves up next to the time and the event's name, with its category icon,
 // takes the second line. A running timer (timer.js) takes it the same way, in
-// its own colour, when no event does. Click opens the month calendar, right
-// click the timer.
+// its own colour, when no event does; one that ended rings (the tile shakes)
+// until a click stops it. Click opens the month calendar, right click the
+// timer.
 class Clock extends Component {
   static slices = ['ui', 'agenda'];
 
@@ -43,6 +44,7 @@ class Clock extends Component {
     this.addEventListener('click', e => {
       if (cameFrom(e, 'ss-calendar')) return;
       if (cameFrom(e, '.timer-pop')) return this.timerClick(e.target);
+      if (isRinging(store.get().ui.timer)) return cancelTimer();
       // the reminder's video icon joins the Meet; the rest opens the calendar
       const event = store.get().agenda.upcoming ?? store.get().agenda.ongoing;
       if (event?.meet && e.target.closest('.meet-ic')) { window.open(event.meet, '_blank'); return; }
@@ -77,7 +79,7 @@ class Clock extends Component {
   renderTimerMenu(ui) {
     const open = ui.popover === 'timer';
     this.$('.timer-pop').toggleAttribute('data-open', open);
-    const key = `${open}|${!!ui.timer}|${isPaused(ui.timer)}`;
+    const key = `${open}|${!!ui.timer}|${isPaused(ui.timer)}|${isRinging(ui.timer)}`;
     if (key === this.timerKey) return;
     this.timerKey = key;
     const menu = this.$('.timer-menu');
@@ -85,10 +87,10 @@ class Clock extends Component {
       setHTML(menu, `
         <div class="sec">${t('timer.title')}</div>
         <div class="tm-run">
-          <span class="tm-ic" style="color:${ui.timer.color}">${icon(isPaused(ui.timer) ? 'pause' : 'timer')}</span>
+          <span class="tm-ic" style="color:${ui.timer.color}">${icon(isRinging(ui.timer) ? 'bell-ring' : isPaused(ui.timer) ? 'pause' : 'timer')}</span>
           <b data-left${isPaused(ui.timer) ? ' class="paused"' : ''}>${remainingText(ui.timer)}</b>
           <span class="meta grow">${ui.timer.label}</span>
-          <button class="ib" data-toggle title="${t(isPaused(ui.timer) ? 'timer.resume' : 'timer.pause')}">${icon(isPaused(ui.timer) ? 'play' : 'pause')}</button>
+          ${isRinging(ui.timer) ? '' : `<button class="ib" data-toggle title="${t(isPaused(ui.timer) ? 'timer.resume' : 'timer.pause')}">${icon(isPaused(ui.timer) ? 'play' : 'pause')}</button>`}
           <button class="ib" data-stop title="${t('timer.stop')}">${icon('square')}</button>
         </div>`);
       return;
@@ -145,7 +147,9 @@ class Clock extends Component {
     // what's next matters more than what's running: warn first
     const event = agenda.upcoming ?? agenda.ongoing;
     // a timer takes the second line when no event does
-    this.timing = !event && !!ui.timer;
+    // a ringing timer wins over an event
+    this.timing = !!ui.timer && (!event || isRinging(ui.timer));
+    this.classList.toggle('ringing', isRinging(ui.timer));
     this.classList.toggle('reminding', !!event || this.timing);
     this.classList.toggle('timing', this.timing);
     this.toggleAttribute('data-tip', !!event || this.timing);
@@ -154,9 +158,9 @@ class Clock extends Component {
       this.dataset.status = 'timer';
       this.style.setProperty('--status', ui.timer.color);
       this.classList.remove('has-meet');
-      setHTML(this.$('.cat'), icon(isPaused(ui.timer) ? 'pause' : 'timer'));
+      setHTML(this.$('.cat'), icon(isRinging(ui.timer) ? 'bell-ring' : isPaused(ui.timer) ? 'pause' : 'timer'));
       this.showTimer(ui.timer);
-      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${isPaused(ui.timer) ? t('timer.paused') : t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
+      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${isRinging(ui.timer) ? t('timer.ringing') : isPaused(ui.timer) ? t('timer.paused') : t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
       return;
     }
     this.$('.rtext').classList.remove('tnum');

@@ -10,13 +10,15 @@ import "../lib/calendar.mjs" as Cal
 // runs it turns green (ok). Either way the date moves up next to the time and
 // the event name, with its category icon, takes the second line. A running
 // timer (services/Countdown.qml) takes it the same way, in its own colour,
-// when no event does. Click opens the month calendar, right click the timer.
+// when no event does; one that ended rings (the tile shakes) until a click
+// stops it. Click opens the month calendar, right click the timer.
 Tile {
     id: root
 
     // what is next matters more than what is running: warn first
     readonly property var event: Events.upcoming ?? Events.ongoing
-    readonly property bool timing: Countdown.running && event === null
+    // a ringing timer wins over an event
+    readonly property bool timing: Countdown.running && (event === null || Countdown.ringing)
     readonly property bool reminding: event !== null || timing
     readonly property string status: Events.upcoming ? "warn" : Events.ongoing ? "ok" : ""
     readonly property color tint: timing ? Countdown.color : Theme.status(status)
@@ -74,7 +76,7 @@ Tile {
     Tip {
         target: root
         shown: root.hovered && root.reminding
-        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${Countdown.paused ? I18n.t("timer.paused") : I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
+        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${Countdown.ringing ? I18n.t("timer.ringing") : Countdown.paused ? I18n.t("timer.paused") : I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
             : root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
             Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}${
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
@@ -87,6 +89,8 @@ Tile {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
         onClicked: mouse => {
+            if (Countdown.ringing)
+                return Countdown.cancel();
             const menu = mouse.button === Qt.RightButton ? timerMenu : calendar;
             menu.open ? Ui.closePopover() : Ui.openPopover(menu.name);
         }
@@ -170,7 +174,7 @@ Tile {
                     spacing: 5
                     Icon {
                         anchors.verticalCenter: parent.verticalCenter
-                        name: root.timing ? (Countdown.paused ? "pause" : "timer") : Cal.categories[root.event?.category]?.icon ?? "user"
+                        name: root.timing ? (Countdown.ringing ? "bell-ring" : Countdown.paused ? "pause" : "timer") : Cal.categories[root.event?.category]?.icon ?? "user"
                         size: 12
                         shadow: true
                         color: root.tint
@@ -221,5 +225,19 @@ Tile {
     TimerMenu {
         id: timerMenu
         owner: root
+    }
+
+    // ringing: a shake every 1.2 s, about the bottom centre
+    transformOrigin: Item.Bottom
+    SequentialAnimation on rotation {
+        running: Countdown.ringing
+        loops: Animation.Infinite
+        onRunningChanged: if (!running) root.rotation = 0
+        NumberAnimation { to: -4; duration: 60 }
+        NumberAnimation { to: 4; duration: 90 }
+        NumberAnimation { to: -3; duration: 90 }
+        NumberAnimation { to: 3; duration: 90 }
+        NumberAnimation { to: 0; duration: 70 }
+        PauseAnimation { duration: 800 }
     }
 }

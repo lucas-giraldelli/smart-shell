@@ -59,7 +59,7 @@ core, then the lines for the widgets you want.
 **Arch / CachyOS**
 
 ```sh
-paru -S quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify  # core
+paru -S quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify sound-theme-freedesktop  # core
 paru -S ddcutil                  # brightness (also: sudo modprobe i2c-dev, user in the i2c group)
 paru -S hyprsunset               # night light
 paru -S docker lazydocker        # Docker tab (also: systemctl enable --now docker, user in the docker group)
@@ -76,7 +76,7 @@ paru -S cava                     # pets dance to the music, the player's eq foll
 
 ```sh
 sudo dnf copr enable errornointernet/quickshell
-sudo dnf install quickshell rsms-inter-fonts papirus-icon-theme qt6-qt5compat NetworkManager iputils curl jq libnotify  # core
+sudo dnf install quickshell rsms-inter-fonts papirus-icon-theme qt6-qt5compat NetworkManager iputils curl jq libnotify sound-theme-freedesktop  # core
 sudo dnf install ddcutil         # brightness
 sudo dnf install moby-engine     # Docker tab (lazydocker: see its README)
 sudo dnf install bluez blueman   # Bluetooth tile
@@ -92,7 +92,7 @@ Quickshell isn't packaged: build it from
 [source](https://quickshell.outfoxxed.me/docs/guide/install-setup/).
 
 ```sh
-sudo apt install fonts-inter papirus-icon-theme qml6-module-qt5compat-graphicaleffects network-manager iputils-ping curl jq libnotify-bin  # core
+sudo apt install fonts-inter papirus-icon-theme qml6-module-qt5compat-graphicaleffects network-manager iputils-ping curl jq libnotify-bin sound-theme-freedesktop  # core
 sudo apt install ddcutil         # brightness
 sudo apt install docker.io       # Docker tab (lazydocker: see its README)
 sudo apt install bluez blueman   # Bluetooth tile
@@ -340,8 +340,10 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   of the clock still opens the calendar.
   Right click sets a timer: minutes (no limit), an optional name and a
   colour. Its countdown takes the second line in that colour (an event
-  reminder wins while one is on) and a notification says when it ends. The
-  same popover pauses / resumes or stops it; it survives a restart.
+  reminder wins while one is on). When it ends it rings until a click on the
+  clock: the tile shakes and the freedesktop alarm sound plays (`pw-play`,
+  for up to 5 minutes). The same popover pauses / resumes or stops it; it
+  survives a restart.
 
 ## Running the prototype
 

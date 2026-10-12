@@ -22,7 +22,7 @@ WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs music
 
 # packages per widget; core is always installed
 declare -A PKGS=(
-  [core]="quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify"
+  [core]="quickshell inter-font papirus-icon-theme qt6-5compat networkmanager iputils curl jq libnotify sound-theme-freedesktop"
   [brightness]="ddcutil"
   [nightlight]="hyprsunset"
   [docker]="docker lazydocker"
