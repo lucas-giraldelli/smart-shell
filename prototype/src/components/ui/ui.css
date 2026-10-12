@@ -9,7 +9,6 @@
 .menu {
   position: absolute; left: var(--menu-left, 0); bottom: calc(100% + 16px); width: 240px; padding: 6px; z-index: 20; cursor: default;
   border-radius: 14px; color: var(--menu-text); border: 1px solid transparent;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
   opacity: 0; transform: translateY(6px) scale(.98); transform-origin: var(--arrow-x, 24px) 100%; pointer-events: none;
   transition: opacity .16s, transform .16s;
 }

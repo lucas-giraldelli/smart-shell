@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Effects
 import QtQuick.Shapes
 import Quickshell
 import Quickshell.Hyprland
@@ -34,7 +33,7 @@ PopupWindow {
     readonly property int arrowInset: 18    // the arrow never gets closer than this to a corner
     readonly property int gap: 16           // between the tile and the bubble
 
-    // room around the bubble for its shadow (0 16px 40px)
+    // room around the bubble (the window is a little larger than it)
     readonly property int shadowX: 40
     readonly property int shadowTop: 24
     readonly property int shadowBottom: 56
@@ -117,55 +116,6 @@ PopupWindow {
             }
         ]
         Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
-
-        // box-shadow 0 16px 40px: drawn only outside the bubble, like CSS,
-        // so it does not darken the glass
-        Item {
-            id: shade
-            x: -root.shadowX
-            y: -root.shadowTop
-            width: bubble.width + root.shadowX * 2
-            height: bubble.height + root.shadowTop + root.shadowBottom
-            layer.enabled: true
-            layer.effect: MultiEffect {
-                maskEnabled: true
-                maskInverted: true
-                maskSource: cutout
-                maskThresholdMin: 0.5
-                maskSpreadAtMin: 1
-            }
-
-            RectangularShadow {
-                x: root.shadowX
-                y: root.shadowTop
-                width: bubble.width
-                height: bubble.height
-                offset.y: 16
-                blur: 40
-                radius: bubble.radius
-                color: Theme.menuShadow
-            }
-        }
-        Item {
-            id: cutout
-            x: shade.x
-            y: shade.y
-            width: shade.width
-            height: shade.height
-            visible: false
-            layer.enabled: true
-            // the bubble with its tail, so no shadow shows through the tail
-            Shape {
-                x: root.shadowX
-                y: root.shadowTop
-                preferredRendererType: Shape.CurveRenderer
-                ShapePath {
-                    strokeWidth: -1
-                    fillColor: "white"
-                    PathSvg { path: root.outline(bubble.width, bubble.height, bubble.radius, root.arrowX + 1, root.side ? 0 : 10, 0) }
-                }
-            }
-        }
 
         // body and tail are one path, so the glass and its 1px border run
         // through the tail without a seam (the fill is the outline, the
