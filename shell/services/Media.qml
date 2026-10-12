@@ -167,7 +167,7 @@ Singleton {
     readonly property string findWindow: 'pid=$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus '
         + 'org.freedesktop.DBus GetConnectionUnixProcessID s "$1" 2>/dev/null | cut -d" " -f2); '
         + 'addr=$(hyprctl clients -j | jq -r --argjson pid "${pid:-0}" --arg hint "$2" '
-        + '\'first(.[] | select(.pid == $pid)) // first(.[] | select((.class | ascii_downcase) | contains($hint))) | .address\'); '
+        + "'first(.[] | select(.pid == $pid)) // first(.[] | select((.class | ascii_downcase) | contains($hint))) | .address'); "
         + '[ -n "$addr" ] && [ "$addr" != null ] || exit 1; '
     Process {
         id: windowAction
