@@ -1,6 +1,6 @@
 # smart-shell
 
-A dock for Wayland desktops: workspaces, apps
+A dock for Hyprland: workspaces, apps
 and live status widgets in one glass bar, with themes, particle effects and
 little pets that react to CPU load.
 
@@ -46,6 +46,11 @@ tools/       helper scripts (icons, calendar export, service install)
 ```
 
 ## Install
+
+**Hyprland is required.** Other compositors with `wlr-layer-shell` (Sway, niri,
+river, KDE Plasma) show the bar, but workspaces, the focused screen, bringing
+windows forward, the resize submap and the blur all come from Hyprland, so
+those parts don't work there. GNOME has no layer-shell and shows nothing.
 
 Only the core is required; each widget needs its own packages and stays
 visible but disabled (saying what's missing) until they're there. Install the
