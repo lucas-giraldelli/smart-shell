@@ -6,3 +6,6 @@ prototype/assets/local/
 .idea/
 *.swp
 .DS_Store
+
+# qmlls config, generated per machine by Quickshell
+shell/.qmlls.ini
