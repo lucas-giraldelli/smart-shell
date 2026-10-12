@@ -8,6 +8,7 @@ import { memStatus, tempStatus } from '../control-center/panes/system.js';
 import { openPopover, closePopover, isOpen } from '../../core/popover.js';
 import { setHTML } from '../ui/ui.js';
 import { tick, care, menuHTML, urgent, foodOf, tooTired, SIGN } from './tama.js';
+import { isRinging } from '../clock/timer.js';
 
 // pets dance while the player in config.pets.danceWith (YouTube Music) plays;
 // the mock's media slice stands in for MPRIS (its `url`, `source`)
@@ -87,7 +88,10 @@ class Pets extends Component {
       pet.setFlags([ui.tamaOn && 'tama', ui.tamaOn && tama.sick && 'sick'].filter(Boolean).join(' '));
       el.toggleAttribute('data-open', ui.tamaOn && ui.popover === 'tama');
       const need = ui.tamaOn ? urgent(tama) : '';
-      el.querySelector('.need').textContent = need === 'food' ? foodOf(pet.kind) : SIGN[need] ?? '';
+      // a ringing clock timer wins: an alarm clock hopping, the pet shaking
+      const ringing = isRinging(ui.timer);
+      el.toggleAttribute('data-ringing', ringing);
+      el.querySelector('.need').textContent = ringing ? '⏰' : need === 'food' ? foodOf(pet.kind) : SIGN[need] ?? '';
       if (ui.tamaOn && ui.popover === 'tama') setHTML(el.querySelector('.menu'), menuHTML(pet.kind, tama));
     }
     const poops = ui.tamaOn && this.pets.length ? tama.poops : [];

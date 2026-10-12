@@ -168,6 +168,11 @@ ss-pets { display: contents; }
   animation: need 1.6s ease-in-out infinite;
 }
 @keyframes need { 0%, 100% { translate: 0 0; } 50% { translate: 0 -3px; } }
+/* a ringing clock timer: the alarm clock hops, the pet shakes */
+.pet[data-ringing] .need { animation: need-ring .5s ease-in-out infinite; }
+@keyframes need-ring { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+.pet[data-ringing] svg { transform-origin: 50% 100%; animation: pet-shake .25s ease-in-out infinite; }
+@keyframes pet-shake { 0%, 100% { rotate: -7deg; } 50% { rotate: 7deg; } }
 .pet.sick svg { filter: hue-rotate(65deg) saturate(.55) brightness(.92); }
 .tama-poops { position: absolute; left: 30px; right: 60px; bottom: calc(100% - 4px); height: 0; pointer-events: none; }
 .tama-poops .poop {

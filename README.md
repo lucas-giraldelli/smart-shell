@@ -341,8 +341,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   Right click sets a timer: minutes (no limit), an optional name and a
   colour. Its countdown takes the second line in that colour (an event
   reminder wins while one is on). When it ends it rings until a click on the
-  clock: the tile shakes and the freedesktop alarm sound plays (`pw-play`,
-  for up to 5 minutes). The same popover pauses / resumes or stops it; it
+  clock: the tile and the pet shake, an alarm clock hops over the pet and the
+  freedesktop alarm sound plays (`pw-play`, quietly, for up to 5 minutes). The same popover pauses / resumes or stops it; it
   survives a restart.
 
 ## Running the prototype

@@ -182,7 +182,9 @@ Item {
                 return -4 - 2 * Math.cos(root.clock / 1.2 * Math.PI);
             return 0;
         }
-        rotation: root.move.rot !== undefined ? root.move.rot
+        // a ringing clock timer: it shakes side to side
+        rotation: Countdown.ringing ? 7 * Math.sin(root.clock * 25)
+            : root.move.rot !== undefined ? root.move.rot
             : root.poseMove.rot !== undefined ? root.poseMove.rot
             : root.species?.waddle && root.s.moving ? 7 * Math.sin(root.clock / root.s.step * Math.PI) : 0
         transformOrigin: Item.Bottom
@@ -399,12 +401,13 @@ Item {
         }
     }
 
-    // pet care: the sign of its most urgent need, bobbing over its head
+    // pet care: the sign of its most urgent need, bobbing over its head; a
+    // ringing clock timer (services/Countdown.qml) wins: an alarm clock hopping
     Text {
         anchors.horizontalCenter: parent.horizontalCenter
-        y: -22 - 3 * Math.abs(Math.sin(root.clock * 2))
-        visible: Tama.need !== "" && Ui.popover !== "tama"
-        text: Tama.need === "food" ? Tama.food : ({ fun: "🎾", clean: "🧼", energy: "💤", sick: "🤒" })[Tama.need] ?? ""
+        y: Countdown.ringing ? -22 - 6 * Math.abs(Math.sin(root.clock * 6)) : -22 - 3 * Math.abs(Math.sin(root.clock * 2))
+        visible: Countdown.ringing || (Tama.need !== "" && Ui.popover !== "tama")
+        text: Countdown.ringing ? "⏰" : Tama.need === "food" ? Tama.food : ({ fun: "🎾", clean: "🧼", energy: "💤", sick: "🤒" })[Tama.need] ?? ""
         font.pixelSize: 13
     }
 
