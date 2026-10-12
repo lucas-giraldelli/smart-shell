@@ -340,8 +340,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   of the clock still opens the calendar.
   Right click sets a timer: minutes (no limit), an optional name and a
   colour. Its countdown takes the second line in that colour (an event
-  reminder wins while one is on) and a notification says when it ends; it
-  survives a restart.
+  reminder wins while one is on) and a notification says when it ends. The
+  same popover pauses / resumes or stops it; it survives a restart.
 
 ## Running the prototype
 
