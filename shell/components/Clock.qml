@@ -128,7 +128,7 @@ Tile {
         Label {
             id: miniDate
             x: time.x + time.implicitWidth + 7 - (root.reminding ? 0 : 4)
-            y: 8    // on the time baseline
+            y: 5    // its digits centred on the time digits
             opacity: root.reminding ? 1 : 0
             text: I18n.capitalize(I18n.formatDate(clock.date, "mini"))
             size: 11

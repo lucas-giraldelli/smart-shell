@@ -29,7 +29,9 @@
 .clock:not(.reminding) .t-big { font-variant-numeric: normal; }
 .clock:not(.reminding) .mini-date { position: absolute; }
 .clock:not(.reminding) .ticker > * { text-align: center; }
-.clock .clock-top { display: flex; align-items: baseline; gap: 7px; }
+/* the date digits centred on the time digits (2px of margin: 1px lower) */
+.clock .clock-top { display: flex; align-items: center; gap: 7px; }
+.clock .clock-top .mini-date { margin-top: 2px; }
 .clock .mini-date { opacity: 0; transform: translateX(-4px); transition: opacity .3s, transform .3s; white-space: nowrap; }
 .clock.reminding .mini-date { opacity: 1; transform: none; }
 
