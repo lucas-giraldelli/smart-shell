@@ -10,6 +10,7 @@ import "../lib/prs.mjs" as PrRules
 // and opens the PR in the default browser.
 Popover {
     id: root
+    name: "prs"
 
     // state -> icon / colour (prototype: LOOK in prs.js)
     readonly property var looks: ({
@@ -37,7 +38,6 @@ Popover {
         Ui.prsHidden = Ui.prsHidden.includes(repo) ? Ui.prsHidden.filter(r => r !== repo) : Ui.prsHidden.concat([repo]);
     }
 
-    name: "prs"
     bubbleWidth: 440
     padding: 6
 
