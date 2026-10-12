@@ -6,7 +6,8 @@
 // The pet has needs that run down over hours:
 //   food    fed by Feed; down 12/h
 //   fun     raised by Play (costs energy) and a little by Pet; down 10/h
-//   clean   down 4/h, and 10/h more per dropping on the dock; Clean restores it
+//   clean   down 4/h (by species), and 10/h more per dropping on the dock;
+//           Clean restores it
 //   energy  down 6/h awake, up 30/h asleep (low CPU, or put to bed)
 //   health  falls while it's sick or a need is nearly empty, recovers when fed
 //           and happy; at 0 the pet runs away (and comes back as the ghost)
@@ -57,7 +58,8 @@ export function decay(s, dt, ctx) {
   const n = Object.assign({}, s, {
     food: clamp(s.food - 12 * pace(sp, 'food') * h),
     fun: clamp(s.fun - (10 * pace(sp, 'fun') + (ctx.meeting ? 2 : 0) - (ctx.music ? 6 : 0)) * h),
-    clean: clamp(s.clean - (4 + 10 * s.poops.length + (ctx.hot ? 2 : 0)) * pace(sp, 'clean') * h),
+    // droppings dirty it at the same rate for every species (even the ghost)
+    clean: clamp(s.clean - ((4 + (ctx.hot ? 2 : 0)) * pace(sp, 'clean') + 10 * s.poops.length) * h),
     energy: clamp(s.energy + (ctx.asleep || s.napping ? 30 : -tired) * h),
     nextPoop: s.nextPoop - h * (s.food > 30 ? 1 : .3),
   });
