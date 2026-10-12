@@ -2,7 +2,7 @@ import QtQuick
 import ".."
 
 // Text at any CSS pixel size. Qt rounds font sizes to whole pixels, so the
-// prototype's 11.5px / 12.5px / 10.5px text would come out a size off; a
+// prototype 11.5px / 12.5px / 10.5px text would come out a size off; a
 // fractional size is drawn at twice the size and scaled down by half.
 Item {
     id: root
@@ -18,7 +18,7 @@ Item {
     property bool uppercase: false
     property string family: Theme.font
     property bool shadow: false             // dock text: Theme.textShadow 1px below
-    property real lineHeight: size * 1.2    // the prototype's body line-height
+    property real lineHeight: size * 1.2    // the prototype body line-height
 
     readonly property real k: Number.isInteger(size) ? 1 : 0.5
     readonly property real contentWidth: label.contentWidth * k

@@ -7,12 +7,12 @@ import Quickshell.Services.Mpris
 import ".."
 import "../lib/rules.mjs" as Rules
 
-// Now playing - the prototype's `media` slice, from MPRIS. Which player:
+// Now playing - the prototype `media` slice, from MPRIS. Which player:
 //   - never one matching config.music.ignore (substrings of its identity,
-//     desktop entry, title, url or command line; WhatsApp's voice messages by
+//     desktop entry, title, url or command line; WhatsApp voice messages by
 //     default - its PWA is a Chromium whose only tell is "web.whatsapp.com")
 //   - skip junk sessions (no title, or a bare hostname with no artist) unless
-//     it's the only one playing
+//     it is the only one playing
 //   - prefer the one playing, then the one that played last, then the first
 // `progress` is 0..1 of the track.
 Singleton {
@@ -65,7 +65,7 @@ Singleton {
     // the cover: Chromium writes it to an extension-less file in /tmp that it
     // rewrites under the same name for the next track, so the track is added
     // to the URL (ignored for a local file) to make the image load again
-    // the player's cover, else a YouTube video's thumbnail from its url (Zen
+    // the player cover, else a YouTube video thumbnail from its url (Zen
     // reports no artwork for YouTube tabs)
     readonly property string art: player?.trackArtUrl || Rules.youtubeThumb(player?.metadata?.["xesam:url"] ?? "")
     readonly property string album: player?.trackAlbum ?? ""
@@ -102,11 +102,11 @@ Singleton {
     readonly property real length: lastLength
     readonly property real progress: lastLength > 0 ? Math.max(0, Math.min(1, lastPosition / lastLength)) : 0
 
-    // the YouTube Music app's own player (its popover's controls)
+    // the YouTube Music app player (its popover controls)
     readonly property MprisPlayer musicPlayer: Mpris.players.values.find(p => isMusicApp(p)) ?? null
 
-    // Bring a player's window forward: its workspace, then the window - found
-    // by the D-Bus connection's process (the browser that owns the window),
+    // Bring a player window forward: its workspace, then the window - found
+    // by the D-Bus connection process (the browser that owns the window),
     // else by its desktop entry in the window class.
     function focusPlayer(p) {
         if (!p)
@@ -115,11 +115,11 @@ Singleton {
             "sh", p.dbusName, (p.desktopEntry || p.identity || "").toLowerCase()];
         windowAction.running = true;
     }
-    // YouTube Music's like state: read from the app over its debug port
+    // YouTube Music like state: read from the app over its debug port
     // (tools/ytm-like.mjs). The dock flips it at once (optimistic) and the
-    // app's answer confirms it. Without the port the state stays unknown and
-    // the like is sent as the app's "+" shortcut (Shift + "=" - Hyprland
-    // can't send the shifted "plus" keysym), without focusing its window.
+    // app answer confirms it. Without the port the state stays unknown and
+    // the like is sent as the app "+" shortcut (Shift + "=" - Hyprland
+    // cannot send the shifted "plus" keysym), without focusing its window.
     property string likeStatus: ""          // LIKE | INDIFFERENT | DISLIKE, "" unknown
     readonly property bool liked: likeStatus === "LIKE"
     readonly property string musicTrack: musicPlayer ? musicPlayer.trackTitle + musicPlayer.trackArtist : ""
@@ -191,13 +191,13 @@ Singleton {
             for (const p of playing)
                 last[p.dbusName] = Date.now();
             root.lastPlayed = last;
-            // MPRIS doesn't signal position while playing; ask now and then
+            // MPRIS does not signal position while playing; ask now and then
             root.player?.positionChanged();
             root.read();
         }
     }
 
-    // the players' command lines, read whenever the set of players changes
+    // the players command lines, read whenever the set of players changes
     Connections {
         target: Mpris.players
         function onValuesChanged() { cmd.refresh(); }

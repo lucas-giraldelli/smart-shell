@@ -4,7 +4,7 @@ import Quickshell
 import Quickshell.Io
 import ".."
 
-// A screen recording in progress (gpu-screen-recorder, started by the user's
+// A screen recording in progress (gpu-screen-recorder, started by the user
 // Alt+Print script): the caps lock area shows a red dot and the elapsed time,
 // and a click stops it (config.commands.record). The script tells the dock
 // over IPC (`qs ipc call recording started|stopped`); a check every 3 s

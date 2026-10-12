@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Controls as QQC
 import "../.."
 
-// A control-center tab's scrolling body (prototype: .cc .pane): fixed 306px,
+// A control-center tab scrolling body (prototype: .cc .pane): fixed 306px,
 // padding 8px 2px 2px, content scrolls inside with a thin scrollbar.
 Flickable {
     id: root

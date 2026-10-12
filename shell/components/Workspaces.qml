@@ -28,7 +28,7 @@ Row {
             readonly property bool occupied: modelData.toplevels.values.length > 0
             readonly property string iconName: Config.workspaceIcons[String(modelData.id)] ?? ""
             readonly property bool showIcon: Ui.wsStyle === "icons" && occupied && !active && iconName !== ""
-            // numbers: occupied ones show their id in the icon dot's footprint, the pill too
+            // numbers: occupied ones show their id in the icon dot footprint, the pill too
             readonly property bool showNumber: Ui.wsStyle === "numbers" && (occupied || active)
             readonly property bool big: showIcon || (showNumber && !active)
 

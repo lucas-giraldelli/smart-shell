@@ -10,7 +10,7 @@ import "../lib/rules.mjs" as Rules
 // dock, Ui.pet). It reacts to CPU load - sleeps, idles, walks or runs - and
 // during a work meeting (an ongoing event in the "work" category) sits at a
 // laptop and types, and while YouTube Music plays (config.pets.danceWith) it
-// dances its species' dance. Hover shows its name, mood and the load; a click
+// dances its species dance. Hover shows its name, mood and the load; a click
 // sends up a heart - or, in pet care mode (services/Tama.qml), opens its care
 // menu. Holds still while a fullscreen window is focused.
 Item {
@@ -54,7 +54,7 @@ Item {
         groove += (want - groove) * (1 - Math.exp(-dt / (want > groove ? 0.7 : 0.35)));
     }
     readonly property var dance: Engine.DANCES[kind] ?? null
-    // the dance's own clock: slow while it warms up, double time at full
+    // the dance clock: slow while it warms up, double time at full
     // groove (one beat = 0.5 s at 0.6)
     property real danceClock: 0
     readonly property real dancePhase: dance ? (danceClock % (0.5 * dance.beats)) / (0.5 * dance.beats) : 0
@@ -96,7 +96,7 @@ Item {
         if (live.length !== notes.length || due.length)
             notes = live;
     }
-    // the species' own pose (lib/poses.mjs): its frame and its motion
+    // the species own pose (lib/poses.mjs): its frame and its motion
     // (a care animation brings its own pose: s.def)
     readonly property var poseDef: s.def ?? (s.own && species ? Engine.poseOf(species, s.own) : null)
     readonly property string frame: poseDef ? Engine.frameAt(poseDef, s.poseT) : ""
@@ -193,7 +193,7 @@ Item {
         Image {
             id: spriteImage
             // the sprite box is 46px; the drawing is 56px wide so the
-            // laptop in front of it isn't cut
+            // laptop in front of it is not cut
             width: 56
             height: 36
             visible: root.hot === 0 && !root.sick
@@ -217,11 +217,11 @@ Item {
     // faces where it walks; a pose can turn it around (flip)
     readonly property int face: poseMove.flip ? -s.dir : s.dir
 
-    // a pose's prop (the frog's fly): drawn on its own, not turned or moved
+    // a pose prop (the frog fly): drawn on its own, not turned or moved
     // with the sprite; mirrored only to the side the pet faces
     readonly property var prop: poseDef?.prop ? poseDef.prop.at(s.poseT) : null
-    // an emoji prop (an SVG <text>, as in poses.js emoji()): Qt's SVG renderer
-    // draws no emoji, so it's drawn as text; anything else as an image
+    // an emoji prop (an SVG <text>, as in poses.js emoji()): Qt SVG renderer
+    // draws no emoji, so it is drawn as text; anything else as an image
     readonly property var propText: poseDef?.prop ? poseDef.prop.svg.match(/<text[^>]*font-size="([\d.]+)"[^>]*>([^<]+)<\/text>/) : null
     Text {
         visible: !!root.prop && !!root.propText
@@ -242,7 +242,7 @@ Item {
         source: root.poseDef?.prop && !root.propText ? "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-9 -9 18 18">${root.poseDef.prop.svg}</svg>`) : ""
     }
 
-    // a word over its head (an action's `say`, under pets.says): white
+    // a word over its head (an action `say`, under pets.says): white
     // text with a dark outline, no box
     Text {
         readonly property bool on: !!(root.s.say || root.clickSay)
@@ -260,7 +260,7 @@ Item {
         Behavior on scale { NumberAnimation { duration: 200 } }
     }
 
-    // sleeping: two z's drifting up (2.4 s, staggered)
+    // sleeping: two z drifting up (2.4 s, staggered)
     Repeater {
         model: [0, 1.2]
         Text {
@@ -373,7 +373,7 @@ Item {
         }
     }
 
-    // a heart, and its word (species.click, else its talk action's)
+    // a heart, and its word (species.click, else its talk action)
     function love() {
         heart.y = -4;
         loveAnim.restart();
@@ -408,7 +408,7 @@ Item {
         font.pixelSize: 13
     }
 
-    // pet care: its droppings on the dock's floor; a click cleans one
+    // pet care: its droppings on the dock floor; a click cleans one
     Repeater {
         model: Tama.on ? Tama.s.poops : []
         Text {

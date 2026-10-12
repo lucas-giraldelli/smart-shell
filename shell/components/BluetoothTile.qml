@@ -23,7 +23,7 @@ Tile {
     readonly property var device: connected ?? connecting
     readonly property bool expanded: device !== null
 
-    // keep the last name while collapsing, so the text doesn't vanish mid-animation
+    // keep the last name while collapsing, so the text does not vanish mid-animation
     property string name: ""
     property string sub: ""
     onDeviceChanged: update()
@@ -178,7 +178,7 @@ Tile {
                 Switch { on: root.on }
             }
             Separator {}
-            // margin-top 6, collapsing with the separator's 4
+            // margin-top 6, collapsing with the separator 4
             Section { gap: 2; text: I18n.t("bluetooth.paired") }
             Repeater {
                 model: root.devices

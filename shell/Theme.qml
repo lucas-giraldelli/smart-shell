@@ -3,7 +3,7 @@ pragma Singleton
 import QtQuick
 import Quickshell
 
-// Design tokens - the prototype's themes (prototype/src/styles/base.css and
+// Design tokens - the prototype themes (prototype/src/styles/base.css and
 // styles/themes). Components read these and never hard-code colours or sizes.
 Singleton {
     readonly property int size: Ui.size     // tile / icon size (dock settings)
@@ -19,8 +19,8 @@ Singleton {
     // The themes (prototype/src/styles/themes/*.css): "glass" is the base and
     // every other theme overrides some tokens. Colours are [r, g, b, a] or
     // "#rrggbb". Picked in the dock settings, saved as config.theme. `tint`
-    // darkens the dock's glass and `fx` is the theme's particle effect
-    // (lib/fx.mjs) - both confined to the dock (DockEffects). Not ported: per-theme --blur (Hyprland's
+    // darkens the dock glass and `fx` is the theme particle effect
+    // (lib/fx.mjs) - both confined to the dock (DockEffects). Not ported: per-theme --blur (Hyprland
     // layer rule blurs every theme).
     readonly property var base: ({
         radius: 24, padBottom: 12, reflection: 0.18, tint: [0, 0, 0, 0], fx: "",
@@ -35,8 +35,8 @@ Singleton {
         textShadow: [0, 0, 0, 0.25],
         // app icons: drop-shadow(0 5px 8px rgba(0, 0, 0, .35)); neon glows
         iconShadow: [0, 0, 0, 0.35], iconShadowY: 5,
-        // tooltips and popovers: the dock's glass, a little denser so text
-        // stays AA over light wallpapers (blurred by Hyprland's blur_popups)
+        // tooltips and popovers: the dock glass, a little denser so text
+        // stays AA over light wallpapers (blurred by Hyprland blur_popups)
         labelBg: [28, 28, 32, 0.78], labelText: "#ffffff",
         menuBg: [28, 28, 32, 0.78], menuLine: [255, 255, 255, 0.28],
         menuText: "#e4e4e7", menuSub: "#c4c4cc", menuFaint: "#b4b4bc",
@@ -134,7 +134,7 @@ Singleton {
     readonly property color onAccent: c("onAccent")       // text on the accent
     readonly property color sep: c("sep")
     readonly property color dot: c("dot")                   // running app indicator
-    readonly property real reflection: v("reflection")      // app icons' mirror (--refl)
+    readonly property real reflection: v("reflection")      // app icons mirror (--refl)
     readonly property color labelBg: c("labelBg")
     readonly property color labelText: c("labelText")
     readonly property color ringTrack: c("ringTrack")
@@ -178,7 +178,7 @@ Singleton {
         return Qt.rgba(ch("r"), ch("g"), ch("b"), al);
     }
 
-    // CSS `ease`, the prototype's default transition curve
+    // CSS `ease`, the prototype default transition curve
     readonly property var ease: [0.25, 0.1, 0.25, 1, 1, 1]
 
     readonly property string font: "Inter"
@@ -187,6 +187,6 @@ Singleton {
     function px(size) {
         return size * 0.75;
     }
-    // the prototype's body text: 500 13px Inter with tabular numbers where asked
+    // the prototype body text: 500 13px Inter with tabular numbers where asked
     readonly property var tnum: ({ "tnum": 1 })
 }

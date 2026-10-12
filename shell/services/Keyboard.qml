@@ -5,15 +5,15 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
 
-// Caps Lock state - the prototype's `keyboard` slice
-// (prototype/src/services/keyboard.js): the keyboards' capslock LEDs in
+// Caps Lock state - the prototype `keyboard` slice
+// (prototype/src/services/keyboard.js): the keyboards capslock LEDs in
 // /sys/class/leds, which the kernel keeps in sync even when the keyboard has
-// no LED. sysfs can't be watched, so they're read 5 times a second.
+// no LED. sysfs cannot be watched, so they are read 5 times a second.
 Singleton {
     id: root
 
     property bool capsLock: false
-    // Hyprland's current submap ("" = none): Alt+R enters "resize"
+    // Hyprland current submap ("" = none): Alt+R enters "resize"
     property string submap: ""
 
     Connections {

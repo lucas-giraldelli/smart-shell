@@ -4,7 +4,7 @@ import ".."
 
 // Section heading inside a popover (prototype: .sec in ui.css):
 // 600 10.5px uppercase, .08em tracking, margin 12px 8px 4px (4px on top for a
-// pane's first heading).
+// pane first heading).
 Item {
     id: root
 

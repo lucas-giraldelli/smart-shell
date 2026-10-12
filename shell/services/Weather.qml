@@ -5,9 +5,9 @@ import Quickshell
 import Quickshell.Io
 import ".."
 
-// Current weather and forecast - the prototype's `weather` slice
-// (prototype/src/services/weather.js): Open-Meteo, the same API waybar's
-// weather.sh uses, for config.weather's lat/lon, refreshed every 10 minutes.
+// Current weather and forecast - the prototype `weather` slice
+// (prototype/src/services/weather.js): Open-Meteo, the same API waybar
+// weather.sh uses, for config.weather lat/lon, refreshed every 10 minutes.
 // On failure the last forecast stays.
 Singleton {
     id: root

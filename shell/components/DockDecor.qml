@@ -4,8 +4,8 @@ import QtQuick.Shapes
 import ".."
 
 // The decorations some themes put on the dock (prototype: styles/themes/*.css):
-// aqua's 3D glass shelf under the icons, halloween's cobweb in the corner and
-// snowy's cap of snow resting on top, with a lump spilling over each corner.
+// aqua: a 3D glass shelf under the icons, halloween: a cobweb in the corner and
+// snowy: a cap of snow resting on top, with a lump spilling over each corner.
 // Fill the dock with it; it draws behind (shelf) or around (web, snow) it.
 Item {
     id: root
@@ -17,7 +17,7 @@ Item {
         visible: Theme.shelf
         z: -1
         readonly property real depth: 56 * Math.sin(52 * Math.PI / 180)
-        readonly property real k: 320 / (320 + depth)          // the far edge's scale
+        readonly property real k: 320 / (320 + depth)          // the far edge scale
         readonly property real h: 56 * Math.cos(52 * Math.PI / 180) * k
         readonly property real w: root.width + 44
         x: -22

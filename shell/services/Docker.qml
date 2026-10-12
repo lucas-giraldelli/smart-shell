@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Docker service state and containers - the prototype's `docker` slice
+// Docker service state and containers - the prototype `docker` slice
 // (prototype/src/data/snapshot.js documents the shape): `systemctl is-active
 // docker`, `docker inspect` of every container and `docker stats` (memory in
 // MiB). A container `state` is running | paused | restarting | exited;

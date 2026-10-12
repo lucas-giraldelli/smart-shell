@@ -5,8 +5,8 @@ import Quickshell
 import Quickshell.Wayland
 import ".."
 
-// The app row's apps - the prototype's `apps` slice: the pinned apps from
-// config.apps.pinned (desktop entry ids, in order). An app's windows are the toplevels whose app id matches its
+// The app row apps - the prototype `apps` slice: the pinned apps from
+// config.apps.pinned (desktop entry ids, in order). The windows of an app are the toplevels whose app id matches its
 // entry id or StartupWMClass, or - for Chromium web apps, which ignore
 // --class on Wayland - the host of its --app= URL.
 Singleton {
@@ -25,7 +25,7 @@ Singleton {
         };
     }
 
-    // only the pinned apps, like the prototype's row; one that isn't installed
+    // only the pinned apps, like the prototype row; one that is not installed
     // keeps its place (icon by its id) and launching it just tries the id
     readonly property var list: {
         if (!entryCount)
@@ -37,8 +37,8 @@ Singleton {
         });
     }
 
-    // an app's icon: the configured one, then Papirus by its id (the prototype's
-    // set), then the entry's
+    // an app icon: the configured one, then Papirus by its id (the prototype
+    // set), then the entry
     function iconOf(app) {
         return (app.icon && Quickshell.iconPath(app.icon, true)) || Quickshell.iconPath(app.id, true) || Quickshell.iconPath(app.entry?.icon ?? "", true)
             || Quickshell.iconPath("application-x-executable", true);

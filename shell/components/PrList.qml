@@ -5,8 +5,8 @@ import ".."
 import "ui"
 import "../lib/prs.mjs" as PrRules
 
-// The PR tile's popover (prototype: components/prs): one collapsible group
-// per repo, like the docker pane; a row is the state's icon and the title,
+// The PR tile popover (prototype: components/prs): one collapsible group
+// per repo, like the docker pane; a row is the state icon and the title,
 // and opens the PR in the default browser.
 Popover {
     id: root
@@ -24,7 +24,7 @@ Popover {
     function colorOf(status) {
         return looks[status]?.color ?? Theme.menuSub;
     }
-    // which repos are open: the user's choice, else open when one needs action
+    // which repos are open: the user choice, else open when one needs action
     property var expanded: ({})
     function isOpen(repo, status) {
         return expanded[repo] ?? ["failing", "conflict", "behind"].includes(status);
@@ -201,7 +201,7 @@ Popover {
                         Repeater {
                             model: group.modelData.prs
 
-                            // .row.pr: the state's icon and the title
+                            // .row.pr: the state icon and the title
                             delegate: Rectangle {
                                 id: pr
 

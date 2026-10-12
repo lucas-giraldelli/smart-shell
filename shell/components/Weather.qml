@@ -3,7 +3,7 @@ import "../services"
 import ".."
 import "../lib/rules.mjs" as Rules
 
-// Current weather (prototype: components/weather): the condition's icon in its
+// Current weather (prototype: components/weather): the condition icon in its
 // tone (the sun turns slowly) and the temperature; the condition shows on
 // hover. Click opens the forecast. Hidden until the first forecast arrives.
 Tile {

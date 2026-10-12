@@ -6,7 +6,7 @@ import "../lib/rules.mjs" as Rules
 
 // Forecast popover of the weather tile (prototype: components/weather/
 // forecast.js): now, the next 12 hours (scrolling sideways) and 7 days whose
-// bars share one scale, the week's coldest to hottest.
+// bars share one scale, the week from coldest to hottest.
 Popover {
     id: root
 

@@ -79,7 +79,7 @@ Tile {
                 Row {
                     x: 19
                     anchors.verticalCenter: parent.verticalCenter
-                    spacing: 5           // the icon's gap
+                    spacing: 5           // the icon gap
                     Repeater {
                         // one fixed slot per live value (a plain text is one part)
                         model: slot.modelData.parts ?? [[slot.modelData.text, slot.modelData.width]]

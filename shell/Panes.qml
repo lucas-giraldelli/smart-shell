@@ -29,7 +29,7 @@ Singleton {
     readonly property var i18n: ({ t: (k, p) => I18n.t(k, p), formatNumber: (n, d) => I18n.formatNumber(n, d) })
 
     // panes listed in config.quick, in config order; `available` is false when
-    // the pane's capability is missing (the item and tab are then disabled)
+    // the pane capability is missing (the item and tab are then disabled)
     readonly property var configured: Config.quick
         .map(id => info[id]).filter(Boolean)
         .map(pane => ({ pane, available: Caps.has(pane.requires) }))

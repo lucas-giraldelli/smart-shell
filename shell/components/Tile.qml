@@ -2,7 +2,7 @@ import QtQuick
 import ".."
 
 // Every status widget is a tile (prototype: .tile in components/dock/dock.css):
-// a rounded glass box the height of the dock's icons that lifts 2px on hover,
+// a rounded glass box the height of the dock icons that lifts 2px on hover,
 // except while its popover is open.
 Rectangle {
     id: root

@@ -5,9 +5,9 @@ import "../services"
 import ".."
 import "ui"
 
-// One notification popup (prototype: components/notifications): the sender's
-// picture (or the app's icon) with the app's icon as a badge, app and time,
-// the title, the message in up to 2 lines and the actions, in the dock's
+// One notification popup (prototype: components/notifications): the sender
+// picture (or the app icon) with the app icon as a badge, app and time,
+// the title, the message in up to 2 lines and the actions, in the dock
 // glass. Click runs the default action; hover holds the timer and shows ×.
 Rectangle {
     id: root
@@ -15,13 +15,13 @@ Rectangle {
     required property var modelData
     readonly property var n: modelData.notif
     readonly property bool love: modelData.style === "love"
-    // a rule's icon, else the app's (a name, a path or a url), else its desktop entry's
+    // a rule icon, else the app (a name, a path or a url), else its desktop entry
     readonly property string iconName: modelData.icon || n.appIcon
     readonly property string appIconSource: iconName
         ? (iconName.startsWith("/") || iconName.includes("://") ? iconName : Quickshell.iconPath(iconName, true))
         : (n.desktopEntry ? Quickshell.iconPath(DesktopEntries.byId(n.desktopEntry)?.icon ?? "", true) : "")
     // Chromium adds a "Settings" button (its notification settings) to every web
-    // notification: left out, like the default action (that's the card's click)
+    // notification: left out, like the default action (that is the card click)
     readonly property var actions: n.actions.filter(a => a.identifier !== "default" && a.identifier !== "settings")
     // Chromium also starts the body with the site ("web.whatsapp.com"), a link
     // or plain, on its own line: dropped
@@ -55,7 +55,7 @@ Rectangle {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
         onClicked: {
-            // the app's own default action (opens the chat), and its window to the front
+            // the app default action (opens the chat), and its window to the front
             const def = root.n.actions.find(a => a.identifier === "default");
             if (def)
                 def.invoke();
@@ -64,7 +64,7 @@ Rectangle {
         }
     }
 
-    // .nf-pic: 40px, round picture + app badge, or the app's icon
+    // .nf-pic: 40px, round picture + app badge, or the app icon
     Item {
         id: pic
         x: 12
@@ -89,7 +89,7 @@ Rectangle {
             implicitSize: 34
             source: root.appIconSource
         }
-        // nothing to show: a bell in the theme's colours
+        // nothing to show: a bell in the theme colours
         Rectangle {
             visible: root.n.image === "" && root.appIconSource === ""
             anchors.fill: parent

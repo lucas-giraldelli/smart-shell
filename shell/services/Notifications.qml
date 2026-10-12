@@ -5,7 +5,7 @@ import Quickshell.Io
 import Quickshell.Services.Notifications
 import ".."
 
-// The notification server (in place of mako): popups for the dock's
+// The notification server (in place of mako): popups for the dock
 // Notifications window (prototype: components/notifications). Apps get
 // bodies, images, actions and markup. config.notifications.rules restyle
 // some (matched as substrings on appName / summary / body): `title`, `app`,
@@ -30,10 +30,10 @@ Singleton {
             return n.expireTimeout;
         return n.urgency === NotificationUrgency.Critical ? 0 : n.urgency === NotificationUrgency.Low ? 3000 : 5000;
     }
-    // bring the sender's window forward (its workspace, then the window): a
-    // client whose class contains the app's name (a rule's `app`, e.g.
+    // bring the sender window forward (its workspace, then the window): a
+    // client whose class contains the app name (a rule `app`, e.g.
     // WhatsApp), its own app name or its desktop entry - among those, the
-    // first whose title matches the rule's `focusTitle` regex (which kitty
+    // first whose title matches the rule `focusTitle` regex (which kitty
     // runs Claude Code), else the first
     function focusApp(p) {
         const names = [p.appName, p.notif.appName, p.notif.desktopEntry].filter(s => s).map(s => s.toLowerCase());

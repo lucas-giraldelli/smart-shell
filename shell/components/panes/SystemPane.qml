@@ -215,7 +215,7 @@ PaneScroll {
     }
 
     // a row of two half-width toggles (.sys-actions): do not disturb (only
-    // rules with `dnd: true` pop up) and the screen (the user's Super+F10,
+    // rules with `dnd: true` pop up) and the screen (the user Super+F10,
     // blanking the panel so the OLED can run its care cycle)
     Row {
         x: 8

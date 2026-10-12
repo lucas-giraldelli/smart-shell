@@ -7,12 +7,12 @@ import ".."
 import "../lib/tama-rules.mjs" as Rules
 import "../lib/rules.mjs" as Status
 
-// Tamagotchi mode for the dock's pet (Ui.tamaOn; prototype: pets/tama.js).
+// Tamagotchi mode for the dock pet (Ui.tamaOn; prototype: pets/tama.js).
 // The rules are shared with the prototype (lib/tama-rules.mjs); this keeps the
-// state - saved to the shell's state file - and runs them once a second: the
+// state - saved to the shell state file - and runs them once a second: the
 // needs run down, a busy or hot PC and the hour play their part, and at zero
 // health the pet runs away and comes back as the ghost. A care action from
-// the pet's menu goes through care(); `acted` tells the pet what to act out.
+// the pet menu goes through care(); `acted` tells the pet what to act out.
 Singleton {
     id: root
 

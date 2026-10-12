@@ -8,7 +8,7 @@ Rectangle {
 
     property string icon
     property alias text: label.text
-    property bool active: false            // a toggle that's on (.btn-s.on): accent tint
+    property bool active: false            // a toggle that is on (.btn-s.on): accent tint
     signal clicked
 
     implicitWidth: row.implicitWidth + 20 + 2

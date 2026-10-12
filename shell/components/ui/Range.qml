@@ -3,7 +3,7 @@ import QtQuick.Effects
 import "../.."
 
 // Range input (prototype: input.rng in ui.css): a 6px track filled up to the
-// value, with a 16px white thumb. While dragged it keeps the user's value and
+// value, with a 16px white thumb. While dragged it keeps the user value and
 // ignores updates from outside.
 Item {
     id: root

@@ -4,14 +4,14 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// CPU load, free memory, die temperature and uptime - the prototype's `system`
+// CPU load, free memory, die temperature and uptime - the prototype `system`
 // slice (prototype/src/services/system.js simulates it). Sources: /proc/stat,
 // /proc/meminfo (MemAvailable), the k10temp Tccd1 sensor (the real die
 // temperature; Tctl runs hot on purpose) and /proc/uptime.
 Singleton {
     id: root
 
-    readonly property int tickMs: 900       // the prototype's TICK_MS
+    readonly property int tickMs: 900       // the prototype TICK_MS
 
     property real load: 0                   // %
     property int temp: 0                    // °C

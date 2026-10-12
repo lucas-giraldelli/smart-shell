@@ -4,8 +4,8 @@ import Quickshell
 import Quickshell.Io
 import ".."
 
-// The user's open pull requests, from any repo (`gh api graphql`, with the
-// gh CLI's own login). Read every hour or on refresh. A PR that leaves
+// The open pull requests of the user, from any repo (`gh api graphql`, with the
+// login of the gh CLI). Read every hour or on refresh. A PR that leaves
 // the open list was merged or closed: merged ones raise a notification and
 // stay listed (saved) until the user dismisses them; closed ones just go.
 Singleton {

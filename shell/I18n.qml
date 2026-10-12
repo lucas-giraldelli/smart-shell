@@ -6,7 +6,7 @@ import "lib/locales/pt-BR.mjs" as PtBR
 import "lib/locales/en.mjs" as En
 
 // Translations (prototype/src/i18n/index.js). The locale files are the
-// prototype's own (lib/locales links to them), so both share every string.
+// same as the prototype (lib/locales links to them), so both share every string.
 // t("a.b", { name }) reads one; values are strings with {placeholders}, lists,
 // or functions of the params. Missing keys fall back to English, then to the
 // key itself.
@@ -16,7 +16,7 @@ Singleton {
     readonly property var locales: ({ "pt-BR": PtBR.default, "en": En.default })
     readonly property string fallback: "en"
 
-    // the dock settings' choice, then config.locale, then the system's
+    // the dock settings choice, then config.locale, then the system
     readonly property string current: pick(Ui.locale || Config.locale || Qt.locale().name.replace("_", "-"))
     readonly property var qtLocale: Qt.locale(current.replace("-", "_"))
 
@@ -43,10 +43,10 @@ Singleton {
         return String(value).replace(/\{(\w+)\}/g, (_, name) => params[name] ?? `{${name}}`);
     }
 
-    // Dates the way the prototype's Intl formats print them, per language
+    // Dates the way the prototype Intl formats print them, per language
     // (Qt has no Intl, so the patterns are spelled out): date "sexta 09/10/26"
     // (en "Friday 10/09/26"), mini "sex 09/10", month "outubro de 2026", long
-    // "sexta-feira, 9 de outubro", short "12 out". Times don't depend on the
+    // "sexta-feira, 9 de outubro", short "12 out". Times do not depend on the
     // language.
     readonly property var patterns: ({
         "pt-BR": { date: "dddd dd/MM/yy", mini: "ddd dd/MM", month: "MMMM 'de' yyyy", long: "dddd, d 'de' MMMM", short: "d MMM" },
@@ -55,7 +55,7 @@ Singleton {
     function formatDate(date, kind) {
         const pattern = (patterns[current] ?? patterns[fallback])[kind];
         let text = qtLocale.toString(date, pattern).replace(/\./g, "");
-        // the clock's date: "Sexta 09/10/26", the weekday without "-feira"
+        // the clock date: "Sexta 09/10/26", the weekday without "-feira"
         if (kind === "date")
             text = text.replace("-feira", "");
         return text;

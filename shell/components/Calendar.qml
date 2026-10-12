@@ -9,9 +9,9 @@ import "../lib/calendar.mjs" as Cal
 // Month calendar of the clock tile (prototype: components/clock/calendar.js):
 // navigate months (buttons or the wheel over the grid), weekends tinted,
 // holidays dotted per region (config.holidays) and days with one-off events
-// (not routine recurring meetings) marked with a dash in their calendar's
+// (not routine recurring meetings) marked with a dash in their calendar
 // colour. Selecting a day lists its all-day events as chips, its holidays and
-// the timed ones - today's finished ones folded away. Opens on today.
+// the timed ones - finished ones from today folded away. Opens on today.
 Popover {
     id: root
 
@@ -271,7 +271,7 @@ Popover {
                 HolidayRow { width: parent.width; holiday: modelData; inset: 0 }
             }
 
-            // the day's timed events scroll after ~5 rows
+            // the day timed events scroll after ~5 rows
             ListView {
                 visible: count > 0
                 width: parent.width
@@ -340,7 +340,7 @@ Popover {
             }
         }
 
-        // calendars Thunderbird can't export
+        // calendars Thunderbird cannot export
         Repeater {
             model: Events.skipped
             Item {

@@ -15,7 +15,7 @@ Item {
 
     property real mouseX: -1            // in row coordinates, -1 = away
     readonly property real range: Theme.size * 2.8
-    // the area icons can grow into, for the dock's input mask
+    // the area icons can grow into, for the dock input mask
     readonly property Item hit: hitArea
 
     implicitWidth: row.width
@@ -35,7 +35,7 @@ Item {
         onHoveredChanged: if (!hovered) root.mouseX = -1
     }
 
-    // ease every icon's scale towards its target, every frame
+    // ease every icon scale towards its target, every frame
     FrameAnimation {
         running: true
         onTriggered: {
@@ -109,7 +109,7 @@ Item {
                 }
 
                 // .refl: the icon mirrored on the dock surface, pad-b tall, at
-                // --refl opacity, fading out 45% of the icon's height down
+                // --refl opacity, fading out 45% of the icon height down
                 Item {
                     y: parent.height
                     width: parent.width

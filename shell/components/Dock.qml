@@ -27,7 +27,7 @@ Rectangle {
         .map(g => Object.assign({}, g, { widgets: g.widgets.filter(id => widgets[id] && !Ui.hidden.includes(id)) }))
         .filter(g => g.widgets.length)
 
-    // the app row's growing icons reach above the bar; the input mask adds them
+    // the app row growing icons reach above the bar; the input mask adds them
     property Item appsHit: null
 
     implicitWidth: row.implicitWidth + Theme.padX * 2
@@ -36,7 +36,7 @@ Rectangle {
     color: Theme.dockGradient ? "transparent" : Theme.dockBg
     border.color: Theme.dockBorder
     // canarinho: linear-gradient(135deg, ...) like CSS - along the diagonal
-    // through the centre, as long as the box's projection on it
+    // through the centre, as long as the box projection on it
     Shape {
         id: gradShape
         visible: Theme.dockGradient !== null
@@ -63,7 +63,7 @@ Rectangle {
         }
     }
 
-    // --shadow: the theme's outer shadow and a 1px inner highlight on top
+    // --shadow: the theme outer shadow and a 1px inner highlight on top
     OuterShadow {
         z: -2
         anchors.fill: parent
@@ -80,7 +80,7 @@ Rectangle {
         color: Theme.dockInset
     }
 
-    // the theme's tint and particles, inside the dock and behind its content
+    // the theme tint and particles, inside the dock and behind its content
     DockEffects {
         anchors.fill: parent
         anchors.margins: 1

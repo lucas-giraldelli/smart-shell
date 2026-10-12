@@ -8,7 +8,7 @@ import ".."
 // A speech-bubble popover above its owner tile (prototype: .menu in
 // components/ui/ui.css, placed by core/popover.js). It opens to the right of
 // the tile with left edges aligned, slides back on screen if needed, and its
-// tail points at the tile's centre. Only one popover is open at a time
+// tail points at the tile centre. Only one popover is open at a time
 // (Ui.popover); a click outside it or Esc closes it.
 PopupWindow {
     id: root
@@ -19,7 +19,7 @@ PopupWindow {
     property int bubbleWidth: 240
     property int padding: 6
     // beside its owner instead of above it, with no tail: to the left, or to
-    // the right when there's no room on the left (the pet's care menu, which
+    // the right when there is no room on the left (the pet care menu, which
     // must not cover the pet)
     property bool side: false
     readonly property int sideGap: 24
@@ -43,7 +43,7 @@ PopupWindow {
     property real left: 0
     property real arrowX: 24
 
-    // the bubble's outline: a rounded rect with the tail cut into its bottom
+    // the bubble outline: a rounded rect with the tail cut into its bottom
     // edge (prototype: outline() in core/popover.js)
     function outline(w, h, r, ax, tail, i) {
         const R = r - i, b = h - i, t = tail - i * 1.4142;
@@ -70,7 +70,7 @@ PopupWindow {
     onOpenChanged: if (open) place()
 
     anchor.item: owner
-    // the CSS positions the bubble from the tile's padding box, 1px inside its border
+    // the CSS positions the bubble from the tile padding box, 1px inside its border
     anchor.rect.x: side ? (sideRight ? owner.width + sideGap : -sideGap - bubble.width) - shadowX : 1 + left - shadowX
     anchor.rect.y: side ? owner.height + shadowBottom : 1 - gap + shadowBottom
     anchor.edges: Edges.Top | Edges.Left
@@ -119,7 +119,7 @@ PopupWindow {
         Behavior on opacity { NumberAnimation { duration: 160; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
 
         // box-shadow 0 16px 40px: drawn only outside the bubble, like CSS,
-        // so it doesn't darken the glass
+        // so it does not darken the glass
         Item {
             id: shade
             x: -root.shadowX

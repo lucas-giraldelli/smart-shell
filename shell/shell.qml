@@ -41,7 +41,7 @@ ShellRoot {
                     Region { item: pet.visible ? pet : null }
                 }
 
-                // the pet walks on the dock's top edge, drawn behind the dock
+                // the pet walks on the dock top edge, drawn behind the dock
                 Pet {
                     id: pet
                     floor: dock
@@ -55,7 +55,7 @@ ShellRoot {
                 }
             }
 
-            // notification popups: stacked above the dock's right end, clear
+            // notification popups: stacked above the dock right end, clear
             // of the pet, on the focused screen only; clicks outside the cards
             // go through
             PanelWindow {

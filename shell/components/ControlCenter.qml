@@ -6,7 +6,7 @@ import "panes"
 // Tabbed popover hosting one pane per quick item (prototype:
 // components/control-center). Lives inside the quick tile, which decides when
 // it is open. Inactive tabs show only their icon, the active one also its
-// name; every tab is 306px tall (the Docker tab's height), so switching never
+// name; every tab is 306px tall (the Docker tab height), so switching never
 // resizes the popover. A tab whose backend is missing says what to install.
 Popover {
     id: root

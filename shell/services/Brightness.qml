@@ -6,14 +6,14 @@ import Quickshell.Io
 import "../lib/rules.mjs" as Rules
 
 // Monitor brightness over DDC/CI (ddcutil) and the night light (hyprsunset) -
-// the prototype's `display` slice. DDC writes are slow, so slider moves are
+// the prototype `display` slice. DDC writes are slow, so slider moves are
 // coalesced and only the latest value is sent.
 Singleton {
     id: root
 
     property string name: ""
-    property int brightness: 0              // % of the monitor's max (waybar's brightness.sh)
-    property int max: 100                   // the monitor's raw VCP 10 range
+    property int brightness: 0              // % of the monitor max (waybar brightness.sh)
+    property int max: 100                   // the monitor raw VCP 10 range
     property bool loaded: false
     property bool night: false
     property int nightK: 4500
@@ -58,7 +58,7 @@ Singleton {
         onExited: if (root.pending >= 0) writeTimer.restart()
     }
 
-    // read back now and then, in case the monitor's own buttons changed it
+    // read back now and then, in case the monitor buttons changed it
     Timer {
         running: true
         repeat: true

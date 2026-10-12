@@ -6,8 +6,8 @@ import ".."
 import "../../lib/themes.mjs" as Themes
 
 // Dock tab (prototype: control-center/panes/settings.js): look, which widgets
-// and pet show, language. Saved to the shell's state file (Ui). The quick tile
-// can't be switched off here, since that would hide this very tab.
+// and pet show, language. Saved to the shell state file (Ui). The quick tile
+// cannot be switched off here, since that would hide this very tab.
 PaneScroll {
     id: root
 
@@ -217,7 +217,7 @@ PaneScroll {
             }
         }
     }
-    // care mode (services/Tama.qml); on the right, the pet's name (the one
+    // care mode (services/Tama.qml); on the right, the pet name (the one
     // under the mouse, else the chosen one). 10px below the grid
     Item {
         width: parent.width

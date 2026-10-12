@@ -5,7 +5,7 @@ import Quickshell
 import Quickshell.Io
 import ".."
 
-// Connection details, live traffic and VPN - the prototype's `network` slice.
+// Connection details, live traffic and VPN - the prototype `network` slice.
 // `online` comes from NetworkManager with a ping fallback (below); the route to
 // the internet gives the interface, IP and gateway; NetworkManager gives the
 // connection kind and VPNs; /sys gives link speed and byte counters.
@@ -20,7 +20,7 @@ Singleton {
     property string gateway: "—"
     property string dockerNet: "—"
     // VPN profiles: openvpn3 configs (they can do the browser sign-in
-    // NetworkManager can't) and NetworkManager VPN / WireGuard connections.
+    // NetworkManager cannot) and NetworkManager VPN / WireGuard connections.
     // The one used is config.vpn.profile, else the first openvpn3 config.
     property var vpnProfiles: []            // [{ source: "openvpn3" | "nm", name }]
     property var openvpnProfiles: []
@@ -29,7 +29,7 @@ Singleton {
     readonly property string vpn: vpnProfile?.name ?? ""
     // off | authenticating | connecting | on | error
     property string vpnState: "off"
-    property string vpnServer: ""           // "br-gru": the first label of the server's host name
+    property string vpnServer: ""           // "br-gru": the first label of the server host name
     property bool vpnStarting: false        // we asked to connect and wait for the browser
     readonly property bool vpnOn: vpnState === "on"
     readonly property bool vpnBusy: vpnState === "authenticating" || vpnState === "connecting"
@@ -38,7 +38,7 @@ Singleton {
 
     property var lastBytes: null
 
-    // Online check: NetworkManager's connectivity ("full" = online); only when
+    // Online check: NetworkManager connectivity ("full" = online); only when
     // it says otherwise, ping 1.1.1.1 and 8.8.8.8 by IP and count either
     // answering as online. Going offline takes 3 failed checks in a row
     // (~30 s), so one lost packet or DNS hiccup never flips it; the first
@@ -207,7 +207,7 @@ Singleton {
         }
     }
 
-    // openvpn3: the configs, the session state and the server's name; every 5 s
+    // openvpn3: the configs, the session state and the server name; every 5 s
     // while the network tab shows, every 30 s otherwise
     Timer {
         running: true
@@ -252,7 +252,7 @@ Singleton {
             }
         }
     }
-    // the server's short name, from the profile's first remote ("br-gru.gw.openvpn.com" -> "br-gru")
+    // the server short name, from the profile first remote ("br-gru.gw.openvpn.com" -> "br-gru")
     Process {
         id: server
         command: ["sh", "-c", `openvpn3 config-dump --config "$1" 2>/dev/null | awk '$1 == "remote" { print $2; exit }'`, "sh", root.vpn]

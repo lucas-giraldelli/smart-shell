@@ -6,7 +6,7 @@ import ".."
 // Caps Lock indicator for keyboards without an LED (prototype:
 // components/capslock): always visible, white when off and the ok-green with
 // a glow when on, giving a small hop now and then. Same footprint in both
-// states, so toggling never shifts the dock. While Hyprland's resize submap
+// states, so toggling never shifts the dock. While Hyprland resize submap
 // is on (Alt+R) a resize indicator shows to its right, in the same style;
 // while the screen is being recorded, a red dot and the elapsed time follow
 // (click stops the recording).
@@ -25,7 +25,7 @@ Item {
     Behavior on implicitWidth { NumberAnimation { duration: 250; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
     implicitHeight: Theme.size
 
-    // the resize submap: accent with a glow, like caps lock's green
+    // the resize submap: accent with a glow, like caps lock green
     Item {
         id: resize
         x: 24 + 6

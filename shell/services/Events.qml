@@ -6,7 +6,7 @@ import Quickshell.Io
 import ".."
 import "../lib/calendar.mjs" as Cal
 
-// Calendar events and what's happening now - the prototype's `events` and
+// Calendar events and what is happening now - the prototype `events` and
 // `agenda` slices (prototype/src/services/events.js, agenda.js). Events come
 // from ~/.cache/smart-shell/events.json, written by tools/thunderbird-events.py
 // on a systemd timer; a missing file means no events. The agenda (event in
@@ -48,7 +48,7 @@ Singleton {
 
     function evaluate() {
         const rules = Object.assign({}, Config.events?.categories ?? {});
-        // a fake event's category is taken as given
+        // a fake event category is taken as given
         const a = Cal.agenda(list.concat(fakes), rules, Config.events?.remindMinutes ?? 10);
         for (const key of ["ongoing", "upcoming"])
             if (a[key]?.fake)

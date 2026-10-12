@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// The user's ~/.config/smart-shell/config.json (shape: config/config.example.json),
+// The user config file ~/.config/smart-shell/config.json (shape: config/config.example.json),
 // reloaded live when the file changes. It is merged over the defaults below the
 // same way the prototype does (prototype/src/data/config.js): objects key by
 // key, everything else (lists included) replaced.
@@ -21,15 +21,15 @@ Singleton {
         commands: {
             monitor: "kitty --class=btop-float -e btop",
             docker: "kitty --title lazydocker sh -c 'cd ~ && lazydocker'",
-            // starts / stops a screen recording (the dock's record indicator stops it)
+            // starts / stops a screen recording (the dock record indicator stops it)
             record: "~/.config/hypr/scripts/record-toggle.sh"
         },
         // tray items left out, matched against their id, title or icon name;
-        // fcitx5's menu can quit the input method, which breaks typing
+        // fcitx5 menu can quit the input method, which breaks typing
         tray: {
             hidden: ["blueman", "bluetooth", "fcitx"],
-            // items whose red badge means attention (Slack's mentions; its blue
-            // unread dot doesn't count): matched like `hidden`
+            // items whose red badge means attention (Slack mentions; its blue
+            // unread dot does not count): matched like `hidden`
             redBadge: ["slack"]
         },
         // pets dance while one of these players plays (substrings of its url,
@@ -55,7 +55,7 @@ Singleton {
         // MPRIS players the music tile never shows (substrings of identity,
         // desktop entry, title, url or command line)
         music: { ignore: ["whatsapp"] },
-        // one set of thresholds for the quick tile's colours and the pets
+        // one set of thresholds for the quick tile colours and the pets
         // (see the README): cpu % - the pet sleeps / idles / walks below
         // these, runs above; free RAM in GiB - warn colours, a heavy pet;
         // die temperature (Tccd1) - warn colours, a reddish pet; with
@@ -70,13 +70,13 @@ Singleton {
         vpn: { profile: null },
         // the clock: "24h" or "12h", whatever the language
         clock: { format: "24h" },
-        // the forecast's place (Open-Meteo); the city is only shown
+        // the forecast place (Open-Meteo); the city is only shown
         weather: { city: "Cuiabá", lat: -15.6, lon: -56.1 },
         workspaces: { icons: {} },
         // notification popups: rules restyle some, matched (substring, any
         // case) on appName / summary / body - `title` replaces the summary,
-        // `app` the app's name, `icon` its icon, `focusTitle` a regex picking
-        // which of the app's windows a click brings forward, `style: "love"` the wine look, `timeout` in ms
+        // `app` the app name, `icon` its icon, `focusTitle` a regex picking
+        // which of the app windows a click brings forward, `style: "love"` the wine look, `timeout` in ms
         // (0 = until closed)
         notifications: { rules: [] }
     })
@@ -129,7 +129,7 @@ Singleton {
         return target;
     }
 
-    // change one key of the user's file ("theme", "workspaces.style" - the
+    // change one key of the user file ("theme", "workspaces.style" - the
     // dock settings); the rest of the file is kept, reformatted as JSON
     function set(key, value) {
         setIn(key.split("."), value);

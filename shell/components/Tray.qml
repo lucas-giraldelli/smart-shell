@@ -11,13 +11,13 @@ import "../lib/prs.mjs" as PrRules
 // popover (TrayMenu). An empty tray hides the tile.
 // Items matching config.tray.hidden (id, title or icon) are left out - Bluetooth
 // has its own widget, and quitting fcitx5 from here breaks text input. Icons
-// are drawn grey and dimmed so app colours don't fight the glass, except for
-// vivid pixels: status badges like Slack's unread dot keep their colour (Slack
+// are drawn grey and dimmed so app colours do not fight the glass, except for
+// vivid pixels: status badges like Slack unread dot keep their colour (Slack
 // never sets NeedsAttention, the dot in its pixmap is the only signal). Hover
 // brings the whole icon back in colour. An item needing attention - SNI
 // NeedsAttention, or for one listed in config.tray.redBadge a red badge in its
 // pixmap or "N notifications" in its tooltip (Slack never sets the status) - hops like the caps lock arrow, right
-// away and then every 8 s until it's dealt with - every 2 s while Slack's
+// away and then every 8 s until it is dealt with - every 2 s while Slack
 // badge is red.
 Tile {
     id: root
@@ -32,9 +32,9 @@ Tile {
     readonly property int prCount: shownPrs.filter(p => !p.merged).length
     readonly property string prWorst: PrRules.worst(shownPrs) ?? ""
     readonly property int cells: items.length + (withPrs ? 1 : 0)
-    // 16px icons 6px apart, with 6px of room above and below: as many rows as the dock's
+    // 16px icons 6px apart, with 6px of room above and below: as many rows as the dock
     // height fits (two at 52px, one at 42px), the rest goes into columns -
-    // at least two, so a second item doesn't widen the tile
+    // at least two, so a second item does not widen the tile
     readonly property real padY: 6
     readonly property real gap: 6
     readonly property int maxRows: Math.max(1, Math.floor((Theme.size - 2 - 2 * padY + gap) / (16 + gap)))
@@ -90,7 +90,7 @@ Tile {
                     smooth: true
                     visible: false
                 }
-                // the hop: -2.5px, +0.5px, rest (the caps lock arrow's)
+                // the hop: -2.5px, +0.5px, rest (the caps lock arrow)
                 SequentialAnimation {
                     id: hop
                     NumberAnimation { target: lift; property: "y"; to: -2.5; duration: 240; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 0.7, 0.4, 1, 1, 1] }
@@ -117,7 +117,7 @@ Tile {
                     Behavior on dim { NumberAnimation { duration: 200 } }
                 }
 
-                // the app's own tooltip, or its title
+                // the app tooltip, or its title
                 Tip {
                     target: cell
                     text: cell.modelData.tooltipTitle || cell.modelData.title || cell.modelData.id
@@ -155,8 +155,8 @@ Tile {
             }
         }
 
-        // the pull requests: the PR icon in the worst state's colour (the count
-        // on hover); click lists them (PrList)
+        // the pull requests: the PR icon in the colour of the worst state (the
+        // count on hover); click lists them (PrList)
         Item {
             id: prCell
             visible: root.withPrs

@@ -7,7 +7,7 @@ import ".."
 
 // Now playing (prototype: components/music): cover tile, title, artist ·
 // player, progress and a little equaliser that dances while playing. Click
-// toggles play/pause, right click opens the YouTube Music app's volume;
+// toggles play/pause, right click opens the YouTube Music app volume;
 // hovering shows the full title and artist.
 // Hidden while no MPRIS player is around.
 Tile {
@@ -19,14 +19,14 @@ Tile {
     open: volume.open
 
     // title and artist are cut short in the tile: the tooltip has them in full
-    // (no player name: it's only ever "Chromium" / "Mozilla Zen")
+    // (no player name: it is only ever "Chromium" / "Mozilla Zen")
     Tip {
         target: root
         text: [Media.title, Media.artist].filter(Boolean).join(" · ")
         shown: root.hovered
     }
 
-    // click: play / pause; right click: the YouTube Music app's own volume
+    // click: play / pause; right click: the YouTube Music app volume
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
@@ -71,7 +71,7 @@ Tile {
                 }
                 onButtonClicked: Audio.setMusicMuted(!Audio.musicMuted)
             }
-            // previous / play-pause / next (MPRIS) and like (the app's Shift + "+")
+            // previous / play-pause / next (MPRIS) and like (the app Shift + "+")
             Item {
                 visible: Media.musicPlayer !== null
                 width: parent.width
@@ -103,7 +103,7 @@ Tile {
                     anchors.rightMargin: 8
                     y: 4
                     icon: Media.liked ? "heart-filled" : "heart"
-                    // red when the app says it's liked; a short flash when it can't tell
+                    // red when the app says it is liked; a short flash when it cannot tell
                     property bool flash: false
                     off: flash || Media.liked
                     onClicked: {
@@ -173,7 +173,7 @@ Tile {
                 color: Theme.labelText
             }
 
-            // the track's cover, when the player has one, rounded like the tile
+            // the track cover, when the player has one, rounded like the tile
             Image {
                 id: cover
                 anchors.fill: parent

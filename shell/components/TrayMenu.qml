@@ -3,13 +3,13 @@ import Quickshell
 import ".."
 import "ui"
 
-// A tray item's menu (DBusMenu) in a popover, drawn with the prototype's menu
+// A tray item menu (DBusMenu) in a popover, drawn with the prototype menu
 // rows (components/ui/ui.css; the prototype itself only shows the tray icons).
 // Submenus open in place, with a back row on top.
 Popover {
     id: root
 
-    property var handle: null       // the item's QsMenuHandle
+    property var handle: null       // the item QsMenuHandle
     property var stack: []          // entries of the open submenus, outermost first
 
     name: "tray"

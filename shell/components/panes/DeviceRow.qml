@@ -6,9 +6,9 @@ import "../ui"
 import ".."
 
 // An audio device in the volume tab (prototype: the sink rows of
-// panes/volume.js): icon, name and connection, the default's radio; on hover
+// panes/volume.js): icon, name and connection, the default radio; on hover
 // a pencil edits its description - the second line - in place (Enter saves,
-// Esc cancels, empty = the default) and an eye hides it. `hiddenRow` is the footer's version: only an eye
+// Esc cancels, empty = the default) and an eye hides it. `hiddenRow` is the footer version: only an eye
 // to show it again.
 MenuRow {
     id: root

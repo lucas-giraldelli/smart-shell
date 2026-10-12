@@ -13,12 +13,12 @@ Singleton {
     readonly property var names: Object.keys(species)
 
     // the sprite as an image URL; `rest` drops the closed eyes and the tongue
-    // (the pet picker's still pose)
+    // (the still pose of the pet picker)
     function sprite(name, rest) {
         const s = species[name];
         if (!s)
             return "";
-        let body = Poses.partsFor(s.svg, "", "");   // no pose's parts
+        let body = Poses.partsFor(s.svg, "", "");   // no pose parts
         if (rest)
             body = body.replace(/<[a-z]+ class="(closed|tongue)[^"]*"[^>]*\/>/g, "");
         return "data:image/svg+xml;utf8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 46 36">${body}</svg>`);

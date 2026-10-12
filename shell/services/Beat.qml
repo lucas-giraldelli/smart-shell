@@ -4,9 +4,9 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// The music, from cava when it's installed (optional): while anything plays,
+// The music, from cava when it is installed (optional): while anything plays,
 // cava runs with 4 bars at 30 fps in raw ascii mode. `bars` (0..1, bass to
-// treble) drive the player's eq; `level` is their mean and a sharp rise of it
+// treble) drive the player eq; `level` is their mean and a sharp rise of it
 // is a `beat()`, for the dancing pets (`active`: only for a music app).
 // Without cava the eq and the pets keep their own fixed motion.
 Singleton {
@@ -16,7 +16,7 @@ Singleton {
     readonly property bool active: running && Media.dancing
     property var bars: [0, 0, 0, 0]
     property real level: 0
-    property real last: 0           // the previous frame's level
+    property real last: 0           // the previous frame level
     property real lastBeat: 0       // ms
     signal beat
 

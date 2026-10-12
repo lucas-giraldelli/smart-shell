@@ -5,10 +5,10 @@ import Quickshell
 import Quickshell.Io
 import "../lib/rules.mjs" as Rules
 
-// The user's biggest memory users, grouped by executable (a web app by its
-// own name, see Rules.topProcesses) - the prototype's
+// The biggest memory users, grouped by executable (a web app by its
+// own name, see Rules.topProcesses) - the prototype
 // `system.top` (prototype/src/data/snapshot.js). Polled every 3 s, only while
-// something shows it (`watchers`): `ps` gives each process's RSS, parent and
+// something shows it (`watchers`): `ps` gives each process RSS, parent and
 // command line, and /proc/<pid>/exe its executable.
 Singleton {
     id: root

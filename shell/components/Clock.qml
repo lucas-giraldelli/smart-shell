@@ -8,12 +8,12 @@ import "../lib/calendar.mjs" as Cal
 // Time and date (prototype: components/clock). Shortly before an event
 // (config.events.remindMinutes) the tile turns orange (warn); while an event
 // runs it turns green (ok). Either way the date moves up next to the time and
-// the event's name, with its category icon, takes the second line. Click opens
+// the event name, with its category icon, takes the second line. Click opens
 // the month calendar.
 Tile {
     id: root
 
-    // what's next matters more than what's running: warn first
+    // what is next matters more than what is running: warn first
     readonly property var event: Events.upcoming ?? Events.ongoing
     readonly property bool reminding: event !== null
     readonly property string status: Events.upcoming ? "warn" : Events.ongoing ? "ok" : ""
@@ -21,13 +21,13 @@ Tile {
     readonly property string eventTitle: event ? Cal.titleOf(I18n, event) : ""
 
     // compact: as wide as its widest time and date (fixed per format and
-    // language); a reminder widens it to 168px with the Bluetooth tile's spring
+    // language); a reminder widens it to 168px with the Bluetooth tile spring
     implicitWidth: reminding ? 168 : compactWidth
     Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
 
     // the same 14px padding (+ border) on both sides of the wider of the widest
     // time in the current format ("00:00" / "12:00 PM", tabular digits, so
-    // minutes never move it) and today's date line. The date decides, and it
+    // minutes never move it) and the date line of today. The date decides, and it
     // only changes at midnight; sizing for the widest date of the year ("Dom,
     // 08 de mar") would leave up to 8px of extra room on the right.
     FontMetrics {
@@ -45,7 +45,7 @@ Tile {
     readonly property real compactWidth: {
         const times = Config.clockFormat === "12h" ? ["12:00 AM", "12:00 PM"] : ["00:00"];
         const time = Math.max(...times.map(s => timeFont.advanceWidth(s) - 0.4 * s.length));
-        // measured to the date's ink, not its advance: the visible gap on the
+        // measured to the date ink, not its advance: the visible gap on the
         // right then matches the one on the left (checked on screen)
         const ink = dateFont.tightBoundingRect(dateLine.text);
         const date = ink.x + ink.width;
@@ -74,7 +74,7 @@ Tile {
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
     }
 
-    // click opens the calendar; the reminder's video icon joins the Meet
+    // click opens the calendar; the reminder video icon joins the Meet
     MouseArea {
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
@@ -123,8 +123,8 @@ Tile {
         }
 
         // .sub-line: one 15px line that ticks up to the event. The clip is
-        // only for that tick: 4px of room on each side, or a glyph's edge on
-        // the line's start (Domingo's "D") gets cut
+        // only for that tick: 4px of room on each side, or a glyph edge on
+        // the line start (the "D" of Domingo) gets cut
         Item {
             x: -4
             y: 26

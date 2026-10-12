@@ -4,7 +4,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 
-// Which optional backends exist on this machine - the prototype's `caps` slice
+// Which optional backends exist on this machine - the prototype `caps` slice
 // (prototype/src/data/capabilities.js). Features whose backend is missing stay
 // visible but disabled.
 Singleton {
