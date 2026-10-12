@@ -163,7 +163,7 @@ Singleton {
             windowAction.running = true;
         }
     }
-    // sets $addr from $1 (a D-Bus name) and $2 (a window class hint)
+    // shell snippet: finds the window of a player (by its D-Bus PID, else by class) into $addr
     readonly property string findWindow: 'pid=$(busctl --user call org.freedesktop.DBus /org/freedesktop/DBus '
         + 'org.freedesktop.DBus GetConnectionUnixProcessID s "$1" 2>/dev/null | cut -d" " -f2); '
         + 'addr=$(hyprctl clients -j | jq -r --argjson pid "${pid:-0}" --arg hint "$2" '
