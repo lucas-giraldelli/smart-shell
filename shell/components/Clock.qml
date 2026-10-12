@@ -128,7 +128,7 @@ Tile {
         Label {
             id: miniDate
             x: time.x + time.implicitWidth + 7 - (root.reminding ? 0 : 4)
-            y: 9
+            y: 8    // on the time baseline
             opacity: root.reminding ? 1 : 0
             text: I18n.capitalize(I18n.formatDate(clock.date, "mini"))
             size: 11
@@ -168,8 +168,10 @@ Tile {
                     shadow: true
                     color: Theme.sub
                 }
+                // a timer line is centred under the time and date
                 Row {
-                    width: parent.width
+                    x: root.timing ? (parent.width - width) / 2 : 0
+                    width: root.timing ? implicitWidth : parent.width
                     height: 15
                     spacing: 5
                     Icon {
@@ -181,7 +183,7 @@ Tile {
                     }
                     Label {
                         id: timerLine
-                        width: parent.width - 17 - (root.event?.meet ? 17 : 0)
+                        width: root.timing ? implicitWidth : parent.width - 17 - (root.event?.meet ? 17 : 0)
                         lineHeight: 15
                         elide: Text.ElideRight
                         text: root.timing ? root.timerText : root.eventTitle

@@ -19,6 +19,8 @@
    it hides doesn't count) */
 .clock.reminding.timing { width: max-content; }
 .clock.timing .ticker > [data-date] { width: 0; }
+/* its line is centred under the time and date */
+.clock.timing .remind { justify-content: center; }
 /* compact: time centered over the date (a tabular "1" leaves room on its
    left, so left-aligned lines looked off); the reminder keeps them left
    and tabular */

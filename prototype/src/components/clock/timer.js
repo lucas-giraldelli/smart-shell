@@ -49,7 +49,7 @@ function beep() {
     for (let i = 0; i < 3; i++) {
       const o = audio.createOscillator(), g = audio.createGain(), at = audio.currentTime + i * 0.25;
       o.frequency.value = 880;
-      g.gain.setValueAtTime(0.15, at);
+      g.gain.setValueAtTime(0.05, at);
       g.gain.exponentialRampToValueAtTime(0.001, at + 0.18);
       o.connect(g).connect(audio.destination);
       o.start(at);
