@@ -155,8 +155,6 @@ Tile {
             }
         }
 
-        // the pull requests: the PR icon in the colour of the worst state (the
-        // count on hover); click lists them (PrList)
         Item {
             id: prCell
             visible: root.withPrs
