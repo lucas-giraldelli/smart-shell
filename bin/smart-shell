@@ -189,7 +189,7 @@ cmd_hyprland() {
   [ -f "$HYPR_CONF" ] || { echo "no $HYPR_CONF" >&2; exit 1; }
   local add=""
   grep -q "qs -p .*smart-shell" "$HYPR_CONF" || add+="
-exec-once = qs -p $SHELL_DIR
+exec-once = qs -p $SHELL_DIR -n
 "
   grep -q "namespace = smart-shell" "$HYPR_CONF" || add+="
 # smart-shell: blur behind the dock's glass and its popovers
@@ -216,9 +216,9 @@ layerrule {
 cmd_stop() { pkill -x qs 2>/dev/null || true; pkill -x quickshell 2>/dev/null || true; }
 cmd_start() {
   if command -v hyprctl >/dev/null && [ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
-    hyprctl dispatch exec "qs -p $SHELL_DIR" >/dev/null
+    hyprctl dispatch exec "qs -p $SHELL_DIR -n" >/dev/null
   else
-    setsid -f qs -p "$SHELL_DIR" >/dev/null 2>&1
+    setsid -f qs -p "$SHELL_DIR" -n >/dev/null 2>&1
   fi
 }
 

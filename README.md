@@ -135,7 +135,7 @@ qs ipc -p ~/projects/smart-shell/shell call popover open control-center docker
 Hyprland (`hyprland.conf`):
 
 ```ini
-exec-once = qs -p ~/projects/smart-shell/shell
+exec-once = qs -p ~/projects/smart-shell/shell -n   # -n: never a second dock
 
 # blur behind the dock's glass and its popovers; ignore_alpha keeps the
 # transparent parts of the surface sharp
