@@ -5,7 +5,7 @@ import { categories } from '../../data/categories.js';
 import { t, dateFormat, formatTime, locale } from '../../i18n/index.js';
 import { setHTML } from '../ui/ui.js';
 import { store } from '../../state.js';
-import { COLORS, startTimer, cancelTimer, toggleTimer, isPaused, isRinging, remainingText, checkTimer } from './timer.js';
+import { COLORS, PRESETS, startTimer, cancelTimer, toggleTimer, isPaused, isRinging, remainingText, checkTimer } from './timer.js';
 import './calendar.js';
 
 // Time and date. Shortly before an event (config.events.remindMinutes) the tile
@@ -62,6 +62,11 @@ class Clock extends Component {
   }
 
   timerClick(target) {
+    const preset = target.closest('[data-preset]');
+    if (preset) {
+      this.$('[data-min]').value = preset.dataset.preset;
+      this.markPreset();
+    }
     const sw = target.closest('[data-color]');
     if (sw) {
       this.picked = sw.dataset.color;
@@ -72,7 +77,14 @@ class Clock extends Component {
     if (target.closest('[data-toggle]')) toggleTimer();
   }
 
-  // the timer popover: minutes (no limit), an optional name and a colour,
+  // the chosen preset (the minutes field matches it) is lit
+  markPreset() {
+    const v = this.$('[data-min]')?.value;
+    this.querySelectorAll('.tm-preset').forEach(b => b.classList.toggle('on', b.dataset.preset === v));
+  }
+
+  // the timer popover: minutes (no limit; a preset sets them in one click,
+  // the wheel over the field steps them), an optional name and a colour,
   // then Start (or Enter); while one runs, what's left, play / pause and
   // stop. Rendered when it opens or the timer starts, pauses or stops, so
   // typing isn't wiped.
@@ -103,11 +115,20 @@ class Clock extends Component {
         <label class="tm-field tm-min"><input data-min inputmode="numeric" value="${last.minutes}"><span>${t('timer.minutes')}</span></label>
         <input class="tm-field" data-name placeholder="${t('timer.name')}" value="${last.label}" spellcheck="false">
       </div>
+      <div class="tm-presets">${PRESETS.map(m => `<button class="tm-preset" data-preset="${m}">${m % 60 ? `${m} ${t('timer.minutes')}` : `${m / 60} h`}</button>`).join('')}</div>
       <div class="tm-foot">
         <div class="tm-colors">${COLORS.map(c => `<button class="tm-sw${c === last.color ? ' on' : ''}" data-color="${c}" style="--c:${c}"></button>`).join('')}</div>
         <button class="btn-s" data-start>${icon('timer')}${t('timer.start')}</button>
       </div>`);
-    if (open) requestAnimationFrame(() => { const m = this.$('[data-min]'); m.focus(); m.select(); });
+    this.markPreset();
+    const min = this.$('[data-min]');
+    min.addEventListener('input', () => this.markPreset());
+    min.addEventListener('wheel', e => {
+      e.preventDefault();
+      min.value = Math.max(1, (parseInt(min.value, 10) || 0) + (e.deltaY < 0 ? 1 : -1));
+      this.markPreset();
+    }, { passive: false });
+    if (open) requestAnimationFrame(() => { min.focus(); min.select(); });
   }
 
   teardown() {

@@ -11,6 +11,8 @@ import { savePref } from '../../core/prefs.js';
 
 // light enough to tint the glass and stay readable as text on it
 export const COLORS = ['#facc15', '#fb923c', '#f472b6', '#a78bfa', '#38bdf8', '#4ade80'];
+// one click sets the minutes
+export const PRESETS = [5, 10, 15, 30, 60];
 
 const save = (timer, timerLast) => {
   savePref('timer', timer);

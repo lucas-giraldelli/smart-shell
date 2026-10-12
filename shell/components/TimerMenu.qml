@@ -5,7 +5,8 @@ import ".."
 import "ui"
 
 // The clock timer popover (prototype: .timer-menu in components/clock): minutes
-// (no limit), an optional name and a colour, then Start (or Enter). While one
+// (no limit; a preset sets them in one click, the wheel over the field steps
+// them), an optional name and a colour, then Start (or Enter). While one
 // runs it shows what is left, play / pause and stop instead. The next one starts from the
 // last minutes, name and colour.
 Popover {
@@ -17,6 +18,7 @@ Popover {
 
     // light enough to tint the glass and stay readable as text on it
     readonly property var colors: ["#facc15", "#fb923c", "#f472b6", "#a78bfa", "#38bdf8", "#4ade80"]
+    readonly property var presets: [5, 10, 15, 30, 60]
     property color picked: Ui.timerLast?.color ?? colors[0]
 
     function startIt() {
@@ -139,6 +141,12 @@ Popover {
                 input.validator: IntValidator { bottom: 1; top: 9999 }
                 input.width: 34
                 onAccepted: root.startIt()
+                WheelHandler {
+                    onWheel: event => {
+                        const m = (parseInt(minutesBox.input.text) || 0) + (event.angleDelta.y > 0 ? 1 : -1);
+                        minutesBox.input.text = String(Math.max(1, m));
+                    }
+                }
                 Label {
                     x: 46
                     anchors.verticalCenter: parent.verticalCenter
@@ -152,6 +160,38 @@ Popover {
                 width: parent.width - minutesBox.width - parent.spacing
                 placeholder: I18n.t("timer.name")
                 onAccepted: root.startIt()
+            }
+        }
+        // presets: one click sets the minutes
+        Row {
+            visible: !Countdown.running
+            width: parent.width
+            spacing: 6
+            Repeater {
+                model: root.presets
+                delegate: Rectangle {
+                    id: chip
+                    required property int modelData
+                    readonly property bool chosen: minutesBox.input.text === String(modelData)
+                    width: (parent.width - parent.spacing * (root.presets.length - 1)) / root.presets.length
+                    height: 26
+                    radius: 7
+                    color: chosen ? Theme.mix(Theme.menuAccent, 0.2) : chipArea.containsMouse ? Theme.menuStrong : Theme.menuSurface
+                    border.color: chosen ? Theme.mix(Theme.menuAccent, 0.45) : Theme.menuStrong
+                    Label {
+                        anchors.centerIn: parent
+                        text: chip.modelData % 60 === 0 ? `${chip.modelData / 60} h` : `${chip.modelData} ${I18n.t("timer.minutes")}`
+                        size: 11.5
+                        color: chip.chosen ? Theme.menuAccent : Theme.menuText
+                    }
+                    MouseArea {
+                        id: chipArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: minutesBox.input.text = String(chip.modelData)
+                    }
+                }
             }
         }
         Item {
