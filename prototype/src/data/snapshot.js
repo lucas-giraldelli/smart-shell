@@ -132,13 +132,13 @@ export const weather = {
 export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music', url: 'https://music.youtube.com/watch?v=dX3k_QDnzHE' };
 
 // pull requests (gh api graphql in the shell): one of each state
-const pr = (repo, number, title, checks, mergeState, review, merged = false) =>
-  ({ repo, number, title, url: `https://github.com/${repo}/pull/${number}`, checks, mergeState, review, merged });
+const pr = (repo, number, title, created, checks, mergeState, review, merged = false) =>
+  ({ repo, number, title, url: `https://github.com/${repo}/pull/${number}`, created, checks, mergeState, review, merged });
 export const prs = [
-  pr('acme/storefront', 412, 'Fix checkout total rounding for multi-currency carts', 'FAILURE', 'BLOCKED', 'REVIEW_REQUIRED'),
-  pr('acme/storefront', 409, 'Add product search filters to the catalog page', 'SUCCESS', 'BEHIND', 'APPROVED'),
-  pr('acme/storefront', 398, 'Cache category pages for anonymous visitors', 'SUCCESS', 'CLEAN', 'APPROVED'),
-  pr('acme/api', 88, 'Rate-limit the public webhooks endpoint', 'PENDING', 'BLOCKED', 'REVIEW_REQUIRED'),
-  pr('acme/api', 85, 'Move invoice PDFs to the background queue', 'SUCCESS', 'BLOCKED', 'REVIEW_REQUIRED'),
-  pr('lucas/dotfiles', 12, 'Hyprland: tighten the gaps around the dock', 'SUCCESS', 'CLEAN', null, true),
+  pr('acme/storefront', 412, 'Fix checkout total rounding for multi-currency carts', '2026-10-08T14:20:00Z', 'FAILURE', 'BLOCKED', 'REVIEW_REQUIRED'),
+  pr('acme/storefront', 409, 'Add product search filters to the catalog page', '2026-10-03T09:05:00Z', 'SUCCESS', 'BEHIND', 'APPROVED'),
+  pr('acme/storefront', 398, 'Cache category pages for anonymous visitors', '2026-09-24T17:40:00Z', 'SUCCESS', 'CLEAN', 'APPROVED'),
+  pr('acme/api', 88, 'Rate-limit the public webhooks endpoint', '2026-10-10T11:15:00Z', 'PENDING', 'BLOCKED', 'REVIEW_REQUIRED'),
+  pr('acme/api', 85, 'Move invoice PDFs to the background queue', '2026-10-01T16:30:00Z', 'SUCCESS', 'BLOCKED', 'REVIEW_REQUIRED'),
+  pr('lucas/dotfiles', 12, 'Hyprland: tighten the gaps around the dock', '2026-09-30T20:00:00Z', 'SUCCESS', 'CLEAN', null, true),
 ];

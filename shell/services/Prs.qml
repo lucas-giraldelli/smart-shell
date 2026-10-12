@@ -11,7 +11,7 @@ import ".."
 Singleton {
     id: root
 
-    property var open: []               // [{ repo, number, title, url, checks, mergeState, review, merged }]
+    property var open: []               // [{ repo, number, title, url, created, checks, mergeState, review, merged }]
     readonly property var list: open.concat(Ui.prsMerged)
     function dismiss(url) {
         Ui.prsMerged = Ui.prsMerged.filter(p => p.url !== url);
@@ -20,7 +20,7 @@ Singleton {
     property bool loaded: false
     property date updatedAt: new Date(0)
 
-    readonly property string query: 'query { search(query: "is:pr is:open author:@me archived:false", type: ISSUE, first: 50) { nodes { ... on PullRequest { number title url mergeStateStatus reviewDecision repository { nameWithOwner } commits(last: 1) { nodes { commit { statusCheckRollup { state } } } } } } } }'
+    readonly property string query: 'query { search(query: "is:pr is:open author:@me archived:false", type: ISSUE, first: 50) { nodes { ... on PullRequest { number title url createdAt mergeStateStatus reviewDecision repository { nameWithOwner } commits(last: 1) { nodes { commit { statusCheckRollup { state } } } } } } } }'
 
     function refresh() {
         if (fetch.running)
@@ -50,7 +50,7 @@ Singleton {
                     return;     // offline or not logged in: keep the last list
                 }
                 const open = nodes.filter(n => n.number).map(n => ({
-                    repo: n.repository.nameWithOwner, number: n.number, title: n.title, url: n.url,
+                    repo: n.repository.nameWithOwner, number: n.number, title: n.title, url: n.url, created: n.createdAt,
                     checks: n.commits.nodes[0]?.commit.statusCheckRollup?.state ?? null,
                     mergeState: n.mergeStateStatus, review: n.reviewDecision, merged: false
                 }));
