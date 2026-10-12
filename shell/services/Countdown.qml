@@ -49,11 +49,11 @@ Singleton {
         Ui.timer = null;
     }
 
-    // the alarm: one play every 6.5 s (it lasts 6 s) at 7% of the
+    // the alarm: one play every 6.5 s (it lasts 6 s) at 5% of the
     // volume (at full it is far too loud); stopping kills it
     Process {
         id: alarm
-        command: ["pw-play", "--volume", "0.07", "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"]
+        command: ["pw-play", "--volume", "0.05", "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"]
     }
     Timer {
         running: root.ringing
