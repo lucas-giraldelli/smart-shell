@@ -76,7 +76,7 @@ export default {
   notifications: { close: 'Close' },
   prs: {
     title: 'Pull requests', tile: '{n} PRs', refresh: 'Refresh', none: 'No open PRs',
-    hide: 'Hide', dismiss: 'Dismiss', unhide: 'Show',
+    hide: 'Hide', dismiss: 'Dismiss', copy: 'Copy link', unhide: 'Show',
     showHidden: 'Show hidden ({n})', hideHidden: 'Hide hidden ({n})',
     updated: 'updated at {time}', sample: 'sample',
     status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',

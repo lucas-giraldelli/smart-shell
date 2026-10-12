@@ -207,6 +207,7 @@ Popover {
 
                                 required property var modelData
                                 readonly property string status: PrRules.prStatus(modelData)
+                                property bool copied: false
 
                                 width: body.width
                                 height: 32
@@ -224,7 +225,7 @@ Popover {
                                 }
                                 Label {
                                     x: 34
-                                    width: parent.width - x - (pr.modelData.merged ? 38 : 8)
+                                    width: parent.width - x - (pr.modelData.merged ? 64 : 38)
                                     anchors.verticalCenter: parent.verticalCenter
                                     elide: Text.ElideRight
                                     size: 12.5
@@ -242,6 +243,29 @@ Popover {
                                     onClicked: {
                                         Qt.openUrlExternally(pr.modelData.url);
                                         Ui.closePopover();
+                                    }
+                                }
+                                // copies the link (on hover); a check for 1.5 s after
+                                IconButton {
+                                    opacity: prHover.hovered || pr.copied ? 1 : 0
+                                    anchors.right: parent.right
+                                    anchors.rightMargin: pr.modelData.merged ? 30 : 4
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    implicitWidth: 24
+                                    implicitHeight: 24
+                                    radius: 6
+                                    flat: true
+                                    icon: pr.copied ? "check" : "copy"
+                                    iconSize: 14
+                                    onClicked: {
+                                        Quickshell.clipboardText = pr.modelData.url;
+                                        pr.copied = true;
+                                        copiedTimer.restart();
+                                    }
+                                    Timer {
+                                        id: copiedTimer
+                                        interval: 1500
+                                        onTriggered: pr.copied = false
                                     }
                                 }
                                 // merged is the past: dismiss it from the list

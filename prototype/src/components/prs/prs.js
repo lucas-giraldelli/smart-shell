@@ -9,7 +9,7 @@ import { prStatus, worst, byRepo } from '../../data/prs.js';
 
 // The user's open pull requests (`gh`, every hour or on refresh), as an item
 // of the tray: the PR icon in the worst state's colour (the count on hover);
-// click lists them by repo, title only.
+// click lists them by repo, title only; a row's last button copies its link.
 const LOOK = {
   failing: { icon: 'circle-x', color: 'var(--crit)' },
   conflict: { icon: 'circle-x', color: 'var(--crit)' },
@@ -38,6 +38,14 @@ class PrList extends Component {
         // `gh api graphql` in the real shell; here, just the timestamp
         updateStore('prs', { loading: true });
         setTimeout(() => updateStore('prs', { loading: false, updatedAt: new Date() }), 700);
+        return;
+      }
+      const copy = e.target.closest('[data-copy]');
+      if (copy) {
+        try { navigator.clipboard.writeText(copy.dataset.copy); } catch {}
+        copy.innerHTML = icon('check');
+        copy.classList.add('copied');
+        setTimeout(() => { copy.innerHTML = icon('copy'); copy.classList.remove('copied'); }, 1500);
         return;
       }
       const dismiss = e.target.closest('[data-dismiss]');
@@ -91,6 +99,7 @@ class PrList extends Component {
             return `<div class="row pr" data-url="${pr.url}" title="#${pr.number} · ${t(`prs.status.${s}`)}">
               <span class="pr-ic" style="color:${l.color}">${icon(l.icon)}</span>
               <span class="grow pr-title">${pr.title}</span>
+              <button class="pr-dismiss pr-copy" data-copy="${pr.url}" title="${t('prs.copy')}">${icon('copy')}</button>
               ${pr.merged ? `<button class="pr-dismiss" data-dismiss="${pr.url}" title="${t('prs.dismiss')}">${icon('x')}</button>` : ''}
             </div>`;
           }).join('')}</div></div>
