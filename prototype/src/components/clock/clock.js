@@ -4,12 +4,16 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { categories } from '../../data/categories.js';
 import { t, dateFormat, formatTime, locale } from '../../i18n/index.js';
 import { setHTML } from '../ui/ui.js';
+import { store } from '../../state.js';
+import { COLORS, startTimer, cancelTimer, remainingText, checkTimer } from './timer.js';
 import './calendar.js';
 
 // Time and date. Shortly before an event (config.events.remindMinutes) the tile
 // turns orange (warn); while an event runs it turns green (ok). Either way the
 // date moves up next to the time and the event's name, with its category icon,
-// takes the second line. Click opens the month calendar.
+// takes the second line. A running timer (timer.js) takes it the same way, in
+// its own colour, when no event does. Click opens the month calendar, right
+// click the timer.
 class Clock extends Component {
   static slices = ['ui', 'agenda'];
 
@@ -21,14 +25,24 @@ class Clock extends Component {
         <div class="t-sub remind"><span class="cat"></span><span class="rtext"></span><span class="meet-ic">${icon('video')}</span></div>
       </div></div>
       <span class="label"></span>
-      <ss-calendar></ss-calendar>`;
+      <ss-calendar></ss-calendar>
+      <div class="timer-pop" data-popover="timer"><div class="menu timer-menu"></div></div>`;
   }
 
   setup() {
     this.classList.add('tile', 'clock');
     this.dataset.popover = 'calendar';
+    this.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (cameFrom(e, '.timer-pop')) return;
+      isOpen('timer') ? closePopover() : openPopover('timer');
+    });
+    this.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && cameFrom(e, '.timer-menu input')) this.startIt();
+    });
     this.addEventListener('click', e => {
       if (cameFrom(e, 'ss-calendar')) return;
+      if (cameFrom(e, '.timer-pop')) return this.timerClick(e.target);
       // the reminder's video icon joins the Meet; the rest opens the calendar
       const event = store.get().agenda.upcoming ?? store.get().agenda.ongoing;
       if (event?.meet && e.target.closest('.meet-ic')) { window.open(event.meet, '_blank'); return; }
@@ -36,6 +50,59 @@ class Clock extends Component {
     });
     this.tick();
     this.timer = setInterval(() => this.tick(), 1000);
+  }
+
+  startIt() {
+    const minutes = parseInt(this.$('[data-min]').value, 10);
+    if (!(minutes > 0)) return;
+    startTimer(minutes, this.picked, this.$('[data-name]').value.trim());
+    closePopover();
+  }
+
+  timerClick(target) {
+    const sw = target.closest('[data-color]');
+    if (sw) {
+      this.picked = sw.dataset.color;
+      this.querySelectorAll('.tm-sw').forEach(b => b.classList.toggle('on', b === sw));
+    }
+    if (target.closest('[data-start]')) this.startIt();
+    if (target.closest('[data-cancel]')) cancelTimer();
+  }
+
+  // the timer popover: minutes (no limit), an optional name and a colour,
+  // then Start (or Enter); while one runs, what's left and Cancel. Rendered
+  // when it opens or the timer starts / stops, so typing isn't wiped.
+  renderTimerMenu(ui) {
+    const open = ui.popover === 'timer';
+    this.$('.timer-pop').toggleAttribute('data-open', open);
+    const key = `${open}|${!!ui.timer}`;
+    if (key === this.timerKey) return;
+    this.timerKey = key;
+    const menu = this.$('.timer-menu');
+    if (ui.timer) {
+      setHTML(menu, `
+        <div class="sec">${t('timer.title')}</div>
+        <div class="tm-run">
+          <span class="tm-ic" style="color:${ui.timer.color}">${icon('timer')}</span>
+          <b data-left>${remainingText(ui.timer)}</b>
+          <span class="meta grow">${ui.timer.label}</span>
+          <button class="btn-s" data-cancel>${icon('x')}${t('timer.cancel')}</button>
+        </div>`);
+      return;
+    }
+    const last = ui.timerLast;
+    this.picked = last.color;
+    setHTML(menu, `
+      <div class="sec">${t('timer.title')}</div>
+      <div class="tm-form">
+        <label class="tm-field tm-min"><input data-min inputmode="numeric" value="${last.minutes}"><span>${t('timer.minutes')}</span></label>
+        <input class="tm-field" data-name placeholder="${t('timer.name')}" value="${last.label}" spellcheck="false">
+      </div>
+      <div class="tm-foot">
+        <div class="tm-colors">${COLORS.map(c => `<button class="tm-sw${c === last.color ? ' on' : ''}" data-color="${c}" style="--c:${c}"></button>`).join('')}</div>
+        <button class="btn-s" data-start>${icon('timer')}${t('timer.start')}</button>
+      </div>`);
+    if (open) requestAnimationFrame(() => { const m = this.$('[data-min]'); m.focus(); m.select(); });
   }
 
   teardown() {
@@ -70,10 +137,25 @@ class Clock extends Component {
     this.measure(ui.clockFormat, shown[0]?.toUpperCase() + shown.slice(1));  // ::first-letter capitalizes it
     this.toggleAttribute('data-open', ui.popover === 'calendar');
 
+    this.renderTimerMenu(ui);
+
     // what's next matters more than what's running: warn first
     const event = agenda.upcoming ?? agenda.ongoing;
-    this.classList.toggle('reminding', !!event);
-    this.toggleAttribute('data-tip', !!event);
+    // a timer takes the second line when no event does
+    this.timing = !event && !!ui.timer;
+    this.classList.toggle('reminding', !!event || this.timing);
+    this.toggleAttribute('data-tip', !!event || this.timing);
+    this.style.removeProperty('--status');
+    if (this.timing) {
+      this.dataset.status = 'timer';
+      this.style.setProperty('--status', ui.timer.color);
+      this.classList.remove('has-meet');
+      setHTML(this.$('.cat'), icon('timer'));
+      this.showTimer(ui.timer);
+      this.$(':scope > .label').textContent = `${ui.timer.label || t('timer.title')} · ${t('timer.ends', { time: formatTime(new Date(ui.timer.end)) })}`;
+      return;
+    }
+    this.$('.rtext').classList.remove('tnum');
     if (!event) { delete this.dataset.status; this.classList.remove('has-meet'); return; }
 
     this.dataset.status = agenda.upcoming ? 'warn' : 'ok';
@@ -86,7 +168,19 @@ class Clock extends Component {
     this.classList.toggle('has-meet', !!event.meet);
   }
 
+  // "4:05 · Pasta" on the second line, and in the open popover
+  showTimer(timer) {
+    const left = remainingText(timer);
+    this.$('.rtext').textContent = left + (timer.label ? ` · ${timer.label}` : '');
+    this.$('.rtext').classList.add('tnum');
+    const shown = this.$('[data-left]');
+    if (shown) shown.textContent = left;
+  }
+
   tick() {
+    checkTimer();
+    const timer = store.get().ui.timer;
+    if (timer) this.showTimer(timer);
     const d = new Date();
     this.$('[data-time]').textContent = formatTime(d);
     // "Sexta 09/10/26" / "Friday 10/09/26": the full weekday without "-feira"

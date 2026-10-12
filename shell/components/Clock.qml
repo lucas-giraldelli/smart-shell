@@ -8,16 +8,19 @@ import "../lib/calendar.mjs" as Cal
 // Time and date (prototype: components/clock). Shortly before an event
 // (config.events.remindMinutes) the tile turns orange (warn); while an event
 // runs it turns green (ok). Either way the date moves up next to the time and
-// the event name, with its category icon, takes the second line. Click opens
-// the month calendar.
+// the event name, with its category icon, takes the second line. A running
+// timer (services/Countdown.qml) takes it the same way, in its own colour,
+// when no event does. Click opens the month calendar, right click the timer.
 Tile {
     id: root
 
     // what is next matters more than what is running: warn first
     readonly property var event: Events.upcoming ?? Events.ongoing
-    readonly property bool reminding: event !== null
+    readonly property bool timing: Countdown.running && event === null
+    readonly property bool reminding: event !== null || timing
     readonly property string status: Events.upcoming ? "warn" : Events.ongoing ? "ok" : ""
-    readonly property color tint: Theme.status(status)
+    readonly property color tint: timing ? Countdown.color : Theme.status(status)
+    readonly property string timerText: Countdown.remainingText + (Countdown.label ? ` · ${Countdown.label}` : "")
     readonly property string eventTitle: event ? Cal.titleOf(I18n, event) : ""
 
     // compact: as wide as its widest time and date (fixed per format and
@@ -51,7 +54,7 @@ Tile {
         const date = ink.x + ink.width;
         return Math.ceil(Math.max(time, date)) + 14 * 2 + 2;
     }
-    open: calendar.open
+    open: calendar.open || timerMenu.open
     color: reminding ? Theme.blend(tint, Theme.tileBg, 0.2) : Theme.tileBg
     border.color: reminding ? Theme.mix(tint, 0.6) : Theme.tileBorder
     Behavior on color { ColorAnimation { duration: 500 } }
@@ -69,16 +72,22 @@ Tile {
     Tip {
         target: root
         shown: root.hovered && root.reminding
-        text: root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
+        text: root.timing ? `${Countdown.label || I18n.t("timer.title")} · ${I18n.t("timer.ends", { time: I18n.formatTime(new Date(Countdown.end)) })}`
+            : root.event ? `${root.eventTitle} · ${I18n.formatTime(root.event.start)}–${I18n.formatTime(root.event.end)} · ${
             Events.upcoming ? I18n.t("reminder.soon", { minutes: Events.minutes }) : I18n.t("reminder.now")}${
             root.event.meet ? ` · ${I18n.t("reminder.join")}` : ""}` : ""
     }
 
-    // click opens the calendar; the reminder video icon joins the Meet
+    // click opens the calendar, right click the timer; the reminder video
+    // icon joins the Meet
     MouseArea {
         anchors.fill: parent
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
         cursorShape: Qt.PointingHandCursor
-        onClicked: calendar.open ? Ui.closePopover() : Ui.openPopover("calendar")
+        onClicked: mouse => {
+            const menu = mouse.button === Qt.RightButton ? timerMenu : calendar;
+            menu.open ? Ui.closePopover() : Ui.openPopover(menu.name);
+        }
     }
 
     SystemClock {
@@ -158,7 +167,7 @@ Tile {
                     spacing: 5
                     Icon {
                         anchors.verticalCenter: parent.verticalCenter
-                        name: Cal.categories[root.event?.category]?.icon ?? "user"
+                        name: root.timing ? "timer" : Cal.categories[root.event?.category]?.icon ?? "user"
                         size: 12
                         shadow: true
                         color: root.tint
@@ -167,9 +176,10 @@ Tile {
                         width: parent.width - 17 - (root.event?.meet ? 17 : 0)
                         lineHeight: 15
                         elide: Text.ElideRight
-                        text: root.eventTitle
+                        text: root.timing ? root.timerText : root.eventTitle
                         size: 11
                         weight: Font.DemiBold
+                        tnum: root.timing
                         shadow: true
                         color: Theme.text
                     }
@@ -202,6 +212,10 @@ Tile {
 
     Calendar {
         id: calendar
+        owner: root
+    }
+    TimerMenu {
+        id: timerMenu
         owner: root
     }
 }

@@ -28,6 +28,8 @@ Singleton {
     property alias dnd: prefs.dnd                // do not disturb: only rules with `dnd: true` pop up
     property alias weatherFx: prefs.weatherFx    // the current weather drawn inside the dock
     property alias tamaOn: prefs.tamaOn          // Tamagotchi mode: the pet has needs (services/Tama.qml)
+    property alias timer: prefs.timer            // the clock timer: { end (ms), color, label } or null (services/Countdown.qml)
+    property alias timerLast: prefs.timerLast    // its last minutes, colour and label, to start the next one from
 
     // transient
     // a fullscreen window or a game (the game submap) has the focus: the dock
@@ -110,6 +112,8 @@ Singleton {
             property bool dnd: false
             property bool weatherFx: false
             property bool tamaOn: false
+            property var timer: null
+            property var timerLast: ({ minutes: 10, color: "#facc15", label: "" })
         }
     }
 }

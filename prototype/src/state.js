@@ -22,6 +22,8 @@ export const store = createStore({
     liveWallpaper: loadPref('liveWallpaper', false),
     weatherFx: loadPref('weatherFx', false),   // the current weather drawn inside the dock
     tamaOn: loadPref('tamaOn', false),         // Tamagotchi mode: the pet has needs (pets/tama.js)
+    timer: loadPref('timer', null),            // the clock timer: { end (ms), color, label } (clock/timer.js)
+    timerLast: loadPref('timerLast', { minutes: 10, color: '#facc15', label: '' }),   // the next one starts from these
     popover: null,          // 'bluetooth' | 'control-center' | 'calendar' | 'weather' | null
     ccTab: 'volume',
   },

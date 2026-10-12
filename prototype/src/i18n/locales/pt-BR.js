@@ -113,6 +113,7 @@ export default {
   },
 
   reminder: { soon: 'em {minutes} min', now: 'agora', join: 'Entrar no Meet' },
+  timer: { title: 'Timer', minutes: 'min', name: 'Nome (opcional)', start: 'Iniciar', cancel: 'Cancelar', ends: 'termina às {time}', done: 'Timer terminou' },
 
   categories: { work: 'Trabalho', health: 'Saúde', personal: 'Pessoal' },
 
