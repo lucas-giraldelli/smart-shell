@@ -17,13 +17,13 @@ export function prStatus(pr) {
 
 export const worst = list => list.map(prStatus).sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))[0] ?? null;
 
-// grouped by repo: repos needing action first, then A-Z; PRs newest first,
+// grouped by repo: repos needing action first, then A-Z; PRs oldest first,
 // merged ones last
 export function byRepo(list) {
   const map = new Map();
   for (const pr of list) (map.get(pr.repo) ?? map.set(pr.repo, []).get(pr.repo)).push(pr);
   const rank = prs => ORDER.indexOf(worst(prs));
   return [...map].map(([repo, prs]) => ({
-    repo, prs: prs.sort((a, b) => a.merged - b.merged || (b.created ?? '').localeCompare(a.created ?? '')),
+    repo, prs: prs.sort((a, b) => a.merged - b.merged || (a.created ?? '').localeCompare(b.created ?? '')),
   })).sort((a, b) => rank(a.prs) - rank(b.prs) || a.repo.localeCompare(b.repo));
 }
