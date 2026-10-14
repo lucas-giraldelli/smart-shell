@@ -80,10 +80,11 @@ Singleton {
         // (0 = until closed)
         notifications: { rules: [] },
         // the torrents widget: `seedDays` is the tracker's hit-and-run rule
-        // (a torrent seeding for less is shown owed, and stopping it asks
-        // twice); `services` are web UIs checked with the torrents, shown as
-        // dots in its popover ({ name, url })
-        torrents: { seedDays: 7, services: [] }
+        // (a torrent seeding for less is shown owed, and removing it asks
+        // twice) and `minRatio` its minimum ratio (red under it); `services`
+        // are web UIs checked with the torrents, shown as dots in its popover
+        // ({ name, url })
+        torrents: { seedDays: 7, minRatio: 0.4, services: [] }
     })
 
     readonly property var data: {

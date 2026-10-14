@@ -274,8 +274,10 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   With `~/.config/smart-shell/tracker.json` (`chmod 600`;
   `{ "name": "...", "url": "https://...", "token": "..." }`, a UNIT3D tracker
   and your API key - Prowlarr's indexer has it too) the popover also shows
-  your ratio there before the services, read every 15 minutes (and your hit
-  and runs, in red, when there are any).
+  your ratio there before the services - red under `torrents.minRatio` (0.4)
+  - and your buffer, what can still be downloaded before that minimum (yellow
+  under 40 GiB), read every 15 minutes (and your hit and runs, in red, when
+  there are any).
 - **Notifications** - the shell is the notification server (replaces mako;
   drop its `exec-once`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,

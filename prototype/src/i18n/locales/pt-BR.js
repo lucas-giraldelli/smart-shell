@@ -77,7 +77,7 @@ export default {
   torrents: {
     title: 'Torrents', tile: '{n} torrents', refresh: 'Atualizar', none: 'Nenhum torrent',
     name: 'Nome', size: 'Tamanho', progress: '%', status: 'Status', seeds: 'Seeds',
-    tip: '{seeds} seeds conectados de {swarm}', down: '{names} fora',
+    tip: '{seeds} seeds conectados de {swarm}', down: '{names} fora', buffer: '{size} livres',
     states: { error: 'Erro', stalled: 'Parado', downloading: 'Baixando', checking: 'Verificando', queued: 'Na fila', paused: 'Pausado', seeding: 'Semeando' },
   },
   prs: {

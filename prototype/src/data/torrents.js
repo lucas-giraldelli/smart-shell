@@ -41,6 +41,17 @@ export function size(bytes) {
   while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
   return `${v < 100 && i ? v.toFixed(1) : Math.round(v)} ${units[i]}`;
 }
+// a UNIT3D size ("133.47 GiB") in GiB
+export function gib(text) {
+  const m = String(text).match(/([\d.]+)\s*([KMGTP]i?B)/);
+  if (!m) return 0;
+  return Number(m[1]) * { KiB: 2 ** -20, MiB: 2 ** -10, GiB: 1, TiB: 2 ** 10, PiB: 2 ** 20 }[m[2]] || 0;
+}
+// the tracker account's colours: the ratio red under the tracker's minimum
+// (config torrents.minRatio), the buffer - what can still be downloaded
+// before it - yellow under 40 GiB
+export const lowRatio = (a, min) => Number(a.ratio) < min;
+export const lowBuffer = a => gib(a.buffer) < 40;
 // a speed: "1.2 MB/s"
 export const speed = bytes => `${size(bytes)}/s`;
 // 0.4567 -> "45%"; 99.95% stays "99%" until it is done

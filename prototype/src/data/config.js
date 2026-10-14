@@ -59,11 +59,13 @@ export const config = {
   },
 
   // the torrents widget: `seedDays` is the tracker's hit-and-run rule (a
-  // torrent seeding for less is shown owed, and stopping it asks twice);
+  // torrent seeding for less is shown owed, and removing it asks twice) and
+  // `minRatio` its minimum ratio (red under it);
   // `services` are web UIs checked with the torrents, shown as dots in its
   // popover
   torrents: {
     seedDays: 7,
+    minRatio: 0.4,
     services: [
       { name: 'Jellyfin', url: 'http://localhost:8096' },
       { name: 'Jellyseerr', url: 'http://localhost:5055' },

@@ -4,13 +4,14 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { setHTML } from '../ui/ui.js';
 import { t } from '../../i18n/index.js';
 import { store, update as updateStore } from '../../state.js';
-import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped } from '../../data/torrents.js';
+import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, lowRatio, lowBuffer } from '../../data/torrents.js';
 import { config } from '../../data/config.js';
 
 // The torrents of a qBittorrent Web UI (the shell reads its API every 60 s,
 // every 5 s while the list is open), as an item of the tray: the download
 // icon while anything downloads, else the upload one, in the worst state's
-// colour (red while a service is down). Click shows the tracker ratio, the
+// colour (red while a service is down). Click shows the tracker ratio (red
+// under config.torrents.minRatio) and buffer (yellow under 40 GiB), the
 // services in config.torrents.services and the VPN (grey, red when down, a
 // click opens one), then
 // the torrents: title ("Coraline (2009)", "Loki · S02", the release name on
@@ -81,7 +82,7 @@ class TorrentList extends Component {
         <span class="meta">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span>
         <button class="ib${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
       </div>
-      ${torrents.tracker || torrents.services.length ? `<div class="tr-services">${torrents.tracker ? `<span class="tr-ratio">${torrents.tracker.name} ${torrents.tracker.ratio}</span>` : ''}${
+      ${torrents.tracker || torrents.services.length ? `<div class="tr-services">${torrents.tracker ? `<span class="tr-ratio${lowRatio(torrents.tracker, config.torrents.minRatio) ? ' low' : ''}">${torrents.tracker.name} ${torrents.tracker.ratio}</span><span class="tr-buffer${lowBuffer(torrents.tracker) ? ' low' : ''}">${t('torrents.buffer', { size: torrents.tracker.buffer })}</span>` : ''}${
         torrents.tracker?.hit_and_runs > 0 ? `<span class="hnr">H&amp;R ${torrents.tracker.hit_and_runs}</span>` : ''}${
         [...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].map(s =>
           `<span class="tr-service${s.up ? '' : ' down'}"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</div>` : ''}

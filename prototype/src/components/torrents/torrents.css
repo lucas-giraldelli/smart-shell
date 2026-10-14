@@ -32,6 +32,9 @@
 /* the tracker ratio, then the services: a grey dot and name, red when down */
 .tr-services { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 8px 6px; font-size: 11px; color: var(--menu-sub); }
 .tr-ratio { color: var(--menu-text); font-variant-numeric: tabular-nums; }
+.tr-ratio.low { color: var(--crit); }
+.tr-buffer { font-variant-numeric: tabular-nums; }
+.tr-buffer.low { color: var(--warn); }
 .tr-services .hnr { color: var(--crit); }
 .tr-service { display: inline-flex; align-items: center; gap: 6px; }
 .tr-service[data-service] { cursor: pointer; }

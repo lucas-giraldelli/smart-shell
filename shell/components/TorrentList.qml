@@ -5,7 +5,8 @@ import ".."
 import "ui"
 import "../lib/torrents.mjs" as TorrentRules
 
-// The torrents popover (prototype: components/torrents): the tracker ratio,
+// The torrents popover (prototype: components/torrents): the tracker ratio
+// (red under config torrents.minRatio) and buffer (yellow under 40 GiB),
 // the services in config torrents.services and the VPN (grey, red when down,
 // a click opens one),
 // then one row per torrent, worst state first - its state icon, title
@@ -107,7 +108,16 @@ Popover {
                 text: Torrents.tracker ? `${Torrents.tracker.name} ${Torrents.tracker.ratio}` : ""
                 size: 11
                 tnum: true
-                color: Theme.menuText
+                color: Torrents.tracker && TorrentRules.lowRatio(Torrents.tracker, Config.torrents?.minRatio ?? 0.4) ? Theme.crit : Theme.menuText
+            }
+            // what can still be downloaded before the minimum ratio
+            Label {
+                visible: Torrents.tracker !== null
+                lineHeight: 18
+                text: Torrents.tracker ? I18n.t("torrents.buffer", { size: Torrents.tracker.buffer }) : ""
+                size: 11
+                tnum: true
+                color: Torrents.tracker && TorrentRules.lowBuffer(Torrents.tracker) ? Theme.warn : Theme.menuSub
             }
             Label {
                 visible: (Torrents.tracker?.hit_and_runs ?? 0) > 0
