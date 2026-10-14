@@ -12,7 +12,10 @@ import ".."
 // 60 s otherwise. The session cookie lives in $XDG_RUNTIME_DIR; a 403 logs in
 // again (the password goes to curl on stdin, never on its command line).
 // remove() takes a torrent out of qBittorrent, keeping its files; start()
-// brings a stopped one back.
+// brings a stopped one back. With ~/.config/smart-shell/tracker.json
+// ({ "name", "url", "token" }: a UNIT3D tracker and its API key) it also reads
+// your account there (/api/user: ratio, buffer, bonus points, hit and runs)
+// every 15 minutes; the key goes to curl on stdin as a header file.
 Singleton {
     id: root
 
@@ -22,6 +25,7 @@ Singleton {
     property bool vpn: true          // qBittorrent is connected (through the VPN)
     property var services: []        // [{ name, url, up }]
     readonly property var down: services.filter(s => !s.up).map(s => s.name).concat(vpn ? [] : ["VPN"])
+    property var tracker: null       // { name, ratio, uploaded, downloaded, buffer, seedbonus, hit_and_runs }
     property bool loading: false
     property bool loaded: false      // a login file and an answer: the widget shows
     property string url: ""
@@ -73,6 +77,27 @@ Singleton {
         triggeredOnStart: true
         interval: Ui.popover === "torrents" ? 5000 : 60000
         onTriggered: root.refresh()
+    }
+
+    Timer {
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        interval: 15 * 60000
+        onTriggered: account.running = true
+    }
+    Process {
+        id: account
+        command: ["sh", "-c", 'f="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/tracker.json"; [ -r "$f" ] || exit 2; '
+            + 'jq -j \'"Authorization: Bearer " + .token\' "$f" | curl -sf -m 10 -H "Accept: application/json" -H @- "$(jq -r .url "$f")/api/user" '
+            + '| jq -c --arg name "$(jq -r .name "$f")" \'{name: $name, ratio, uploaded, downloaded, buffer, seedbonus, hit_and_runs}\'']
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    root.tracker = JSON.parse(text);
+                } catch (e) {}
+            }
+        }
     }
 
     Process {

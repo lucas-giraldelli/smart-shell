@@ -4,13 +4,14 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { setHTML } from '../ui/ui.js';
 import { t } from '../../i18n/index.js';
 import { store, update as updateStore } from '../../state.js';
-import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped } from '../../data/torrents.js';
+import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, account } from '../../data/torrents.js';
 import { config } from '../../data/config.js';
 
 // The torrents of a qBittorrent Web UI (the shell reads its API every 60 s,
 // every 5 s while the list is open), as an item of the tray: the download
 // icon while anything downloads, else the upload one, in the worst state's
-// colour (red while a service is down). Click lists the services in
+// colour (red while a service is down). Click shows the tracker account
+// (ratio, up / down, bonus points, hit and runs), the services in
 // config.torrents.services and the VPN that are down (red, a click opens one), then
 // the torrents: title ("Coraline (2009)", "Loki · S02", the release name on
 // hover), size, progress, state (seeding: its days, yellow while still owed
@@ -80,6 +81,7 @@ class TorrentList extends Component {
         <span class="meta">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span>
         <button class="ib${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
       </div>
+      ${torrents.tracker ? `<div class="tr-account"><b>${torrents.tracker.name}</b> ${account(torrents.tracker)} · <span${torrents.tracker.hit_and_runs > 0 ? ' class="hnr"' : ''}>H&amp;R ${torrents.tracker.hit_and_runs}</span></div>` : ''}
       ${(() => {
         const down = [...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].filter(s => !s.up);
         return down.length ? `<div class="tr-services">${down.map(s =>

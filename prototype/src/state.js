@@ -58,7 +58,8 @@ export const store = createStore({
   // the user's open PRs (gh); `merged` ones linger until the next look
   // `hidden`: repos the user hid (saved); `showHidden`: the popover lists them too
   // services: the config's torrents.services, all answering; vpn: qBittorrent connected
-  torrents: { list: snap.torrents, dlspeed: 3145728, upspeed: 524288, loading: false, vpn: true,
+  // tracker: the account on a UNIT3D tracker (its /api/user)
+  torrents: { tracker: snap.tracker, list: snap.torrents, dlspeed: 3145728, upspeed: 524288, loading: false, vpn: true,
     services: config.torrents.services.map(s => ({ ...s, up: true })) },
   prs: { list: snap.prs, updatedAt: null, loading: false, hidden: loadPref('prsHidden', []), showHidden: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },

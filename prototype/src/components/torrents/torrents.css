@@ -29,6 +29,11 @@
 .tr-act svg.i { width: 13px; height: 13px; }
 .row.tr:hover .tr-act, .tr-act.off { opacity: 1; }
 
+/* the tracker account: name, ratio, up / down, bonus points, hit and runs */
+.tr-account { padding: 0 8px 6px; font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
+.tr-account b { color: var(--menu-text); font-weight: 600; margin-right: 4px; }
+.tr-account .hnr { color: var(--crit); }
+
 /* the services that are down: a red dot and a name each */
 .tr-services { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 8px 6px; font-size: 11px; color: var(--crit); }
 .tr-service { display: inline-flex; align-items: center; gap: 6px; }

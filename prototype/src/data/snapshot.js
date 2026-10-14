@@ -131,6 +131,9 @@ export const weather = {
 
 export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music', url: 'https://music.youtube.com/watch?v=dX3k_QDnzHE' };
 
+// a tracker account (UNIT3D's /api/user in the shell)
+export const tracker = { name: 'Tracker', ratio: '1.78', uploaded: '68.81 GiB', downloaded: '38.55 GiB', buffer: '133.47 GiB', seedbonus: '45675.00', hit_and_runs: 0 };
+
 // torrents (qBittorrent's Web UI API in the shell): one of most states
 const torrent = (name, size, progress, state, num_seeds, num_complete, daysAgo) =>
   ({ hash: name, name, size, progress, state, num_seeds, num_complete, added_on: Math.floor(Date.now() / 1000) - daysAgo * 86400,
