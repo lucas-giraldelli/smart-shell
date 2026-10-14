@@ -35,7 +35,7 @@ Popover {
     readonly property var rows: TorrentRules.sorted(Torrents.list)
 
     // the columns after the name: size, progress, state, seeds; then the
-    // stop / start button
+    // remove / start buttons
     readonly property var widths: [64, 40, 100, 44]
     readonly property int action: 54
     readonly property int minDays: Config.torrents?.seedDays ?? 7
