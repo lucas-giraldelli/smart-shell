@@ -12,8 +12,9 @@ import "../lib/torrents.mjs" as TorrentRules
 // progress, state (seeding: its days, yellow while still owed to the tracker,
 // config torrents.seedDays) and the seeds in its swarm. Only what needs a look
 // has a colour: red an error or a service down, yellow stalled or owed, blue
-// downloading. The x at the end stops seeding it (asking twice while owed),
-// the play brings it back; a click on the row opens the qBittorrent Web UI.
+// downloading. The x at the end stops seeding it (asking twice while owed);
+// a stopped one gets play and the bin, which removes it from qBittorrent
+// keeping its files (asking twice); a click on the row opens the Web UI.
 Popover {
     id: root
     name: "torrents"
@@ -36,10 +37,10 @@ Popover {
     // the columns after the name: size, progress, state, seeds; then the
     // stop / start button
     readonly property var widths: [64, 40, 100, 44]
-    readonly property int action: 28
+    readonly property int action: 54
     readonly property int minDays: Config.torrents?.seedDays ?? 7
 
-    bubbleWidth: 620
+    bubbleWidth: 640
     padding: 6
 
     component Cell: Label {
@@ -190,7 +191,17 @@ Popover {
                 required property var modelData
                 readonly property string status: TorrentRules.statusOf(modelData)
                 readonly property bool owed: TorrentRules.owed(modelData, root.minDays)
-                property bool armed: false      // a first click on stop while owed
+                property string armed: ""       // "stop" / "remove": clicked once, waiting for the second
+                // run `act`, or only arm it on a first click when `twice`
+                function arm(what, twice, act) {
+                    if (twice && armed !== what) {
+                        armed = what;
+                        disarm.restart();
+                        return;
+                    }
+                    armed = "";
+                    act();
+                }
 
                 width: listView.width
                 height: 32
@@ -245,37 +256,53 @@ Popover {
                         Ui.closePopover();
                     }
                 }
-                // stop seeding (twice while owed; qBittorrent's stop, the old
-                // pause: the torrent and its files stay) / start again; on hover
-                IconButton {
+                // on hover: x stops seeding (qBittorrent's stop, the old pause;
+                // twice while owed); a stopped one gets play and the bin, which
+                // takes it out of qBittorrent keeping its files (always twice)
+                Row {
                     anchors.right: parent.right
                     anchors.rightMargin: 4
                     anchors.verticalCenter: parent.verticalCenter
-                    visible: row.status === "seeding" || TorrentRules.stopped(row.modelData)
-                    opacity: rowHover.hovered || row.armed ? 1 : 0
-                    implicitWidth: 24
-                    implicitHeight: 24
-                    radius: 6
-                    flat: true
-                    off: row.armed
-                    icon: TorrentRules.stopped(row.modelData) ? "play" : "x"
-                    iconSize: 13
-                    onClicked: {
-                        if (TorrentRules.stopped(row.modelData))
-                            return Torrents.start(row.modelData.hash);
-                        if (row.owed && !row.armed) {
-                            row.armed = true;
-                            disarm.restart();
-                            return;
-                        }
-                        row.armed = false;
-                        Torrents.stop(row.modelData.hash);
+                    spacing: 2
+                    opacity: rowHover.hovered || row.armed !== "" ? 1 : 0
+
+                    IconButton {
+                        visible: TorrentRules.stopped(row.modelData)
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: 6
+                        flat: true
+                        icon: "play"
+                        iconSize: 13
+                        onClicked: Torrents.start(row.modelData.hash)
                     }
-                    Timer {
-                        id: disarm
-                        interval: 3000
-                        onTriggered: row.armed = false
+                    IconButton {
+                        visible: TorrentRules.stopped(row.modelData)
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: 6
+                        flat: true
+                        off: row.armed === "remove"
+                        icon: "trash-2"
+                        iconSize: 13
+                        onClicked: row.arm("remove", true, () => Torrents.remove(row.modelData.hash))
                     }
+                    IconButton {
+                        visible: row.status === "seeding"
+                        implicitWidth: 24
+                        implicitHeight: 24
+                        radius: 6
+                        flat: true
+                        off: row.armed === "stop"
+                        icon: "x"
+                        iconSize: 13
+                        onClicked: row.arm("stop", row.owed, () => Torrents.stop(row.modelData.hash))
+                    }
+                }
+                Timer {
+                    id: disarm
+                    interval: 3000
+                    onTriggered: row.armed = ""
                 }
             }
         }

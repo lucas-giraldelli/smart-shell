@@ -11,7 +11,8 @@ import ".."
 // HTTP answer below 500 counts). Read every 5 s while the list is open, every
 // 60 s otherwise. The session cookie lives in $XDG_RUNTIME_DIR; a 403 logs in
 // again (the password goes to curl on stdin, never on its command line).
-// stop() / start() stop seeding a torrent or bring it back.
+// stop() / start() stop seeding a torrent or bring it back; remove() takes
+// it out of qBittorrent, keeping its files.
 Singleton {
     id: root
 
@@ -52,6 +53,11 @@ Singleton {
     }
     function start(hash) {
         act("start", "resume", hash);
+    }
+    // out of qBittorrent, its files kept (the library has them)
+    function remove(hash) {
+        Quickshell.execDetached(["sh", "-c", lib + 'post torrents/delete "hashes=$1&deleteFiles=false"', "sh", hash]);
+        after.restart();
     }
     function act(verb, old, hash) {
         Quickshell.execDetached(["sh", "-c", lib + 'post "torrents/$1" "hashes=$3" || post "torrents/$2" "hashes=$3"', "sh", verb, old, hash]);

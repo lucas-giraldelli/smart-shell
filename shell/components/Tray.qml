@@ -202,7 +202,9 @@ Tile {
                 anchors.centerIn: parent
                 name: root.downloading ? "download" : "upload"
                 size: 16
-                color: Torrents.down.length ? Theme.crit : torrentList.colorOf(root.torrentWorst)
+                // green when all is well: seeding, paused or queued
+                color: Torrents.down.length ? Theme.crit
+                    : ["error", "stalled", "downloading"].includes(root.torrentWorst) ? torrentList.colorOf(root.torrentWorst) : Theme.ok
                 scale: torrentArea.containsMouse ? 1.2 : 1
                 Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
             }

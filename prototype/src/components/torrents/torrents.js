@@ -16,9 +16,11 @@ import { config } from '../../data/config.js';
 // hover), size, progress, state (seeding: its days, yellow while still owed
 // to the tracker, config.torrents.seedDays) and the seeds in its swarm. Only
 // what needs a look has a colour: red an error or a service down, yellow
-// stalled or owed, blue downloading. The x at a row's end stops seeding it
-// (asking twice while owed; qBittorrent's stop, the old pause), the play
-// brings it back; the rest of the row opens the Web UI.
+// stalled or owed, blue downloading; the tray icon is green when all is well.
+// The x at a row's end stops seeding it (asking twice while owed;
+// qBittorrent's stop, the old pause); a stopped one gets play and the bin,
+// which removes it from qBittorrent keeping its files (asking twice); the
+// rest of the row opens the Web UI.
 export const LOOK = {
   error: { icon: 'circle-alert', color: 'var(--crit)' },
   stalled: { icon: 'triangle-alert', color: 'var(--warn)' },
@@ -48,10 +50,16 @@ class TorrentList extends Component {
       if (act) {
         const hash = act.closest('[data-row]').dataset.row;
         const tr = store.get().torrents.list.find(x => x.hash === hash);
-        // stop while owed: the first click arms it (red), the second stops
-        if (act.dataset.act === 'stop' && owed(tr, config.torrents.seedDays) && !act.classList.contains('off')) {
+        // stop while owed, or remove: the first click arms it (red), the second acts
+        const twice = act.dataset.act === 'remove' || (act.dataset.act === 'stop' && owed(tr, config.torrents.seedDays));
+        if (twice && !act.classList.contains('off')) {
           act.classList.add('off');
           setTimeout(() => act.classList.remove('off'), 3000);
+          return;
+        }
+        // POST /api/v2/torrents/delete (deleteFiles=false) in the real shell
+        if (act.dataset.act === 'remove') {
+          updateStore('torrents', s => ({ list: s.list.filter(x => x.hash !== hash) }));
           return;
         }
         // POST /api/v2/torrents/stop|start in the real shell
@@ -83,7 +91,7 @@ class TorrentList extends Component {
       <div class="tr-list">${rows.map(tr => {
         const s = statusOf(tr), l = LOOK[s];
         const state = s === 'seeding' ? (owed(tr, config.torrents.seedDays) ? 'owed' : 'paid') : s;
-        const action = stopped(tr) ? 'start' : s === 'seeding' ? 'stop' : '';
+        const actions = stopped(tr) ? ['start', 'remove'] : s === 'seeding' ? ['stop'] : [];
         return `<div class="row tr" data-row="${tr.hash}" title=""${tr.name} · ${t('torrents.tip', { seeds: tr.num_seeds, swarm: tr.num_complete })}">
           <span class="tr-ic" style="color:${l.color}">${icon(l.icon)}</span>
           <span class="grow tr-name">${title(tr.name)}</span>
@@ -91,7 +99,7 @@ class TorrentList extends Component {
           <span>${percent(tr.progress)}</span>
           <span class="tr-state" data-state="${state}">${t(`torrents.states.${s}`)}${s === 'seeding' ? ` · ${seedDays(tr)}d` : ''}</span>
           <span>${tr.num_complete}</span>
-          ${action ? `<button class="ib flat tr-act" data-act="${action}">${icon(action === 'stop' ? 'x' : 'play')}</button>` : '<span></span>'}
+          <span class="tr-acts">${actions.map(a => `<button class="ib flat tr-act" data-act="${a}">${icon({ stop: 'x', start: 'play', remove: 'trash-2' }[a])}</button>`).join('')}</span>
         </div>`;
       }).join('')}</div>` : `<div class="meta tr-empty">${t('torrents.none')}</div>`}`);
   }
@@ -120,7 +128,8 @@ class Torrents extends Component {
     setHTML(this.$('[data-icon]'), icon(downloading ? 'download' : 'upload'));
     this.toggleAttribute('data-open', ui.popover === 'torrents');
     const down = torrents.services.filter(s => !s.up).map(s => s.name).concat(torrents.vpn ? [] : ['VPN']);
-    this.style.setProperty('--tr', down.length ? 'var(--crit)' : w ? LOOK[w].color : 'var(--menu-sub)');
+    // green when all is well: seeding, paused or queued
+    this.style.setProperty('--tr', down.length ? 'var(--crit)' : ['error', 'stalled', 'downloading'].includes(w) ? LOOK[w].color : 'var(--ok)');
     this.title = t('torrents.tile', { n: torrents.list.length }) + (down.length ? ` · ${t('torrents.down', { names: down.join(', ') })}` : '');
   }
 }
