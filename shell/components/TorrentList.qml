@@ -5,10 +5,14 @@ import ".."
 import "ui"
 import "../lib/torrents.mjs" as TorrentRules
 
-// The torrents popover (prototype: components/torrents): one row per torrent,
-// worst state first - its state icon, title ("Coraline (2009)", "Loki · S02",
-// the release name on hover), size, progress, state and the seeds in its
-// swarm. A click opens the qBittorrent Web UI.
+// The torrents popover (prototype: components/torrents): a dot per service in
+// config torrents.services and the VPN (red when down, a click opens it),
+// then one row per torrent, worst state first - its state icon, title
+// ("Coraline (2009)", "Loki · S02", the release name on hover), size,
+// progress, state (seeding: its days, yellow while still owed to the tracker,
+// config torrents.seedDays) and the seeds in its swarm. The square at the end
+// stops seeding it (asking twice while owed), the play brings it back; a
+// click on the row opens the qBittorrent Web UI.
 Popover {
     id: root
     name: "torrents"
@@ -28,10 +32,13 @@ Popover {
     }
     readonly property var rows: TorrentRules.sorted(Torrents.list)
 
-    // the columns after the name: size, progress, state, seeds
-    readonly property var widths: [64, 40, 76, 44]
+    // the columns after the name: size, progress, state, seeds; then the
+    // stop / start button
+    readonly property var widths: [64, 40, 100, 44]
+    readonly property int action: 28
+    readonly property int minDays: Config.torrents?.seedDays ?? 7
 
-    bubbleWidth: 560
+    bubbleWidth: 620
     padding: 6
 
     component Cell: Label {
@@ -83,6 +90,48 @@ Popover {
             }
         }
 
+        // the services: a dot and a name each, red when it does not answer
+        Flow {
+            visible: Torrents.services.length > 0
+            x: 8
+            width: parent.width - 16
+            spacing: 14
+            bottomPadding: 6
+            Repeater {
+                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }])
+                delegate: Row {
+                    id: service
+                    required property var modelData
+                    spacing: 6
+                    height: 18
+                    Rectangle {
+                        anchors.verticalCenter: parent.verticalCenter
+                        width: 6
+                        height: 6
+                        radius: 3
+                        color: service.modelData.up ? Theme.ok : Theme.crit
+                    }
+                    Label {
+                        anchors.verticalCenter: parent.verticalCenter
+                        text: service.modelData.name
+                        size: 11
+                        color: service.modelData.up ? (serviceArea.containsMouse ? Theme.menuText : Theme.menuSub) : Theme.crit
+                        MouseArea {
+                            id: serviceArea
+                            anchors.fill: parent
+                            enabled: service.modelData.url !== ""
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                Qt.openUrlExternally(service.modelData.url);
+                                Ui.closePopover();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Item {
             visible: root.rows.length === 0
             width: parent.width
@@ -100,7 +149,7 @@ Popover {
         Row {
             visible: root.rows.length > 0
             x: 34
-            width: parent.width - 34 - 8
+            width: parent.width - 34 - 8 - root.action
             height: 22
             spacing: 8
             Label {
@@ -139,6 +188,8 @@ Popover {
 
                 required property var modelData
                 readonly property string status: TorrentRules.statusOf(modelData)
+                readonly property bool owed: TorrentRules.owed(modelData, root.minDays)
+                property bool armed: false      // a first click on stop while owed
 
                 width: listView.width
                 height: 32
@@ -156,7 +207,7 @@ Popover {
                 }
                 Row {
                     x: 34
-                    width: parent.width - 34 - 8
+                    width: parent.width - 34 - 8 - root.action
                     anchors.verticalCenter: parent.verticalCenter
                     spacing: 8
                     Label {
@@ -173,8 +224,10 @@ Popover {
                         width: root.widths[2]
                         anchors.verticalCenter: parent.verticalCenter
                         tnum: false
-                        color: row.status === "seeding" || row.status === "downloading" ? Theme.menuSub : root.colorOf(row.status)
+                        color: row.status === "seeding" ? (row.owed ? Theme.warn : Theme.ok)
+                            : row.status === "downloading" ? Theme.menuSub : root.colorOf(row.status)
                         text: I18n.t(`torrents.states.${row.status}`)
+                            + (row.status === "seeding" ? ` · ${TorrentRules.seedDays(row.modelData)}d` : "")
                     }
                     Cell { width: root.widths[3]; anchors.verticalCenter: parent.verticalCenter; text: row.modelData.num_complete }
                 }
@@ -189,6 +242,37 @@ Popover {
                     onClicked: {
                         Qt.openUrlExternally(Torrents.url);
                         Ui.closePopover();
+                    }
+                }
+                // stop seeding (twice while owed) / start again; on hover
+                IconButton {
+                    anchors.right: parent.right
+                    anchors.rightMargin: 4
+                    anchors.verticalCenter: parent.verticalCenter
+                    visible: row.status === "seeding" || TorrentRules.stopped(row.modelData)
+                    opacity: rowHover.hovered || row.armed ? 1 : 0
+                    implicitWidth: 24
+                    implicitHeight: 24
+                    radius: 6
+                    flat: true
+                    off: row.armed
+                    icon: TorrentRules.stopped(row.modelData) ? "play" : "square"
+                    iconSize: 13
+                    onClicked: {
+                        if (TorrentRules.stopped(row.modelData))
+                            return Torrents.start(row.modelData.hash);
+                        if (row.owed && !row.armed) {
+                            row.armed = true;
+                            disarm.restart();
+                            return;
+                        }
+                        row.armed = false;
+                        Torrents.stop(row.modelData.hash);
+                    }
+                    Timer {
+                        id: disarm
+                        interval: 3000
+                        onTriggered: row.armed = false
                     }
                 }
             }

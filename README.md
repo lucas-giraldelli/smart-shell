@@ -263,7 +263,13 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   them worst first: title (the release name cut to "Coraline (2009)" or
   "Loki · S02"), size, progress, state and the seeds in its swarm (the hover
   shows the full name and how many seeds are connected); a row opens the Web
-  UI.
+  UI. Seeding shows its days, yellow while still owed to the tracker
+  (`torrents.seedDays`, its hit-and-run rule, 7 by default) and green after;
+  the square at the row's end (on hover) stops seeding it - twice while owed -
+  and the play brings it back. Above the list, `torrents.services`
+  (`[{ "name", "url" }]`) are web UIs checked with each read - any HTTP answer
+  counts - plus the VPN (qBittorrent connected): a green dot each, red when
+  down, and then the tray icon turns red and its hover names them.
 - **Notifications** - the shell is the notification server (replaces mako;
   drop its `exec-once`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,

@@ -1,6 +1,7 @@
 import { createStore } from './core/store.js';
 import { loadPref } from './core/prefs.js';
 import * as snap from './data/snapshot.js';
+import { config } from './data/config.js';
 import { fresh } from './components/pets/tama-rules.js';
 
 // The whole app state. Each top-level key is a slice components can subscribe to;
@@ -56,7 +57,9 @@ export const store = createStore({
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
   // the user's open PRs (gh); `merged` ones linger until the next look
   // `hidden`: repos the user hid (saved); `showHidden`: the popover lists them too
-  torrents: { list: snap.torrents, dlspeed: 3145728, upspeed: 524288, loading: false },
+  // services: the config's torrents.services, all answering; vpn: qBittorrent connected
+  torrents: { list: snap.torrents, dlspeed: 3145728, upspeed: 524288, loading: false, vpn: true,
+    services: config.torrents.services.map(s => ({ ...s, up: true })) },
   prs: { list: snap.prs, updatedAt: null, loading: false, hidden: loadPref('prsHidden', []), showHidden: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   notifications: { list: [] },   // popups on screen, oldest first

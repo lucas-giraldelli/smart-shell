@@ -57,6 +57,21 @@ export const config = {
   notifications: {
     rules: [],
   },
+
+  // the torrents widget: `seedDays` is the tracker's hit-and-run rule (a
+  // torrent seeding for less is shown owed, and stopping it asks twice);
+  // `services` are web UIs checked with the torrents, shown as dots in its
+  // popover
+  torrents: {
+    seedDays: 7,
+    services: [
+      { name: 'Jellyfin', url: 'http://localhost:8096' },
+      { name: 'Seerr', url: 'http://localhost:5055' },
+      { name: 'Sonarr', url: 'http://localhost:8989' },
+      { name: 'Radarr', url: 'http://localhost:7878' },
+      { name: 'Prowlarr', url: 'http://localhost:9696' },
+    ],
+  },
   events: {
     remindMinutes: 10,
     categories: {

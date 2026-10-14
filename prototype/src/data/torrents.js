@@ -6,7 +6,7 @@
 //   downloading  downloading (also fetching metadata, allocating)
 //   checking     checking its files
 //   queued       waiting for a download or upload slot
-//   paused       stopped by the user
+//   paused       stopped by the user (downloading or seeding)
 //   seeding      complete and shared (uploading or not)
 export const ORDER = ['error', 'stalled', 'downloading', 'checking', 'queued', 'paused', 'seeding'];
 
@@ -16,10 +16,17 @@ const STATES = {
   downloading: 'downloading', forcedDL: 'downloading', metaDL: 'downloading', forcedMetaDL: 'downloading', allocating: 'downloading',
   checkingDL: 'checking', checkingUP: 'checking', checkingResumeData: 'checking', moving: 'checking',
   queuedDL: 'queued', queuedUP: 'queued',
-  pausedDL: 'paused', stoppedDL: 'paused',
-  uploading: 'seeding', forcedUP: 'seeding', stalledUP: 'seeding', pausedUP: 'seeding', stoppedUP: 'seeding',
+  pausedDL: 'paused', stoppedDL: 'paused', pausedUP: 'paused', stoppedUP: 'paused',
+  uploading: 'seeding', forcedUP: 'seeding', stalledUP: 'seeding',
 };
 export const statusOf = t => STATES[t.state] ?? 'downloading';
+
+// whole days it has seeded; below `minDays` (config torrents.seedDays, the
+// tracker's hit-and-run rule) it is still owed to the tracker
+export const seedDays = t => Math.floor((t.seeding_time ?? 0) / 86400);
+export const owed = (t, minDays) => statusOf(t) === 'seeding' && seedDays(t) < minDays;
+// stopped by the user: a start brings it back
+export const stopped = t => /^(paused|stopped)(DL|UP)$/.test(t.state);
 
 export const worst = list => list.map(statusOf).sort((a, b) => ORDER.indexOf(a) - ORDER.indexOf(b))[0] ?? null;
 
@@ -43,10 +50,11 @@ export const percent = p => `${p >= 1 ? 100 : Math.min(99, Math.floor(p * 100))}
 // "The Rescuers (1977)", "Loki.S02.1080p..." -> "Loki · S02",
 // "Invader.Zim.S01E03..." -> "Invader Zim · S01E03". The year is the last one
 // before the rest of the release ("Blade.Runner.2049.2017..." -> 2017) and
-// edition tags go (EXTENDED, REMASTERED...); anything else (an ISO) stays as
-// it is.
+// edition tags go (EXTENDED, REMASTERED...); a disk image or an archive, or
+// anything else, stays as it is.
 export function title(name) {
   const words = s => s.replace(/[._]+/g, ' ').replace(/ (EXTENDED|REMASTERED|UNRATED|UNCUT|IMAX|DIRECTORS CUT)\b/gi, '').trim();
+  if (/\.(iso|img|zip|rar|7z|tar|gz)$/i.test(name)) return name;
   const base = name.replace(/\.(mkv|mp4|avi|m4v|ts)$/i, '');
   const series = base.match(/^(.+?)[. _-]+(S\d{1,2}(?:E\d{1,3})?)(?=[. _-]|$)/i);
   if (series) return `${words(series[1]).replace(/ (19|20)\d{2}$/, '')} · ${series[2].toUpperCase()}`;

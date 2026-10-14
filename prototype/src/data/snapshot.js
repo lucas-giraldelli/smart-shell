@@ -133,7 +133,8 @@ export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube M
 
 // torrents (qBittorrent's Web UI API in the shell): one of most states
 const torrent = (name, size, progress, state, num_seeds, num_complete, daysAgo) =>
-  ({ hash: name, name, size, progress, state, num_seeds, num_complete, added_on: Math.floor(Date.now() / 1000) - daysAgo * 86400 });
+  ({ hash: name, name, size, progress, state, num_seeds, num_complete, added_on: Math.floor(Date.now() / 1000) - daysAgo * 86400,
+    seeding_time: progress === 1 ? Math.floor(daysAgo * 86400) : 0 });
 export const torrents = [
   torrent('ubuntu-26.04-desktop-amd64.iso', 6442450944, 0.62, 'downloading', 41, 1830, 0),
   torrent('Sintel.2010.1080p.WEB-DL', 1288490188, 0.18, 'stalledDL', 0, 3, 0.2),

@@ -202,13 +202,14 @@ Tile {
                 anchors.centerIn: parent
                 name: root.downloading ? "download" : "upload"
                 size: 16
-                color: torrentList.colorOf(root.torrentWorst)
+                color: Torrents.down.length ? Theme.crit : torrentList.colorOf(root.torrentWorst)
                 scale: torrentArea.containsMouse ? 1.2 : 1
                 Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
             }
             Tip {
                 target: torrentCell
                 text: I18n.t("torrents.tile", { n: Torrents.list.length })
+                    + (Torrents.down.length ? ` · ${I18n.t("torrents.down", { names: Torrents.down.join(", ") })}` : "")
                 shown: torrentArea.containsMouse && !torrentList.open
             }
             MouseArea {

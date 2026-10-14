@@ -78,7 +78,12 @@ Singleton {
         // `app` the app name, `icon` its icon, `focusTitle` a regex picking
         // which of the app windows a click brings forward, `style: "love"` the wine look, `timeout` in ms
         // (0 = until closed)
-        notifications: { rules: [] }
+        notifications: { rules: [] },
+        // the torrents widget: `seedDays` is the tracker's hit-and-run rule
+        // (a torrent seeding for less is shown owed, and stopping it asks
+        // twice); `services` are web UIs checked with the torrents, shown as
+        // dots in its popover ({ name, url })
+        torrents: { seedDays: 7, services: [] }
     })
 
     readonly property var data: {
@@ -96,6 +101,7 @@ Singleton {
     readonly property var commands: data.commands
     readonly property var petsConfig: data.pets
     readonly property var trayHidden: data.tray.hidden
+    readonly property var torrents: data.torrents
     readonly property var trayRedBadge: data.tray.redBadge ?? []
     readonly property var locale: data.locale
     readonly property string theme: data.theme ?? "glass"
