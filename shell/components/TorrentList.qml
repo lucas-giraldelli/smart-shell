@@ -42,7 +42,7 @@ Popover {
     readonly property int action: 54
     readonly property int minDays: Config.torrents?.seedDays ?? 7
 
-    bubbleWidth: 640
+    bubbleWidth: 700
     padding: 6
 
     component Cell: Label {
@@ -55,18 +55,57 @@ Popover {
     Column {
         width: parent.width
 
-        // the section title, both speeds, refresh
+        // the section title and the services (a green dot and a grey name
+        // each, red when it does not answer, a click opens it); both speeds,
+        // refresh
         Item {
             width: parent.width
             height: 32
-            Label {
+            Row {
                 x: 8
                 anchors.verticalCenter: parent.verticalCenter
-                text: I18n.t("torrents.title").toUpperCase()
-                size: 10.5
-                weight: Font.DemiBold
-                letterSpacing: 0.84
-                color: Theme.menuFaint
+                spacing: 12
+                Label {
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: I18n.t("torrents.title").toUpperCase()
+                    size: 10.5
+                    weight: Font.DemiBold
+                    letterSpacing: 0.84
+                    color: Theme.menuFaint
+                }
+                Repeater {
+                    model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }])
+                    delegate: Row {
+                        id: service
+                        required property var modelData
+                        spacing: 6
+                        height: 18
+                        Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: 6
+                            height: 6
+                            radius: 3
+                            color: service.modelData.up ? Theme.ok : Theme.crit
+                        }
+                        Label {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: service.modelData.name
+                            size: 11
+                            color: !service.modelData.up ? Theme.crit : serviceArea.containsMouse ? Theme.menuText : Theme.menuSub
+                            MouseArea {
+                                id: serviceArea
+                                anchors.fill: parent
+                                enabled: service.modelData.url !== ""
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    Qt.openUrlExternally(service.modelData.url);
+                                    Ui.closePopover();
+                                }
+                            }
+                        }
+                    }
+                }
             }
             Row {
                 anchors.right: parent.right
@@ -94,11 +133,9 @@ Popover {
             }
         }
 
-        // the tracker ratio (and its hit and runs, in red, when any), then
-        // the services: a green dot and a grey name each, red when it does
-        // not answer
+        // the tracker ratio, its buffer and its hit and runs (red, when any)
         Flow {
-            visible: Torrents.services.length > 0 || Torrents.tracker !== null
+            visible: Torrents.tracker !== null
             x: 8
             width: parent.width - 16
             spacing: 14
@@ -126,39 +163,6 @@ Popover {
                 text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
                 size: 11
                 color: Theme.crit
-            }
-            Repeater {
-                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }])
-                delegate: Row {
-                    id: service
-                    required property var modelData
-                    spacing: 6
-                    height: 18
-                    Rectangle {
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: 6
-                        height: 6
-                        radius: 3
-                        color: service.modelData.up ? Theme.ok : Theme.crit
-                    }
-                    Label {
-                        anchors.verticalCenter: parent.verticalCenter
-                        text: service.modelData.name
-                        size: 11
-                        color: !service.modelData.up ? Theme.crit : serviceArea.containsMouse ? Theme.menuText : Theme.menuSub
-                        MouseArea {
-                            id: serviceArea
-                            anchors.fill: parent
-                            enabled: service.modelData.url !== ""
-                            hoverEnabled: true
-                            cursorShape: Qt.PointingHandCursor
-                            onClicked: {
-                                Qt.openUrlExternally(service.modelData.url);
-                                Ui.closePopover();
-                            }
-                        }
-                    }
-                }
             }
         }
 
