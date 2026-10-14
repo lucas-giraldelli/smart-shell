@@ -38,11 +38,11 @@ Popover {
 
     // the columns after the name: size, progress, state, seeds; then the
     // remove / start buttons
-    readonly property var widths: [64, 40, 100, 44]
+    readonly property var widths: [56, 36, 92, 40]
     readonly property int action: 54
     readonly property int minDays: Config.torrents?.seedDays ?? 7
 
-    bubbleWidth: 700
+    bubbleWidth: 520
     padding: 6
 
     component Cell: Label {
@@ -56,15 +56,14 @@ Popover {
         width: parent.width
 
         // the section title and the services (a green dot and a grey name
-        // each, red when it does not answer, a click opens it); both speeds,
-        // refresh
+        // each, red when it does not answer, a click opens it); refresh
         Item {
             width: parent.width
             height: 32
             Row {
                 x: 8
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 12
+                spacing: 10
                 Label {
                     anchors.verticalCenter: parent.verticalCenter
                     text: I18n.t("torrents.title").toUpperCase()
@@ -78,7 +77,7 @@ Popover {
                     delegate: Row {
                         id: service
                         required property var modelData
-                        spacing: 6
+                        spacing: 5
                         height: 18
                         Rectangle {
                             anchors.verticalCenter: parent.verticalCenter
@@ -107,62 +106,69 @@ Popover {
                     }
                 }
             }
-            Row {
+            IconButton {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                spacing: 8
-                Label {
-                    anchors.verticalCenter: parent.verticalCenter
-                    size: 11
-                    tnum: true
-                    color: Theme.menuSub
-                    text: `↓ ${TorrentRules.speed(Torrents.dlspeed)}  ↑ ${TorrentRules.speed(Torrents.upspeed)}`
-                }
-                IconButton {
-                    icon: "refresh-cw"
-                    onClicked: Torrents.refresh()
-                    RotationAnimation on rotation {
-                        running: Torrents.loading
-                        from: 0
-                        to: 360
-                        duration: 800
-                        loops: Animation.Infinite
-                        onRunningChanged: if (!running) parent.rotation = 0
-                    }
+                implicitWidth: 26
+                implicitHeight: 26
+                flat: true
+                icon: "refresh-cw"
+                iconSize: 14
+                onClicked: Torrents.refresh()
+                RotationAnimation on rotation {
+                    running: Torrents.loading
+                    from: 0
+                    to: 360
+                    duration: 800
+                    loops: Animation.Infinite
+                    onRunningChanged: if (!running) parent.rotation = 0
                 }
             }
         }
 
-        // the tracker ratio, its buffer and its hit and runs (red, when any)
-        Flow {
-            visible: Torrents.tracker !== null
-            x: 8
-            width: parent.width - 16
-            spacing: 14
-            bottomPadding: 6
+        // the tracker ratio, its buffer and its hit and runs (red, when any);
+        // both speeds on the right
+        Item {
+            width: parent.width
+            height: 24
             Label {
-                visible: Torrents.tracker !== null
-                lineHeight: 18
-                text: Torrents.tracker ? `${Torrents.tracker.name} ${Torrents.tracker.ratio}` : ""
+                anchors.right: parent.right
+                anchors.rightMargin: 8
+                anchors.verticalCenter: parent.verticalCenter
                 size: 11
                 tnum: true
-                color: Torrents.tracker && TorrentRules.lowRatio(Torrents.tracker, Config.torrents?.minRatio ?? 0.4) ? Theme.crit : Theme.menuText
+                color: Theme.menuSub
+                text: `↓ ${TorrentRules.speed(Torrents.dlspeed)}  ↑ ${TorrentRules.speed(Torrents.upspeed)}`
             }
-            // what can still be downloaded before the minimum ratio
-            Label {
+            Row {
                 visible: Torrents.tracker !== null
-                lineHeight: 18
-                text: Torrents.tracker ? I18n.t("torrents.buffer", { size: Torrents.tracker.buffer }) : ""
-                size: 11
-                tnum: true
-                color: Torrents.tracker && TorrentRules.lowBuffer(Torrents.tracker) ? Theme.warn : Theme.menuSub
-            }
-            Label {
-                visible: (Torrents.tracker?.hit_and_runs ?? 0) > 0
-                lineHeight: 18
-                text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
-                size: 11
-                color: Theme.crit
+                x: 8
+                anchors.verticalCenter: parent.verticalCenter
+                spacing: 14
+                Label {
+                    visible: Torrents.tracker !== null
+                    lineHeight: 18
+                    text: Torrents.tracker ? `${Torrents.tracker.name} ${Torrents.tracker.ratio}` : ""
+                    size: 11
+                    tnum: true
+                    color: Torrents.tracker && TorrentRules.lowRatio(Torrents.tracker, Config.torrents?.minRatio ?? 0.4) ? Theme.crit : Theme.menuText
+                }
+                // what can still be downloaded before the minimum ratio
+                Label {
+                    visible: Torrents.tracker !== null
+                    lineHeight: 18
+                    text: Torrents.tracker ? I18n.t("torrents.buffer", { size: Torrents.tracker.buffer }) : ""
+                    size: 11
+                    tnum: true
+                    color: Torrents.tracker && TorrentRules.lowBuffer(Torrents.tracker) ? Theme.warn : Theme.menuSub
+                }
+                Label {
+                    visible: (Torrents.tracker?.hit_and_runs ?? 0) > 0
+                    lineHeight: 18
+                    text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
+                    size: 11
+                    color: Theme.crit
+                }
             }
         }
 

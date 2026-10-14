@@ -3,20 +3,19 @@
 .torrents:hover { transform: scale(1.2); }
 .torrents [data-icon] svg.i { width: 16px; height: 16px; display: block; color: var(--tr); }
 
-.torrents-menu { width: 700px; padding: 6px; }
+.torrents-menu { width: 520px; padding: 6px; }
 .tr-head { display: flex; align-items: center; gap: 8px; }
 .tr-head .sec { margin: 6px 4px 6px 8px; }
-.tr-head .meta { font-variant-numeric: tabular-nums; white-space: pre; }
 .tr-head .ib.spinning svg.i { animation: spin 0.8s linear infinite; }
 .tr-empty { padding: 10px 8px; }
 
 /* columns after the name: size, progress, state, seeds */
-.tr-cols, .row.tr { display: grid; grid-template-columns: 1fr 64px 40px 100px 44px 50px; gap: 8px; align-items: center; }
+.tr-cols, .row.tr { display: grid; grid-template-columns: 1fr 56px 36px 92px 40px 50px; gap: 8px; align-items: center; }
 .tr-cols { padding: 0 8px 0 34px; height: 22px; font-size: 10.5px; color: var(--menu-faint); }
 .tr-cols > :not(.grow), .row.tr > :not(.grow):not(.tr-ic) { text-align: right; }
 /* ten rows show, the rest scroll */
 .tr-list { max-height: calc(32px * 10); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--menu-strong) transparent; }
-.row.tr { grid-template-columns: 18px 1fr 64px 40px 100px 44px 50px; gap: 8px; height: 32px; padding: 0 8px; font-size: 11.5px; color: var(--menu-sub); font-variant-numeric: tabular-nums; cursor: pointer; }
+.row.tr { grid-template-columns: 18px 1fr 56px 36px 92px 40px 50px; gap: 8px; height: 32px; padding: 0 8px; font-size: 11.5px; color: var(--menu-sub); font-variant-numeric: tabular-nums; cursor: pointer; }
 .row.tr .tr-name { font-size: 12.5px; color: var(--menu-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tr-ic { display: inline-grid; }
 .tr-ic svg.i { width: 16px; height: 16px; }
@@ -30,13 +29,14 @@
 .row.tr:hover .tr-act, .tr-act.off { opacity: 1; }
 
 /* beside the title, the services: a green dot and grey name, red when down */
-.tr-services { flex: 1; display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 11px; color: var(--menu-sub); }
-/* under it, the tracker ratio, buffer and hit and runs */
+.tr-services { flex: 1; display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 11px; color: var(--menu-sub); }
+/* under it, the tracker ratio, buffer and hit and runs; both speeds on the right */
 .tr-account { display: flex; gap: 14px; padding: 0 8px 6px; font-size: 11px; color: var(--menu-sub); font-variant-numeric: tabular-nums; }
 .tr-ratio { color: var(--menu-text); }
 .tr-ratio.low, .tr-account .hnr { color: var(--crit); }
 .tr-buffer.low { color: var(--warn); }
-.tr-service { display: inline-flex; align-items: center; gap: 6px; }
+.tr-speed { margin-left: auto; white-space: pre; }
+.tr-service { display: inline-flex; align-items: center; gap: 5px; }
 .tr-service[data-service] { cursor: pointer; }
 .tr-service[data-service]:hover { color: var(--menu-text); }
 .tr-service i { width: 6px; height: 6px; border-radius: 99px; background: var(--ok); }

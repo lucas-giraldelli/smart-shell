@@ -81,11 +81,10 @@ class TorrentList extends Component {
         <span class="sec">${t('torrents.title')}</span>
         <span class="tr-services">${[...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].map(s =>
           `<span class="tr-service${s.up ? '' : ' down'}"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</span>
-        <span class="meta">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span>
-        <button class="ib${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
+        <button class="ib flat${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
       </div>
-      ${torrents.tracker ? `<div class="tr-account"><span class="tr-ratio${lowRatio(torrents.tracker, config.torrents.minRatio) ? ' low' : ''}">${torrents.tracker.name} ${torrents.tracker.ratio}</span><span class="tr-buffer${lowBuffer(torrents.tracker) ? ' low' : ''}">${t('torrents.buffer', { size: torrents.tracker.buffer })}</span>${
-        torrents.tracker.hit_and_runs > 0 ? `<span class="hnr">H&amp;R ${torrents.tracker.hit_and_runs}</span>` : ''}</div>` : ''}
+      <div class="tr-account">${torrents.tracker ? `<span class="tr-ratio${lowRatio(torrents.tracker, config.torrents.minRatio) ? ' low' : ''}">${torrents.tracker.name} ${torrents.tracker.ratio}</span><span class="tr-buffer${lowBuffer(torrents.tracker) ? ' low' : ''}">${t('torrents.buffer', { size: torrents.tracker.buffer })}</span>${
+        torrents.tracker.hit_and_runs > 0 ? `<span class="hnr">H&amp;R ${torrents.tracker.hit_and_runs}</span>` : ''}` : ''}<span class="tr-speed">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span></div>
       ${rows.length ? `
       <div class="tr-cols"><span class="grow">${t('torrents.name')}</span><span>${t('torrents.size')}</span><span>${t('torrents.progress')}</span><span>${t('torrents.status')}</span><span>${t('torrents.seeds')}</span><span></span></div>
       <div class="tr-list">${rows.map(tr => {

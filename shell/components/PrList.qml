@@ -68,7 +68,11 @@ Popover {
                     text: I18n.t("prs.updated", { time: Qt.formatTime(Prs.updatedAt, "HH:mm") })
                 }
                 IconButton {
+                    implicitWidth: 26
+                    implicitHeight: 26
+                    flat: true
                     icon: "refresh-cw"
+                    iconSize: 14
                     onClicked: Prs.refresh()
                     RotationAnimation on rotation {
                         running: Prs.loading

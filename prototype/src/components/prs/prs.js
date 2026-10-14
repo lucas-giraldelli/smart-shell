@@ -83,7 +83,7 @@ class PrList extends Component {
       <div class="prs-head">
         <span class="sec">${t('prs.title')}</span>
         <span class="meta">${updated}</span>
-        <button class="ib${prs.loading ? ' spinning' : ''}" data-refresh title="${t('prs.refresh')}">${icon('refresh-cw')}</button>
+        <button class="ib flat${prs.loading ? ' spinning' : ''}" data-refresh title="${t('prs.refresh')}">${icon('refresh-cw')}</button>
       </div>
       ${visible(prs).length ? byRepo(visible(prs)).map(g => {
         const status = worst(g.prs);
