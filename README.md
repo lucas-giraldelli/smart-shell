@@ -268,7 +268,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   row's end (on hover) takes it out of qBittorrent, keeping its files - asking
   twice while owed. A stopped one also gets the play, which brings it back. `torrents.services` (`[{ "name", "url" }]`) are web UIs
   checked with each read - any HTTP answer counts - plus the VPN (qBittorrent
-  connected) show above the list, a grey dot each; one that is down turns
+  connected) show above the list, a green dot each; one that is down turns
   red, and so does the tray icon, whose hover names it. Only what needs a
   look has a colour.
   With `~/.config/smart-shell/tracker.json` (`chmod 600`;

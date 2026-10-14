@@ -7,7 +7,7 @@ import "../lib/torrents.mjs" as TorrentRules
 
 // The torrents popover (prototype: components/torrents): the tracker ratio
 // (red under config torrents.minRatio) and buffer (yellow under 40 GiB),
-// the services in config torrents.services and the VPN (grey, red when down,
+// the services in config torrents.services and the VPN (a green dot, red when down,
 // a click opens one),
 // then one row per torrent, worst state first - its state icon, title
 // ("Coraline (2009)", "Loki · S02", the release name on hover), size,
@@ -95,7 +95,8 @@ Popover {
         }
 
         // the tracker ratio (and its hit and runs, in red, when any), then
-        // the services: a grey dot and name each, red when it does not answer
+        // the services: a green dot and a grey name each, red when it does
+        // not answer
         Flow {
             visible: Torrents.services.length > 0 || Torrents.tracker !== null
             x: 8
@@ -138,7 +139,7 @@ Popover {
                         width: 6
                         height: 6
                         radius: 3
-                        color: service.modelData.up ? Theme.menuFaint : Theme.crit
+                        color: service.modelData.up ? Theme.ok : Theme.crit
                     }
                     Label {
                         anchors.verticalCenter: parent.verticalCenter

@@ -29,7 +29,7 @@
 .tr-act svg.i { width: 13px; height: 13px; }
 .row.tr:hover .tr-act, .tr-act.off { opacity: 1; }
 
-/* the tracker ratio, then the services: a grey dot and name, red when down */
+/* the tracker ratio, then the services: a green dot and grey name, red when down */
 .tr-services { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 8px 6px; font-size: 11px; color: var(--menu-sub); }
 .tr-ratio { color: var(--menu-text); font-variant-numeric: tabular-nums; }
 .tr-ratio.low { color: var(--crit); }
@@ -39,6 +39,6 @@
 .tr-service { display: inline-flex; align-items: center; gap: 6px; }
 .tr-service[data-service] { cursor: pointer; }
 .tr-service[data-service]:hover { color: var(--menu-text); }
-.tr-service i { width: 6px; height: 6px; border-radius: 99px; background: var(--menu-faint); }
+.tr-service i { width: 6px; height: 6px; border-radius: 99px; background: var(--ok); }
 .tr-service.down { color: var(--crit); }
 .tr-service.down i { background: var(--crit); }
