@@ -66,7 +66,7 @@ export const config = {
     seedDays: 7,
     services: [
       { name: 'Jellyfin', url: 'http://localhost:8096' },
-      { name: 'Seerr', url: 'http://localhost:5055' },
+      { name: 'Jellyseerr', url: 'http://localhost:5055' },
       { name: 'Sonarr', url: 'http://localhost:8989' },
       { name: 'Radarr', url: 'http://localhost:7878' },
       { name: 'Prowlarr', url: 'http://localhost:9696' },
