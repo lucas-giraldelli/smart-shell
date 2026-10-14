@@ -7,6 +7,7 @@ import './app-row/app-row.js';
 import './music/music.js';
 import './weather/weather.js';
 import './prs/prs.js';
+import './torrents/torrents.js';
 import './notifications/notifications.js';
 import './bluetooth/bluetooth.js';
 import './quick/quick.js';

@@ -10,7 +10,7 @@ export const config = {
   dock: [
     { id: 'workspaces', widgets: ['workspaces', 'capslock'] },
     { id: 'apps', widgets: ['apps'] },
-    { id: 'status', tiles: true, widgets: ['music', 'tray', 'prs', 'bluetooth', 'quick', 'weather', 'clock'] },
+    { id: 'status', tiles: true, widgets: ['music', 'tray', 'prs', 'torrents', 'bluetooth', 'quick', 'weather', 'clock'] },
   ],
 
   // items in the quick tile; each one also gets a tab in the control center

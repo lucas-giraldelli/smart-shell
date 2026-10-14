@@ -4,6 +4,7 @@ import Quickshell.Services.SystemTray
 import ".."
 import "../services"
 import "../lib/prs.mjs" as PrRules
+import "../lib/torrents.mjs" as TorrentRules
 
 // System tray (prototype: components/tray): StatusNotifierItem icons in a
 // two-column grid inside a tile. Click focuses the app window when it has one
@@ -32,7 +33,12 @@ Tile {
     readonly property var shownPrs: Prs.list.filter(p => !Ui.prsHidden.includes(p.repo))
     readonly property int prCount: shownPrs.filter(p => !p.merged).length
     readonly property string prWorst: PrRules.worst(shownPrs) ?? ""
-    readonly property int cells: items.length + (withPrs ? 1 : 0)
+    // and so do the torrents (the `torrents` widget): the download icon while
+    // any downloads, else the upload one, in the worst state colour
+    readonly property bool withTorrents: Torrents.loaded && Config.dock.some(g => g.widgets.includes("torrents")) && !Ui.hidden.includes("torrents")
+    readonly property string torrentWorst: TorrentRules.worst(Torrents.list) ?? ""
+    readonly property bool downloading: Torrents.list.some(t => ["downloading", "stalled", "queued", "checking"].includes(TorrentRules.statusOf(t)) && t.progress < 1)
+    readonly property int cells: items.length + (withPrs ? 1 : 0) + (withTorrents ? 1 : 0)
     // 16px icons 6px apart, with 6px of room above and below: as many rows as the dock
     // height fits (two at 52px, one at 42px), the rest goes into columns -
     // at least two, so a second item does not widen the tile
@@ -49,7 +55,7 @@ Tile {
     readonly property bool shown: cells > 0
     // the columns keep their 16px even when the last one is empty
     implicitWidth: 16 * Math.max(2, columns) + gap * (Math.max(2, columns) - 1) + 9 * 2 + 2
-    open: menu.open || prList.open
+    open: menu.open || prList.open || torrentList.open
 
     // a lone item sits in the middle of the tile
     Grid {
@@ -185,6 +191,36 @@ Tile {
                 onClicked: prList.open ? Ui.closePopover() : Ui.openPopover("prs")
             }
         }
+
+        Item {
+            id: torrentCell
+            visible: root.withTorrents
+            width: 16
+            height: root.rowHeight
+
+            Icon {
+                anchors.centerIn: parent
+                name: root.downloading ? "download" : "upload"
+                size: 16
+                color: torrentList.colorOf(root.torrentWorst)
+                scale: torrentArea.containsMouse ? 1.2 : 1
+                Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.Bezier; easing.bezierCurve: Theme.ease } }
+            }
+            Tip {
+                target: torrentCell
+                text: I18n.t("torrents.tile", { n: Torrents.list.length })
+                shown: torrentArea.containsMouse && !torrentList.open
+            }
+            MouseArea {
+                id: torrentArea
+                anchors.centerIn: parent
+                width: 16
+                height: 16
+                hoverEnabled: true
+                cursorShape: Qt.PointingHandCursor
+                onClicked: torrentList.open ? Ui.closePopover() : Ui.openPopover("torrents")
+            }
+        }
     }
 
     // opened from outside (IPC): show the first item that has a menu
@@ -198,6 +234,11 @@ Tile {
 
     PrList {
         id: prList
+        owner: root
+    }
+
+    TorrentList {
+        id: torrentList
         owner: root
     }
 

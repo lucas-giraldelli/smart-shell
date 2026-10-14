@@ -131,6 +131,19 @@ export const weather = {
 
 export const media = { title: 'Midnight City', artist: 'M83', source: 'YouTube Music', url: 'https://music.youtube.com/watch?v=dX3k_QDnzHE' };
 
+// torrents (qBittorrent's Web UI API in the shell): one of most states
+const torrent = (name, size, progress, state, num_seeds, num_complete, daysAgo) =>
+  ({ hash: name, name, size, progress, state, num_seeds, num_complete, added_on: Math.floor(Date.now() / 1000) - daysAgo * 86400 });
+export const torrents = [
+  torrent('ubuntu-26.04-desktop-amd64.iso', 6442450944, 0.62, 'downloading', 41, 1830, 0),
+  torrent('Sintel.2010.1080p.WEB-DL', 1288490188, 0.18, 'stalledDL', 0, 3, 0.2),
+  torrent('debian-13.1.0-amd64-DVD-1.iso', 4080218931, 0, 'queuedDL', 0, 512, 0.1),
+  torrent('Big.Buck.Bunny.2008.2160p.WEB-DL', 2254857830, 1, 'uploading', 2, 96, 3),
+  torrent('Tears.of.Steel.2012.1080p.WEB-DL', 3006477107, 1, 'stalledUP', 0, 41, 9),
+  torrent('Elephants.Dream.2006.1080p.WEB-DL', 912680550, 1, 'stalledUP', 0, 12, 14),
+  torrent('archlinux-2026.10.01-x86_64.iso', 1395864371, 0.44, 'stoppedDL', 0, 1204, 1),
+];
+
 // pull requests (gh api graphql in the shell): one of each state
 const pr = (repo, number, title, created, checks, mergeState, review, merged = false) =>
   ({ repo, number, title, url: `https://github.com/${repo}/pull/${number}`, created, checks, mergeState, review, merged });

@@ -56,6 +56,7 @@ export const store = createStore({
   weather: { ...snap.weather, source: 'snapshot', updatedAt: null },
   // the user's open PRs (gh); `merged` ones linger until the next look
   // `hidden`: repos the user hid (saved); `showHidden`: the popover lists them too
+  torrents: { list: snap.torrents, dlspeed: 3145728, upspeed: 524288, loading: false },
   prs: { list: snap.prs, updatedAt: null, loading: false, hidden: loadPref('prsHidden', []), showHidden: false },
   events: { list: [], calendars: {}, skipped: [], generatedAt: null },
   notifications: { list: [] },   // popups on screen, oldest first

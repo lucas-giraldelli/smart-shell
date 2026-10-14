@@ -17,8 +17,9 @@ REPO="$(cd "$(dirname "$(readlink -f "$0")")/.." && pwd)"
 SHELL_DIR="$REPO/shell"
 HYPR_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.conf"
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/config.json"
+QBIT="${XDG_CONFIG_HOME:-$HOME/.config}/smart-shell/qbittorrent.json"
 
-WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs music recording)
+WIDGETS=(brightness nightlight docker bluetooth events system pets vpn prs torrents music recording)
 
 # packages per widget; core is always installed
 declare -A PKGS=(
@@ -32,6 +33,7 @@ declare -A PKGS=(
   [pets]="cava"
   [vpn]="openvpn3"
   [prs]="github-cli"
+  [torrents]=""
   [music]="nodejs"
   [recording]="gpu-screen-recorder"
 )
@@ -72,6 +74,9 @@ setup_widget() {
       ;;
     prs)
       gh auth status >/dev/null 2>&1 || gh auth login
+      ;;
+    torrents)
+      [ -r "$QBIT" ] || note "write the qBittorrent Web UI login to $QBIT (chmod 600): {\"url\": \"http://localhost:8080\", \"username\": \"...\", \"password\": \"...\"}"
       ;;
     music)
       note "YouTube Music's like: start the app with --remote-debugging-port=9223"
@@ -165,6 +170,11 @@ cmd_doctor() {
   bold "prs"
   check_pkgs "${PKGS[prs]}"
   if gh auth status >/dev/null 2>&1; then ok "gh logged in"; else miss "gh not logged in (gh auth login)"; fi
+
+  bold "torrents"
+  if [ ! -r "$QBIT" ]; then miss "no login file ($QBIT)"
+  elif curl -s -m 5 -o /dev/null "$(jq -r .url "$QBIT")/api/v2/app/version"; then ok "qBittorrent Web UI answers at $(jq -r .url "$QBIT")"
+  else miss "qBittorrent Web UI not answering at $(jq -r .url "$QBIT")"; fi
 
   bold "music"
   check_pkgs "${PKGS[music]}"

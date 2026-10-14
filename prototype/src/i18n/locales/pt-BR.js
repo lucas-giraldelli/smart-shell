@@ -6,7 +6,7 @@ export default {
   },
 
   widgets: {
-    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Música', weather: 'Clima', prs: 'PRs',
+    workspaces: 'Workspaces', capslock: 'Caps Lock', apps: 'Apps', music: 'Música', weather: 'Clima', prs: 'PRs', torrents: 'Torrents',
     bluetooth: 'Bluetooth', quick: 'Controles rápidos', tray: 'Tray', clock: 'Relógio',
   },
 
@@ -74,6 +74,12 @@ export default {
   },
 
   notifications: { close: 'Fechar' },
+  torrents: {
+    title: 'Torrents', tile: '{n} torrents', refresh: 'Atualizar', none: 'Nenhum torrent',
+    name: 'Nome', size: 'Tamanho', progress: '%', status: 'Status', seeds: 'Seeds',
+    tip: '{seeds} seeds conectados de {swarm}',
+    states: { error: 'Erro', stalled: 'Parado', downloading: 'Baixando', checking: 'Verificando', queued: 'Na fila', paused: 'Pausado', seeding: 'Semeando' },
+  },
   prs: {
     title: 'Pull requests', tile: '{n} PRs', refresh: 'Atualizar', none: 'Nenhum PR aberto',
     hide: 'Ocultar', dismiss: 'Dispensar', copy: 'Copiar link', unhide: 'Mostrar',

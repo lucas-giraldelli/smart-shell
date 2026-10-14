@@ -115,7 +115,7 @@ included:
 ln -s ~/projects/smart-shell/bin/smart-shell ~/.local/bin/   # once
 smart-shell install full          # core + every widget
 smart-shell install pets prs      # just some widgets: brightness nightlight docker
-                                  #   bluetooth events system pets vpn prs music recording
+                                  #   bluetooth events system pets vpn prs torrents music recording
 smart-shell hyprland              # add the exec-once and blur lines (asks first)
 smart-shell doctor                # what each widget is still missing
 smart-shell restart               # also: start, stop, log
@@ -251,6 +251,19 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   approved (two ticks), merged
   (a notification, then listed until dismissed with its ×). The eye on a repo hides
   it from the list and the count (saved); "Show hidden" lists them again.
+- **Torrents** - a qBittorrent Web UI (`torrents` in a dock group, next to
+  `prs`), read from its API every 60 s, every 5 s while the list is open.
+  The login lives in `~/.config/smart-shell/qbittorrent.json`, out of
+  `config.json` (`chmod 600`):
+  `{ "url": "http://localhost:8081", "username": "admin", "password": "..." }`;
+  the password goes to `curl` on stdin, never on a command line. It rides in
+  the tray as one more item: the download icon while anything downloads, else
+  the upload one, in the worst state's colour (error red, stalled yellow,
+  downloading blue, seeding green), the count on hover. The popover lists
+  them worst first: title (the release name cut to "Coraline (2009)" or
+  "Loki · S02"), size, progress, state and the seeds in its swarm (the hover
+  shows the full name and how many seeds are connected); a row opens the Web
+  UI.
 - **Notifications** - the shell is the notification server (replaces mako;
   drop its `exec-once`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,
