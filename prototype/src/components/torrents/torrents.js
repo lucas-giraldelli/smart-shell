@@ -10,12 +10,14 @@ import { config } from '../../data/config.js';
 // The torrents of a qBittorrent Web UI (the shell reads its API every 60 s,
 // every 5 s while the list is open), as an item of the tray: the download
 // icon while anything downloads, else the upload one, in the worst state's
-// colour (red while a service is down). Click lists a dot per service in
-// config.torrents.services and the VPN (red when down, a click opens it), then
+// colour (red while a service is down). Click lists the services in
+// config.torrents.services and the VPN that are down (red, a click opens one), then
 // the torrents: title ("Coraline (2009)", "Loki · S02", the release name on
 // hover), size, progress, state (seeding: its days, yellow while still owed
-// to the tracker, config.torrents.seedDays) and the seeds in its swarm. The
-// square at a row's end stops seeding it (asking twice while owed), the play
+// to the tracker, config.torrents.seedDays) and the seeds in its swarm. Only
+// what needs a look has a colour: red an error or a service down, yellow
+// stalled or owed, blue downloading. The x at a row's end stops seeding it
+// (asking twice while owed; qBittorrent's stop, the old pause), the play
 // brings it back; the rest of the row opens the Web UI.
 export const LOOK = {
   error: { icon: 'circle-alert', color: 'var(--crit)' },
@@ -24,7 +26,7 @@ export const LOOK = {
   checking: { icon: 'refresh-cw', color: 'var(--menu-sub)' },
   queued: { icon: 'clock', color: 'var(--menu-sub)' },
   paused: { icon: 'circle-pause', color: 'var(--menu-sub)' },
-  seeding: { icon: 'upload', color: 'var(--ok)' },
+  seeding: { icon: 'upload', color: 'var(--menu-sub)' },
 };
 const ACTIVE = ['downloading', 'stalled', 'queued', 'checking'];
 
@@ -71,8 +73,11 @@ class TorrentList extends Component {
         <span class="meta">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span>
         <button class="ib${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
       </div>
-      ${torrents.services.length ? `<div class="tr-services">${[...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].map(s =>
-        `<span class="tr-service${s.up ? '' : ' down'}"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</div>` : ''}
+      ${(() => {
+        const down = [...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].filter(s => !s.up);
+        return down.length ? `<div class="tr-services">${down.map(s =>
+          `<span class="tr-service"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</div>` : '';
+      })()}
       ${rows.length ? `
       <div class="tr-cols"><span class="grow">${t('torrents.name')}</span><span>${t('torrents.size')}</span><span>${t('torrents.progress')}</span><span>${t('torrents.status')}</span><span>${t('torrents.seeds')}</span><span></span></div>
       <div class="tr-list">${rows.map(tr => {
@@ -86,7 +91,7 @@ class TorrentList extends Component {
           <span>${percent(tr.progress)}</span>
           <span class="tr-state" data-state="${state}">${t(`torrents.states.${s}`)}${s === 'seeding' ? ` · ${seedDays(tr)}d` : ''}</span>
           <span>${tr.num_complete}</span>
-          ${action ? `<button class="ib flat tr-act" data-act="${action}">${icon(action === 'stop' ? 'square' : 'play')}</button>` : '<span></span>'}
+          ${action ? `<button class="ib flat tr-act" data-act="${action}">${icon(action === 'stop' ? 'x' : 'play')}</button>` : '<span></span>'}
         </div>`;
       }).join('')}</div>` : `<div class="meta tr-empty">${t('torrents.none')}</div>`}`);
   }

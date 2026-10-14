@@ -22,18 +22,14 @@
 .tr-ic svg.i { width: 16px; height: 16px; }
 .tr-state[data-state="error"] { color: var(--crit); }
 .tr-state[data-state="stalled"], .tr-state[data-state="owed"] { color: var(--warn); }
-.tr-state[data-state="paid"] { color: var(--ok); }
 
 /* stop / start at the row's end, on hover (an armed stop stays, red) */
 .tr-act { width: 24px; height: 24px; border-radius: 6px; opacity: 0; }
 .tr-act svg.i { width: 13px; height: 13px; }
 .row.tr:hover .tr-act, .tr-act.off { opacity: 1; }
 
-/* the services: a dot and a name each, red when down */
-.tr-services { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 8px 6px; font-size: 11px; color: var(--menu-sub); }
+/* the services that are down: a red dot and a name each */
+.tr-services { display: flex; flex-wrap: wrap; gap: 4px 14px; padding: 0 8px 6px; font-size: 11px; color: var(--crit); }
 .tr-service { display: inline-flex; align-items: center; gap: 6px; }
 .tr-service[data-service] { cursor: pointer; }
-.tr-service[data-service]:hover { color: var(--menu-text); }
-.tr-service i { width: 6px; height: 6px; border-radius: 99px; background: var(--ok); }
-.tr-service.down { color: var(--crit); }
-.tr-service.down i { background: var(--crit); }
+.tr-service i { width: 6px; height: 6px; border-radius: 99px; background: var(--crit); }

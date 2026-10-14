@@ -5,14 +5,15 @@ import ".."
 import "ui"
 import "../lib/torrents.mjs" as TorrentRules
 
-// The torrents popover (prototype: components/torrents): a dot per service in
-// config torrents.services and the VPN (red when down, a click opens it),
+// The torrents popover (prototype: components/torrents): the services in
+// config torrents.services and the VPN that are down (red, a click opens one),
 // then one row per torrent, worst state first - its state icon, title
 // ("Coraline (2009)", "Loki · S02", the release name on hover), size,
 // progress, state (seeding: its days, yellow while still owed to the tracker,
-// config torrents.seedDays) and the seeds in its swarm. The square at the end
-// stops seeding it (asking twice while owed), the play brings it back; a
-// click on the row opens the qBittorrent Web UI.
+// config torrents.seedDays) and the seeds in its swarm. Only what needs a look
+// has a colour: red an error or a service down, yellow stalled or owed, blue
+// downloading. The x at the end stops seeding it (asking twice while owed),
+// the play brings it back; a click on the row opens the qBittorrent Web UI.
 Popover {
     id: root
     name: "torrents"
@@ -25,7 +26,7 @@ Popover {
         checking: { icon: "refresh-cw", color: Theme.menuSub },
         queued: { icon: "clock", color: Theme.menuSub },
         paused: { icon: "circle-pause", color: Theme.menuSub },
-        seeding: { icon: "upload", color: Theme.ok }
+        seeding: { icon: "upload", color: Theme.menuSub }
     })
     function colorOf(status) {
         return looks[status]?.color ?? Theme.menuSub;
@@ -90,15 +91,15 @@ Popover {
             }
         }
 
-        // the services: a dot and a name each, red when it does not answer
+        // the services that do not answer: a red dot and a name each
         Flow {
-            visible: Torrents.services.length > 0
+            visible: Torrents.down.length > 0
             x: 8
             width: parent.width - 16
             spacing: 14
             bottomPadding: 6
             Repeater {
-                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }])
+                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }]).filter(s => !s.up)
                 delegate: Row {
                     id: service
                     required property var modelData
@@ -109,13 +110,13 @@ Popover {
                         width: 6
                         height: 6
                         radius: 3
-                        color: service.modelData.up ? Theme.ok : Theme.crit
+                        color: Theme.crit
                     }
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
                         text: service.modelData.name
                         size: 11
-                        color: service.modelData.up ? (serviceArea.containsMouse ? Theme.menuText : Theme.menuSub) : Theme.crit
+                        color: Theme.crit
                         MouseArea {
                             id: serviceArea
                             anchors.fill: parent
@@ -224,7 +225,7 @@ Popover {
                         width: root.widths[2]
                         anchors.verticalCenter: parent.verticalCenter
                         tnum: false
-                        color: row.status === "seeding" ? (row.owed ? Theme.warn : Theme.ok)
+                        color: row.status === "seeding" ? (row.owed ? Theme.warn : Theme.menuSub)
                             : row.status === "downloading" ? Theme.menuSub : root.colorOf(row.status)
                         text: I18n.t(`torrents.states.${row.status}`)
                             + (row.status === "seeding" ? ` · ${TorrentRules.seedDays(row.modelData)}d` : "")
@@ -244,7 +245,8 @@ Popover {
                         Ui.closePopover();
                     }
                 }
-                // stop seeding (twice while owed) / start again; on hover
+                // stop seeding (twice while owed; qBittorrent's stop, the old
+                // pause: the torrent and its files stay) / start again; on hover
                 IconButton {
                     anchors.right: parent.right
                     anchors.rightMargin: 4
@@ -256,7 +258,7 @@ Popover {
                     radius: 6
                     flat: true
                     off: row.armed
-                    icon: TorrentRules.stopped(row.modelData) ? "play" : "square"
+                    icon: TorrentRules.stopped(row.modelData) ? "play" : "x"
                     iconSize: 13
                     onClicked: {
                         if (TorrentRules.stopped(row.modelData))

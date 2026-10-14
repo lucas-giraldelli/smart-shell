@@ -259,17 +259,18 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   the password goes to `curl` on stdin, never on a command line. It rides in
   the tray as one more item: the download icon while anything downloads, else
   the upload one, in the worst state's colour (error red, stalled yellow,
-  downloading blue, seeding green), the count on hover. The popover lists
+  downloading blue, otherwise grey), the count on hover. The popover lists
   them worst first: title (the release name cut to "Coraline (2009)" or
   "Loki · S02"), size, progress, state and the seeds in its swarm (the hover
   shows the full name and how many seeds are connected); a row opens the Web
   UI. Seeding shows its days, yellow while still owed to the tracker
-  (`torrents.seedDays`, its hit-and-run rule, 7 by default) and green after;
-  the square at the row's end (on hover) stops seeding it - twice while owed -
-  and the play brings it back. Above the list, `torrents.services`
-  (`[{ "name", "url" }]`) are web UIs checked with each read - any HTTP answer
-  counts - plus the VPN (qBittorrent connected): a green dot each, red when
-  down, and then the tray icon turns red and its hover names them.
+  (`torrents.seedDays`, its hit-and-run rule, 7 by default); the x at the
+  row's end (on hover) stops seeding it - qBittorrent's stop, the old pause:
+  the torrent and its files stay - asking twice while owed, and the play
+  brings it back. `torrents.services` (`[{ "name", "url" }]`) are web UIs
+  checked with each read - any HTTP answer counts - plus the VPN (qBittorrent
+  connected): one that is down shows above the list in red, the tray icon
+  turns red and its hover names it. Only what needs a look has a colour.
 - **Notifications** - the shell is the notification server (replaces mako;
   drop its `exec-once`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,
