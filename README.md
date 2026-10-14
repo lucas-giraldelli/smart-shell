@@ -263,7 +263,9 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   downloading blue, otherwise green: all is well), the count on hover. The popover lists
   them worst first: title (the release name cut to "Coraline (2009)" or
   "Loki · S02"), size, progress, state and the seeds in its swarm (the hover
-  shows the full name and how many seeds are connected); a row opens the Web
+  adds the quality the release name gives - "1080p · DSNP WEB-DL · DD+ 5.1
+  Atmos · H.264 · DUAL" -, how many seeds are connected and the days left on
+  hit and run); a row opens the Web
   UI. Seeding shows its days, yellow while still owed to the tracker
   (`torrents.seedDays`, its hit-and-run rule, 7 by default); the x at the
   row's end (on hover) takes it out of qBittorrent, keeping its files - asking

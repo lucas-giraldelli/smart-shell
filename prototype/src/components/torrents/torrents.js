@@ -4,7 +4,7 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { setHTML } from '../ui/ui.js';
 import { t } from '../../i18n/index.js';
 import { store, update as updateStore } from '../../state.js';
-import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, lowRatio, lowBuffer } from '../../data/torrents.js';
+import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, lowRatio, lowBuffer, hover } from '../../data/torrents.js';
 import { config } from '../../data/config.js';
 
 // The torrents of a qBittorrent Web UI (the shell reads its API every hour,
@@ -14,8 +14,8 @@ import { config } from '../../data/config.js';
 // under config.torrents.minRatio) and buffer (yellow under 40 GiB), the
 // services in config.torrents.services and the VPN (grey, red when down, a
 // click opens one), then
-// the torrents: title ("Coraline (2009)", "Loki · S02", the release name on
-// hover), size, progress, state (seeding: its days, yellow while still owed
+// the torrents: title ("Coraline (2009)", "Loki · S02"; the hover adds its
+// quality, seeds and the days left on hit and run), size, progress, state (seeding: its days, yellow while still owed
 // to the tracker, config.torrents.seedDays) and the seeds in its swarm. Only
 // what needs a look has a colour: red an error or a service down, yellow
 // stalled or owed, blue downloading; the tray icon is green when all is well.
@@ -91,7 +91,7 @@ class TorrentList extends Component {
         const s = statusOf(tr), l = LOOK[s];
         const state = s === 'seeding' ? (owed(tr, config.torrents.seedDays) ? 'owed' : 'paid') : s;
         const actions = stopped(tr) ? ['start', 'remove'] : s === 'seeding' ? ['remove'] : [];
-        return `<div class="row tr" data-row="${tr.hash}" title=""${tr.name} · ${t('torrents.tip', { seeds: tr.num_seeds, swarm: tr.num_complete })}">
+        return `<div class="row tr" data-row="${tr.hash}" title="${hover(tr, config.torrents.seedDays, t)}">
           <span class="tr-ic" style="color:${l.color}">${icon(l.icon)}</span>
           <span class="grow tr-name">${title(tr.name)}</span>
           <span>${size(tr.size)}</span>

@@ -10,7 +10,8 @@ import "../lib/torrents.mjs" as TorrentRules
 // the services in config torrents.services and the VPN (a green dot, red when down,
 // a click opens one),
 // then one row per torrent, worst state first - its state icon, title
-// ("Coraline (2009)", "Loki · S02", the release name on hover), size,
+// ("Coraline (2009)", "Loki · S02"; the hover adds its quality, seeds and
+// the days left on hit and run), size,
 // progress, state (seeding: its days, yellow while still owed to the tracker,
 // config torrents.seedDays) and the seeds in its swarm. Only what needs a look
 // has a colour: red an error or a service down, yellow stalled or owed, blue
@@ -283,7 +284,7 @@ Popover {
                 }
                 Tip {
                     target: row
-                    text: `${row.modelData.name} · ${I18n.t("torrents.tip", { seeds: row.modelData.num_seeds, swarm: row.modelData.num_complete })}`
+                    text: TorrentRules.hover(row.modelData, root.minDays, (key, vars) => I18n.t(key, vars))
                     shown: rowHover.hovered
                 }
                 MouseArea {

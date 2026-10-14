@@ -73,3 +73,26 @@ export function title(name) {
   if (movie) return `${words(movie[1])} (${movie[2]})`;
   return name;
 }
+
+// What a release name says about the quality, for the hover:
+// "Toy.Story.5.2026.1080p.DSNP.WEB-DL.DDP5.1.Atmos.H.264.DUAL-BiOMA" ->
+// "1080p · DSNP WEB-DL · DD+ 5.1 Atmos · H.264 · DUAL" (whatever it names)
+export function quality(name) {
+  const find = re => (name.match(re) || [])[1] || '';
+  const res = find(/[. _-](2160p|1080p|720p|576p|540p|480p)(?=[. _-]|$)/i);
+  const service = find(/[. _-](AMZN|DSNP|NF|HMAX|MAX|iT|ATVP|PMTP|PCOK|HULU|CR|GLBP)(?=[. _-])/);
+  const source = find(/[. _-](WEB-DL|WEBRip|BluRay|BDRip|REMUX|HDTV|DVDRip)(?=[. _-]|$)/i);
+  const audio = name.match(/[. _-](DDP|DD\+|E-?AC-?3|DD|AC3|AAC|TrueHD|DTS-HD[. ]MA|DTS|FLAC|OPUS|MP3)[. ]?(\d\.\d)?(?=[. _-]|$)/i);
+  const codec = find(/[. _-](H\.?26[45]|x26[45]|HEVC|AVC|AV1)(?=[. _-]|$)/i).replace(/^H\.?26/i, 'H.26');
+  const sound = audio ? [/^(DDP|DD\+|E-?AC-?3)$/i.test(audio[1]) ? 'DD+' : audio[1].toUpperCase(), audio[2] || '',
+    /[. _-]Atmos(?=[. _-]|$)/i.test(name) ? 'Atmos' : ''].filter(Boolean).join(' ') : '';
+  const dual = /[. _-]DUAL(?=[. _-]|$)/i.test(name) ? 'DUAL' : '';
+  return [res, `${service} ${source}`.trim(), sound, codec, dual].filter(Boolean).join(' · ');
+}
+// days left before it is clear of the hit-and-run rule (0 = clear)
+export const owedDays = (t, minDays) => Math.max(0, Math.ceil(minDays - (t.seeding_time ?? 0) / 86400));
+// the hover of a row: title, quality, seeds and the days left on hit and run
+//   t: the i18n function (torrents.tip, torrents.owedDays)
+export const hover = (tr, minDays, t) => [title(tr.name), quality(tr.name),
+  t('torrents.tip', { seeds: tr.num_seeds, swarm: tr.num_complete }),
+  owed(tr, minDays) ? t('torrents.owedDays', { n: owedDays(tr, minDays) }) : ''].filter(Boolean).join(' · ');
