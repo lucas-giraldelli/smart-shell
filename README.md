@@ -252,7 +252,8 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   (a notification, then listed until dismissed with its ×). The eye on a repo hides
   it from the list and the count (saved); "Show hidden" lists them again.
 - **Torrents** - a qBittorrent Web UI (`torrents` in a dock group, next to
-  `prs`), read from its API every 60 s, every 5 s while the list is open.
+  `prs`), read from its API every hour, as the list opens and from its
+  refresh button.
   The login lives in `~/.config/smart-shell/qbittorrent.json`, out of
   `config.json` (`chmod 600`):
   `{ "url": "http://localhost:8081", "username": "admin", "password": "..." }`;

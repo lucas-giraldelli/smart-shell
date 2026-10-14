@@ -8,8 +8,8 @@ import ".."
 // with the login in ~/.config/smart-shell/qbittorrent.json
 // ({ "url", "username", "password" }, kept out of config.json and of any
 // repo), and whether the web UIs in config torrents.services answer (any
-// HTTP answer below 500 counts). Read every 5 s while the list is open, every
-// 60 s otherwise. The session cookie lives in $XDG_RUNTIME_DIR; a 403 logs in
+// HTTP answer below 500 counts). Read every hour, as the list opens and from
+// its refresh button. The session cookie lives in $XDG_RUNTIME_DIR; a 403 logs in
 // again (the password goes to curl on stdin, never on its command line).
 // remove() takes a torrent out of qBittorrent, keeping its files; start()
 // brings a stopped one back. With ~/.config/smart-shell/tracker.json
@@ -75,8 +75,16 @@ Singleton {
         running: true
         repeat: true
         triggeredOnStart: true
-        interval: Ui.popover === "torrents" ? 5000 : 60000
+        interval: 60 * 60000
         onTriggered: root.refresh()
+    }
+    // and once more as the list opens
+    Connections {
+        target: Ui
+        function onPopoverChanged() {
+            if (Ui.popover === "torrents")
+                root.refresh();
+        }
     }
 
     Timer {

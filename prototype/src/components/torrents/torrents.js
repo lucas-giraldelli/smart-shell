@@ -7,8 +7,8 @@ import { store, update as updateStore } from '../../state.js';
 import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, lowRatio, lowBuffer } from '../../data/torrents.js';
 import { config } from '../../data/config.js';
 
-// The torrents of a qBittorrent Web UI (the shell reads its API every 60 s,
-// every 5 s while the list is open), as an item of the tray: the download
+// The torrents of a qBittorrent Web UI (the shell reads its API every hour,
+// as the list opens and from its refresh button), as an item of the tray: the download
 // icon while anything downloads, else the upload one, in the worst state's
 // colour (red while a service is down). Click shows the tracker ratio (red
 // under config.torrents.minRatio) and buffer (yellow under 40 GiB), the
