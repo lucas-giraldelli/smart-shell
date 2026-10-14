@@ -5,8 +5,9 @@ import ".."
 import "ui"
 import "../lib/torrents.mjs" as TorrentRules
 
-// The torrents popover (prototype: components/torrents): the services in
-// config torrents.services and the VPN that are down (red, a click opens one),
+// The torrents popover (prototype: components/torrents): the tracker ratio,
+// the services in config torrents.services and the VPN (grey, red when down,
+// a click opens one),
 // then one row per torrent, worst state first - its state icon, title
 // ("Coraline (2009)", "Loki · S02", the release name on hover), size,
 // progress, state (seeding: its days, yellow while still owed to the tracker,
@@ -92,45 +93,31 @@ Popover {
             }
         }
 
-        // the tracker account: its name, ratio, up / down, bonus points and
-        // hit and runs (red when any)
-        Row {
-            visible: Torrents.tracker !== null
-            x: 8
-            height: 20
-            spacing: 6
-            Label {
-                anchors.verticalCenter: parent.verticalCenter
-                text: Torrents.tracker?.name ?? ""
-                size: 11
-                weight: Font.DemiBold
-                color: Theme.menuText
-            }
-            Label {
-                anchors.verticalCenter: parent.verticalCenter
-                text: Torrents.tracker ? TorrentRules.account(Torrents.tracker) + " ·" : ""
-                size: 11
-                tnum: true
-                color: Theme.menuSub
-            }
-            Label {
-                anchors.verticalCenter: parent.verticalCenter
-                text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
-                size: 11
-                tnum: true
-                color: (Torrents.tracker?.hit_and_runs ?? 0) > 0 ? Theme.crit : Theme.menuSub
-            }
-        }
-
-        // the services that do not answer: a red dot and a name each
+        // the tracker ratio (and its hit and runs, in red, when any), then
+        // the services: a grey dot and name each, red when it does not answer
         Flow {
-            visible: Torrents.down.length > 0
+            visible: Torrents.services.length > 0 || Torrents.tracker !== null
             x: 8
             width: parent.width - 16
             spacing: 14
             bottomPadding: 6
+            Label {
+                visible: Torrents.tracker !== null
+                lineHeight: 18
+                text: Torrents.tracker ? `${Torrents.tracker.name} ${Torrents.tracker.ratio}` : ""
+                size: 11
+                tnum: true
+                color: Theme.menuText
+            }
+            Label {
+                visible: (Torrents.tracker?.hit_and_runs ?? 0) > 0
+                lineHeight: 18
+                text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
+                size: 11
+                color: Theme.crit
+            }
             Repeater {
-                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }]).filter(s => !s.up)
+                model: Torrents.services.concat([{ name: "VPN", url: "", up: Torrents.vpn }])
                 delegate: Row {
                     id: service
                     required property var modelData
@@ -141,13 +128,13 @@ Popover {
                         width: 6
                         height: 6
                         radius: 3
-                        color: Theme.crit
+                        color: service.modelData.up ? Theme.menuFaint : Theme.crit
                     }
                     Label {
                         anchors.verticalCenter: parent.verticalCenter
                         text: service.modelData.name
                         size: 11
-                        color: Theme.crit
+                        color: !service.modelData.up ? Theme.crit : serviceArea.containsMouse ? Theme.menuText : Theme.menuSub
                         MouseArea {
                             id: serviceArea
                             anchors.fill: parent

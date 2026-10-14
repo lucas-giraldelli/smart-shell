@@ -41,10 +41,6 @@ export function size(bytes) {
   while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
   return `${v < 100 && i ? v.toFixed(1) : Math.round(v)} ${units[i]}`;
 }
-// bonus points: 45675 -> "45.7k"
-export const points = n => (Number(n) >= 1000 ? `${(Number(n) / 1000).toFixed(1)}k` : String(Math.round(Number(n))));
-// a tracker account (UNIT3D /api/user) as one line: "ratio 1.78 · ↑ 68.81 GiB · ↓ 38.55 GiB · BON 45.7k"
-export const account = a => `ratio ${a.ratio} · ↑ ${a.uploaded} · ↓ ${a.downloaded} · BON ${points(a.seedbonus)}`;
 // a speed: "1.2 MB/s"
 export const speed = bytes => `${size(bytes)}/s`;
 // 0.4567 -> "45%"; 99.95% stays "99%" until it is done

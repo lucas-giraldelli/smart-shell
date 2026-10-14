@@ -268,13 +268,14 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   row's end (on hover) takes it out of qBittorrent, keeping its files - asking
   twice while owed. A stopped one also gets the play, which brings it back. `torrents.services` (`[{ "name", "url" }]`) are web UIs
   checked with each read - any HTTP answer counts - plus the VPN (qBittorrent
-  connected): one that is down shows above the list in red, the tray icon
-  turns red and its hover names it. Only what needs a look has a colour.
+  connected) show above the list, a grey dot each; one that is down turns
+  red, and so does the tray icon, whose hover names it. Only what needs a
+  look has a colour.
   With `~/.config/smart-shell/tracker.json` (`chmod 600`;
   `{ "name": "...", "url": "https://...", "token": "..." }`, a UNIT3D tracker
   and your API key - Prowlarr's indexer has it too) the popover also shows
-  your account there, read every 15 minutes: ratio, uploaded / downloaded,
-  bonus points and hit and runs (red when any).
+  your ratio there before the services, read every 15 minutes (and your hit
+  and runs, in red, when there are any).
 - **Notifications** - the shell is the notification server (replaces mako;
   drop its `exec-once`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,

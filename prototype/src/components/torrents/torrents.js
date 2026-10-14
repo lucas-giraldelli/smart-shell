@@ -4,15 +4,15 @@ import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.
 import { setHTML } from '../ui/ui.js';
 import { t } from '../../i18n/index.js';
 import { store, update as updateStore } from '../../state.js';
-import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped, account } from '../../data/torrents.js';
+import { statusOf, worst, sorted, size, speed, percent, title, seedDays, owed, stopped } from '../../data/torrents.js';
 import { config } from '../../data/config.js';
 
 // The torrents of a qBittorrent Web UI (the shell reads its API every 60 s,
 // every 5 s while the list is open), as an item of the tray: the download
 // icon while anything downloads, else the upload one, in the worst state's
-// colour (red while a service is down). Click shows the tracker account
-// (ratio, up / down, bonus points, hit and runs), the services in
-// config.torrents.services and the VPN that are down (red, a click opens one), then
+// colour (red while a service is down). Click shows the tracker ratio, the
+// services in config.torrents.services and the VPN (grey, red when down, a
+// click opens one), then
 // the torrents: title ("Coraline (2009)", "Loki · S02", the release name on
 // hover), size, progress, state (seeding: its days, yellow while still owed
 // to the tracker, config.torrents.seedDays) and the seeds in its swarm. Only
@@ -81,12 +81,10 @@ class TorrentList extends Component {
         <span class="meta">↓ ${speed(torrents.dlspeed)}  ↑ ${speed(torrents.upspeed)}</span>
         <button class="ib${torrents.loading ? ' spinning' : ''}" data-refresh title="${t('torrents.refresh')}">${icon('refresh-cw')}</button>
       </div>
-      ${torrents.tracker ? `<div class="tr-account"><b>${torrents.tracker.name}</b> ${account(torrents.tracker)} · <span${torrents.tracker.hit_and_runs > 0 ? ' class="hnr"' : ''}>H&amp;R ${torrents.tracker.hit_and_runs}</span></div>` : ''}
-      ${(() => {
-        const down = [...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].filter(s => !s.up);
-        return down.length ? `<div class="tr-services">${down.map(s =>
-          `<span class="tr-service"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</div>` : '';
-      })()}
+      ${torrents.tracker || torrents.services.length ? `<div class="tr-services">${torrents.tracker ? `<span class="tr-ratio">${torrents.tracker.name} ${torrents.tracker.ratio}</span>` : ''}${
+        torrents.tracker?.hit_and_runs > 0 ? `<span class="hnr">H&amp;R ${torrents.tracker.hit_and_runs}</span>` : ''}${
+        [...torrents.services, { name: 'VPN', url: '', up: torrents.vpn }].map(s =>
+          `<span class="tr-service${s.up ? '' : ' down'}"${s.url ? ` data-service="${s.url}"` : ''}><i></i>${s.name}</span>`).join('')}</div>` : ''}
       ${rows.length ? `
       <div class="tr-cols"><span class="grow">${t('torrents.name')}</span><span>${t('torrents.size')}</span><span>${t('torrents.progress')}</span><span>${t('torrents.status')}</span><span>${t('torrents.seeds')}</span><span></span></div>
       <div class="tr-list">${rows.map(tr => {
