@@ -17,10 +17,9 @@ import { config } from '../../data/config.js';
 // to the tracker, config.torrents.seedDays) and the seeds in its swarm. Only
 // what needs a look has a colour: red an error or a service down, yellow
 // stalled or owed, blue downloading; the tray icon is green when all is well.
-// The x at a row's end stops seeding it (asking twice while owed;
-// qBittorrent's stop, the old pause); a stopped one gets play and the bin,
-// which removes it from qBittorrent keeping its files (asking twice); the
-// rest of the row opens the Web UI.
+// The x at a row's end takes it out of qBittorrent, keeping its files
+// (asking twice while owed); a stopped one also gets play; the rest of the
+// row opens the Web UI.
 export const LOOK = {
   error: { icon: 'circle-alert', color: 'var(--crit)' },
   stalled: { icon: 'triangle-alert', color: 'var(--warn)' },
@@ -50,8 +49,8 @@ class TorrentList extends Component {
       if (act) {
         const hash = act.closest('[data-row]').dataset.row;
         const tr = store.get().torrents.list.find(x => x.hash === hash);
-        // stop while owed, or remove: the first click arms it (red), the second acts
-        const twice = act.dataset.act === 'remove' || (act.dataset.act === 'stop' && owed(tr, config.torrents.seedDays));
+        // remove while owed: the first click arms it (red), the second acts
+        const twice = act.dataset.act === 'remove' && owed(tr, config.torrents.seedDays);
         if (twice && !act.classList.contains('off')) {
           act.classList.add('off');
           setTimeout(() => act.classList.remove('off'), 3000);
@@ -62,8 +61,8 @@ class TorrentList extends Component {
           updateStore('torrents', s => ({ list: s.list.filter(x => x.hash !== hash) }));
           return;
         }
-        // POST /api/v2/torrents/stop|start in the real shell
-        const state = act.dataset.act === 'stop' ? (tr.progress < 1 ? 'stoppedDL' : 'stoppedUP') : (tr.progress < 1 ? 'downloading' : 'stalledUP');
+        // POST /api/v2/torrents/start in the real shell
+        const state = tr.progress < 1 ? 'downloading' : 'stalledUP';
         updateStore('torrents', s => ({ list: s.list.map(x => (x.hash === hash ? { ...x, state } : x)) }));
         return;
       }
@@ -91,7 +90,7 @@ class TorrentList extends Component {
       <div class="tr-list">${rows.map(tr => {
         const s = statusOf(tr), l = LOOK[s];
         const state = s === 'seeding' ? (owed(tr, config.torrents.seedDays) ? 'owed' : 'paid') : s;
-        const actions = stopped(tr) ? ['start', 'remove'] : s === 'seeding' ? ['stop'] : [];
+        const actions = stopped(tr) ? ['start', 'remove'] : s === 'seeding' ? ['remove'] : [];
         return `<div class="row tr" data-row="${tr.hash}" title=""${tr.name} · ${t('torrents.tip', { seeds: tr.num_seeds, swarm: tr.num_complete })}">
           <span class="tr-ic" style="color:${l.color}">${icon(l.icon)}</span>
           <span class="grow tr-name">${title(tr.name)}</span>
@@ -99,7 +98,7 @@ class TorrentList extends Component {
           <span>${percent(tr.progress)}</span>
           <span class="tr-state" data-state="${state}">${t(`torrents.states.${s}`)}${s === 'seeding' ? ` · ${seedDays(tr)}d` : ''}</span>
           <span>${tr.num_complete}</span>
-          <span class="tr-acts">${actions.map(a => `<button class="ib flat tr-act" data-act="${a}">${icon({ stop: 'x', start: 'play', remove: 'trash-2' }[a])}</button>`).join('')}</span>
+          <span class="tr-acts">${actions.map(a => `<button class="ib flat tr-act" data-act="${a}">${icon(a === 'start' ? 'play' : 'x')}</button>`).join('')}</span>
         </div>`;
       }).join('')}</div>` : `<div class="meta tr-empty">${t('torrents.none')}</div>`}`);
   }
