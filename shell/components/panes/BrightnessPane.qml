@@ -13,7 +13,7 @@ PaneScroll {
     Slider {
         icon: "sun"
         label: `${Brightness.name || "—"} · DDC/CI`
-        stepSize: 5
+        stepSize: Brightness.unit
         value: Brightness.brightness
         valueText: Brightness.brightness + "%"
         onMoved: v => Brightness.set(v)

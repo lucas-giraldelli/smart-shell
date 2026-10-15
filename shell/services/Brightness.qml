@@ -14,6 +14,8 @@ Singleton {
     property string name: ""
     property int brightness: 0              // % of the monitor max (waybar brightness.sh)
     property int max: 100                   // the monitor raw VCP 10 range
+    // one raw step in %: the finest the monitor goes (2% on a 0-50 range)
+    readonly property real unit: 100 / max
     property bool loaded: false
     property bool night: false
     property int nightK: 4500
@@ -21,12 +23,12 @@ Singleton {
     property int pending: -1
 
     function set(v) {
-        brightness = Rules.clampBrightness(Math.round(v));
+        brightness = Math.round(Math.round(Rules.clampBrightness(v) / unit) * unit);
         pending = brightness;
         writeTimer.restart();
     }
     function step(dir) {
-        set(brightness + dir * 5);
+        set(brightness + dir * 2 * unit);
     }
 
     // night light: hyprsunset runs while it is on
@@ -82,7 +84,7 @@ Singleton {
                 const m = (lines[1] ?? "").match(/^VCP 10 C (\d+) (\d+)/);
                 if (m) {
                     root.max = Number(m[2]);
-                    root.brightness = Math.floor(Number(m[1]) * 100 / root.max);
+                    root.brightness = Math.round(Number(m[1]) * 100 / root.max);
                     root.loaded = true;
                 }
             }
