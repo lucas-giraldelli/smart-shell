@@ -85,6 +85,7 @@ export default {
     hide: 'Hide', dismiss: 'Dismiss', copy: 'Copy link', unhide: 'Show',
     showHidden: 'Show hidden ({n})', hideHidden: 'Hide hidden ({n})',
     updated: 'updated at {time}', sample: 'sample',
+    follow: "Follow someone else's PR", unfollow: 'Unfollow', cancel: 'Cancel', invalid: 'Not a GitHub PR link',
     status: { failing: 'pipeline failed', conflict: 'conflicts with base', behind: 'behind main',
       pending: 'pipeline running', green: 'pipeline green', approved: 'pipeline green and approved', merged: 'merged' },
   },

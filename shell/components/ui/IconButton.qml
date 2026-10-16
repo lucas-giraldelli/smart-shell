@@ -12,6 +12,7 @@ Rectangle {
     property bool interactive: true
     property bool off: false
     property bool flat: false               // no background until hovered
+    readonly property alias hovered: area.containsMouse
     signal clicked
 
     implicitWidth: 30

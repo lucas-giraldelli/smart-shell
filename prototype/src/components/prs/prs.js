@@ -5,11 +5,14 @@ import { setHTML } from '../ui/ui.js';
 import { t, formatTime } from '../../i18n/index.js';
 import { update as updateStore } from '../../state.js';
 import { savePref } from '../../core/prefs.js';
-import { prStatus, worst, byRepo } from '../../data/prs.js';
+import { prStatus, worst, byRepo, prUrl } from '../../data/prs.js';
 
 // The user's open pull requests (`gh`, every hour or on refresh), as an item
 // of the tray: the PR icon in the worst state's colour (the count on hover);
 // click lists them by repo, title only; a row's last button copies its link.
+// The + in the head opens a field for the link of someone else's PR to follow
+// (Enter follows, Esc cancels, red while it is not a PR link); a followed PR
+// gets an x to unfollow it.
 const LOOK = {
   failing: { icon: 'circle-x', color: 'var(--crit)' },
   conflict: { icon: 'circle-x', color: 'var(--crit)' },
@@ -28,12 +31,51 @@ const expanded = new Map();
 const needsAction = s => ['failing', 'conflict', 'behind'].includes(s);
 const isExpanded = (repo, status) => expanded.get(repo) ?? needsAction(status);
 
+// the follow field is open
+let adding = false;
+
 class PrList extends Component {
   static slices = ['prs', 'ui'];
 
+  // follow the link in the field: here a placeholder row (the shell reads
+  // the PR from GitHub)
+  follow(input) {
+    const url = prUrl(input.value);
+    if (!url) { input.classList.add('bad'); return; }
+    const [, , , owner, repo, , number] = url.split('/');
+    adding = false;
+    updateStore('prs', p => ({
+      list: p.list.some(pr => pr.url === url) ? p.list : [...p.list, {
+        repo: `${owner}/${repo}`, number: +number, title: `PR #${number}`, url, created: new Date().toISOString(),
+        checks: 'PENDING', mergeState: 'BLOCKED', review: null, merged: false, followed: true, author: owner,
+      }],
+    }));
+  }
+
   setup() {
     this.classList.add('menu', 'prs-menu');
+    this.addEventListener('input', e => {
+      if (e.target.matches('[data-follow-input]'))
+        e.target.classList.toggle('bad', e.target.value.trim() !== '' && !prUrl(e.target.value));
+    });
+    this.addEventListener('keydown', e => {
+      if (!e.target.matches('[data-follow-input]')) return;
+      if (e.key === 'Enter') this.follow(e.target);
+      if (e.key === 'Escape') { e.stopPropagation(); adding = false; updateStore('prs', {}); }
+    });
     this.addEventListener('click', e => {
+      if (e.target.closest('[data-follow-input]')) return;
+      if (e.target.closest('[data-add]')) {
+        adding = !adding;
+        updateStore('prs', {});
+        if (adding) this.querySelector('[data-follow-input]')?.focus();
+        return;
+      }
+      const unfollow = e.target.closest('[data-unfollow]');
+      if (unfollow) {
+        updateStore('prs', p => ({ list: p.list.filter(pr => pr.url !== unfollow.dataset.unfollow) }));
+        return;
+      }
       if (e.target.closest('[data-refresh]')) {
         // `gh api graphql` in the real shell; here, just the timestamp
         updateStore('prs', { loading: true });
@@ -77,14 +119,19 @@ class PrList extends Component {
   }
 
   update({ prs, ui }) {
-    if (ui.popover !== 'prs') return;
+    if (ui.popover !== 'prs') { adding = false; return; }
     const updated = prs.updatedAt ? t('prs.updated', { time: formatTime(prs.updatedAt) }) : t('prs.sample');
     setHTML(this, `
       <div class="prs-head">
         <span class="sec">${t('prs.title')}</span>
         <span class="meta">${updated}</span>
+        <button class="ib flat" data-add title="${t(adding ? 'prs.cancel' : 'prs.follow')}">${icon(adding ? 'x' : 'plus')}</button>
         <button class="ib flat${prs.loading ? ' spinning' : ''}" data-refresh title="${t('prs.refresh')}">${icon('refresh-cw')}</button>
       </div>
+      ${adding ? `<div class="pr-follow">
+        <input data-follow-input placeholder="https://github.com/owner/repo/pull/123" spellcheck="false">
+        <span class="pr-follow-bad">${t('prs.invalid')}</span>
+      </div>` : ''}
       ${visible(prs).length ? byRepo(visible(prs)).map(g => {
         const status = worst(g.prs);
         return `
@@ -96,11 +143,12 @@ class PrList extends Component {
           </div>
           <div class="pr-body"><div>${g.prs.map(pr => {
             const s = prStatus(pr), l = LOOK[s];
-            return `<div class="row pr" data-url="${pr.url}" title="#${pr.number} · ${t(`prs.status.${s}`)}">
+            return `<div class="row pr" data-url="${pr.url}" title="#${pr.number}${pr.author ? ` · @${pr.author}` : ''} · ${t(`prs.status.${s}`)}">
               <span class="pr-ic" style="color:${l.color}">${icon(l.icon)}</span>
               <span class="grow pr-title">${pr.title}</span>
               <button class="pr-dismiss pr-copy" data-copy="${pr.url}" title="${t('prs.copy')}">${icon('copy')}</button>
-              ${pr.merged ? `<button class="pr-dismiss" data-dismiss="${pr.url}" title="${t('prs.dismiss')}">${icon('x')}</button>` : ''}
+              ${pr.merged ? `<button class="pr-dismiss" data-dismiss="${pr.url}" title="${t('prs.dismiss')}">${icon('x')}</button>`
+                : pr.followed ? `<button class="pr-dismiss" data-unfollow="${pr.url}" title="${t('prs.unfollow')}">${icon('x')}</button>` : ''}
             </div>`;
           }).join('')}</div></div>
         </div>`;

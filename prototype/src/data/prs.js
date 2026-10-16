@@ -38,3 +38,13 @@ export function byRepo(list) {
     repo, prs: prs.sort((a, b) => a.merged - b.merged || (a.created ?? '').localeCompare(b.created ?? '')),
   })).sort((a, b) => rank(a.prs) - rank(b.prs) || a.repo.localeCompare(b.repo));
 }
+
+// someone else's PR to follow: a GitHub pull request link, as copied from the
+// browser (a tab like /files, a query or an anchor may follow), normalized to
+// https://github.com/<owner>/<repo>/pull/<n>; null when it is not one. Only
+// this shape ever reaches the `gh api graphql` query.
+const PR_URL = /^(?:https?:\/\/)?(?:www\.)?github\.com\/([A-Za-z0-9-]+)\/([A-Za-z0-9._-]+)\/pull\/(\d+)(?:[/?#].*)?$/;
+export function prUrl(text) {
+  const m = PR_URL.exec(String(text).trim());
+  return m ? `https://github.com/${m[1]}/${m[2]}/pull/${m[3]}` : null;
+}

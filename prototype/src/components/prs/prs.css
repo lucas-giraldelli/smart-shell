@@ -41,3 +41,12 @@
 .pr-dismiss svg.i { width: 14px; height: 14px; }
 .pr-copy { opacity: 0; }
 .row.pr:hover .pr-copy, .pr-copy.copied { opacity: 1; }
+
+/* following someone else's PR: the link field, red while it is not a PR link */
+.pr-follow { padding: 2px 8px 6px; }
+.pr-follow input { width: 100%; height: 30px; box-sizing: border-box; padding: 0 9px; border: 1px solid var(--menu-strong); border-radius: 8px; background: var(--menu-surface); font: inherit; font-size: 12px; font-weight: 500; color: var(--menu-text); outline: none; }
+.pr-follow input:focus { border-color: var(--menu-accent); }
+.pr-follow input::placeholder { color: var(--menu-faint); }
+.pr-follow input.bad { border-color: var(--crit); }
+.pr-follow-bad { display: none; padding: 3px 2px 0; font-size: 11px; color: var(--crit); }
+.pr-follow input.bad + .pr-follow-bad { display: block; }
