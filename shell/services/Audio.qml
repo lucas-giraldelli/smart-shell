@@ -86,8 +86,22 @@ Singleton {
         return Math.round(Math.max(0, ...app.nodes.map(n => (n.audio?.volume ?? 0) * 100)));
     }
     function setAppVolume(app, v) {
-        for (const n of app.nodes)
+        for (const n of app.nodes) {
             setStreamVolume(n, v);
+            if (n.audio)
+                n.audio.muted = false;
+        }
+    }
+    // muted: all its streams are; PipeWire keeps each volume under the mute,
+    // so unmuting brings the old level back
+    function appMuted(app) {
+        return app.nodes.every(n => n.audio?.muted);
+    }
+    function toggleAppMute(app) {
+        const muted = !appMuted(app);
+        for (const n of app.nodes)
+            if (n.audio)
+                n.audio.muted = muted;
     }
 
     readonly property bool ready: !!sink?.audio

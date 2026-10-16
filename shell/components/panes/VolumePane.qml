@@ -5,7 +5,7 @@ import "../ui"
 import ".."
 
 // Audio tab (prototype: control-center/panes/volume.js): output volume and
-// device, microphone, per-app streams - all PipeWire.
+// device, microphone, per-app streams (each with its own mute) - all PipeWire.
 PaneScroll {
     Section { first: true; text: I18n.t("volume.output") }
     Slider {
@@ -99,11 +99,15 @@ PaneScroll {
         Slider {
             required property var modelData
             readonly property int volume: Audio.appVolume(modelData)
-            icon: "app-window"
+            readonly property bool muted: Audio.appMuted(modelData)
+            icon: muted ? "volume-x" : "volume-2"
+            button: true
+            off: muted
             label: Audio.nameOf(modelData.nodes[0])
             value: volume
-            valueText: volume + "%"
+            valueText: muted ? I18n.t("common.muted") : volume + "%"
             onMoved: v => Audio.setAppVolume(modelData, v)
+            onButtonClicked: Audio.toggleAppMute(modelData)
         }
     }
 }

@@ -53,7 +53,7 @@ export default {
     <div class="sec">${t('volume.input')}</div>
     ${slider({ key: 'mic', label: store.get().audio.micName, iconName: 'mic', button: true })}
     <div class="sec">${t('volume.apps')}</div>
-    ${store.get().audio.streams.map((s, i) => slider({ key: `stream-${i}`, label: s.name, iconName: 'app-window' })).join('')}`,
+    ${store.get().audio.streams.map((s, i) => slider({ key: `stream-${i}`, label: s.name, iconName: s.muted ? 'volume-x' : 'volume-2', button: true })).join('')}`,
 
   update(root, { audio, bluetooth }) {
     const list = sinks(audio, bluetooth);
@@ -96,7 +96,12 @@ export default {
 
     setSlider(root, 'mic', audio.mic, audio.micMuted ? t('common.muted') : audio.mic + '%');
     root.querySelector('[data-btn="mic"]').classList.toggle('off', audio.micMuted);
-    audio.streams.forEach((s, i) => setSlider(root, `stream-${i}`, s.volume, s.volume + '%'));
+    audio.streams.forEach((s, i) => {
+      setSlider(root, `stream-${i}`, s.volume, s.muted ? t('common.muted') : s.volume + '%');
+      const btn = root.querySelector(`[data-btn="stream-${i}"]`);
+      setHTML(btn, icon(s.muted ? 'volume-x' : 'volume-2'));
+      btn.classList.toggle('off', !!s.muted);
+    });
   },
 
   click(target) {
@@ -108,6 +113,10 @@ export default {
     if (target.closest('[data-dev-input]')) return;
     if (target.closest('[data-btn="out"]')) update('audio', a => ({ muted: !a.muted }));
     else if (target.closest('[data-btn="mic"]')) update('audio', a => ({ micMuted: !a.micMuted }));
+    else if (target.closest('[data-btn^="stream-"]')) {
+      const i = +target.closest('[data-btn]').dataset.btn.split('-')[1];
+      update('audio', a => ({ streams: a.streams.map((s, j) => (j === i ? { ...s, muted: !s.muted } : s)) }));
+    }
     else {
       const sink = target.closest('[data-sink]');
       if (sink) update('audio', { sink: sink.dataset.sink });
@@ -119,7 +128,7 @@ export default {
     else if (key === 'mic') update('audio', { mic: value, micMuted: false });
     else if (key.startsWith('stream-')) {
       const i = +key.split('-')[1];
-      update('audio', a => ({ streams: a.streams.map((s, j) => (j === i ? { ...s, volume: value } : s)) }));
+      update('audio', a => ({ streams: a.streams.map((s, j) => (j === i ? { ...s, volume: value, muted: false } : s)) }));
     }
   },
 };
