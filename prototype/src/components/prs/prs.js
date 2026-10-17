@@ -175,7 +175,8 @@ class Prs extends Component {
   }
 
   update({ prs, ui }) {
-    const shown = prs.list.filter(p => !prs.hidden.includes(p.repo));
+    // the icon colour and count are the user's own PRs: a followed one only lists
+    const shown = prs.list.filter(p => !prs.hidden.includes(p.repo) && !p.followed);
     const open = shown.filter(p => !p.merged);
     const w = worst(shown);
     this.toggleAttribute('data-open', ui.popover === 'prs');

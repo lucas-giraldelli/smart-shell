@@ -30,7 +30,8 @@ Tile {
     })
     // the pull requests ride in the tray as one more item (the `prs` widget)
     readonly property bool withPrs: Prs.loaded && Config.dock.some(g => g.widgets.includes("prs")) && !Ui.hidden.includes("prs")
-    readonly property var shownPrs: Prs.list.filter(p => !Ui.prsHidden.includes(p.repo))
+    // the icon colour and count are the user's own PRs: a followed one only lists
+    readonly property var shownPrs: Prs.list.filter(p => !Ui.prsHidden.includes(p.repo) && !p.followed)
     readonly property int prCount: shownPrs.filter(p => !p.merged).length
     readonly property string prWorst: PrRules.worst(shownPrs) ?? ""
     // and so do the torrents (the `torrents` widget): the download icon while
