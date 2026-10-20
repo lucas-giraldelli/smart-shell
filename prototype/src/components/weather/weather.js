@@ -34,8 +34,8 @@ class Weather extends Component {
     this.style.setProperty('--wx', look.color);
     setHTML(this.$('[data-icon]'), icon(look.icon, `wx-ic${look.icon === 'sun' ? ' spin' : ''}`));
     this.$('[data-temp]').textContent = `${c.temp}°`;
-    // the condition, on hover
-    this.$('.label').textContent = look.label;
+    // the condition and the temperature in °C and °F, on hover
+    this.$('.label').textContent = `${look.label} · ${c.temp}°C · ${Math.round(c.temp * 9 / 5 + 32)}°F`;
     this.toggleAttribute('data-tip', ui.popover !== 'weather');
   }
 }

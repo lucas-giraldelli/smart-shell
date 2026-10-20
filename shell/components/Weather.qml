@@ -4,8 +4,8 @@ import ".."
 import "../lib/rules.mjs" as Rules
 
 // Current weather (prototype: components/weather): the condition icon in its
-// tone (the sun turns slowly) and the temperature; the condition shows on
-// hover. Click opens the forecast. Hidden until the first forecast arrives.
+// tone (the sun turns slowly) and the temperature; the condition and the
+// temperature in °C and °F show on hover ("Céu limpo · 30°C · 86°F"). Click opens the forecast. Hidden until the first forecast arrives.
 Tile {
     id: root
 
@@ -18,7 +18,7 @@ Tile {
 
     Tip {
         target: root
-        text: root.look.label
+        text: `${root.look.label} · ${Weather.current.temp}°C · ${Math.round(Weather.current.temp * 9 / 5 + 32)}°F`
         shown: root.hovered && !forecast.open
     }
 
