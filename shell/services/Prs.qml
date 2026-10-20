@@ -7,7 +7,7 @@ import "../lib/prs.mjs" as PrRules
 
 // The open pull requests of the user, from any repo (`gh api graphql`, with the
 // login of the gh CLI), and the ones of other people the user follows (their
-// links in Ui.prsFollowed). Read every hour or on refresh. A PR that leaves
+// links in Ui.prsFollowed). Read every 3 minutes or on refresh. A PR that leaves
 // the open list was merged or closed: merged ones raise a notification and
 // stay listed (saved) until the user dismisses them; closed ones just go.
 Singleton {
@@ -68,7 +68,7 @@ Singleton {
         running: true
         repeat: true
         triggeredOnStart: true
-        interval: 60 * 60 * 1000
+        interval: 3 * 60 * 1000
         onTriggered: root.refresh()
     }
 

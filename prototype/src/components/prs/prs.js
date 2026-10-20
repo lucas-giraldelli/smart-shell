@@ -7,7 +7,7 @@ import { update as updateStore } from '../../state.js';
 import { savePref } from '../../core/prefs.js';
 import { prStatus, worst, byRepo, prUrl } from '../../data/prs.js';
 
-// The user's open pull requests (`gh`, every hour or on refresh), as an item
+// The user's open pull requests (`gh`, every 3 minutes or on refresh), as an item
 // of the tray: the PR icon in the worst state's colour (the count on hover);
 // click lists them by repo, title only; a row's last button copies its link.
 // The + in the head opens a field for the link of someone else's PR to follow
