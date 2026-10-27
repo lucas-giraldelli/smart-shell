@@ -92,6 +92,7 @@ export default {
   weather: {
     feels: 'Feels like {temp}°', nextHours: 'Next hours', days: '7 days',
     updated: 'Open-Meteo · updated {time}', sample: 'Sample forecast · offline',
+    seasons: { spring: 'Spring', summer: 'Summer', autumn: 'Autumn', winter: 'Winter' },
     codes: {
       0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
       45: 'Fog', 48: 'Rime fog',

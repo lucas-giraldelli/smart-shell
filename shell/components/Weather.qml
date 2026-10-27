@@ -2,10 +2,12 @@ import QtQuick
 import "../services"
 import ".."
 import "../lib/rules.mjs" as Rules
+import "../lib/season.mjs" as Season
 
 // Current weather (prototype: components/weather): the condition icon in its
 // tone (the sun turns slowly) and the temperature; the condition and the
-// temperature in °C and °F show on hover ("Céu limpo · 30°C · 86°F"). Click opens the forecast. Hidden until the first forecast arrives.
+// temperature in °C and °F and the season (south of the equator by
+// config.weather.lat) show on hover ("Céu limpo · 30°C · 86°F · Primavera"). Click opens the forecast. Hidden until the first forecast arrives.
 Tile {
     id: root
 
@@ -18,7 +20,7 @@ Tile {
 
     Tip {
         target: root
-        text: `${root.look.label} · ${Weather.current.temp}°C · ${Math.round(Weather.current.temp * 9 / 5 + 32)}°F`
+        text: `${root.look.label} · ${Weather.current.temp}°C · ${Math.round(Weather.current.temp * 9 / 5 + 32)}°F · ${I18n.t("weather.seasons." + Season.season(new Date(), Config.weather.lat))}`
         shown: root.hovered && !forecast.open
     }
 

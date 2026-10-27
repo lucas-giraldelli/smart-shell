@@ -92,6 +92,7 @@ export default {
   weather: {
     feels: 'Sensação {temp}°', nextHours: 'Próximas horas', days: '7 dias',
     updated: 'Open-Meteo · atualizado {time}', sample: 'Previsão de exemplo · sem conexão',
+    seasons: { spring: 'Primavera', summer: 'Verão', autumn: 'Outono', winter: 'Inverno' },
     codes: {
       0: 'Céu limpo', 1: 'Predominantemente limpo', 2: 'Parcialmente nublado', 3: 'Nublado',
       45: 'Neblina', 48: 'Neblina com gelo',
