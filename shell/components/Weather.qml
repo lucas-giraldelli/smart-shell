@@ -7,11 +7,14 @@ import "../lib/season.mjs" as Season
 // Current weather (prototype: components/weather): the condition icon in its
 // tone (the sun turns slowly) and the temperature; the condition and the
 // temperature in °C and °F and the season (south of the equator by
-// config.weather.lat) show on hover ("Céu limpo · 30°C · 86°F · Primavera"). Click opens the forecast. Hidden until the first forecast arrives.
+// config.weather.lat) show on hover ("Céu limpo · 30°C · 86°F · Primavera / Spring"). Click opens the forecast. Hidden until the first forecast arrives.
 Tile {
     id: root
 
     readonly property bool shown: Weather.loaded
+    // re-read with each forecast, so a dock left running turns the season
+    readonly property string seasonKey: Weather.current ? Season.season(new Date(), Config.weather.lat) : ""
+    readonly property string seasonLabel: Season.bilingual(I18n.t("weather.seasons." + seasonKey), seasonKey)
     readonly property var look: Rules.weatherLook(Panes.i18n, Weather.current.code, Weather.current.isDay)
 
     // padding 0 11px (+ border), the 26px icon, gap 9, the temperature
@@ -20,7 +23,7 @@ Tile {
 
     Tip {
         target: root
-        text: `${root.look.label} · ${Weather.current.temp}°C · ${Math.round(Weather.current.temp * 9 / 5 + 32)}°F · ${I18n.t("weather.seasons." + Season.season(new Date(), Config.weather.lat))}`
+        text: `${root.look.label} · ${Weather.current.temp}°C · ${Math.round(Weather.current.temp * 9 / 5 + 32)}°F · ${root.seasonLabel}`
         shown: root.hovered && !forecast.open
     }
 

@@ -2,7 +2,7 @@ import { Component, define } from '../../core/component.js';
 import { icon } from '../../core/icons.js';
 import { isOpen, openPopover, closePopover, cameFrom } from '../../core/popover.js';
 import { describe } from '../../data/weather-codes.js';
-import { season } from '../../data/season.js';
+import { season, bilingual } from '../../data/season.js';
 import { t } from '../../i18n/index.js';
 import { setHTML } from '../ui/ui.js';
 import './forecast.js';
@@ -37,7 +37,7 @@ class Weather extends Component {
     setHTML(this.$('[data-icon]'), icon(look.icon, `wx-ic${look.icon === 'sun' ? ' spin' : ''}`));
     this.$('[data-temp]').textContent = `${c.temp}°`;
     // the condition, the temperature in °C and °F and the season, on hover
-    this.$('.label').textContent = `${look.label} · ${c.temp}°C · ${Math.round(c.temp * 9 / 5 + 32)}°F · ${t(`weather.seasons.${season(new Date(), w.lat)}`)}`;
+    this.$('.label').textContent = `${look.label} · ${c.temp}°C · ${Math.round(c.temp * 9 / 5 + 32)}°F · ${bilingual(t(`weather.seasons.${season(new Date(), w.lat)}`), season(new Date(), w.lat))}`;
     this.toggleAttribute('data-tip', ui.popover !== 'weather');
   }
 }
