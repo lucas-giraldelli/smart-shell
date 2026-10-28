@@ -28,10 +28,10 @@ Popover {
     function colorOf(status) {
         return looks[status]?.color ?? Theme.menuSub;
     }
-    // which repos are open: the user choice, else open when one needs action
-    property var expanded: ({})
+    // which repos are open: the user choice (saved, so it outlives the dock
+    // being rebuilt), else open when one needs action
     function isOpen(repo, status) {
-        return expanded[repo] ?? ["failing", "conflict", "behind"].includes(status);
+        return Ui.prsExpanded[repo] ?? ["failing", "conflict", "behind"].includes(status);
     }
 
     // hidden repos leave the list, unless the user asks to see them
@@ -224,7 +224,7 @@ Popover {
                     MouseArea {
                         anchors.fill: parent
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.expanded = Object.assign({}, root.expanded, { [group.modelData.repo]: !group.open })
+                        onClicked: Ui.prsExpanded = Object.assign({}, Ui.prsExpanded, { [group.modelData.repo]: !group.open })
                     }
                     Row {
                         anchors.right: parent.right
