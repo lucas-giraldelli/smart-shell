@@ -41,7 +41,7 @@ Singleton {
             'addr=$(hyprctl clients -j | jq -r --argjson names "$1" --arg title "$2" \''
             + '[.[] | select(.class | ascii_downcase | . as $c | any($names[]; . as $n | $c | contains($n)))] as $m'
             + ' | (if $title != "" then first($m[] | select(.title | test($title))) else empty end) // first($m[]) | .address\'); '
-            + '[ -n "$addr" ] && [ "$addr" != null ] && hyprctl dispatch focuswindow "address:$addr" >/dev/null',
+            + '[ -n "$addr" ] && [ "$addr" != null ] && hyprctl dispatch "hl.dsp.focus({ window = \'address:$addr\' })" >/dev/null',
             "sh", JSON.stringify(names), p.focusTitle]);
     }
     function dismiss(id) {

@@ -236,7 +236,7 @@ PaneScroll {
             onClicked: {
                 const screen = Ui.popoverScreen;
                 Ui.closePopover();
-                Quickshell.execDetached(["hyprctl", "dispatch", "dpms", "toggle", screen]);
+                Quickshell.execDetached(["hyprctl", "dispatch", "hl.dsp.dpms({ action = 'toggle', monitor = '" + screen + "' })"]);
             }
         }
     }

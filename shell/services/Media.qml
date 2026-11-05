@@ -111,7 +111,7 @@ Singleton {
     function focusPlayer(p) {
         if (!p)
             return;
-        windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch focuswindow "address:$addr" >/dev/null',
+        windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch "hl.dsp.focus({ window = \'address:$addr\' })" >/dev/null',
             "sh", p.dbusName, (p.desktopEntry || p.identity || "").toLowerCase()];
         windowAction.running = true;
     }
@@ -158,7 +158,7 @@ Singleton {
         onExited: code => {
             if (code !== 2 || command[1] !== "toggle")
                 return;
-            windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch sendshortcut "SHIFT,equal,address:$addr" >/dev/null',
+            windowAction.command = ["sh", "-c", root.findWindow + 'hyprctl dispatch "hl.dsp.send_shortcut({ mods = \'SHIFT\', key = \'equal\', window = \'address:$addr\' })" >/dev/null',
                 "sh", root.musicPlayer.dbusName, "music.youtube.com"];
             windowAction.running = true;
         }
