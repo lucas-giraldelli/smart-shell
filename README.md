@@ -116,7 +116,7 @@ ln -s ~/projects/smart-shell/bin/smart-shell ~/.local/bin/   # once
 smart-shell install full          # core + every widget
 smart-shell install pets prs      # just some widgets: brightness nightlight docker
                                   #   bluetooth events system pets vpn prs torrents music recording
-smart-shell hyprland              # add the exec-once and blur lines (asks first)
+smart-shell hyprland              # add the autostart and blur rule to hyprland.lua (asks first)
 smart-shell doctor                # what each widget is still missing
 smart-shell restart               # also: start, stop, log
 ```
@@ -132,26 +132,30 @@ qs log -p ~/projects/smart-shell/shell      # its log
 qs ipc -p ~/projects/smart-shell/shell call popover open control-center docker
 ```
 
-Hyprland (`hyprland.conf`):
+Hyprland (`hyprland.lua`; the older `hyprland.conf` isn't supported):
 
-```ini
-exec-once = qs -p ~/projects/smart-shell/shell -n   # -n: never a second dock
+```lua
+hl.on("hyprland.start", function()
+    hl.exec_cmd("qs -p ~/projects/smart-shell/shell -n")   -- -n: never a second dock
+end)
 
-# blur behind the dock's glass and its popovers; ignore_alpha keeps the
-# transparent parts of the surface sharp
-layerrule {
-    name = smart-shell-blur
-    match:namespace = smart-shell
-    blur = yes
-    blur_popups = yes
-    ignore_alpha = 0.2
-}
+-- blur behind the dock's glass and its popovers; ignore_alpha keeps the
+-- transparent parts of the surface sharp
+hl.layer_rule({
+    name         = "smart-shell-blur",
+    match        = { namespace = "smart-shell" },
+    blur         = true,
+    blur_popups  = true,
+    ignore_alpha = 0.2,
+})
 
-general {
-    # the dock reserves its own space (exclusive zone); keep the bottom gap
-    # small so windows sit evenly between the dock and the screen edge
-    gaps_out = 20, 20, 10, 20
-}
+hl.config({
+    general = {
+        -- the dock reserves its own space (exclusive zone); keep the bottom gap
+        -- small so windows sit evenly between the dock and the screen edge
+        gaps_out = { top = 20, right = 20, bottom = 10, left = 20 },
+    },
+})
 ```
 
 Configuration lives in `~/.config/smart-shell/config.json` (start from
@@ -282,7 +286,7 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   under 40 GiB), read every 15 minutes (and your hit and runs, in red, when
   there are any).
 - **Notifications** - the shell is the notification server (replaces mako;
-  drop its `exec-once`). Popups stack above the dock's right end in the dock's
+  drop its `hl.exec_cmd("mako")`). Popups stack above the dock's right end in the dock's
   glass: the sender's picture (WhatsApp, Slack) with the app's icon as a badge,
   or the app's icon, or a bell; the title, the message in up to 2 lines and the
   actions. They last 5 s (3 s low, critical until closed); hover holds them and
