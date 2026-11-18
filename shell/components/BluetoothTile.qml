@@ -75,6 +75,48 @@ Tile {
         }
     }
 
+    // BlueZ refuses to power on an adapter under a soft rfkill block (seen after
+    // a logout), so powering on lifts the block first. BlueZ takes a moment to
+    // see the change, hence the retries.
+    property var connectAfterPower: null
+    function toggle() {
+        if (on) {
+            powerRetry.stop();
+            adapter.enabled = false;
+        } else {
+            powerOn(null);
+        }
+    }
+    function powerOn(device) {
+        connectAfterPower = device;
+        powerRetry.tries = 0;
+        unblock.running = true;
+    }
+    Process {
+        id: unblock
+        command: ["rfkill", "unblock", "bluetooth"]
+        onExited: powerRetry.restart()
+    }
+    Timer {
+        id: powerRetry
+        property int tries: 0
+        interval: 250
+        repeat: true
+        triggeredOnStart: true
+        onTriggered: {
+            if (!root.adapter || tries >= 8) {
+                stop();
+            } else if (root.adapter.enabled) {
+                stop();
+                if (root.connectAfterPower)
+                    root.connectAfterPower.connect();
+            } else {
+                tries++;
+                root.adapter.enabled = true;
+            }
+        }
+    }
+
     // icon only (padding 0 15px), or padding 0 14px 0 13px + gap 9 + the name
     implicitWidth: 2 + (expanded ? 13 + 20 + 9 + body.width + 14 : 15 + 20 + 15)
     Behavior on implicitWidth { NumberAnimation { duration: 450; easing.type: Easing.Bezier; easing.bezierCurve: [0.3, 1.15, 0.5, 1, 1, 1] } }
@@ -97,7 +139,7 @@ Tile {
                 menu.open ? Ui.closePopover() : Ui.openPopover("bluetooth");
             } else {
                 Ui.closePopover();
-                root.adapter.enabled = !root.adapter.enabled;
+                root.toggle();
             }
         }
     }
@@ -174,7 +216,7 @@ Tile {
             MenuRow {
                 icon: "bluetooth"
                 title: "Bluetooth"
-                onClicked: root.adapter.enabled = !root.adapter.enabled
+                onClicked: root.toggle()
                 Switch { on: root.on }
             }
             Separator {}
@@ -197,10 +239,11 @@ Tile {
                             return;
                         if (modelData.connected) {
                             modelData.disconnect();
+                        } else if (root.on) {
+                            modelData.connect();
                         } else {
                             // connecting powers the adapter on, like blueman does
-                            root.adapter.enabled = true;
-                            modelData.connect();
+                            root.powerOn(modelData);
                         }
                     }
                     Label {
