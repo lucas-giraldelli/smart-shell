@@ -78,6 +78,7 @@ export default {
     title: 'Torrents', tile: '{n} torrents', refresh: 'Atualizar', none: 'Nenhum torrent',
     name: 'Nome', size: 'Tamanho', progress: '%', status: 'Status', seeds: 'Seeds',
     tip: '{swarm} seeds, {seeds} conectados', owedDays: 'faltam {n}d para sair do H&R', down: '{names} fora', buffer: '{size} livres',
+    add: 'Adicionar torrent', cancel: 'Cancelar', noFiles: 'Nenhum .torrent em Downloads',
     states: { error: 'Erro', stalled: 'Parado', downloading: 'Baixando', checking: 'Verificando', queued: 'Na fila', paused: 'Pausado', seeding: 'Semeando' },
   },
   prs: {

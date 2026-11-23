@@ -12,7 +12,9 @@ import ".."
 // its refresh button. The session cookie lives in $XDG_RUNTIME_DIR; a 403 logs in
 // again (the password goes to curl on stdin, never on its command line).
 // remove() takes a torrent out of qBittorrent, keeping its files; start()
-// brings a stopped one back. With ~/.config/smart-shell/tracker.json
+// brings a stopped one back. `files` are the .torrent files in the Downloads
+// folder (xdg-user-dir DOWNLOAD), newest first, read as the list opens;
+// add() sends one to qBittorrent and deletes it once qBittorrent took it. With ~/.config/smart-shell/tracker.json
 // ({ "name", "url", "token" }: a UNIT3D tracker and its API key) it also reads
 // your account there (/api/user: ratio, buffer, bonus points, hit and runs)
 // every 15 minutes; the key goes to curl on stdin as a header file.
@@ -29,6 +31,8 @@ Singleton {
     property bool loading: false
     property bool loaded: false      // a login file and an answer: the widget shows
     property string url: ""
+    property var files: []           // [{ path, name, mtime }]: the .torrent files in Downloads
+    property var adding: []          // paths on their way to qBittorrent
 
     // shell functions: $f the login file, $url, get <path>, post <path> <data>
     // (both log in again on a 403)
@@ -64,6 +68,51 @@ Singleton {
         Quickshell.execDetached(["sh", "-c", lib + 'post "torrents/$1" "hashes=$3" || post "torrents/$2" "hashes=$3"', "sh", verb, old, hash]);
         after.restart();
     }
+    // the .torrent files in Downloads, newest first
+    function scan() {
+        if (!lister.running)
+            lister.running = true;
+    }
+    // send a .torrent file to qBittorrent; once it took it, the file goes
+    function add(path) {
+        if (adding.includes(path))
+            return;
+        adding = adding.concat([path]);
+        files = files.filter(f => f.path !== path);
+        if (!sender.running)
+            sender.running = true;
+    }
+    Process {
+        id: lister
+        command: ["sh", "-c", 'd=$(xdg-user-dir DOWNLOAD 2>/dev/null); [ -d "$d" ] || d="$HOME/Downloads"; '
+            + 'find "$d" -maxdepth 1 -type f -iname "*.torrent" -printf "%T@\\t%p\\n" | sort -rn']
+        stdout: StdioCollector {
+            onStreamFinished: {
+                root.files = text.split("\n").filter(l => l.includes("\t")).map(l => {
+                    const [mtime, path] = [l.slice(0, l.indexOf("\t")), l.slice(l.indexOf("\t") + 1)];
+                    return { path, name: path.slice(path.lastIndexOf("/") + 1).replace(/\.torrent$/i, ""), mtime: Number(mtime) };
+                }).filter(f => !root.adding.includes(f.path));
+            }
+        }
+    }
+    // the paths in `adding`, one after another (multipart, the file on
+    // stdin so any name works); qBittorrent 4 answers "Fails." with a 200
+    Process {
+        id: sender
+        property var batch: []
+        onRunningChanged: if (running) batch = root.adding
+        command: ["sh", "-c", root.lib
+            + 'send() { curl -sf -m 30 -b "$jar" -F "torrents=@-;filename=file.torrent" "$url/api/v2/torrents/add" < "$1"; }; '
+            + 'for p in "$@"; do r=$(send "$p" || { login && send "$p"; }) && [ "$r" != "Fails." ] && rm -f -- "$p"; done', "sh"].concat(root.adding)
+        onExited: {
+            root.adding = root.adding.filter(p => !batch.includes(p));
+            if (root.adding.length)
+                Qt.callLater(() => running = true);
+            root.scan();
+            root.refresh();
+        }
+    }
+
     // re-read a moment after an action
     Timer {
         id: after
@@ -82,8 +131,10 @@ Singleton {
     Connections {
         target: Ui
         function onPopoverChanged() {
-            if (Ui.popover === "torrents")
+            if (Ui.popover === "torrents") {
                 root.refresh();
+                root.scan();
+            }
         }
     }
 

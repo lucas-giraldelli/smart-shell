@@ -273,7 +273,10 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   UI. Seeding shows its days, yellow while still owed to the tracker
   (`torrents.seedDays`, its hit-and-run rule, 7 by default); the x at the
   row's end (on hover) takes it out of qBittorrent, keeping its files - asking
-  twice while owed. A stopped one also gets the play, which brings it back. `torrents.services` (`[{ "name", "url" }]`) are web UIs
+  twice while owed. A stopped one also gets the play, which brings it back.
+  The + beside refresh lists the `.torrent` files in your Downloads folder,
+  newest first: a click adds one to qBittorrent and deletes the file once
+  qBittorrent took it (a file it refuses stays). `torrents.services` (`[{ "name", "url" }]`) are web UIs
   checked with each read - any HTTP answer counts - plus the VPN (qBittorrent
   connected) show beside the title, a green dot each; one that is down turns
   red, and so does the tray icon, whose hover names it. Only what needs a

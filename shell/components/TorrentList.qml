@@ -17,7 +17,8 @@ import "../lib/torrents.mjs" as TorrentRules
 // has a colour: red an error or a service down, yellow stalled or owed, blue
 // downloading. The x at the end takes it out of qBittorrent, keeping its
 // files (asking twice while owed); a stopped one also gets play; a click on
-// the row opens the Web UI.
+// the row opens the Web UI. The + beside refresh lists the .torrent files in
+// Downloads: a click on one adds it to qBittorrent and deletes the file.
 Popover {
     id: root
     name: "torrents"
@@ -42,6 +43,10 @@ Popover {
     readonly property var widths: [56, 36, 92, 40]
     readonly property int action: 54
     readonly property int minDays: Config.torrents?.seedDays ?? 7
+
+    // the + in the header: pick a .torrent from Downloads
+    property bool picking: false
+    onOpenChanged: if (!open) picking = false
 
     bubbleWidth: 520
     padding: 6
@@ -107,22 +112,43 @@ Popover {
                     }
                 }
             }
-            IconButton {
+            Row {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
-                implicitWidth: 26
-                implicitHeight: 26
-                flat: true
-                icon: "refresh-cw"
-                iconSize: 14
-                onClicked: Torrents.refresh()
-                RotationAnimation on rotation {
-                    running: Torrents.loading
-                    from: 0
-                    to: 360
-                    duration: 800
-                    loops: Animation.Infinite
-                    onRunningChanged: if (!running) parent.rotation = 0
+                spacing: 2
+                IconButton {
+                    id: addButton
+                    implicitWidth: 26
+                    implicitHeight: 26
+                    flat: true
+                    icon: root.picking ? "x" : "plus"
+                    iconSize: 14
+                    onClicked: {
+                        root.picking = !root.picking;
+                        if (root.picking)
+                            Torrents.scan();
+                    }
+                    Tip {
+                        target: addButton
+                        text: I18n.t(root.picking ? "torrents.cancel" : "torrents.add")
+                        shown: addButton.hovered
+                    }
+                }
+                IconButton {
+                    implicitWidth: 26
+                    implicitHeight: 26
+                    flat: true
+                    icon: "refresh-cw"
+                    iconSize: 14
+                    onClicked: Torrents.refresh()
+                    RotationAnimation on rotation {
+                        running: Torrents.loading
+                        from: 0
+                        to: 360
+                        duration: 800
+                        loops: Animation.Infinite
+                        onRunningChanged: if (!running) parent.rotation = 0
+                    }
                 }
             }
         }
@@ -169,6 +195,68 @@ Popover {
                     text: `H&R ${Torrents.tracker?.hit_and_runs ?? 0}`
                     size: 11
                     color: Theme.crit
+                }
+            }
+        }
+
+        // the .torrent files in Downloads (the + above), newest first: a
+        // click sends one to qBittorrent, and the file goes once it is in
+        Column {
+            visible: root.picking
+            width: parent.width
+            bottomPadding: 6
+            Item {
+                visible: Torrents.files.length === 0
+                width: parent.width
+                height: 30
+                Label {
+                    x: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    size: 11
+                    color: Theme.menuSub
+                    text: I18n.t("torrents.noFiles")
+                }
+            }
+            Repeater {
+                model: Torrents.files
+                delegate: Rectangle {
+                    id: file
+                    required property var modelData
+                    width: parent.width
+                    height: 30
+                    radius: 9
+                    color: fileArea.containsMouse ? Theme.menuHover : "transparent"
+                    Icon {
+                        x: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        name: "plus"
+                        size: 16
+                        color: fileArea.containsMouse ? Theme.menuAccent : Theme.menuSub
+                    }
+                    Label {
+                        x: 34
+                        width: parent.width - 34 - 8 - 80
+                        anchors.verticalCenter: parent.verticalCenter
+                        elide: Text.ElideRight
+                        size: 12.5
+                        color: Theme.menuText
+                        text: file.modelData.name
+                    }
+                    Cell {
+                        anchors.right: parent.right
+                        anchors.rightMargin: 8
+                        anchors.verticalCenter: parent.verticalCenter
+                        // today the time, else the date
+                        readonly property date at: new Date(file.modelData.mtime * 1000)
+                        text: at.toDateString() === new Date().toDateString() ? Qt.formatTime(at, "HH:mm") : Qt.formatDate(at, "dd/MM")
+                    }
+                    MouseArea {
+                        id: fileArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: Torrents.add(file.modelData.path)
+                    }
                 }
             }
         }
