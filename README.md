@@ -276,7 +276,19 @@ Calendar events need the export timer: `tools/install-services.sh` (see
   twice while owed. A stopped one also gets the play, which brings it back.
   The + beside refresh lists the `.torrent` files in your Downloads folder,
   newest first: a click adds one to qBittorrent and deletes the file once
-  qBittorrent took it (a file it refuses stays). `torrents.services` (`[{ "name", "url" }]`) are web UIs
+  qBittorrent took it (a file it refuses stays). With
+  `~/.config/smart-shell/radarr.json` and `sonarr.json` (`chmod 600`;
+  `{ "url", "apiKey", "profiles": { "dual": "...", "default": "..." } }`,
+  quality profile names, `dual` for DUAL/DUBLADO/NACIONAL releases) the release
+  name inside the .torrent decides: a season or episode (S01, S01E02, 1x02,
+  season, temporada) is a series for Sonarr, anything else a movie for Radarr.
+  The movie or series is added there first when missing (monitored, no search;
+  a series with no episode monitored), and the torrent goes in their
+  qBittorrent category (or `torrents.categories`, `{ "movie", "tv" }`). Every
+  10 minutes one of these whose import got blocked - a name that does not
+  match, like a year off by one - is imported by hand into the title it was
+  added for (`tools/torrent-arr.py`, Python standard library only).
+  `torrents.services` (`[{ "name", "url" }]`) are web UIs
   checked with each read - any HTTP answer counts - plus the VPN (qBittorrent
   connected) show beside the title, a green dot each; one that is down turns
   red, and so does the tray icon, whose hover names it. Only what needs a

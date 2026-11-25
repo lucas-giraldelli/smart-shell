@@ -83,8 +83,10 @@ Singleton {
         // (a torrent seeding for less is shown owed, and removing it asks
         // twice) and `minRatio` its minimum ratio (red under it); `services`
         // are web UIs checked with the torrents, shown as dots in its popover
-        // ({ name, url })
-        torrents: { seedDays: 7, minRatio: 0.4, services: [] }
+        // ({ name, url }); `categories` the qBittorrent category an added
+        // .torrent goes in, `tv` when its name has a season or episode and
+        // `movie` otherwise ("" takes the one Radarr/Sonarr download with)
+        torrents: { seedDays: 7, minRatio: 0.4, services: [], categories: { movie: "", tv: "" } }
     })
 
     readonly property var data: {

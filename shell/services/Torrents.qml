@@ -14,7 +14,8 @@ import ".."
 // remove() takes a torrent out of qBittorrent, keeping its files; start()
 // brings a stopped one back. `files` are the .torrent files in the Downloads
 // folder (xdg-user-dir DOWNLOAD), newest first, read as the list opens;
-// add() sends one to qBittorrent and deletes it once qBittorrent took it. With ~/.config/smart-shell/tracker.json
+// add() sends one to qBittorrent through tools/torrent-arr.py (Radarr or
+// Sonarr get the movie or series first) and deletes it once qBittorrent took it. With ~/.config/smart-shell/tracker.json
 // ({ "name", "url", "token" }: a UNIT3D tracker and its API key) it also reads
 // your account there (/api/user: ratio, buffer, bonus points, hit and runs)
 // every 15 minutes; the key goes to curl on stdin as a header file.
@@ -95,15 +96,15 @@ Singleton {
             }
         }
     }
-    // the paths in `adding`, one after another (multipart, the file on
-    // stdin so any name works); qBittorrent 4 answers "Fails." with a 200
+    // the paths in `adding`, through tools/torrent-arr.py: the movie or
+    // series goes into Radarr/Sonarr first (radarr.json, sonarr.json), then
+    // the torrent into qBittorrent in their category, the file deleted once
+    // it took it
     Process {
         id: sender
         property var batch: []
         onRunningChanged: if (running) batch = root.adding
-        command: ["sh", "-c", root.lib
-            + 'send() { curl -sf -m 30 -b "$jar" -F "torrents=@-;filename=file.torrent" "$url/api/v2/torrents/add" < "$1"; }; '
-            + 'for p in "$@"; do r=$(send "$p" || { login && send "$p"; }) && [ "$r" != "Fails." ] && rm -f -- "$p"; done', "sh"].concat(root.adding)
+        command: ["python3", "-I", Quickshell.shellDir + "/../tools/torrent-arr.py", "add"].concat(root.adding)
         onExited: {
             root.adding = root.adding.filter(p => !batch.includes(p));
             if (root.adding.length)
@@ -111,6 +112,20 @@ Singleton {
             root.scan();
             root.refresh();
         }
+    }
+
+    // a torrent added here whose import Radarr/Sonarr blocked (its name does
+    // not match the library, e.g. a year off) is imported by hand
+    Timer {
+        running: true
+        repeat: true
+        triggeredOnStart: true
+        interval: 10 * 60000
+        onTriggered: if (!unblocker.running) unblocker.running = true
+    }
+    Process {
+        id: unblocker
+        command: ["python3", "-I", Quickshell.shellDir + "/../tools/torrent-arr.py", "unblock"]
     }
 
     // re-read a moment after an action
