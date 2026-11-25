@@ -9,3 +9,4 @@ prototype/assets/local/
 
 # qmlls config, generated per machine by Quickshell
 shell/.qmlls.ini
+__pycache__/
